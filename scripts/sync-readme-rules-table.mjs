@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 // @ts-nocheck
+
 /**
  * @packageDocumentation
  * Synchronize or validate the README rules table from the built plugin metadata.

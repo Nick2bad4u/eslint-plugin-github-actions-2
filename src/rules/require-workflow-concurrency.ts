@@ -4,7 +4,6 @@
  */
 import type { Rule } from "eslint";
 
-import type { GithubActionsRuleDocs } from "../_internal/rule-docs.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -31,54 +30,8 @@ type RequireWorkflowConcurrencyOptions = [
     }?,
 ];
 
+/** Rule implementation for requiring workflow-level concurrency controls. */
 const rule: Rule.RuleModule = {
-    meta: {
-        docs: {
-            configs: [
-                "github-actions.configs.all",
-                "github-actions.configs.strict",
-            ],
-            description:
-                "Require workflow-level `concurrency` so redundant runs can be deduplicated predictably.",
-            recommended: false,
-            requiresTypeChecking: false,
-            ruleId: "R004",
-            ruleNumber: 4,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-workflow-concurrency",
-        } as GithubActionsRuleDocs,
-        messages: {
-            cancelInProgressDisabled:
-                "Workflow `concurrency.cancel-in-progress` should be `true` or a GitHub expression so stale runs can be cancelled.",
-            invalidConcurrency:
-                "Workflow `concurrency` should be a string/expression or an object containing at least `group`.",
-            missingCancelInProgress:
-                "Workflow `concurrency` should set `cancel-in-progress` to cancel superseded runs.",
-            missingConcurrency:
-                "Add a top-level `concurrency` block so overlapping workflow runs do not pile up.",
-            missingGroup:
-                "Workflow `concurrency` should declare a non-empty `group` value.",
-        },
-        schema: [
-            {
-                additionalProperties: false,
-                properties: {
-                    onlyForEvents: {
-                        items: {
-                            minLength: 1,
-                            type: "string",
-                        },
-                        type: "array",
-                        uniqueItems: true,
-                    },
-                    requireCancelInProgress: {
-                        type: "boolean",
-                    },
-                },
-                type: "object",
-            },
-        ],
-        type: "suggestion",
-    },
     create(context) {
         const [options] = context.options as RequireWorkflowConcurrencyOptions;
         const requiredTriggerEvents = new Set<string>(
@@ -91,7 +44,7 @@ const rule: Rule.RuleModule = {
             Program() {
                 const root = getWorkflowRoot(context);
 
-                if (root == null) {
+                if (root === null) {
                     return;
                 }
 
@@ -106,7 +59,7 @@ const rule: Rule.RuleModule = {
 
                 const concurrencyPair = getMappingPair(root, "concurrency");
 
-                if (concurrencyPair == null) {
+                if (concurrencyPair === null) {
                     context.report({
                         messageId: "missingConcurrency",
                         node: root,
@@ -117,7 +70,7 @@ const rule: Rule.RuleModule = {
 
                 const concurrencyValue = unwrapYamlValue(concurrencyPair.value);
 
-                if (concurrencyValue == null) {
+                if (concurrencyValue === null) {
                     context.report({
                         messageId: "invalidConcurrency",
                         node: concurrencyPair,
@@ -154,7 +107,7 @@ const rule: Rule.RuleModule = {
                 );
 
                 if (
-                    groupPair == null ||
+                    groupPair === null ||
                     groupValue === null ||
                     groupValue.trim() === ""
                 ) {
@@ -173,7 +126,7 @@ const rule: Rule.RuleModule = {
                     "cancel-in-progress"
                 );
 
-                if (cancelInProgressPair == null) {
+                if (cancelInProgressPair === null) {
                     context.report({
                         messageId: "missingCancelInProgress",
                         node: concurrencyValue,
@@ -218,6 +171,60 @@ const rule: Rule.RuleModule = {
             },
         };
     },
+    meta: {
+        defaultOptions: [{}],
+        docs: {
+            configs: [
+                "github-actions.configs.all",
+                "github-actions.configs.strict",
+            ],
+            description:
+                "require workflow-level `concurrency` so redundant runs can be deduplicated predictably.",
+            recommended: false,
+            requiresTypeChecking: false,
+            ruleId: "R004",
+            ruleNumber: 4,
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-workflow-concurrency",
+        },
+        messages: {
+            cancelInProgressDisabled:
+                "Workflow `concurrency.cancel-in-progress` should be `true` or a GitHub expression so stale runs can be cancelled.",
+            invalidConcurrency:
+                "Workflow `concurrency` should be a string/expression or an object containing at least `group`.",
+            missingCancelInProgress:
+                "Workflow `concurrency` should set `cancel-in-progress` to cancel superseded runs.",
+            missingConcurrency:
+                "Add a top-level `concurrency` block so overlapping workflow runs do not pile up.",
+            missingGroup:
+                "Workflow `concurrency` should declare a non-empty `group` value.",
+        },
+        schema: [
+            {
+                additionalProperties: false,
+                description:
+                    "Optional configuration for which events require workflow-level concurrency and whether cancel-in-progress is mandatory.",
+                properties: {
+                    onlyForEvents: {
+                        description:
+                            "Event names that should trigger the workflow-level concurrency requirement.",
+                        items: {
+                            minLength: 1,
+                            type: "string",
+                        },
+                        type: "array",
+                        uniqueItems: true,
+                    },
+                    requireCancelInProgress: {
+                        description:
+                            "Require concurrency.cancel-in-progress so newer runs can cancel superseded work.",
+                        type: "boolean",
+                    },
+                },
+                type: "object",
+            },
+        ],
+        type: "suggestion",
+    } as Rule.RuleMetaData,
 };
 
 export default rule;

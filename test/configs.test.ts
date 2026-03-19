@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest";
 
-import plugin from "../src/plugin.js";
+import githubActionsPlugin from "../src/plugin.js";
 
 describe("exported presets", () => {
     it("exports the expected preset names", () => {
-        expect(Object.keys(plugin.configs).sort()).toEqual([
+        expect(
+            Object.keys(githubActionsPlugin.configs).toSorted((left, right) =>
+                left.localeCompare(right)
+            )
+        ).toEqual([
             "all",
             "recommended",
             "security",
@@ -13,21 +17,33 @@ describe("exported presets", () => {
     });
 
     it("scopes presets to workflow YAML files", () => {
-        expect(plugin.configs.recommended.files).toEqual([
+        expect(githubActionsPlugin.configs.recommended.files).toEqual([
             ".github/workflows/*.{yml,yaml}",
         ]);
     });
 
     it("wires rule membership by preset", () => {
-        expect(Object.keys(plugin.configs.recommended.rules).sort()).toEqual([
+        expect(
+            Object.keys(githubActionsPlugin.configs.recommended.rules).toSorted(
+                (left, right) => left.localeCompare(right)
+            )
+        ).toEqual([
             "github-actions/require-job-timeout-minutes",
             "github-actions/require-workflow-permissions",
         ]);
-        expect(Object.keys(plugin.configs.security.rules).sort()).toEqual([
+        expect(
+            Object.keys(githubActionsPlugin.configs.security.rules).toSorted(
+                (left, right) => left.localeCompare(right)
+            )
+        ).toEqual([
             "github-actions/pin-action-shas",
             "github-actions/require-workflow-permissions",
         ]);
-        expect(Object.keys(plugin.configs.strict.rules).sort()).toEqual([
+        expect(
+            Object.keys(githubActionsPlugin.configs.strict.rules).toSorted(
+                (left, right) => left.localeCompare(right)
+            )
+        ).toEqual([
             "github-actions/pin-action-shas",
             "github-actions/require-job-timeout-minutes",
             "github-actions/require-workflow-concurrency",

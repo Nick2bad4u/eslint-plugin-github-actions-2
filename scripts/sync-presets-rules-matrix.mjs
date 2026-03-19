@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 // @ts-nocheck
+
 /**
  * @packageDocumentation
  * Generate a Markdown matrix of GitHub Actions rules by preset from the built plugin metadata.

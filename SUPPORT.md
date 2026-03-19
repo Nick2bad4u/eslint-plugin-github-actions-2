@@ -1,6 +1,6 @@
 # Support
 
-Thanks for using `eslint-plugin-typefest`.
+Thanks for using `eslint-plugin-github-actions`.
 
 ## How to get help
 
@@ -8,9 +8,9 @@ Thanks for using `eslint-plugin-typefest`.
    - [README.md](./README.md)
    - [docs/](./docs/)
 2. Search existing issues:
-   - <https://github.com/Nick2bad4u/eslint-plugin-typefest/issues>
+   - <https://github.com/Nick2bad4u/eslint-plugin-github-actions/issues>
 3. Open a new issue if needed:
-   - <https://github.com/Nick2bad4u/eslint-plugin-typefest/issues/new>
+   - <https://github.com/Nick2bad4u/eslint-plugin-github-actions/issues/new>
 
 ## What to include in an issue
 
@@ -19,7 +19,7 @@ Please include:
 - Node.js version
 - TypeScript version
 - ESLint version
-- `eslint-plugin-typefest` version
+- `eslint-plugin-github-actions` version
 - Minimal reproduction snippet
 - Expected behavior and actual behavior
 

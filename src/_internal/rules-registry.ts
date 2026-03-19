@@ -4,10 +4,10 @@
  */
 import type { Rule } from "eslint";
 
+import pinActionShas from "../rules/pin-action-shas.js";
 import requireJobTimeoutMinutes from "../rules/require-job-timeout-minutes.js";
 import requireWorkflowConcurrency from "../rules/require-workflow-concurrency.js";
 import requireWorkflowPermissions from "../rules/require-workflow-permissions.js";
-import pinActionShas from "../rules/pin-action-shas.js";
 
 /** Strongly typed plugin rule registry keyed by unqualified rule name. */
 const githubActionsRulesDefinition: {

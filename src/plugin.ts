@@ -3,43 +3,48 @@
  * Public plugin entrypoint for eslint-plugin-github-actions.
  */
 import type { ESLint, Linter, Rule } from "eslint";
+
 import * as yamlParser from "yaml-eslint-parser";
+
+import type { GithubActionsRuleDocs } from "./_internal/rule-docs.js";
 
 import packageJson from "../package.json" with { type: "json" };
 import {
     githubActionsConfigMetadataByName,
-    githubActionsConfigNames,
-    githubActionsConfigReferenceToName,
     type GithubActionsConfigName,
+    githubActionsConfigNames,
     type GithubActionsConfigReference,
+    githubActionsConfigReferenceToName,
 } from "./_internal/github-actions-config-references.js";
-import type { GithubActionsRuleDocs } from "./_internal/rule-docs.js";
 import { githubActionsRules } from "./_internal/rules-registry.js";
 import { WORKFLOW_FILE_GLOBS } from "./_internal/workflow-yaml.js";
 
 /** ESLint severity used by generated preset rule maps. */
 const ERROR_SEVERITY = "error" as const;
 
+/** Runtime type for the plugin's generated config presets. */
+export type GithubActionsConfigs = Record<
+    GithubActionsConfigName,
+    GithubActionsPresetConfig
+>;
+
 /** Flat config shape produced by this plugin. */
 export type GithubActionsPresetConfig = Linter.Config & {
     rules: NonNullable<Linter.Config["rules"]>;
 };
 
-/** Rule-map type used when expanding preset memberships. */
-type RulesConfig = GithubActionsPresetConfig["rules"];
+/** Fully-qualified ESLint rule ids exposed by this plugin. */
+export type GithubActionsRuleId = `github-actions/${GithubActionsRuleName}`;
 
-/** Contract for the `configs` object exported by the plugin. */
-type GithubActionsConfigsContract = Record<
-    GithubActionsConfigName,
-    GithubActionsPresetConfig
->;
+/** Unqualified rule names supported by eslint-plugin-github-actions. */
+export type GithubActionsRuleName = keyof typeof githubActionsRules;
 
 /** Fully assembled plugin contract used by the runtime default export. */
 type GithubActionsPluginContract = Omit<
     ESLint.Plugin,
     "configs" | "meta" | "rules"
 > & {
-    configs: GithubActionsConfigsContract;
+    configs: GithubActionsConfigs;
     meta: {
         name: string;
         namespace: string;
@@ -48,14 +53,8 @@ type GithubActionsPluginContract = Omit<
     rules: NonNullable<ESLint.Plugin["rules"]>;
 };
 
-/** Unqualified rule names supported by eslint-plugin-github-actions. */
-export type GithubActionsRuleName = keyof typeof githubActionsRules;
-
-/** Fully-qualified ESLint rule ids exposed by this plugin. */
-export type GithubActionsRuleId = `github-actions/${GithubActionsRuleName}`;
-
-/** Runtime type for the plugin's generated config presets. */
-export type GithubActionsConfigs = GithubActionsConfigsContract;
+/** Rule-map type used when expanding preset memberships. */
+type RulesConfig = GithubActionsPresetConfig["rules"];
 
 /** Resolve package version from package.json data. */
 function getPackageVersion(pkg: unknown): string {
@@ -136,9 +135,11 @@ const createPresetRuleNamesByConfig = (): Record<
 
     for (const [ruleName, rule] of githubActionsRuleEntries) {
         for (const reference of getRuleConfigReferences(ruleName, rule)) {
-            const configName = githubActionsConfigReferenceToName[
-                reference
-            ] as GithubActionsConfigName;
+            const configName = githubActionsConfigReferenceToName[reference];
+
+            if (configName === undefined) {
+                continue;
+            }
 
             presetRuleNamesByConfig[configName].push(ruleName);
         }
@@ -199,27 +200,26 @@ const pluginForConfigs: ESLint.Plugin = {
 };
 
 /** Create every exported flat-config preset from static metadata. */
-const createGithubActionsConfigsDefinition =
-    (): GithubActionsConfigsContract => {
-        const configs = {} as GithubActionsConfigsContract;
+const createGithubActionsConfigsDefinition = (): GithubActionsConfigs => {
+    const configs = {} as GithubActionsConfigs;
 
-        for (const configName of githubActionsConfigNames) {
-            const metadata = githubActionsConfigMetadataByName[configName];
+    for (const configName of githubActionsConfigNames) {
+        const metadata = githubActionsConfigMetadataByName[configName];
 
-            configs[configName] = withGithubActionsPlugin(
-                {
-                    name: metadata.presetName,
-                    rules: errorRulesFor(presetRuleNamesByConfig[configName]),
-                },
-                pluginForConfigs
-            );
-        }
+        configs[configName] = withGithubActionsPlugin(
+            {
+                name: metadata.presetName,
+                rules: errorRulesFor(presetRuleNamesByConfig[configName]),
+            },
+            pluginForConfigs
+        );
+    }
 
-        return configs;
-    };
+    return configs;
+};
 
 /** Finalized typed view of all exported flat-config presets. */
-const githubActionsConfigs: GithubActionsConfigsContract =
+const githubActionsConfigs: GithubActionsConfigs =
     createGithubActionsConfigsDefinition();
 
 /** Main plugin object exported for ESLint consumption. */

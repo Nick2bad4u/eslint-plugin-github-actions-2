@@ -4,7 +4,6 @@
  */
 import type { Rule } from "eslint";
 
-import type { GithubActionsRuleDocs } from "../_internal/rule-docs.js";
 import {
     getMappingPair,
     getMappingValueAsSequence,
@@ -15,7 +14,7 @@ import {
 } from "../_internal/workflow-yaml.js";
 
 /** Full commit SHA pattern recommended by GitHub for pinning action refs. */
-const FULL_SHA_PATTERN = /^[a-f0-9]{40}$/u;
+const FULL_SHA_PATTERN = /^[0-9a-f]{40}$/u;
 
 /** Determine whether a `uses` reference is a local action path. */
 const isLocalActionReference = (reference: string): boolean =>
@@ -30,7 +29,7 @@ const isReusableWorkflowReference = (reference: string): boolean =>
     reference.includes("/.github/workflows/");
 
 /** Extract the ref segment after the final `@` delimiter. */
-const getReferenceRef = (reference: string): string | null => {
+const getReferenceRef = (reference: string): null | string => {
     const delimiterIndex = reference.lastIndexOf("@");
 
     return delimiterIndex === -1 ? null : reference.slice(delimiterIndex + 1);
@@ -40,31 +39,11 @@ const getReferenceRef = (reference: string): string | null => {
 const shouldValidateUsesReference = (reference: string): boolean =>
     !isLocalActionReference(reference) && !isDockerReference(reference);
 
+/**
+ * Rule implementation for requiring immutable SHA pins on external uses
+ * references.
+ */
 const rule: Rule.RuleModule = {
-    meta: {
-        docs: {
-            configs: [
-                "github-actions.configs.all",
-                "github-actions.configs.security",
-                "github-actions.configs.strict",
-            ],
-            description:
-                "Require third-party `uses` references to pin full-length commit SHAs instead of mutable tags or branches.",
-            recommended: false,
-            requiresTypeChecking: false,
-            ruleId: "R003",
-            ruleNumber: 3,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/pin-action-shas",
-        } as GithubActionsRuleDocs,
-        messages: {
-            unpinnedAction:
-                "Action reference '{{reference}}' should pin a full 40-character commit SHA instead of '{{ref}}'.",
-            unpinnedReusableWorkflow:
-                "Reusable workflow reference '{{reference}}' should pin a full 40-character commit SHA instead of '{{ref}}'.",
-        },
-        schema: [],
-        type: "suggestion",
-    },
     create(context) {
         const reportReference = (
             node: NonNullable<Rule.Node>,
@@ -96,7 +75,7 @@ const rule: Rule.RuleModule = {
             Program() {
                 const root = getWorkflowRoot(context);
 
-                if (root == null) {
+                if (root === null) {
                     return;
                 }
 
@@ -110,7 +89,7 @@ const rule: Rule.RuleModule = {
                     );
 
                     if (
-                        reusableWorkflowPair != null &&
+                        reusableWorkflowPair !== null &&
                         reusableWorkflowReference !== null
                     ) {
                         reportReference(
@@ -125,7 +104,7 @@ const rule: Rule.RuleModule = {
                         "steps"
                     );
 
-                    if (stepsSequence == null) {
+                    if (stepsSequence === null) {
                         continue;
                     }
 
@@ -141,7 +120,7 @@ const rule: Rule.RuleModule = {
                             usesPair?.value ?? null
                         );
 
-                        if (usesPair == null || usesReference === null) {
+                        if (usesPair === null || usesReference === null) {
                             continue;
                         }
 
@@ -155,6 +134,30 @@ const rule: Rule.RuleModule = {
             },
         };
     },
+    meta: {
+        docs: {
+            configs: [
+                "github-actions.configs.all",
+                "github-actions.configs.security",
+                "github-actions.configs.strict",
+            ],
+            description:
+                "require third-party `uses` references to pin full-length commit SHAs instead of mutable tags or branches.",
+            recommended: false,
+            requiresTypeChecking: false,
+            ruleId: "R003",
+            ruleNumber: 3,
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/pin-action-shas",
+        },
+        messages: {
+            unpinnedAction:
+                "Action reference '{{reference}}' should pin a full 40-character commit SHA instead of '{{ref}}'.",
+            unpinnedReusableWorkflow:
+                "Reusable workflow reference '{{reference}}' should pin a full 40-character commit SHA instead of '{{ref}}'.",
+        },
+        schema: [],
+        type: "suggestion",
+    } as Rule.RuleMetaData,
 };
 
 export default rule;

@@ -4,7 +4,6 @@
  */
 import type { Rule } from "eslint";
 
-import type { GithubActionsRuleDocs } from "../_internal/rule-docs.js";
 import {
     getMappingPair,
     getWorkflowJobs,
@@ -18,42 +17,8 @@ type RequireWorkflowPermissionsOptions = [
     }?,
 ];
 
+/** Rule implementation for requiring explicit workflow or job token permissions. */
 const rule: Rule.RuleModule = {
-    meta: {
-        docs: {
-            configs: [
-                "github-actions.configs.all",
-                "github-actions.configs.recommended",
-                "github-actions.configs.security",
-                "github-actions.configs.strict",
-            ],
-            description:
-                "Require explicit `permissions` to avoid relying on GitHub Actions' default token scope.",
-            recommended: true,
-            requiresTypeChecking: false,
-            ruleId: "R001",
-            ruleNumber: 1,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-workflow-permissions",
-        } as GithubActionsRuleDocs,
-        messages: {
-            missingJobPermissions:
-                "Job '{{jobId}}' is missing explicit `permissions`. Define workflow-level `permissions` or add `jobs.{{jobId}}.permissions`.",
-            missingWorkflowPermissions:
-                "Define explicit top-level `permissions` for this workflow, or configure job-level `permissions` for every job.",
-        },
-        schema: [
-            {
-                additionalProperties: false,
-                properties: {
-                    allowJobLevelPermissions: {
-                        type: "boolean",
-                    },
-                },
-                type: "object",
-            },
-        ],
-        type: "suggestion",
-    },
     create(context) {
         const [options] = context.options as RequireWorkflowPermissionsOptions;
         const allowJobLevelPermissions =
@@ -63,7 +28,7 @@ const rule: Rule.RuleModule = {
             Program() {
                 const root = getWorkflowRoot(context);
 
-                if (root == null) {
+                if (root === null) {
                     return;
                 }
 
@@ -107,6 +72,46 @@ const rule: Rule.RuleModule = {
             },
         };
     },
+    meta: {
+        defaultOptions: [{}],
+        docs: {
+            configs: [
+                "github-actions.configs.all",
+                "github-actions.configs.recommended",
+                "github-actions.configs.security",
+                "github-actions.configs.strict",
+            ],
+            description:
+                "require explicit `permissions` to avoid relying on GitHub Actions' default token scope.",
+            recommended: true,
+            requiresTypeChecking: false,
+            ruleId: "R001",
+            ruleNumber: 1,
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-workflow-permissions",
+        },
+        messages: {
+            missingJobPermissions:
+                "Job '{{jobId}}' is missing explicit `permissions`. Define workflow-level `permissions` or add `jobs.{{jobId}}.permissions`.",
+            missingWorkflowPermissions:
+                "Define explicit top-level `permissions` for this workflow, or configure job-level `permissions` for every job.",
+        },
+        schema: [
+            {
+                additionalProperties: false,
+                description:
+                    "Optional configuration for how strictly workflow permissions must be declared.",
+                properties: {
+                    allowJobLevelPermissions: {
+                        description:
+                            "Allow each job to declare its own permissions when the workflow omits a top-level permissions block.",
+                        type: "boolean",
+                    },
+                },
+                type: "object",
+            },
+        ],
+        type: "suggestion",
+    } as Rule.RuleMetaData,
 };
 
 export default rule;

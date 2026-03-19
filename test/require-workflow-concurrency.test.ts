@@ -34,7 +34,7 @@ describe("require-workflow-concurrency", () => {
                 "permissions:",
                 "  contents: read",
                 "concurrency:",
-                "  group: ci-${{ github.ref }}",
+                `  group: ci-\${{ github.ref }}`,
                 "  cancel-in-progress: true",
                 "jobs:",
                 "  build:",

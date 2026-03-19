@@ -13,21 +13,24 @@ export const WORKFLOW_FILE_GLOBS: readonly string[] = [
 /** Workflow job mapping paired with its stable identifier key. */
 export type WorkflowJobEntry = {
     readonly id: string;
-    readonly idNode: AST.YAMLContent | AST.YAMLWithMeta;
+    readonly idNode: WorkflowYamlValueNode;
     readonly mapping: AST.YAMLMapping;
     readonly pair: AST.YAMLPair;
 };
 
+/** YAML value node type used by workflow helper APIs. */
+type WorkflowYamlValueNode = AST.YAMLContent | AST.YAMLWithMeta;
+
 /** Narrow a YAML node to `YAMLWithMeta`. */
 export const isYamlWithMeta = (
-    node: AST.YAMLNode | AST.YAMLContent | AST.YAMLWithMeta | null | undefined
+    node: AST.YAMLContent | AST.YAMLNode | AST.YAMLWithMeta | null | undefined
 ): node is AST.YAMLWithMeta => node?.type === "YAMLWithMeta";
 
 /** Unwrap `YAMLWithMeta` wrappers until the underlying YAML value is reached. */
 export const unwrapYamlValue = (
-    node: AST.YAMLContent | AST.YAMLWithMeta | null | undefined
+    node: null | undefined | WorkflowYamlValueNode
 ): AST.YAMLContent | null => {
-    if (node == null) {
+    if (node === null || node === undefined) {
         return null;
     }
 
@@ -40,17 +43,17 @@ export const unwrapYamlValue = (
 
 /** Narrow a YAML node to a mapping. */
 export const isYamlMapping = (
-    node: AST.YAMLContent | AST.YAMLWithMeta | null | undefined
+    node: null | undefined | WorkflowYamlValueNode
 ): node is AST.YAMLMapping => unwrapYamlValue(node)?.type === "YAMLMapping";
 
 /** Narrow a YAML node to a sequence. */
 export const isYamlSequence = (
-    node: AST.YAMLContent | AST.YAMLWithMeta | null | undefined
+    node: null | undefined | WorkflowYamlValueNode
 ): node is AST.YAMLSequence => unwrapYamlValue(node)?.type === "YAMLSequence";
 
 /** Narrow a YAML node to a scalar. */
 export const isYamlScalar = (
-    node: AST.YAMLContent | AST.YAMLWithMeta | null | undefined
+    node: null | undefined | WorkflowYamlValueNode
 ): node is AST.YAMLScalar => unwrapYamlValue(node)?.type === "YAMLScalar";
 
 /** Resolve the first document's root mapping when linting a workflow file. */
@@ -66,8 +69,8 @@ export const getWorkflowRoot = (
 
 /** Read a scalar node as a string when possible. */
 export const getScalarStringValue = (
-    node: AST.YAMLContent | AST.YAMLWithMeta | null | undefined
-): string | null => {
+    node: null | undefined | WorkflowYamlValueNode
+): null | string => {
     const unwrappedNode = unwrapYamlValue(node);
 
     if (unwrappedNode?.type !== "YAMLScalar") {
@@ -86,8 +89,8 @@ export const getScalarStringValue = (
 
 /** Read a scalar node as a number when possible. */
 export const getScalarNumberValue = (
-    node: AST.YAMLContent | AST.YAMLWithMeta | null | undefined
-): number | null => {
+    node: null | undefined | WorkflowYamlValueNode
+): null | number => {
     const unwrappedNode = unwrapYamlValue(node);
 
     if (unwrappedNode?.type !== "YAMLScalar") {
@@ -99,7 +102,7 @@ export const getScalarNumberValue = (
 
 /** Determine whether a scalar is a GitHub expression string like `${{ ... }}`. */
 export const isGithubExpressionScalar = (
-    node: AST.YAMLContent | AST.YAMLWithMeta | null | undefined
+    node: null | undefined | WorkflowYamlValueNode
 ): boolean => {
     const scalarValue = getScalarStringValue(node);
 
@@ -152,7 +155,7 @@ export const getWorkflowJobs = (
 ): readonly WorkflowJobEntry[] => {
     const jobsMapping = getMappingValueAsMapping(root, "jobs");
 
-    if (jobsMapping == null) {
+    if (jobsMapping === null) {
         return [];
     }
 
@@ -166,7 +169,7 @@ export const getWorkflowJobs = (
             continue;
         }
 
-        if (pair.key == null) {
+        if (pair.key === null || pair.key === undefined) {
             continue;
         }
 
@@ -189,7 +192,7 @@ export const getWorkflowEventNames = (
     const onValue = unwrapYamlValue(onPair?.value ?? null);
     const eventNames = new Set<string>();
 
-    if (onValue == null) {
+    if (onValue === null) {
         return eventNames;
     }
 

@@ -20,7 +20,8 @@ type HomeCard = {
 
 const heroStats = [
     {
-        description: "Workflow security and quality checks for GitHub Actions YAML.",
+        description:
+            "Workflow security and quality checks for GitHub Actions YAML.",
         headline: "4 Initial Rules",
     },
     {
@@ -28,14 +29,16 @@ const heroStats = [
         headline: "4 Presets",
     },
     {
-        description: "Purpose-built for .github/workflows/*.yml and *.yaml files.",
+        description:
+            "Purpose-built for .github/workflows/*.yml and *.yaml files.",
         headline: "YAML-first",
     },
 ] as const satisfies readonly HeroStat[];
 
 const homeCards = [
     {
-        description: "Install the plugin, enable a preset, and lint workflow files immediately.",
+        description:
+            "Install the plugin, enable a preset, and lint workflow files immediately.",
         icon: "⚙️",
         title: "Get started",
         to: "/docs/rules/getting-started",
@@ -47,7 +50,8 @@ const homeCards = [
         to: "/docs/rules/presets/index",
     },
     {
-        description: "Read the individual rule docs with incorrect and correct examples.",
+        description:
+            "Read the individual rule docs with incorrect and correct examples.",
         icon: "📚",
         title: "Browse rules",
         to: "/docs/rules/overview",
@@ -77,8 +81,8 @@ export default function Home() {
                             <p className={styles.heroSubtitle}>
                                 Focused ESLint rules for workflow YAML files,
                                 including explicit permissions, job timeout
-                                enforcement, immutable SHA pinning, and
-                                workflow concurrency guidance.
+                                enforcement, immutable SHA pinning, and workflow
+                                concurrency guidance.
                             </p>
 
                             <div className={styles.heroActions}>

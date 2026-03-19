@@ -42,7 +42,7 @@ import remarkLintRuleDocHeadings from "./scripts/remark-lint-rule-doc-headings.m
 /** @typedef {import("remark-lint-blockquote-indentation")} RemarkLintBlockquoteIndentation */
 /** @typedef {import("remark-lint-checkbox-character-style")} RemarkLintCheckboxCharacterStyle */
 /** @typedef {import("remark-lint-checkbox-content-indent")} RemarkLintCheckboxContentIndent */
-/** @typedef {import("remark-lint-code-block-split-list")} RemarkLintCodeBlockSplitList */
+/** @typedef {unknown} RemarkLintCodeBlockSplitList */
 /** @typedef {import("remark-lint-code-block-style")} RemarkLintCodeBlockStyle */
 /** @typedef {import("remark-lint-correct-media-syntax")} RemarkLintCorrectMediaSyntax */
 /** @typedef {import("remark-lint-definition-case")} RemarkLintDefinitionCase */
@@ -65,7 +65,7 @@ import remarkLintRuleDocHeadings from "./scripts/remark-lint-rule-doc-headings.m
 /** @typedef {import("remark-lint-hard-break-spaces")} RemarkLintHardBreakSpaces */
 /** @typedef {import("remark-lint-heading-increment")} RemarkLintHeadingIncrement */
 /** @typedef {import("remark-lint-heading-style")} RemarkLintHeadingStyle */
-/** @typedef {import("remark-lint-heading-whitespace")} RemarkLintHeadingWhitespace */
+/** @typedef {unknown} RemarkLintHeadingWhitespace */
 /** @typedef {import("remark-lint-linebreak-style")} RemarkLintLinebreakStyle */
 /** @typedef {import("remark-lint-link-title-style")} RemarkLintLinkTitleStyle */
 /** @typedef {import("remark-lint-list-item-bullet-indent")} RemarkLintListItemBulletIndent */
