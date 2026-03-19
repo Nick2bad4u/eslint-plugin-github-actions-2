@@ -76,7 +76,7 @@ jobs:
               run: |
                   set -euo pipefail
                   if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-                    branch="${{ github.event.inputs.ref }}"
+                    branch="${{ inputs.ref }}"
                     if [ -z "$branch" ]; then
                       branch="${DEFAULT_RELEASE_BRANCH}"
                     fi
@@ -122,8 +122,8 @@ jobs:
             - name: Validate workflow_dispatch release input
               if: github.event_name == 'workflow_dispatch'
               env:
-                  EXPLICIT_VERSION: ${{ github.event.inputs.version }}
-                  RELEASE_TYPE: ${{ github.event.inputs.release_type }}
+                  EXPLICIT_VERSION: ${{ inputs.version }}
+                  RELEASE_TYPE: ${{ inputs.release_type }}
               run: |
                   set -euo pipefail
                   explicit_version="${EXPLICIT_VERSION:-}"
@@ -172,8 +172,8 @@ jobs:
             - name: Determine release version
               id: version
               env:
-                  EXPLICIT_VERSION: ${{ github.event.inputs.version }}
-                  RELEASE_TYPE: ${{ github.event.inputs.release_type }}
+                  EXPLICIT_VERSION: ${{ inputs.version }}
+                  RELEASE_TYPE: ${{ inputs.release_type }}
               run: |
                   set -euo pipefail
 

@@ -188,4 +188,107 @@ describe("workflow metadata rules", () => {
 
         expect(result.messages).toHaveLength(0);
     });
+
+    it("requires explicit types for selected multi-activity events", async () => {
+        const result = await lintWorkflow(
+            [
+                "name: PR review automation",
+                "on:",
+                "  pull_request_review:",
+                "jobs:",
+                "  react:",
+                "    runs-on: ubuntu-latest",
+                "    steps:",
+                "      - run: echo review",
+            ].join("\n"),
+            {
+                rules: {
+                    "github-actions/require-trigger-types": "error",
+                },
+            }
+        );
+
+        expect(result.messages).toHaveLength(1);
+        expect(result.messages[0]?.ruleId).toBe(
+            "github-actions/require-trigger-types"
+        );
+    });
+
+    it("accepts selected multi-activity events with explicit types", async () => {
+        const result = await lintWorkflow(
+            [
+                "name: PR review automation",
+                "on:",
+                "  pull_request_review:",
+                "    types:",
+                "      - submitted",
+                "jobs:",
+                "  react:",
+                "    runs-on: ubuntu-latest",
+                "    steps:",
+                "      - run: echo review",
+            ].join("\n"),
+            {
+                rules: {
+                    "github-actions/require-trigger-types": "error",
+                },
+            }
+        );
+
+        expect(result.messages).toHaveLength(0);
+    });
+
+    it("reports pull_request workflows that do not include merge_group", async () => {
+        const result = await lintWorkflow(
+            [
+                "name: CI",
+                "on:",
+                "  pull_request:",
+                "    branches:",
+                "      - main",
+                "jobs:",
+                "  test:",
+                "    runs-on: ubuntu-latest",
+                "    steps:",
+                "      - run: npm test",
+            ].join("\n"),
+            {
+                rules: {
+                    "github-actions/require-merge-group-trigger": "error",
+                },
+            }
+        );
+
+        expect(result.messages).toHaveLength(1);
+        expect(result.messages[0]?.ruleId).toBe(
+            "github-actions/require-merge-group-trigger"
+        );
+    });
+
+    it("accepts pull_request workflows that also declare merge_group", async () => {
+        const result = await lintWorkflow(
+            [
+                "name: CI",
+                "on:",
+                "  pull_request:",
+                "    branches:",
+                "      - main",
+                "  merge_group:",
+                "    types:",
+                "      - checks_requested",
+                "jobs:",
+                "  test:",
+                "    runs-on: ubuntu-latest",
+                "    steps:",
+                "      - run: npm test",
+            ].join("\n"),
+            {
+                rules: {
+                    "github-actions/require-merge-group-trigger": "error",
+                },
+            }
+        );
+
+        expect(result.messages).toHaveLength(0);
+    });
 });

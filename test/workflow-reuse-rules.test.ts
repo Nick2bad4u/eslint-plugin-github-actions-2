@@ -130,4 +130,90 @@ describe("workflow reuse rules", () => {
 
         expect(result.messages).toHaveLength(0);
     });
+
+    it("reports unsupported inline-job keys on reusable workflow caller jobs", async () => {
+        const result = await lintWorkflow(
+            [
+                "name: Reuse",
+                "on:",
+                "  workflow_dispatch:",
+                "jobs:",
+                "  deploy:",
+                "    uses: ./.github/workflows/deploy.yml",
+                "    runs-on: ubuntu-latest",
+                "    steps:",
+                '      - run: echo "invalid"',
+            ].join("\n"),
+            {
+                rules: {
+                    "github-actions/no-invalid-reusable-workflow-job-key":
+                        "error",
+                },
+            }
+        );
+
+        expect(result.messages).toHaveLength(2);
+        expect(result.messages[0]?.ruleId).toBe(
+            "github-actions/no-invalid-reusable-workflow-job-key"
+        );
+    });
+
+    it("accepts supported reusable workflow caller-job keys", async () => {
+        const result = await lintWorkflow(
+            [
+                "name: Reuse",
+                "on:",
+                "  workflow_dispatch:",
+                "jobs:",
+                "  deploy:",
+                "    name: Deploy via reusable workflow",
+                "    needs: []",
+                `    if: ${githubExpression("github.ref == 'refs/heads/main'")}`,
+                "    strategy:",
+                "      matrix:",
+                "        target: [production]",
+                "    uses: ./.github/workflows/deploy.yml",
+                "    with:",
+                "      target: production",
+                "    secrets:",
+                `      token: ${githubExpression("secrets.DEPLOY_TOKEN")}`,
+                "    concurrency:",
+                `      group: deploy-${githubExpression("github.ref")}`,
+                "      cancel-in-progress: true",
+                "    permissions:",
+                "      contents: read",
+            ].join("\n"),
+            {
+                rules: {
+                    "github-actions/no-invalid-reusable-workflow-job-key":
+                        "error",
+                },
+            }
+        );
+
+        expect(result.messages).toHaveLength(0);
+    });
+
+    it("does not report normal inline jobs", async () => {
+        const result = await lintWorkflow(
+            [
+                "name: Inline",
+                "on:",
+                "  workflow_dispatch:",
+                "jobs:",
+                "  build:",
+                "    runs-on: ubuntu-latest",
+                "    steps:",
+                '      - run: echo "ok"',
+            ].join("\n"),
+            {
+                rules: {
+                    "github-actions/no-invalid-reusable-workflow-job-key":
+                        "error",
+                },
+            }
+        );
+
+        expect(result.messages).toHaveLength(0);
+    });
 });

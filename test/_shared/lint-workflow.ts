@@ -14,13 +14,14 @@ export const lintWorkflow = async (
     options: Readonly<{
         readonly configName?: keyof typeof githubActionsPlugin.configs;
         readonly filePath?: string;
+        readonly fix?: boolean;
         readonly rules?: NonNullable<Linter.Config["rules"]>;
     }> = {}
 ): Promise<ESLint.LintResult> => {
     const configName = options.configName ?? "all";
     const baseConfig = githubActionsPlugin.configs[configName];
     const eslint = new ESLint({
-        fix: false,
+        fix: options.fix ?? false,
         overrideConfig: [
             {
                 ...baseConfig,

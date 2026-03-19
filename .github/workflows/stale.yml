@@ -29,6 +29,8 @@ on:
     schedule:
         - cron: "38 7 * * *"
     pull_request_target:
+        branches:
+            - main
         types:
             - opened
             - reopened
