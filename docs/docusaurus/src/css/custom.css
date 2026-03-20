@@ -48,22 +48,22 @@
 }
 
 :root {
-    --ifm-color-primary: #4f46e5;
-    --ifm-color-primary-dark: #4338ca;
-    --ifm-color-primary-darker: #3730a3;
-    --ifm-color-primary-darkest: #312e81;
-    --ifm-color-primary-light: #6366f1;
-    --ifm-color-primary-lighter: #818cf8;
-    --ifm-color-primary-lightest: #a5b4fc;
+    --ifm-color-primary: #0969da;
+    --ifm-color-primary-dark: #0550ae;
+    --ifm-color-primary-darker: #033d8b;
+    --ifm-color-primary-darkest: #0a3069;
+    --ifm-color-primary-light: #218bff;
+    --ifm-color-primary-lighter: #54aeff;
+    --ifm-color-primary-lightest: #80ccff;
     --ifm-code-font-size: 95%;
     --ifm-font-family-base:
         "Inter var", "Inter", "Segoe UI", "NerdFontSymbols Nerd Font Symbols",
         system-ui, -apple-system, sans-serif;
-    --sb-accent-overview: #22c55e;
-    --sb-accent-started: #0ea5e9;
+    --sb-accent-overview: #1a7f37;
+    --sb-accent-started: #0969da;
     --sb-accent-developer: #8b5cf6;
-    --sb-accent-rules: #f97316;
-    --sb-accent-presets: #eab308;
+    --sb-accent-rules: #8250df;
+    --sb-accent-presets: #9a6700;
     --sb-accent-guides: #06b6d4;
     --sb-accent-api-overview: #6366f1;
     --sb-accent-api-types: #14b8a6;
@@ -71,8 +71,10 @@
     --sb-accent-dev-charts: #38bdf8;
     --sb-accent-dev-links: #10b981;
     --sb-accent-adr: #f59e0b;
-    --sb-accent-rules-ts: #22c55e;
-    --sb-accent-rules-type-fest: #a855f7;
+    --sb-accent-rules-ts: #1f883d;
+    --sb-accent-rules-type-fest: #8250df;
+    --sb-accent-rules-action-metadata: #cf222e;
+    --sb-accent-rules-workflow-templates: #8250df;
     --sb-prefix-rule-number: #52525b;
     --sb-preset-minimal: #22c55e;
     --sb-preset-recommended: #facc15;
@@ -84,18 +86,18 @@
 }
 
 [data-theme="dark"] {
-    --ifm-color-primary: #818cf8;
-    --ifm-color-primary-dark: #6366f1;
-    --ifm-color-primary-darker: #4f46e5;
-    --ifm-color-primary-darkest: #4338ca;
-    --ifm-color-primary-light: #a5b4fc;
-    --ifm-color-primary-lighter: #c7d2fe;
-    --ifm-color-primary-lightest: #e0e7ff;
-    --sb-accent-overview: #4ade80;
-    --sb-accent-started: #38bdf8;
+    --ifm-color-primary: #2f81f7;
+    --ifm-color-primary-dark: #1f6feb;
+    --ifm-color-primary-darker: #1158c7;
+    --ifm-color-primary-darkest: #0d419d;
+    --ifm-color-primary-light: #58a6ff;
+    --ifm-color-primary-lighter: #79c0ff;
+    --ifm-color-primary-lightest: #a5d6ff;
+    --sb-accent-overview: #3fb950;
+    --sb-accent-started: #58a6ff;
     --sb-accent-developer: #c084fc;
-    --sb-accent-rules: #fb923c;
-    --sb-accent-presets: #facc15;
+    --sb-accent-rules: #a371f7;
+    --sb-accent-presets: #d29922;
     --sb-accent-guides: #67e8f9;
     --sb-accent-api-overview: #a5b4fc;
     --sb-accent-api-types: #2dd4bf;
@@ -103,8 +105,10 @@
     --sb-accent-dev-charts: #7dd3fc;
     --sb-accent-dev-links: #34d399;
     --sb-accent-adr: #fbbf24;
-    --sb-accent-rules-ts: #4ade80;
-    --sb-accent-rules-type-fest: #c084fc;
+    --sb-accent-rules-ts: #3fb950;
+    --sb-accent-rules-type-fest: #a371f7;
+    --sb-accent-rules-action-metadata: #ff7b72;
+    --sb-accent-rules-workflow-templates: #a371f7;
     --sb-prefix-rule-number: #a1a1aa;
     --sb-preset-minimal: #4ade80;
     --sb-preset-recommended: #fde047;
@@ -174,6 +178,8 @@
 .sb-cat-dev-charts > .menu__list-item-collapsible .menu__link,
 .sb-cat-dev-links > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules-workflows > .menu__list-item-collapsible .menu__link,
+.sb-cat-rules-action-metadata > .menu__list-item-collapsible .menu__link,
+.sb-cat-rules-workflow-templates > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules-type-fest > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules > .menu__list-item-collapsible .menu__link {
     border-inline-start: 4px solid transparent;
@@ -232,6 +238,8 @@
 .sb-cat-api-overview > .menu__list-item-collapsible .menu__link,
 .sb-cat-dev-links > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules-workflows > .menu__list-item-collapsible .menu__link,
+.sb-cat-rules-action-metadata > .menu__list-item-collapsible .menu__link,
+.sb-cat-rules-workflow-templates > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules-type-fest > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules > .menu__list-item-collapsible .menu__link {
     display: flex;
@@ -248,6 +256,12 @@
 .sb-cat-api-overview > .menu__list-item-collapsible .menu__link::before,
 .sb-cat-dev-links > .menu__list-item-collapsible .menu__link::before,
 .sb-cat-rules-workflows > .menu__list-item-collapsible .menu__link::before,
+.sb-cat-rules-action-metadata
+    > .menu__list-item-collapsible
+    .menu__link::before,
+.sb-cat-rules-workflow-templates
+    > .menu__list-item-collapsible
+    .menu__link::before,
 .sb-cat-rules-type-fest > .menu__list-item-collapsible .menu__link::before,
 .sb-cat-rules > .menu__list-item-collapsible .menu__link::before {
     margin-inline-start: auto;
@@ -315,11 +329,37 @@
     border-inline-start-color: var(--sb-accent-rules-ts);
 }
 
+.sb-cat-rules-action-metadata > .menu__list-item-collapsible .menu__link {
+    border-inline-start-color: var(--sb-accent-rules-action-metadata);
+}
+
+.sb-cat-rules-workflow-templates > .menu__list-item-collapsible .menu__link {
+    border-inline-start-color: var(--sb-accent-rules-workflow-templates);
+}
+
 .sb-cat-rules-workflows > .menu__list-item-collapsible .menu__link::before {
     content: "🧰";
     background-color: rgb(34 197 94 / 12%);
     border: 1px solid rgb(34 197 94 / 40%);
     color: var(--sb-accent-rules-ts);
+}
+
+.sb-cat-rules-action-metadata
+    > .menu__list-item-collapsible
+    .menu__link::before {
+    content: "🧩";
+    background-color: rgb(207 34 46 / 12%);
+    border: 1px solid rgb(207 34 46 / 40%);
+    color: var(--sb-accent-rules-action-metadata);
+}
+
+.sb-cat-rules-workflow-templates
+    > .menu__list-item-collapsible
+    .menu__link::before {
+    content: "🧪";
+    background-color: rgb(130 80 223 / 12%);
+    border: 1px solid rgb(130 80 223 / 40%);
+    color: var(--sb-accent-rules-workflow-templates);
 }
 
 .sb-cat-rules-type-fest > .menu__list-item-collapsible .menu__link {
@@ -404,6 +444,18 @@
     box-shadow: inset 0 0 0 1px rgb(34 197 94 / 25%);
 }
 
+.sb-cat-rules-action-metadata:not(.menu__list-item--collapsed)
+    > .menu__list-item-collapsible
+    .menu__link {
+    box-shadow: inset 0 0 0 1px rgb(207 34 46 / 25%);
+}
+
+.sb-cat-rules-workflow-templates:not(.menu__list-item--collapsed)
+    > .menu__list-item-collapsible
+    .menu__link {
+    box-shadow: inset 0 0 0 1px rgb(130 80 223 / 25%);
+}
+
 .sb-cat-rules-type-fest:not(.menu__list-item--collapsed)
     > .menu__list-item-collapsible
     .menu__link {
@@ -459,6 +511,12 @@
 }
 
 .sb-cat-rules-workflows .theme-doc-sidebar-item-link-level-3 > .menu__link,
+.sb-cat-rules-action-metadata
+    .theme-doc-sidebar-item-link-level-3
+    > .menu__link,
+.sb-cat-rules-workflow-templates
+    .theme-doc-sidebar-item-link-level-3
+    > .menu__link,
 .sb-cat-rules-type-fest .theme-doc-sidebar-item-link-level-3 > .menu__link {
     border-inline-start: 3px solid transparent;
     display: flex;
@@ -502,6 +560,56 @@
     .theme-doc-sidebar-item-link-level-3:nth-child(6n)
     > .menu__link {
     border-inline-start-color: #10b981;
+}
+
+/* action metadata rules palette */
+.sb-cat-rules-action-metadata
+    .theme-doc-sidebar-item-link-level-3:nth-child(4n + 1)
+    > .menu__link {
+    border-inline-start-color: #cf222e;
+}
+
+.sb-cat-rules-action-metadata
+    .theme-doc-sidebar-item-link-level-3:nth-child(4n + 2)
+    > .menu__link {
+    border-inline-start-color: #d1242f;
+}
+
+.sb-cat-rules-action-metadata
+    .theme-doc-sidebar-item-link-level-3:nth-child(4n + 3)
+    > .menu__link {
+    border-inline-start-color: #da3633;
+}
+
+.sb-cat-rules-action-metadata
+    .theme-doc-sidebar-item-link-level-3:nth-child(4n)
+    > .menu__link {
+    border-inline-start-color: #ff7b72;
+}
+
+/* workflow template rules palette */
+.sb-cat-rules-workflow-templates
+    .theme-doc-sidebar-item-link-level-3:nth-child(4n + 1)
+    > .menu__link {
+    border-inline-start-color: #8250df;
+}
+
+.sb-cat-rules-workflow-templates
+    .theme-doc-sidebar-item-link-level-3:nth-child(4n + 2)
+    > .menu__link {
+    border-inline-start-color: #986ee2;
+}
+
+.sb-cat-rules-workflow-templates
+    .theme-doc-sidebar-item-link-level-3:nth-child(4n + 3)
+    > .menu__link {
+    border-inline-start-color: #a371f7;
+}
+
+.sb-cat-rules-workflow-templates
+    .theme-doc-sidebar-item-link-level-3:nth-child(4n)
+    > .menu__link {
+    border-inline-start-color: #b392f0;
 }
 
 /* type-fest palette */

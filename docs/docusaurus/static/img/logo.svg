@@ -1,13 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
   <title id="title">eslint-plugin-github-actions logo</title>
-  <desc id="desc">Stylized hexagon containing TF initials.</desc>
+  <desc id="desc">Rounded square mark with a connected workflow graph and check badge, representing GitHub Actions linting.</desc>
   <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#4f46e5" />
-      <stop offset="100%" stop-color="#0ea5e9" />
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d1117" />
+      <stop offset="52%" stop-color="#161b22" />
+      <stop offset="100%" stop-color="#1f6feb" />
+    </linearGradient>
+    <linearGradient id="node" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#58a6ff" />
+      <stop offset="100%" stop-color="#79c0ff" />
     </linearGradient>
   </defs>
-  <rect width="128" height="128" rx="20" fill="url(#g)" />
-  <path d="M23 30h82v14H70v54H56V44H23V30Z" fill="#fff" />
-  <path d="M70 52h35v12H82v34H70V52Z" fill="#fff" opacity="0.92" />
+
+  <rect width="128" height="128" rx="22" fill="url(#bg)" />
+
+  <path d="M30 34h68a8 8 0 0 1 8 8v44a8 8 0 0 1-8 8H30a8 8 0 0 1-8-8V42a8 8 0 0 1 8-8Z" fill="none" stroke="#8b949e" stroke-width="3" opacity="0.7" />
+
+  <path d="M38 72 58 52l14 14 18-18" fill="none" stroke="#f0f6fc" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+
+  <circle cx="38" cy="72" r="5.5" fill="url(#node)" />
+  <circle cx="58" cy="52" r="5.5" fill="url(#node)" />
+  <circle cx="72" cy="66" r="5.5" fill="url(#node)" />
+  <circle cx="90" cy="48" r="5.5" fill="url(#node)" />
+
+  <circle cx="95" cy="95" r="18" fill="#2ea043" stroke="#f0f6fc" stroke-width="3" />
+  <path d="m86 95 6 6 12-13" fill="none" stroke="#f0f6fc" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" />
 </svg>

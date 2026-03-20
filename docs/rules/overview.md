@@ -2,6 +2,10 @@
 
 `eslint-plugin-github-actions` targets GitHub Actions workflow YAML files, action metadata files (`action.yml` / `action.yaml`), and workflow-template package files under `workflow-templates/`.
 
+New to the plugin? Start with [Getting started](./getting-started.md). Need
+config guidance? See the [preset reference](./presets/index.md). Looking for a
+specific check? Jump to [Current rules](#current-rules).
+
 ## Included rule categories
 
 - **Security**: explicit least-privilege permissions and immutable SHA pinning

@@ -13,20 +13,20 @@
     background:
         radial-gradient(
             circle at 86% 12%,
-            rgb(244 114 182 / 28%),
+            rgb(47 129 247 / 28%),
             transparent 40%
         ),
         radial-gradient(
             circle at 16% 90%,
-            rgb(34 211 238 / 30%),
+            rgb(63 185 80 / 24%),
             transparent 45%
         ),
         linear-gradient(
             134deg,
-            #312e81 0%,
-            #4338ca 38%,
-            #3b82f6 72%,
-            #22d3ee 100%
+            #0d1117 0%,
+            #161b22 38%,
+            #1f6feb 72%,
+            #2f81f7 100%
         );
     border-block-end: 1px solid rgb(255 255 255 / 18%);
     color: #ffffff;
@@ -94,8 +94,8 @@
     border: 1px solid rgb(255 255 255 / 34%);
     border-radius: 999rem;
     margin: 0 0 0.75rem;
-    background: rgb(15 23 42 / 28%);
-    color: rgb(224 231 255);
+    background: rgb(1 4 9 / 36%);
+    color: rgb(230 237 243);
     font-size: 0.79rem;
     font-weight: 700;
     letter-spacing: 0.07em;
@@ -110,7 +110,7 @@
 
 .heroSubtitle {
     margin: 0;
-    color: rgb(239 246 255);
+    color: rgb(230 237 243);
     font-size: 1.08rem;
     line-height: 1.5;
     max-inline-size: 39rem;
@@ -155,28 +155,28 @@
 }
 
 .heroInlineLinkGitHubActions {
-    border-color: rgb(196 181 253 / 58%);
-    background: rgb(91 33 182 / 30%);
-    color: rgb(243 232 255);
+    border-color: rgb(88 166 255 / 58%);
+    background: rgb(31 111 235 / 30%);
+    color: rgb(230 237 243);
 
     &:hover,
     &:focus {
-        border-color: rgb(216 180 254 / 82%);
-        background: rgb(126 34 206 / 38%);
-        color: rgb(250 245 255);
+        border-color: rgb(121 192 255 / 82%);
+        background: rgb(47 129 247 / 38%);
+        color: rgb(246 248 250);
     }
 }
 
 .heroInlineLinkTsExtras {
-    border-color: rgb(125 211 252 / 58%);
-    background: rgb(14 116 144 / 30%);
-    color: rgb(224 242 254);
+    border-color: rgb(63 185 80 / 58%);
+    background: rgb(26 127 55 / 30%);
+    color: rgb(230 237 243);
 
     &:hover,
     &:focus {
-        border-color: rgb(103 232 249 / 82%);
-        background: rgb(8 145 178 / 38%);
-        color: rgb(240 249 255);
+        border-color: rgb(86 211 100 / 82%);
+        background: rgb(31 136 61 / 38%);
+        color: rgb(246 248 250);
     }
 }
 
@@ -291,30 +291,30 @@
 }
 
 .heroActionPrimary {
-    border-color: rgb(224 231 255 / 36%);
+    border-color: rgb(121 192 255 / 36%);
     background:
-        linear-gradient(145deg, rgb(129 140 248 / 90%), rgb(99 102 241 / 90%)),
+        linear-gradient(145deg, rgb(47 129 247 / 92%), rgb(31 111 235 / 92%)),
         linear-gradient(180deg, rgb(255 255 255 / 12%), rgb(255 255 255 / 0%));
-    color: rgb(232 239 255);
+    color: rgb(246 248 250);
 
     &:hover,
     &:focus {
-        border-color: rgb(224 231 255 / 50%);
-        color: rgb(242 246 255);
+        border-color: rgb(166 214 255 / 50%);
+        color: rgb(255 255 255);
     }
 }
 
 .heroActionSecondary {
-    border-color: rgb(191 219 254 / 34%);
+    border-color: rgb(139 148 158 / 46%);
     background:
-        linear-gradient(145deg, rgb(186 230 253 / 20%), rgb(147 197 253 / 11%)),
-        rgb(15 23 42 / 28%);
-    color: rgb(222 235 255);
+        linear-gradient(145deg, rgb(139 148 158 / 24%), rgb(110 118 129 / 16%)),
+        rgb(13 17 23 / 38%);
+    color: rgb(230 237 243);
 
     &:hover,
     &:focus {
-        border-color: rgb(191 219 254 / 50%);
-        color: rgb(238 246 255);
+        border-color: rgb(173 186 199 / 56%);
+        color: rgb(246 248 250);
     }
 }
 

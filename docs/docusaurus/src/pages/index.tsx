@@ -11,6 +11,12 @@ type HeroStat = {
     readonly headline: string;
 };
 
+type HeroBadge = {
+    readonly description: string;
+    readonly icon: string;
+    readonly label: string;
+};
+
 type HomeCard = {
     readonly description: string;
     readonly icon: string;
@@ -18,27 +24,48 @@ type HomeCard = {
     readonly to: string;
 };
 
+const heroBadges = [
+    {
+        description: "Flat Config-native presets for ESLint v9+.",
+        icon: "🧰",
+        label: "Modern ESLint",
+    },
+    {
+        description:
+            "Covers workflow YAML, action metadata, and workflow-template packages.",
+        icon: "⚙️",
+        label: "GitHub Actions-first",
+    },
+    {
+        description:
+            "Clear diagnostics and focused examples for maintainers and contributors.",
+        icon: "🧭",
+        label: "Actionable docs",
+    },
+] as const satisfies readonly HeroBadge[];
+
 const heroStats = [
     {
         description:
-            "Workflow security and quality checks for GitHub Actions YAML.",
-        headline: "4 Initial Rules",
-    },
-    {
-        description: "Balanced, security-focused, strict, and all-in presets.",
-        headline: "4 Presets",
+            "Rules across workflows, action metadata, and template package files.",
+        headline: "📚 69+ Rules",
     },
     {
         description:
-            "Purpose-built for .github/workflows/*.yml and *.yaml files.",
-        headline: "YAML-first",
+            "Recommended, security, strict, all, and target-specific presets.",
+        headline: "🧭 7 Presets",
+    },
+    {
+        description:
+            "Security, reliability, and maintainability guidance for CI pipelines.",
+        headline: "🚀 CI-focused",
     },
 ] as const satisfies readonly HeroStat[];
 
 const homeCards = [
     {
         description:
-            "Install the plugin, enable a preset, and lint workflow files immediately.",
+            "Install the plugin, enable a preset, and lint workflows quickly.",
         icon: "⚙️",
         title: "Get started",
         to: "/docs/rules/getting-started",
@@ -51,16 +78,19 @@ const homeCards = [
     },
     {
         description:
-            "Read the individual rule docs with incorrect and correct examples.",
+            "Browse every rule with incorrect/correct examples and adoption guidance.",
         icon: "📚",
-        title: "Browse rules",
-        to: "/docs/rules/overview",
+        title: "Rule reference",
+        to: "/docs/rules",
     },
 ] as const satisfies readonly HomeCard[];
 
 /** Render the Docusaurus landing page for eslint-plugin-github-actions. */
 export default function Home() {
     const logoSrc = useBaseUrl("/img/logo.svg");
+    const cardLinkClassName = styles["cardLink"] ?? "";
+    const heroRuleLinkClassName = styles["heroInlineLinkGitHubActions"] ?? "";
+    const heroReferenceLinkClassName = styles["heroInlineLinkTsExtras"] ?? "";
 
     return (
         <Layout
@@ -72,33 +102,82 @@ export default function Home() {
                     <div className={styles["heroGrid"]}>
                         <div>
                             <p className={styles["heroKicker"]}>
-                                GitHub Actions workflow linting for quality,
-                                reliability, and security.
+                                ⚙️ ESLint plugin for secure and maintainable
+                                GitHub Actions automation
                             </p>
                             <Heading as="h1" className={styles["heroTitle"]}>
                                 eslint-plugin-github-actions
                             </Heading>
                             <p className={styles["heroSubtitle"]}>
                                 Focused ESLint rules for workflow YAML files,
-                                including explicit permissions, job timeout
-                                enforcement, immutable SHA pinning, and workflow
-                                concurrency guidance.
+                                action metadata files, and workflow-template
+                                package assets. Enforce explicit permissions,
+                                safer triggers, reusable-workflow contracts, and
+                                stronger template hygiene.
                             </p>
+
+                            <div className={styles["heroBadgeRow"]}>
+                                {heroBadges.map((badge) => (
+                                    <article
+                                        key={badge.label}
+                                        className={styles["heroBadge"]}
+                                    >
+                                        <p className={styles["heroBadgeLabel"]}>
+                                            <span
+                                                aria-hidden="true"
+                                                className={
+                                                    styles["heroBadgeIcon"]
+                                                }
+                                            >
+                                                {badge.icon}
+                                            </span>
+                                            {badge.label}
+                                        </p>
+                                        <p
+                                            className={
+                                                styles["heroBadgeDescription"]
+                                            }
+                                        >
+                                            {badge.description}
+                                        </p>
+                                    </article>
+                                ))}
+                            </div>
 
                             <div className={styles["heroActions"]}>
                                 <Link
                                     className={`button button--lg ${styles["heroActionButton"]} ${styles["heroActionPrimary"]}`}
-                                    to="/docs/rules/getting-started"
+                                    to="/docs/rules/overview"
                                 >
-                                    Start here
+                                    🏁 Start with overview
                                 </Link>
                                 <Link
                                     className={`button button--lg ${styles["heroActionButton"]} ${styles["heroActionSecondary"]}`}
-                                    to="/docs/rules/overview"
+                                    to="/docs/rules/presets"
                                 >
-                                    View rules
+                                    🧭 Compare presets
                                 </Link>
                             </div>
+
+                            <p className={styles["heroSubtitle"]}>
+                                Read the authoritative{" "}
+                                <Link
+                                    className={heroRuleLinkClassName}
+                                    to="/docs/rules/overview"
+                                >
+                                    rule docs
+                                </Link>{" "}
+                                and cross-check syntax against the official{" "}
+                                <Link
+                                    className={heroReferenceLinkClassName}
+                                    href="https://docs.github.com/actions/using-workflows/workflow-syntax-for-github-actions"
+                                    rel="noopener noreferrer"
+                                    target="_blank"
+                                >
+                                    GitHub Actions workflow reference
+                                </Link>
+                                .
+                            </p>
                         </div>
 
                         <aside className={styles["heroPanel"]}>
@@ -157,7 +236,7 @@ export default function Home() {
                                     {card.description}
                                 </p>
                                 <Link
-                                    className={styles["cardLink"] ?? ""}
+                                    className={cardLinkClassName}
                                     to={card.to}
                                 >
                                     Open section →

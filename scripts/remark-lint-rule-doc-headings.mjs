@@ -52,17 +52,17 @@ const canonicalHeadingDefinitions = [
     {
         heading: "Additional examples",
         key: "additionalExamples",
-        requiredByDefault: false,
+        requiredByDefault: true,
     },
     {
         heading: "ESLint flat config example",
         key: "eslintFlatConfigExample",
-        requiredByDefault: false,
+        requiredByDefault: true,
     },
     {
         heading: "When not to use it",
         key: "whenNotToUseIt",
-        requiredByDefault: false,
+        requiredByDefault: true,
     },
     {
         heading: "Package documentation",

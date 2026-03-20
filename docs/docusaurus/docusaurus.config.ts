@@ -60,62 +60,188 @@ const config: Config = {
         ],
     ],
     projectName,
-    tagline: "Workflow lint rules for GitHub Actions YAML.",
+    tagline:
+        "ESLint rules for GitHub Actions workflows, action metadata, and workflow templates.",
     themeConfig: {
         colorMode: {
+            defaultMode: "light",
             respectPrefersColorScheme: true,
         },
+        metadata: [
+            {
+                content:
+                    "eslint, github actions, workflows, action metadata, workflow templates",
+                name: "keywords",
+            },
+        ],
         footer: {
-            copyright: `© ${new Date().getFullYear()} Nick2bad4u`,
+            copyright:
+                `© ${new Date().getFullYear()} ` +
+                '<a href="https://github.com/Nick2bad4u" target="_blank" rel="noopener noreferrer">Nick2bad4u</a> 💻 Built with ' +
+                '<a href="https://docusaurus.io/" target="_blank" rel="noopener noreferrer">🦖 Docusaurus</a>.',
             links: [
                 {
+                    title: "📚 Explore",
                     items: [
                         {
-                            label: "Rule docs",
+                            label: "🏁 Overview",
                             to: "/docs/rules/overview",
                         },
                         {
-                            label: "Getting started",
+                            label: "🚀 Getting started",
                             to: "/docs/rules/getting-started",
                         },
+                        {
+                            label: "🧭 Presets",
+                            to: "/docs/rules/presets",
+                        },
+                        {
+                            label: "📏 Rule reference",
+                            to: "/docs/rules",
+                        },
                     ],
-                    title: "Docs",
                 },
                 {
+                    title: "📁 Project",
+                    items: [
+                        {
+                            href: `https://github.com/${organizationName}/${projectName}/releases`,
+                            label: "🧾 Releases",
+                        },
+                        {
+                            href: `https://nick2bad4u.github.io/${projectName}/eslint-inspector/`,
+                            label: "🔎 ESLint Inspector",
+                        },
+                        {
+                            href: `https://nick2bad4u.github.io/${projectName}/stylelint-inspector/`,
+                            label: "🎨 Stylelint Inspector",
+                        },
+                    ],
+                },
+                {
+                    title: "⚙️ Support",
                     items: [
                         {
                             href: `https://github.com/${organizationName}/${projectName}`,
-                            label: "GitHub",
+                            label: "🐙 GitHub repository",
                         },
                         {
                             href: `https://github.com/${organizationName}/${projectName}/issues`,
-                            label: "Issues",
+                            label: "🐛 Report issues",
+                        },
+                        {
+                            href: `https://www.npmjs.com/package/${projectName}`,
+                            label: "📦 NPM package",
                         },
                     ],
-                    title: "Community",
                 },
             ],
+            logo: {
+                alt: "eslint-plugin-github-actions logo",
+                href: `https://github.com/${organizationName}/${projectName}`,
+                src: "img/logo.svg",
+            },
             style: "dark",
         },
         navbar: {
+            hideOnScroll: true,
             items: [
                 {
-                    label: "Overview",
+                    label: "📚 Docs",
                     to: "/docs/rules/overview",
+                    type: "dropdown",
+                    items: [
+                        {
+                            label: "• Overview",
+                            to: "/docs/rules/overview",
+                        },
+                        {
+                            label: "• Getting started",
+                            to: "/docs/rules/getting-started",
+                        },
+                        {
+                            label: "• Presets",
+                            to: "/docs/rules/presets",
+                        },
+                    ],
                 },
                 {
-                    label: "Rules",
-                    to: "/docs/rules/require-workflow-permissions",
+                    label: "📜 Rules",
+                    to: "/docs/rules",
+                    type: "dropdown",
+                    items: [
+                        {
+                            label: "• Rule reference",
+                            to: "/docs/rules",
+                        },
+                        {
+                            label: "• Workflow rules",
+                            to: "/docs/rules/category/workflow-rules",
+                        },
+                        {
+                            label: "• Action metadata rules",
+                            to: "/docs/rules/category/action-metadata-rules",
+                        },
+                        {
+                            label: "• Workflow template rules",
+                            to: "/docs/rules/category/workflow-template-rules",
+                        },
+                    ],
+                },
+                {
+                    label: "🧭 Presets",
+                    to: "/docs/rules/presets",
+                    type: "dropdown",
+                    items: [
+                        {
+                            label: "• Preset reference",
+                            to: "/docs/rules/presets",
+                        },
+                        {
+                            label: "• Recommended",
+                            to: "/docs/rules/presets/recommended",
+                        },
+                        {
+                            label: "• Security",
+                            to: "/docs/rules/presets/security",
+                        },
+                        {
+                            label: "• Strict",
+                            to: "/docs/rules/presets/strict",
+                        },
+                        {
+                            label: "• All",
+                            to: "/docs/rules/presets/all",
+                        },
+                        {
+                            label: "• Action metadata",
+                            to: "/docs/rules/presets/action-metadata",
+                        },
+                        {
+                            label: "• Workflow templates",
+                            to: "/docs/rules/presets/workflow-templates",
+                        },
+                    ],
                 },
                 {
                     href: `https://github.com/${organizationName}/${projectName}`,
-                    label: "GitHub",
+                    label: "🐙 GitHub",
                     position: "right",
                 },
             ],
+            logo: {
+                alt: "eslint-plugin-github-actions logo",
+                src: "img/logo.svg",
+            },
             title: "eslint-plugin-github-actions",
         },
         prism: {
+            additionalLanguages: [
+                "bash",
+                "json",
+                "yaml",
+                "typescript",
+            ],
             darkTheme: prismThemes.dracula,
             theme: prismThemes.github,
         },
