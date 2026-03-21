@@ -25,6 +25,9 @@ import {
 const parseProgram = (yamlText: string): AST.YAMLProgram =>
     parseForESLint(yamlText).ast;
 
+const githubExpression = (expression: string): string =>
+    `\${{ ${expression} }}`;
+
 const parseRootMapping = (yamlText: string): AST.YAMLMapping => {
     const program = parseProgram(yamlText);
     const root = unwrapYamlValue(program.body[0]?.content ?? null);
@@ -44,13 +47,11 @@ describe("workflow YAML helpers", () => {
     it("unwraps YAMLWithMeta values and supports type guards", () => {
         const scalarNode = parseRootMapping("name: CI").pairs[0]?.value;
 
-        if (scalarNode === undefined || scalarNode === null) {
-            throw new Error("Expected scalar node.");
-        }
+        expect(scalarNode).toBeTruthy();
 
         const wrappedNode = {
             type: "YAMLWithMeta",
-            value: scalarNode,
+            value: scalarNode as AST.YAMLContent,
         } as unknown as AST.YAMLWithMeta;
 
         expect(isYamlWithMeta(wrappedNode)).toBeTruthy();
@@ -93,7 +94,10 @@ describe("workflow YAML helpers", () => {
 
     it("detects GitHub expression scalars with surrounding whitespace", () => {
         const root = parseRootMapping(
-            ["expr: '  ${{ github.ref }}  '", "plain: github.ref"].join("\n")
+            [
+                `expr: '  ${githubExpression("github.ref")}  '`,
+                "plain: github.ref",
+            ].join("\n")
         );
 
         expect(
@@ -190,10 +194,9 @@ describe("workflow YAML helpers", () => {
             "pull_request",
             "workflow_dispatch",
         ]);
-        expect([...getWorkflowEventNames(mappingRoot)].toSorted()).toEqual([
-            "push",
-            "workflow_run",
-        ]);
+        expect(getWorkflowEventNames(mappingRoot)).toEqual(
+            new Set(["push", "workflow_run"])
+        );
         expect([...getWorkflowEventNames(missingOnRoot)]).toEqual([]);
     });
 });

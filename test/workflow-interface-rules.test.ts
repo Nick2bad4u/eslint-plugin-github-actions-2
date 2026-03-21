@@ -5,6 +5,7 @@ import { lintWorkflow } from "./_shared/lint-workflow.js";
 const githubExpression = (expression: string): string =>
     `\${{ ${expression} }}`;
 
+// eslint-disable-next-line max-lines-per-function -- Integration tests intentionally cover many workflow interface rule paths in one suite.
 describe("workflow interface rules", () => {
     it("reports workflow_dispatch expressions that use github.event.inputs", async () => {
         const result = await lintWorkflow(
@@ -246,6 +247,8 @@ describe("workflow interface rules", () => {
     });
 
     it("reports legacy inputs usage even when escaped scalars do not produce a fix", async () => {
+        const escapedGithubEventInputsExpression = String.raw`github\u002eevent\u002einputs\u002eenvironment == 'prod'`;
+
         const result = await lintWorkflow(
             [
                 "name: Deploy",
@@ -259,7 +262,7 @@ describe("workflow interface rules", () => {
                 "jobs:",
                 "  deploy:",
                 "    runs-on: ubuntu-latest",
-                "    if: \"${{ github\\u002eevent\\u002einputs\\u002eenvironment == 'prod' }}\"",
+                `    if: "${githubExpression(escapedGithubEventInputsExpression)}"`,
             ].join("\n"),
             {
                 fix: true,
@@ -676,12 +679,15 @@ describe("workflow interface rules", () => {
 
         expect(result.messages).toHaveLength(3);
         expect(
-            result.messages.map((message) => message.messageId).sort()
-        ).toEqual([
-            "invalidDescription",
-            "invalidDescription",
-            "missingDescription",
-        ]);
+            result.messages.filter(
+                (message) => message.messageId === "invalidDescription"
+            )
+        ).toHaveLength(2);
+        expect(
+            result.messages.filter(
+                (message) => message.messageId === "missingDescription"
+            )
+        ).toHaveLength(1);
     });
 
     it("reports needs output references to jobs that are not listed in direct needs", async () => {

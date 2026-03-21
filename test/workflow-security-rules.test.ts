@@ -65,12 +65,12 @@ describe("workflow security rules", () => {
                 "  audit:",
                 "    runs-on: ubuntu-latest",
                 "    steps:",
-                `      - run: echo \"${githubExpression("github.event.issue.body")}\"`,
-                `      - run: echo \"${githubExpression("github.event.comment.body")}\"`,
-                `      - run: echo \"${githubExpression("github.event.review.body")}\"`,
-                `      - run: echo \"${githubExpression("github.event.discussion.title")}\"`,
-                `      - run: echo \"${githubExpression("github.event.discussion_comment.body")}\"`,
-                `      - run: echo \"${githubExpression("github.event.client_payload.payload_value")}\"`,
+                `      - run: echo "${githubExpression("github.event.issue.body")}"`,
+                `      - run: echo "${githubExpression("github.event.comment.body")}"`,
+                `      - run: echo "${githubExpression("github.event.review.body")}"`,
+                `      - run: echo "${githubExpression("github.event.discussion.title")}"`,
+                `      - run: echo "${githubExpression("github.event.discussion_comment.body")}"`,
+                `      - run: echo "${githubExpression("github.event.client_payload.payload_value")}"`,
             ].join("\n"),
             {
                 rules: {
@@ -83,7 +83,8 @@ describe("workflow security rules", () => {
         expect(
             result.messages.every(
                 (message) =>
-                    message.ruleId === "github-actions/no-untrusted-input-in-run"
+                    message.ruleId ===
+                    "github-actions/no-untrusted-input-in-run"
             )
         ).toBeTruthy();
     });
@@ -101,7 +102,7 @@ describe("workflow security rules", () => {
                 "      - uses: actions/github-script@v8",
                 "        with:",
                 `          script: ${githubExpression("github.event.pull_request.title")}`,
-                `      - env:\n          PR_TITLE: ${githubExpression("github.event.pull_request.title")}\n        run: echo \"$PR_TITLE\"`,
+                `      - env:\n          PR_TITLE: ${githubExpression("github.event.pull_request.title")}\n        run: echo "$PR_TITLE"`,
             ].join("\n"),
             {
                 rules: {
@@ -495,12 +496,15 @@ describe("workflow security rules", () => {
     });
 
     it("ignores pull_request_target branch rule when root/on mappings or trigger key are missing", async () => {
-        const nonMappingRootResult = await lintWorkflow("- pull_request_target", {
-            rules: {
-                "github-actions/require-pull-request-target-branches":
-                    "error",
-            },
-        });
+        const nonMappingRootResult = await lintWorkflow(
+            "- pull_request_target",
+            {
+                rules: {
+                    "github-actions/require-pull-request-target-branches":
+                        "error",
+                },
+            }
+        );
 
         const missingOnResult = await lintWorkflow(
             [

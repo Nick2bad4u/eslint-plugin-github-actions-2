@@ -2,6 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import { lintWorkflow } from "./_shared/lint-workflow.js";
 
+const githubExpression = (expression: string): string =>
+    `\${{ ${expression} }}`;
+
+// eslint-disable-next-line max-lines-per-function -- Integration tests intentionally cover many workflow metadata rule permutations in one suite.
 describe("workflow metadata rules", () => {
     it("requires a workflow name", async () => {
         const result = await lintWorkflow(["on:", "  push:"].join("\n"), {
@@ -90,7 +94,7 @@ describe("workflow metadata rules", () => {
         const result = await lintWorkflow(
             [
                 "name: Release",
-                "run-name: Release ${{ github.ref_name }}",
+                `run-name: Release ${githubExpression("github.ref_name")}`,
                 "on:",
                 "  workflow_dispatch:",
             ].join("\n"),
@@ -307,17 +311,11 @@ describe("workflow metadata rules", () => {
     });
 
     it("accepts valid scalar workflow trigger events", async () => {
-        const result = await lintWorkflow(
-            [
-                "name: CI",
-                "on: push",
-            ].join("\n"),
-            {
-                rules: {
-                    "github-actions/valid-trigger-events": "error",
-                },
-            }
-        );
+        const result = await lintWorkflow(["name: CI", "on: push"].join("\n"), {
+            rules: {
+                "github-actions/valid-trigger-events": "error",
+            },
+        });
 
         expect(result.messages).toHaveLength(0);
     });
@@ -349,10 +347,7 @@ describe("workflow metadata rules", () => {
 
     it("reports invalid scalar trigger events", async () => {
         const result = await lintWorkflow(
-            [
-                "name: CI",
-                "on: not_a_real_event",
-            ].join("\n"),
+            ["name: CI", "on: not_a_real_event"].join("\n"),
             {
                 rules: {
                     "github-actions/valid-trigger-events": "error",
@@ -535,10 +530,7 @@ describe("workflow metadata rules", () => {
             {
                 filePath: ".github/workflows/test.yml",
                 rules: {
-                    "github-actions/prefer-file-extension": [
-                        "error",
-                        "yaml",
-                    ],
+                    "github-actions/prefer-file-extension": ["error", "yaml"],
                 },
             }
         );
@@ -740,8 +732,7 @@ describe("workflow metadata rules", () => {
     it("ignores require-workflow-dispatch-input-type when root or on/workflow_dispatch mappings are missing", async () => {
         const nonMappingRootResult = await lintWorkflow("- workflow_dispatch", {
             rules: {
-                "github-actions/require-workflow-dispatch-input-type":
-                    "error",
+                "github-actions/require-workflow-dispatch-input-type": "error",
             },
         });
 
@@ -1027,11 +1018,14 @@ describe("workflow metadata rules", () => {
     });
 
     it("ignores require-trigger-types when workflow root or on key is missing", async () => {
-        const nonMappingRootResult = await lintWorkflow("- pull_request_review", {
-            rules: {
-                "github-actions/require-trigger-types": "error",
-            },
-        });
+        const nonMappingRootResult = await lintWorkflow(
+            "- pull_request_review",
+            {
+                rules: {
+                    "github-actions/require-trigger-types": "error",
+                },
+            }
+        );
 
         const noOnKeyResult = await lintWorkflow(
             [

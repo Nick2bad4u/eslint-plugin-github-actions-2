@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import { lintWorkflow } from "./_shared/lint-workflow.js";
 
+const githubExpression = (expression: string): string =>
+    `\${{ ${expression} }}`;
+
 describe("workflow shape rules", () => {
     it("reports reusable-workflow jobs when external jobs are disallowed", async () => {
         const result = await lintWorkflow(
@@ -277,17 +280,19 @@ describe("workflow shape rules", () => {
             }
         );
 
+        const messageIds = result.messages.map((message) => message.messageId);
+
         expect(result.messages).toHaveLength(6);
-        expect(
-            result.messages.map((message) => message.messageId).sort()
-        ).toEqual([
-            "invalidContainerKey",
-            "invalidJobKey",
-            "invalidServiceKey",
-            "invalidStepKey",
-            "invalidStrategyKey",
-            "invalidTopLevelKey",
-        ]);
+        expect(messageIds).toEqual(
+            expect.arrayContaining([
+                "invalidContainerKey",
+                "invalidJobKey",
+                "invalidServiceKey",
+                "invalidStepKey",
+                "invalidStrategyKey",
+                "invalidTopLevelKey",
+            ])
+        );
     });
 
     it("ignores no-invalid-key checks for non-scalar mapping keys", async () => {
@@ -468,7 +473,7 @@ describe("workflow shape rules", () => {
                 "    name: Lint",
                 "    runs-on: ubuntu-latest",
                 "    strategy:",
-                "      fail-fast: ${{ github.ref != 'refs/heads/main' }}",
+                `      fail-fast: ${githubExpression("github.ref != 'refs/heads/main'")}`,
                 "      matrix:",
                 "        node: [20]",
             ].join("\n"),

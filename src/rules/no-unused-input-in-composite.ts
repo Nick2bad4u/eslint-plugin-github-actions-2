@@ -14,7 +14,7 @@ import {
 import { collectYamlStringScalars } from "../_internal/yaml-traversal.js";
 
 /** Matches `inputs.<id>` references in composite-step string values. */
-const INPUT_REFERENCE_PATTERN = /inputs\.([\w-]+)/gu;
+const INPUT_REFERENCE_PATTERN = /inputs\.(?<inputId>[\w-]+)/gu;
 
 /** Rule implementation for unused composite input checks. */
 const rule: Rule.RuleModule = {
@@ -53,7 +53,12 @@ const rule: Rule.RuleModule = {
                     for (const match of scalarValue.matchAll(
                         INPUT_REFERENCE_PATTERN
                     )) {
-                        const matchedInputId = match[1]!;
+                        const matchedInputId = match.groups?.["inputId"];
+
+                        if (matchedInputId === undefined) {
+                            continue;
+                        }
+
                         referencedInputIds.add(matchedInputId);
                     }
                 }

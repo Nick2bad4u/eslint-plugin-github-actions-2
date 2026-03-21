@@ -44,12 +44,12 @@ describe("casing helpers", () => {
     });
 
     it("checks whether an input already matches a requested casing style", () => {
-        expect(matchesGithubActionsCasing("build-release", "kebab-case")).toBeTruthy(
-            
-        );
-        expect(matchesGithubActionsCasing("BuildRelease", "kebab-case")).toBeFalsy(
-            
-        );
+        expect(
+            matchesGithubActionsCasing("build-release", "kebab-case")
+        ).toBeTruthy();
+        expect(
+            matchesGithubActionsCasing("BuildRelease", "kebab-case")
+        ).toBeFalsy();
     });
 
     it("falls back safely for unknown casing kinds at runtime", () => {

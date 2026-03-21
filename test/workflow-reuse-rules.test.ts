@@ -270,8 +270,7 @@ describe("workflow reuse rules", () => {
     it("ignores no-invalid-reusable-workflow-job-key when workflow root is not a mapping", async () => {
         const result = await lintWorkflow("- deploy", {
             rules: {
-                "github-actions/no-invalid-reusable-workflow-job-key":
-                    "error",
+                "github-actions/no-invalid-reusable-workflow-job-key": "error",
             },
         });
 

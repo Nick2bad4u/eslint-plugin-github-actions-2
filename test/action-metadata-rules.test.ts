@@ -2,6 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import { lintWorkflow } from "./_shared/lint-workflow.js";
 
+const githubExpression = (expression: string): string =>
+    `\${{ ${expression} }}`;
+
+// eslint-disable-next-line max-lines-per-function -- Integration test catalog intentionally exercises many action-metadata rule permutations in one suite.
 describe("action metadata rules", () => {
     it("prefers action.yml over action.yaml", async () => {
         const result = await lintWorkflow(
@@ -167,10 +171,7 @@ describe("action metadata rules", () => {
         });
 
         const noRunsResult = await lintWorkflow(
-            [
-                "name: Example",
-                "description: Example action",
-            ].join("\n"),
+            ["name: Example", "description: Example action"].join("\n"),
             {
                 configName: "actionMetadata",
                 filePath: ".github/actions/example/action.yml",
@@ -617,7 +618,7 @@ describe("action metadata rules", () => {
                 "  using: composite",
                 "  steps:",
                 "    - name: Echo",
-                "      run: echo ${{ inputs.token }}",
+                `      run: echo ${githubExpression("inputs.token")}`,
                 "      shell: bash",
             ].join("\n"),
             {
@@ -703,10 +704,7 @@ describe("action metadata rules", () => {
         });
 
         const noRunsMappingResult = await lintWorkflow(
-            [
-                "name: Example",
-                "description: Example action",
-            ].join("\n"),
+            ["name: Example", "description: Example action"].join("\n"),
             {
                 configName: "actionMetadata",
                 filePath: ".github/actions/example/action.yml",
@@ -922,7 +920,7 @@ describe("action metadata rules", () => {
                 "  using: composite",
                 "  steps:",
                 "    - name: Use token",
-                "      run: echo ${{ inputs.token }}",
+                `      run: echo ${githubExpression("inputs.token")}`,
                 "      shell: bash",
             ].join("\n"),
             {
@@ -944,7 +942,7 @@ describe("action metadata rules", () => {
                 "  using: composite",
                 "  steps:",
                 "    - name: Use token",
-                "      run: echo ${{ inputs.token }}",
+                `      run: echo ${githubExpression("inputs.token")}`,
                 "      shell: bash",
             ].join("\n"),
             {
@@ -974,7 +972,7 @@ describe("action metadata rules", () => {
                 "runs:",
                 "  using: composite",
                 "  steps:",
-                "    - run: echo ${{ inputs.deploy-env }}",
+                `    - run: echo ${githubExpression("inputs.deploy-env")}`,
                 "      shell: bash",
             ].join("\n"),
             {
@@ -1020,7 +1018,7 @@ describe("action metadata rules", () => {
                 "  build:",
                 "    runs-on: ubuntu-latest",
                 "    steps:",
-                "      - run: echo ${{ inputs.token }}",
+                `      - run: echo ${githubExpression("inputs.token")}`,
             ].join("\n"),
             {
                 configName: "all",
@@ -1185,10 +1183,7 @@ describe("action metadata rules", () => {
 
     it("ignores duplicate-step-id checks when runs or steps are missing", async () => {
         const missingRunsResult = await lintWorkflow(
-            [
-                "name: Example",
-                "description: Example action",
-            ].join("\n"),
+            ["name: Example", "description: Example action"].join("\n"),
             {
                 configName: "actionMetadata",
                 filePath: ".github/actions/example/action.yml",
@@ -1357,10 +1352,7 @@ describe("action metadata rules", () => {
 
     it("ignores composite-step-name checks when runs/steps are missing or runtime is not composite", async () => {
         const missingRunsResult = await lintWorkflow(
-            [
-                "name: Example",
-                "description: Example action",
-            ].join("\n"),
+            ["name: Example", "description: Example action"].join("\n"),
             {
                 configName: "actionMetadata",
                 filePath: ".github/actions/example/action.yml",
