@@ -48,7 +48,11 @@ const config: Config = {
         [
             "classic",
             {
-                blog: false,
+                blog: {
+                    editUrl: `https://github.com/${organizationName}/${repositoryName}/blob/main/docs/docusaurus/`,
+                    routeBasePath: "blog",
+                    showReadingTime: true,
+                },
                 docs: {
                     editUrl: `https://github.com/${organizationName}/${repositoryName}/blob/main/docs/docusaurus/`,
                     path: "site-docs",
@@ -128,20 +132,20 @@ const config: Config = {
                     title: "👨‍💻 Developer",
                     items: [
                         {
+                            label: "🏠 Developer home",
+                            to: "/docs/developer",
+                        },
+                        {
+                            label: "🚀 Maintainer quickstart",
+                            to: "/docs/developer/getting-started",
+                        },
+                        {
+                            label: "📐 ADR index",
+                            to: "/docs/developer/adr",
+                        },
+                        {
                             label: "👨‍💻 Developer API",
                             to: "/docs/developer/api",
-                        },
-                        {
-                            label: "🏠 Docs home",
-                            to: "/docs",
-                        },
-                        {
-                            href: `https://nick2bad4u.github.io/${repositoryName}/eslint-inspector/`,
-                            label: "🔎 ESLint Inspector",
-                        },
-                        {
-                            href: `https://nick2bad4u.github.io/${repositoryName}/stylelint-inspector/`,
-                            label: "🎨 Stylelint Inspector",
                         },
                     ],
                 },
@@ -259,8 +263,39 @@ const config: Config = {
                     ],
                 },
                 {
-                    to: "/docs/developer/api",
-                    label: "👨‍💻 Developer docs",
+                    label: "👨‍💻 Developer",
+                    to: "/docs/developer",
+                    type: "dropdown",
+                    items: [
+                        {
+                            label: "🏠 Developer home",
+                            to: "/docs/developer",
+                        },
+                        {
+                            label: "🚀 Maintainer quickstart",
+                            to: "/docs/developer/getting-started",
+                        },
+                        {
+                            label: "🏗️ Architecture",
+                            to: "/docs/developer/architecture",
+                        },
+                        {
+                            label: "🧭 Guides",
+                            to: "/docs/developer/guides",
+                        },
+                        {
+                            label: "📐 ADRs",
+                            to: "/docs/developer/adr",
+                        },
+                        {
+                            label: "👨‍💻 Developer API",
+                            to: "/docs/developer/api",
+                        },
+                    ],
+                },
+                {
+                    label: "📰 Blog",
+                    to: "/blog",
                     position: "right",
                 },
                 {

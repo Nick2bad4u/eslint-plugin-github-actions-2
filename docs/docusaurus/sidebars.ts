@@ -9,6 +9,95 @@ const sidebars: SidebarsConfig = {
             type: "doc",
         },
         {
+            collapsed: false,
+            items: [
+                {
+                    id: "developer/getting-started",
+                    label: "🚀 Maintainer quickstart",
+                    type: "doc",
+                },
+                {
+                    id: "developer/architecture",
+                    label: "🏗️ Architecture",
+                    type: "doc",
+                },
+                {
+                    collapsed: true,
+                    items: [
+                        {
+                            id: "developer/guides/authoring-rules",
+                            label: "📜 Authoring rules",
+                            type: "doc",
+                        },
+                        {
+                            id: "developer/guides/testing-rules",
+                            label: "🧪 Testing rules",
+                            type: "doc",
+                        },
+                        {
+                            id: "developer/guides/docs-authoring",
+                            label: "📝 Docs authoring",
+                            type: "doc",
+                        },
+                    ],
+                    label: "🧭 Guides",
+                    link: {
+                        id: "developer/guides/index",
+                        type: "doc",
+                    },
+                    type: "category",
+                },
+                {
+                    collapsed: true,
+                    items: [
+                        {
+                            id: "developer/adr/rule-metadata-contract",
+                            label: "ADR-0001 Rule metadata contract",
+                            type: "doc",
+                        },
+                        {
+                            id: "developer/adr/docs-sync-and-matrixes",
+                            label: "ADR-0002 Docs sync and matrixes",
+                            type: "doc",
+                        },
+                    ],
+                    label: "📐 ADRs",
+                    link: {
+                        id: "developer/adr/index",
+                        type: "doc",
+                    },
+                    type: "category",
+                },
+                {
+                    collapsed: true,
+                    items: [
+                        {
+                            id: "developer/maintenance/release-flow",
+                            label: "🚢 Release flow",
+                            type: "doc",
+                        },
+                        {
+                            id: "developer/maintenance/docs-pipeline",
+                            label: "🧱 Docs pipeline",
+                            type: "doc",
+                        },
+                    ],
+                    label: "🛠️ Maintenance",
+                    link: {
+                        id: "developer/maintenance/index",
+                        type: "doc",
+                    },
+                    type: "category",
+                },
+            ],
+            label: "👨‍💻 Developer docs",
+            link: {
+                id: "developer/index",
+                type: "doc",
+            },
+            type: "category",
+        },
+        {
             collapsed: true,
             items: [
                 {
