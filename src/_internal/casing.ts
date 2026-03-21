@@ -129,10 +129,15 @@ const buildCasePoliceDictionaryIndex = (): {
     >;
     readonly maxTokenSpan: number;
 } => {
-    const matchesByCollapsedKey = new Map<string, CasePoliceDictionaryMatch[]>();
+    const matchesByCollapsedKey = new Map<
+        string,
+        CasePoliceDictionaryMatch[]
+    >();
     let maxTokenSpan = 1;
 
-    for (const [dictionaryKey, canonical] of Object.entries(casePoliceDictionary)) {
+    for (const [dictionaryKey, canonical] of Object.entries(
+        casePoliceDictionary
+    )) {
         const keyWords = splitIntoWords(dictionaryKey);
 
         if (keyWords.length === 0) {
@@ -189,7 +194,9 @@ const resolveCasePoliceTitleSegments = (
         let matched = false;
 
         for (let span = maxSpan; span >= 1; span -= 1) {
-            const collapsedCandidate = words.slice(index, index + span).join("");
+            const collapsedCandidate = words
+                .slice(index, index + span)
+                .join("");
             const candidateMatches =
                 casePoliceDictionaryIndex.matchesByCollapsedKey.get(
                     collapsedCandidate
