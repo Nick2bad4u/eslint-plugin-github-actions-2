@@ -12,13 +12,13 @@
         "github-actions",
         "workflow"
     ],
-    "homepage": "https://nick2bad4u.github.io/eslint-plugin-github-actions/",
+    "homepage": "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/",
     "bugs": {
-        "url": "https://github.com/Nick2bad4u/eslint-plugin-github-actions/issues"
+        "url": "https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/issues"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Nick2bad4u/eslint-plugin-github-actions.git"
+        "url": "git+https://github.com/Nick2bad4u/eslint-plugin-github-actions-2.git"
     },
     "license": "MIT",
     "author": "Nick2bad4u",
@@ -26,7 +26,7 @@
         {
             "name": "Nick2bad4u",
             "email": "20943337+Nick2bad4u@users.noreply.github.com",
-            "url": "https://nick2bad4u.github.io/eslint-plugin-github-actions"
+            "url": "https://nick2bad4u.github.io/eslint-plugin-github-actions-2"
         }
     ],
     "sideEffects": false,

@@ -135,7 +135,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R029",
             ruleNumber: 29,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-untrusted-input-in-run",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-untrusted-input-in-run",
         },
         messages: {
             unsafeRunInterpolation:

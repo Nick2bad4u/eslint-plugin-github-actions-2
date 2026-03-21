@@ -5,7 +5,7 @@
 If you discover a vulnerability in this repository, report it privately using one
 of these channels:
 
-- GitHub Security Advisory draft: <https://github.com/Nick2bad4u/eslint-plugin-github-actions/security/advisories/new>
+- GitHub Security Advisory draft: <https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/security/advisories/new>
 - Maintainer email: <20943337+Nick2bad4u@users.noreply.github.com>
 
 Please do **not** open public issues for unpatched vulnerabilities.

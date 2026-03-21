@@ -61,7 +61,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R006",
             ruleNumber: 6,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-action-run-name",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-action-run-name",
         },
         messages: {
             invalidRunName: "Workflow `run-name` must be a non-empty string.",

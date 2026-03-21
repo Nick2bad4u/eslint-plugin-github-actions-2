@@ -59,7 +59,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R046",
             ruleNumber: 46,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-post-if-without-post",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-post-if-without-post",
         },
         messages: {
             postIfWithoutPost:

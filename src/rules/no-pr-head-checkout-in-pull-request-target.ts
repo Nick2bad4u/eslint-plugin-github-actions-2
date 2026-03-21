@@ -125,7 +125,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R030",
             ruleNumber: 30,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-pr-head-checkout-in-pull-request-target",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-pr-head-checkout-in-pull-request-target",
         },
         messages: {
             pullRequestHeadCheckout:

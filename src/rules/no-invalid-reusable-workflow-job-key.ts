@@ -88,7 +88,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R041",
             ruleNumber: 41,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-invalid-reusable-workflow-job-key",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-invalid-reusable-workflow-job-key",
         },
         messages: {
             invalidReusableWorkflowJobKey:

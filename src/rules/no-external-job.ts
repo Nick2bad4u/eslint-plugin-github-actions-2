@@ -52,7 +52,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R012",
             ruleNumber: 12,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-external-job",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-external-job",
         },
         messages: {
             externalJob:

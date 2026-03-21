@@ -28,12 +28,12 @@ All notable changes to this project will be documented in this file.\n
   ## [Unreleased]
 {% endif %}
 {% if commit_range and commit_range.from and commit_range.to %}
-  [{{ commit_range.from | truncate(length=7, end="") }}...{{ commit_range.to | truncate(length=7, end="") }}](https://github.com/Nick2bad4u/eslint-plugin-github-actions/compare/{{ commit_range.from }}...{{ commit_range.to }})
+  [{{ commit_range.from | truncate(length=7, end="") }}...{{ commit_range.to | truncate(length=7, end="") }}](https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/compare/{{ commit_range.from }}...{{ commit_range.to }})
 {% endif %}
 {% for group, commits in commits | group_by(attribute="group") %}
   ### {{ group | striptags | trim | upper_first }}
   {% for commit in commits %}
-    - [`{{ commit.id | truncate(length=7, end="") }}`](https://github.com/Nick2bad4u/eslint-plugin-github-actions/commit/{{ commit.id }}) — {% if commit.scope %}*({{ commit.scope }})* {% endif %}\
+    - [`{{ commit.id | truncate(length=7, end="") }}`](https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/commit/{{ commit.id }}) — {% if commit.scope %}*({{ commit.scope }})* {% endif %}\
       {% if commit.breaking %}[**breaking**] {% endif %}\
       {{ commit.message
           | upper_first
@@ -60,16 +60,16 @@ All notable changes to this project will be documented in this file.\n
     # template for the changelog footer
     footer = """
 ## Contributors
-Thanks to all the [contributors](https://github.com/Nick2bad4u/eslint-plugin-github-actions/graphs/contributors) for their hard work!
+Thanks to all the [contributors](https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/graphs/contributors) for their hard work!
 ## License
-This project is licensed under the [UnLicense](https://github.com/Nick2bad4u/eslint-plugin-github-actions/blob/main/LICENSE)
+This project is licensed under the [UnLicense](https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/blob/main/LICENSE)
 *This changelog was automatically generated with [git-cliff](https://github.com/orhun/git-cliff).*
 """
     # Remove leading and trailing whitespace from the changelog content
     trim = true
     # postprocessors
     postprocessors = [
-        # { pattern = 'eslint-plugin-github-actions-2', replace = "[eslint-plugin-github-actions-2](https://github.com/Nick2bad4u/eslint-plugin-github-actions)" }, # replace repository URL
+        # { pattern = 'eslint-plugin-github-actions-2', replace = "[eslint-plugin-github-actions-2](https://github.com/Nick2bad4u/eslint-plugin-github-actions-2)" }, # replace repository URL
         { pattern = 'Merge branch', replace = "[chore] Merge Branch" }, # replace merge branch commit messages
         { pattern = '\[dependency\]', replace = 'test' },
         { pattern = 'merge branch', replace = "[chore] Merge Branch" }, # replace merge branch commit messages

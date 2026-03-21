@@ -8,9 +8,9 @@ Thanks for using `eslint-plugin-github-actions-2`.
    - [README.md](./README.md)
    - [docs/](./docs/)
 2. Search existing issues:
-   - <https://github.com/Nick2bad4u/eslint-plugin-github-actions/issues>
+   - <https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/issues>
 3. Open a new issue if needed:
-   - <https://github.com/Nick2bad4u/eslint-plugin-github-actions/issues/new>
+   - <https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/issues/new>
 
 ## What to include in an issue
 

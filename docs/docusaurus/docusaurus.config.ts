@@ -5,12 +5,12 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 /** GitHub Pages base URL for the docs site. */
 const baseUrl =
-    process.env["DOCUSAURUS_BASE_URL"] ?? "/eslint-plugin-github-actions/";
+    process.env["DOCUSAURUS_BASE_URL"] ?? "/eslint-plugin-github-actions-2/";
 
 /** Repository owner used for edit links. */
 const organizationName = "Nick2bad4u";
 /** Repository name used for edit links and project metadata. */
-const repositoryName = "eslint-plugin-github-actions";
+const repositoryName = "eslint-plugin-github-actions-2";
 /** Published npm package name. */
 const npmPackageName = "eslint-plugin-github-actions-2";
 

@@ -65,7 +65,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R058",
             ruleNumber: 58,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-template-file-patterns",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-template-file-patterns",
         },
         messages: {
             missingFilePatterns:

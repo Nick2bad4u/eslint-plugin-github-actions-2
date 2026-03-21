@@ -208,7 +208,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R042",
             ruleNumber: 42,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-invalid-concurrency-context",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-invalid-concurrency-context",
         },
         messages: {
             invalidJobConcurrencyContext:

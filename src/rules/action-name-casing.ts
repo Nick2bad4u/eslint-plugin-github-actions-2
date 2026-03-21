@@ -138,7 +138,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R009",
             ruleNumber: 9,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/action-name-casing",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/action-name-casing",
         },
         fixable: "code",
         messages: {

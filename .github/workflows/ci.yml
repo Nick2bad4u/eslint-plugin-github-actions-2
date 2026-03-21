@@ -78,7 +78,7 @@ jobs:
                   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
               with:
                   token: ${{ env.CODECOV_TOKEN }}
-                  slug: Nick2bad4u/eslint-plugin-github-actions
+                  slug: Nick2bad4u/eslint-plugin-github-actions-2
                   files: test-report.junit.xml
                   flags: unit,${{ matrix.codecov_flag }}
                   name: vitest-junit-${{ matrix.codecov_flag }}
@@ -94,7 +94,7 @@ jobs:
                   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
               with:
                   token: ${{ env.CODECOV_TOKEN }}
-                  slug: Nick2bad4u/eslint-plugin-github-actions
+                  slug: Nick2bad4u/eslint-plugin-github-actions-2
                   files: ./coverage/lcov.info
                   flags: unit,${{ matrix.codecov_flag }}
                   name: vitest-unit-coverage-${{ matrix.codecov_flag }}

@@ -65,7 +65,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R057",
             ruleNumber: 57,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-template-categories",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-template-categories",
         },
         messages: {
             missingCategories:

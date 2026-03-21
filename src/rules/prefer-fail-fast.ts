@@ -84,7 +84,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R015",
             ruleNumber: 15,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/prefer-fail-fast",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/prefer-fail-fast",
         },
         messages: {
             failFastDisabled:

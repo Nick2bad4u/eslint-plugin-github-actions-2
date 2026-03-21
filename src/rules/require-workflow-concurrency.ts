@@ -184,7 +184,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R004",
             ruleNumber: 4,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-workflow-concurrency",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-concurrency",
         },
         messages: {
             cancelInProgressDisabled:

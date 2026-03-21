@@ -14,7 +14,7 @@ const createTemporaryTemplateDirectory = (): string => {
     });
 
     const temporaryDirectory = mkdtempSync(
-        path.join(temporaryRoot, "eslint-plugin-github-actions-templates-")
+        path.join(temporaryRoot, "eslint-plugin-github-actions-2-templates-")
     );
 
     mkdirSync(path.join(temporaryDirectory, "workflow-templates"), {

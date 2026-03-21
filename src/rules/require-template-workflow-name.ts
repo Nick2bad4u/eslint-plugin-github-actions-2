@@ -52,7 +52,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R067",
             ruleNumber: 67,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-template-workflow-name",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-template-workflow-name",
         },
         messages: {
             missingTemplateWorkflowName:

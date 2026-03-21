@@ -38,7 +38,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R043",
             ruleNumber: 43,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/prefer-action-yml",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/prefer-action-yml",
         },
         messages: {
             preferActionYml:

@@ -151,7 +151,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R032",
             ruleNumber: 32,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-pull-request-target-branches",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-pull-request-target-branches",
         },
         messages: {
             missingBranchFilter:

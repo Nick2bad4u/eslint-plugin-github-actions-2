@@ -67,7 +67,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R061",
             ruleNumber: 61,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-universal-template-file-pattern",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-universal-template-file-pattern",
         },
         messages: {
             universalTemplateFilePattern:

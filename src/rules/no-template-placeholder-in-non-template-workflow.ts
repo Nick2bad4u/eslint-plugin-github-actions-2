@@ -59,7 +59,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R069",
             ruleNumber: 69,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-template-placeholder-in-non-template-workflow",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-template-placeholder-in-non-template-workflow",
         },
         messages: {
             templatePlaceholderOutsideTemplate:

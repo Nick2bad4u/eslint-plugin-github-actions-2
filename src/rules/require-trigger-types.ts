@@ -171,7 +171,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R031",
             ruleNumber: 31,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-trigger-types",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-trigger-types",
         },
         messages: {
             missingTypes:

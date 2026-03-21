@@ -250,7 +250,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R017",
             ruleNumber: 17,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/valid-timeout-minutes",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/valid-timeout-minutes",
         },
         messages: {
             invalidRange:

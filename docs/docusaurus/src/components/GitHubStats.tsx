@@ -15,23 +15,23 @@ type LiveBadge = {
 const liveBadges = [
     {
         alt: "npm license",
-        href: "https://github.com/Nick2bad4u/eslint-plugin-github-actions/blob/main/LICENSE",
+        href: "https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/blob/main/LICENSE",
         src: "https://flat.badgen.net/npm/license/eslint-plugin-github-actions-2?color=purple",
     },
     {
         alt: "latest GitHub release",
-        href: "https://github.com/Nick2bad4u/eslint-plugin-github-actions/releases",
-        src: "https://flat.badgen.net/github/release/Nick2bad4u/eslint-plugin-github-actions?color=cyan",
+        href: "https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/releases",
+        src: "https://flat.badgen.net/github/release/Nick2bad4u/eslint-plugin-github-actions-2?color=cyan",
     },
     {
         alt: "GitHub stars",
-        href: "https://github.com/Nick2bad4u/eslint-plugin-github-actions/stargazers",
-        src: "https://flat.badgen.net/github/stars/Nick2bad4u/eslint-plugin-github-actions?color=yellow",
+        href: "https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/stargazers",
+        src: "https://flat.badgen.net/github/stars/Nick2bad4u/eslint-plugin-github-actions-2?color=yellow",
     },
     {
         alt: "GitHub open issues",
-        href: "https://github.com/Nick2bad4u/eslint-plugin-github-actions/issues",
-        src: "https://flat.badgen.net/github/open-issues/Nick2bad4u/eslint-plugin-github-actions?color=red",
+        href: "https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/issues",
+        src: "https://flat.badgen.net/github/open-issues/Nick2bad4u/eslint-plugin-github-actions-2?color=red",
     },
 ] as const satisfies readonly LiveBadge[];
 

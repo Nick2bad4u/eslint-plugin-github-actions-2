@@ -100,7 +100,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R039",
             ruleNumber: 39,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-workflow-call-output-value",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-call-output-value",
         },
         messages: {
             invalidValue:

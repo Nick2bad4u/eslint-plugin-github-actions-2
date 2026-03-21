@@ -147,7 +147,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R003",
             ruleNumber: 3,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/pin-action-shas",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/pin-action-shas",
         },
         messages: {
             unpinnedAction:

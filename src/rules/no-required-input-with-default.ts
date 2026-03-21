@@ -86,7 +86,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R047",
             ruleNumber: 47,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-required-input-with-default",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-required-input-with-default",
         },
         messages: {
             requiredInputWithDefault:

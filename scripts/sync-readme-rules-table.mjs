@@ -20,7 +20,7 @@ import {
 const presetOrder = [...githubActionsConfigNames];
 const rulesSectionHeading = "## Rules";
 const presetDocsUrlBase =
-    "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/presets";
+    "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets";
 
 const getPresetDocsPathSegment = (presetName) =>
     presetName.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);

@@ -117,7 +117,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R034",
             ruleNumber: 34,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-workflow-call-input-type",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-call-input-type",
         },
         messages: {
             invalidType:

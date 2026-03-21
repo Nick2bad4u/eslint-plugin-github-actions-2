@@ -96,7 +96,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R051",
             ruleNumber: 51,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-duplicate-composite-step-id",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-duplicate-composite-step-id",
         },
         messages: {
             duplicateCompositeStepId:

@@ -48,7 +48,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R054",
             ruleNumber: 54,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-workflow-template-pair",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-template-pair",
         },
         messages: {
             missingTemplatePropertiesPair:

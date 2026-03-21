@@ -111,7 +111,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R010",
             ruleNumber: 10,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/job-id-casing",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/job-id-casing",
         },
         messages: {
             jobIdDoesNotMatchCasing:

@@ -97,7 +97,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R025",
             ruleNumber: 25,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-checkout-before-local-action",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-checkout-before-local-action",
         },
         messages: {
             missingCheckoutBeforeLocalAction:

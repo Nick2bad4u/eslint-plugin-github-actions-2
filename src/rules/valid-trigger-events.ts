@@ -124,7 +124,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R018",
             ruleNumber: 18,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/valid-trigger-events",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/valid-trigger-events",
         },
         messages: {
             invalidEvent:

@@ -111,7 +111,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R002",
             ruleNumber: 2,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-job-timeout-minutes",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-job-timeout-minutes",
         },
         messages: {
             invalidTimeout:

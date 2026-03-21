@@ -77,7 +77,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R048",
             ruleNumber: 48,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-case-insensitive-input-id-collision",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-case-insensitive-input-id-collision",
         },
         messages: {
             collidingInputId:

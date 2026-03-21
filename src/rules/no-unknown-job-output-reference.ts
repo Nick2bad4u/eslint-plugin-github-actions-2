@@ -319,7 +319,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R037",
             ruleNumber: 37,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-unknown-job-output-reference",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unknown-job-output-reference",
         },
         messages: {
             missingNeedsDependency:

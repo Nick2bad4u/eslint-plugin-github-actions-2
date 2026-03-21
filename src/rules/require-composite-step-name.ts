@@ -91,7 +91,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R052",
             ruleNumber: 52,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-composite-step-name",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-composite-step-name",
         },
         messages: {
             missingCompositeStepName:

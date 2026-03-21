@@ -54,7 +54,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R068",
             ruleNumber: 68,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-hardcoded-default-branch-in-template",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-hardcoded-default-branch-in-template",
         },
         messages: {
             hardcodedDefaultBranch:

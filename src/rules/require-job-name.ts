@@ -82,7 +82,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R007",
             ruleNumber: 7,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-job-name",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-job-name",
         },
         messages: {
             invalidJobName:

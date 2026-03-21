@@ -70,7 +70,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R044",
             ruleNumber: 44,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-deprecated-node-runtime",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-deprecated-node-runtime",
         },
         messages: {
             deprecatedNodeRuntime:

@@ -188,7 +188,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R038",
             ruleNumber: 38,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-unknown-step-reference",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unknown-step-reference",
         },
         messages: {
             stepReferenceBeforeAvailability:

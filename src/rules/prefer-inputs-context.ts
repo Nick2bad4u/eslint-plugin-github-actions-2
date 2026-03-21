@@ -123,7 +123,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R033",
             ruleNumber: 33,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/prefer-inputs-context",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/prefer-inputs-context",
         },
         fixable: "code",
         messages: {

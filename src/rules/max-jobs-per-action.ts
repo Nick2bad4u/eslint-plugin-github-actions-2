@@ -65,7 +65,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R011",
             ruleNumber: 11,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/max-jobs-per-action",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/max-jobs-per-action",
         },
         messages: {
             tooManyJobs:

@@ -126,7 +126,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R036",
             ruleNumber: 36,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-self-hosted-runner-on-fork-pr-events",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-self-hosted-runner-on-fork-pr-events",
         },
         messages: {
             selfHostedRunnerOnForkPullRequestEvent:

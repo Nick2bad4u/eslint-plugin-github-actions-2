@@ -124,7 +124,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R027",
             ruleNumber: 27,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-secrets-in-if",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-secrets-in-if",
         },
         messages: {
             directSecretsInIf:

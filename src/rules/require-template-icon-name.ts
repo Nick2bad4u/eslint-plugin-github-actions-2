@@ -54,7 +54,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R056",
             ruleNumber: 56,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-template-icon-name",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-template-icon-name",
         },
         messages: {
             missingIconName:

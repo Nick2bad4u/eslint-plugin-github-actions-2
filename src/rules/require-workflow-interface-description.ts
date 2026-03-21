@@ -156,7 +156,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R024",
             ruleNumber: 24,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-workflow-interface-description",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-interface-description",
         },
         messages: {
             invalidDescription:

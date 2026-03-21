@@ -118,7 +118,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R028",
             ruleNumber: 28,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/require-workflow-run-branches",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-run-branches",
         },
         messages: {
             missingBranchFilter:

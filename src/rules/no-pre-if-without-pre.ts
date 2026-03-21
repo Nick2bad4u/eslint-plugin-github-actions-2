@@ -56,7 +56,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R045",
             ruleNumber: 45,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-pre-if-without-pre",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-pre-if-without-pre",
         },
         messages: {
             preIfWithoutPre:

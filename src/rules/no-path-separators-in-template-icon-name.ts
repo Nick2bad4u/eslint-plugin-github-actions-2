@@ -60,7 +60,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R064",
             ruleNumber: 64,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-path-separators-in-template-icon-name",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-path-separators-in-template-icon-name",
         },
         messages: {
             iconNameContainsPathSeparator:

@@ -99,7 +99,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R050",
             ruleNumber: 50,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-unknown-input-reference-in-composite",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unknown-input-reference-in-composite",
         },
         messages: {
             unknownInputReference:

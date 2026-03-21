@@ -62,7 +62,7 @@ const rule: Rule.RuleModule = {
             requiresTypeChecking: false,
             ruleId: "R059",
             ruleNumber: 59,
-            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions/docs/rules/no-invalid-template-file-pattern-regex",
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-invalid-template-file-pattern-regex",
         },
         messages: {
             invalidTemplateFilePatternRegex:
