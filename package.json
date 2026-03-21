@@ -66,6 +66,7 @@
         "build:stylelint-inspector": "npx -y stylelint-config-inspector@latest build --outDir \"docs/docusaurus/static/stylelint-inspector\" --base \"/eslint-plugin-github-actions-2/stylelint-inspector/\"",
         "build:stylelint-inspector:local": "npx stylelint-config-inspector@latest",
         "build:types:cjs": "node -e \"require('node:fs').copyFileSync('dist/plugin.d.ts','dist/plugin.d.cts')\"",
+        "changelog:release-notes": "git-cliff --config cliff.toml --latest --strip header",
         "clean:cache": "rimraf dist coverage cache .cache .vite .turbo",
         "clean:cache:coverage": "rimraf coverage .coverage",
         "clean:cache:dist": "rimraf dist release",
