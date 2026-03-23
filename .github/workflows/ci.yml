@@ -6,13 +6,12 @@ on:
             - main
     pull_request:
 
-permissions:
-    contents: read
-
 jobs:
     test:
         name: Test (${{ matrix.label }})
         runs-on: ${{ matrix.os }}
+        permissions:
+            contents: read
         timeout-minutes: 25
         strategy:
             fail-fast: false
@@ -106,6 +105,8 @@ jobs:
     eslint9-compat:
         name: ESLint 9 Compatibility (${{ matrix.label }})
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
         timeout-minutes: 20
         strategy:
             fail-fast: false

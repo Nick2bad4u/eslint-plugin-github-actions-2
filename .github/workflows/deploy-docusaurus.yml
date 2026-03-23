@@ -18,11 +18,6 @@ on:
             - "tsdoc.json"
     workflow_dispatch:
 
-permissions:
-    contents: read
-    pages: write
-    id-token: write
-
 concurrency:
     group: pages
     cancel-in-progress: false
@@ -31,6 +26,9 @@ jobs:
     build:
         name: Build docs site
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            pages: write
 
         steps:
             - name: Harden runner
@@ -77,6 +75,9 @@ jobs:
         name: Deploy site
         runs-on: ubuntu-latest
         needs: build
+        permissions:
+            id-token: write
+            pages: write
         environment:
             name: github-pages
             url: ${{ steps.deployment.outputs.page_url }}

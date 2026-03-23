@@ -33,9 +33,6 @@ on:
                 default: main
                 type: string
 
-permissions:
-    contents: read
-
 env:
     CI: "true"
     DEFAULT_RELEASE_BRANCH: "main"
@@ -73,10 +70,12 @@ jobs:
 
             - name: Resolve target ref
               id: target_ref
+              env:
+                  INPUT_REF: ${{ inputs.ref }}
               run: |
                   set -euo pipefail
                   if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-                    branch="${{ inputs.ref }}"
+                    branch="${INPUT_REF:-}"
                     if [ -z "$branch" ]; then
                       branch="${DEFAULT_RELEASE_BRANCH}"
                     fi

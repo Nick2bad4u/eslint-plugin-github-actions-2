@@ -14,8 +14,8 @@ on:
     push:
         branches: ["main"]
 
-# Declare default permissions as read only.
-permissions: read-all
+# Workflow-level permissions are intentionally omitted.
+# Each job declares only the permissions it needs.
 
 jobs:
     analysis:
