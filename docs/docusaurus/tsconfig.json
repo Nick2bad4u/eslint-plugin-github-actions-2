@@ -1,7 +1,6 @@
 {
     "$schema": "https://www.schemastore.org/tsconfig.json",
     "compilerOptions": {
-        "baseUrl": ".",
         "isolatedDeclarations": false,
         "module": "ESNext",
         "moduleResolution": "bundler",

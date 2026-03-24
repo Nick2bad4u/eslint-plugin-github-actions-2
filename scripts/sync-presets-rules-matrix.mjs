@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-// @ts-nocheck
 
 /**
  * @packageDocumentation
@@ -11,6 +10,20 @@ import {
     githubActionsConfigMetadataByName,
     githubActionsConfigNames,
 } from "../dist/_internal/github-actions-config-references.js";
+
+/**
+ * @typedef {{
+ *     meta?: {
+ *         docs?: object | undefined;
+ *     };
+ * }} MatrixRuleModule
+ */
+
+/**
+ * @typedef {{
+ *     rules: Record<string, MatrixRuleModule>;
+ * }} MatrixPlugin
+ */
 
 const presetOrder = [...githubActionsConfigNames];
 
@@ -26,13 +39,25 @@ const createHeaderRow = () =>
 const createDividerRow = () =>
     ["| --- |", ...presetOrder.map(() => " :-: |")].join("");
 
+/**
+ * @param {[string, MatrixRuleModule]} matrixEntry
+ *
+ * @returns {string}
+ */
 const createMatrixRow = ([ruleName, ruleModule]) => {
-    const presetRefs = new Set(
-        Array.isArray(ruleModule.meta?.docs?.configs)
+    const docsConfigs =
+        typeof ruleModule.meta?.docs === "object" &&
+        ruleModule.meta.docs !== null &&
+        "configs" in ruleModule.meta.docs
             ? ruleModule.meta.docs.configs
-            : ruleModule.meta?.docs?.configs === undefined
+            : undefined;
+
+    const presetRefs = new Set(
+        Array.isArray(docsConfigs)
+            ? docsConfigs
+            : docsConfigs === undefined
               ? []
-              : [ruleModule.meta.docs.configs]
+              : [docsConfigs]
     );
 
     const cells = presetOrder.map((presetName) =>
@@ -45,6 +70,12 @@ const createMatrixRow = ([ruleName, ruleModule]) => {
     return [`| \`${ruleName}\` |`, ...cells].join("");
 };
 
+/**
+ * @param {MatrixPlugin} [plugin] - Plugin data source (defaults to the built
+ *   plugin export).
+ *
+ * @returns {string}
+ */
 export const generatePresetRulesMatrixFromPlugin = (plugin = builtPlugin) => {
     const rows = Object.entries(plugin.rules).toSorted((left, right) =>
         left[0].localeCompare(right[0])
