@@ -45,20 +45,29 @@ const createDividerRow = () =>
  * @returns {string}
  */
 const createMatrixRow = ([ruleName, ruleModule]) => {
-    const docsConfigs =
-        typeof ruleModule.meta?.docs === "object" &&
-        ruleModule.meta.docs !== null &&
-        "configs" in ruleModule.meta.docs
-            ? ruleModule.meta.docs.configs
-            : undefined;
+    /** @type {unknown} */
+    let docsConfigs;
 
-    const presetRefs = new Set(
-        Array.isArray(docsConfigs)
-            ? docsConfigs
-            : docsConfigs === undefined
-              ? []
-              : [docsConfigs]
-    );
+    const docsMetadata = ruleModule.meta?.docs;
+
+    if (
+        docsMetadata !== undefined &&
+        typeof docsMetadata === "object" &&
+        "configs" in docsMetadata
+    ) {
+        docsConfigs = docsMetadata.configs;
+    }
+
+    /** @type {unknown[]} */
+    const presetReferences = [];
+
+    if (Array.isArray(docsConfigs)) {
+        presetReferences.push(...docsConfigs);
+    } else if (docsConfigs !== undefined) {
+        presetReferences.push(docsConfigs);
+    }
+
+    const presetRefs = new Set(presetReferences);
 
     const cells = presetOrder.map((presetName) =>
         presetRefs.has(`github-actions.configs.${presetName}`) ||
