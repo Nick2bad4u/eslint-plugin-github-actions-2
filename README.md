@@ -53,79 +53,91 @@ Every exported preset already scopes itself to the intended GitHub Actions file 
 
 ## Rules
 
-Rule matrix by preset (matches the presets docs page).
+Fix legend:
+🔧 = autofixable
+💡 = suggestions available
+— = report only
 
-| Rule | 🧩 actionMetadata | 🗂️ workflowTemplateProperties | 🧱 workflowTemplates | 🟡 recommended | 🛡️ security | 🔴 strict | 🟣 all |
-| --- | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
-| [`action-name-casing`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/action-name-casing) | — | — | — | — | — | ✅ | ✅ |
-| [`job-id-casing`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/job-id-casing) | — | — | — | — | — | ✅ | ✅ |
-| [`max-jobs-per-action`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/max-jobs-per-action) | — | — | — | — | — | ✅ | ✅ |
-| [`no-case-insensitive-input-id-collision`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-case-insensitive-input-id-collision) | ✅ | — | — | — | — | — | ✅ |
-| [`no-composite-input-env-access`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-composite-input-env-access) | ✅ | — | — | — | — | — | ✅ |
-| [`no-deprecated-node-runtime`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-deprecated-node-runtime) | ✅ | — | — | — | — | — | ✅ |
-| [`no-duplicate-composite-step-id`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-duplicate-composite-step-id) | ✅ | — | — | — | — | — | ✅ |
-| [`no-empty-template-file-pattern`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-empty-template-file-pattern) | — | ✅ | ✅ | — | — | — | ✅ |
-| [`no-external-job`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-external-job) | — | — | — | — | — | ✅ | ✅ |
-| [`no-hardcoded-default-branch-in-template`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-hardcoded-default-branch-in-template) | — | — | ✅ | — | — | — | ✅ |
-| [`no-icon-file-extension-in-template-icon-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-icon-file-extension-in-template-icon-name) | — | ✅ | ✅ | — | — | — | ✅ |
-| [`no-inherit-secrets`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-inherit-secrets) | — | — | — | — | ✅ | ✅ | ✅ |
-| [`no-invalid-concurrency-context`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-invalid-concurrency-context) | — | — | — | ✅ | — | ✅ | ✅ |
-| [`no-invalid-key`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-invalid-key) | — | — | — | ✅ | — | ✅ | ✅ |
-| [`no-invalid-reusable-workflow-job-key`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-invalid-reusable-workflow-job-key) | — | — | — | ✅ | — | ✅ | ✅ |
-| [`no-invalid-template-file-pattern-regex`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-invalid-template-file-pattern-regex) | — | ✅ | ✅ | — | — | — | ✅ |
-| [`no-invalid-workflow-call-output-value`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-invalid-workflow-call-output-value) | — | — | — | ✅ | — | ✅ | ✅ |
-| [`no-path-separators-in-template-icon-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-path-separators-in-template-icon-name) | — | ✅ | ✅ | — | — | — | ✅ |
-| [`no-post-if-without-post`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-post-if-without-post) | ✅ | — | — | — | — | — | ✅ |
-| [`no-pr-head-checkout-in-pull-request-target`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-pr-head-checkout-in-pull-request-target) | — | — | — | — | ✅ | ✅ | ✅ |
-| [`no-pre-if-without-pre`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-pre-if-without-pre) | ✅ | — | — | — | — | — | ✅ |
-| [`no-required-input-with-default`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-required-input-with-default) | ✅ | — | — | — | — | — | ✅ |
-| [`no-secrets-in-if`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-secrets-in-if) | — | — | — | ✅ | ✅ | ✅ | ✅ |
-| [`no-self-hosted-runner-on-fork-pr-events`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-self-hosted-runner-on-fork-pr-events) | — | — | — | — | ✅ | ✅ | ✅ |
-| [`no-subdirectory-template-file-pattern`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-subdirectory-template-file-pattern) | — | ✅ | ✅ | — | — | — | ✅ |
-| [`no-template-placeholder-in-non-template-workflow`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-template-placeholder-in-non-template-workflow) | — | — | — | ✅ | — | ✅ | ✅ |
-| [`no-top-level-env`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-top-level-env) | — | — | — | — | — | ✅ | ✅ |
-| [`no-top-level-permissions`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-top-level-permissions) | — | — | — | — | — | — | ✅ |
-| [`no-universal-template-file-pattern`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-universal-template-file-pattern) | — | ✅ | ✅ | — | — | — | ✅ |
-| [`no-unknown-input-reference-in-composite`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unknown-input-reference-in-composite) | ✅ | — | — | — | — | — | ✅ |
-| [`no-unknown-job-output-reference`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unknown-job-output-reference) | — | — | — | ✅ | — | ✅ | ✅ |
-| [`no-unknown-step-reference`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unknown-step-reference) | — | — | — | — | — | ✅ | ✅ |
-| [`no-untrusted-input-in-run`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-untrusted-input-in-run) | — | — | — | — | ✅ | ✅ | ✅ |
-| [`no-unused-input-in-composite`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unused-input-in-composite) | ✅ | — | — | — | — | — | ✅ |
-| [`no-write-all-permissions`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-write-all-permissions) | — | — | — | ✅ | ✅ | ✅ | ✅ |
-| [`pin-action-shas`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/pin-action-shas) | — | — | — | — | ✅ | ✅ | ✅ |
-| [`prefer-action-yml`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/prefer-action-yml) | ✅ | — | — | — | — | — | ✅ |
-| [`prefer-fail-fast`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/prefer-fail-fast) | — | — | — | — | — | ✅ | ✅ |
-| [`prefer-file-extension`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/prefer-file-extension) | — | — | — | ✅ | — | ✅ | ✅ |
-| [`prefer-inputs-context`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/prefer-inputs-context) | — | — | — | ✅ | — | ✅ | ✅ |
-| [`prefer-step-uses-style`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/prefer-step-uses-style) | — | — | — | — | — | — | ✅ |
-| [`prefer-template-yml-extension`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/prefer-template-yml-extension) | — | — | ✅ | — | — | — | ✅ |
-| [`require-action-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-action-name) | — | — | — | ✅ | — | ✅ | ✅ |
-| [`require-action-run-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-action-run-name) | — | — | — | — | — | ✅ | ✅ |
-| [`require-checkout-before-local-action`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-checkout-before-local-action) | — | — | — | ✅ | — | ✅ | ✅ |
-| [`require-composite-step-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-composite-step-name) | ✅ | — | — | — | — | — | ✅ |
-| [`require-job-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-job-name) | — | — | — | — | — | ✅ | ✅ |
-| [`require-job-step-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-job-step-name) | — | — | — | — | — | ✅ | ✅ |
-| [`require-job-timeout-minutes`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-job-timeout-minutes) | — | — | — | ✅ | — | ✅ | ✅ |
-| [`require-merge-group-trigger`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-merge-group-trigger) | — | — | — | — | — | ✅ | ✅ |
-| [`require-pull-request-target-branches`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-pull-request-target-branches) | — | — | — | — | ✅ | ✅ | ✅ |
-| [`require-run-step-shell`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-run-step-shell) | — | — | — | — | — | ✅ | ✅ |
-| [`require-template-categories`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-template-categories) | — | ✅ | ✅ | — | — | — | ✅ |
-| [`require-template-file-patterns`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-template-file-patterns) | — | ✅ | ✅ | — | — | — | ✅ |
-| [`require-template-icon-file-exists`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-template-icon-file-exists) | — | ✅ | ✅ | — | — | — | ✅ |
-| [`require-template-icon-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-template-icon-name) | — | ✅ | ✅ | — | — | — | ✅ |
-| [`require-template-workflow-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-template-workflow-name) | — | — | ✅ | — | — | — | ✅ |
-| [`require-trigger-types`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-trigger-types) | — | — | — | — | — | ✅ | ✅ |
-| [`require-workflow-call-input-type`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-call-input-type) | — | — | — | ✅ | — | ✅ | ✅ |
-| [`require-workflow-call-output-value`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-call-output-value) | — | — | — | ✅ | — | ✅ | ✅ |
-| [`require-workflow-concurrency`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-concurrency) | — | — | — | — | — | ✅ | ✅ |
-| [`require-workflow-dispatch-input-type`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-dispatch-input-type) | — | — | — | ✅ | — | ✅ | ✅ |
-| [`require-workflow-interface-description`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-interface-description) | — | — | — | — | — | ✅ | ✅ |
-| [`require-workflow-permissions`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-permissions) | — | — | — | ✅ | ✅ | ✅ | ✅ |
-| [`require-workflow-run-branches`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-run-branches) | — | — | — | — | ✅ | ✅ | ✅ |
-| [`require-workflow-template-pair`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-template-pair) | — | — | ✅ | — | — | — | ✅ |
-| [`require-workflow-template-properties-pair`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-template-properties-pair) | — | ✅ | ✅ | — | — | — | ✅ |
-| [`valid-timeout-minutes`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/valid-timeout-minutes) | — | — | — | ✅ | — | ✅ | ✅ |
-| [`valid-trigger-events`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/valid-trigger-events) | — | — | — | ✅ | — | ✅ | ✅ |
+Preset key legend:
+🧩 — githubActions.configs.actionMetadata
+🗂️ — githubActions.configs.workflowTemplateProperties
+🧱 — githubActions.configs.workflowTemplates
+🟡 — githubActions.configs.recommended
+🛡️ — githubActions.configs.security
+🔴 — githubActions.configs.strict
+🟣 — githubActions.configs.all
+
+| Rule | Fix | Preset key |
+| --- | :-: | --- |
+| <span class="sb-inline-rule-number">R009</span> [`action-name-casing`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/action-name-casing) | 🔧 | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R010</span> [`job-id-casing`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/job-id-casing) | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R011</span> [`max-jobs-per-action`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/max-jobs-per-action) | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R048</span> [`no-case-insensitive-input-id-collision`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-case-insensitive-input-id-collision) | — | 🧩 🟣 |
+| <span class="sb-inline-rule-number">R049</span> [`no-composite-input-env-access`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-composite-input-env-access) | — | 🧩 🟣 |
+| <span class="sb-inline-rule-number">R044</span> [`no-deprecated-node-runtime`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-deprecated-node-runtime) | — | 🧩 🟣 |
+| <span class="sb-inline-rule-number">R051</span> [`no-duplicate-composite-step-id`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-duplicate-composite-step-id) | — | 🧩 🟣 |
+| <span class="sb-inline-rule-number">R060</span> [`no-empty-template-file-pattern`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-empty-template-file-pattern) | — | 🗂️ 🧱 🟣 |
+| <span class="sb-inline-rule-number">R012</span> [`no-external-job`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-external-job) | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R068</span> [`no-hardcoded-default-branch-in-template`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-hardcoded-default-branch-in-template) | — | 🧱 🟣 |
+| <span class="sb-inline-rule-number">R063</span> [`no-icon-file-extension-in-template-icon-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-icon-file-extension-in-template-icon-name) | — | 🗂️ 🧱 🟣 |
+| <span class="sb-inline-rule-number">R026</span> [`no-inherit-secrets`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-inherit-secrets) | — | 🟣 🛡️ 🔴 |
+| <span class="sb-inline-rule-number">R042</span> [`no-invalid-concurrency-context`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-invalid-concurrency-context) | — | 🟣 🟡 🔴 |
+| <span class="sb-inline-rule-number">R019</span> [`no-invalid-key`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-invalid-key) | — | 🟣 🟡 🔴 |
+| <span class="sb-inline-rule-number">R041</span> [`no-invalid-reusable-workflow-job-key`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-invalid-reusable-workflow-job-key) | — | 🟣 🟡 🔴 |
+| <span class="sb-inline-rule-number">R059</span> [`no-invalid-template-file-pattern-regex`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-invalid-template-file-pattern-regex) | — | 🗂️ 🧱 🟣 |
+| <span class="sb-inline-rule-number">R040</span> [`no-invalid-workflow-call-output-value`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-invalid-workflow-call-output-value) | — | 🟣 🟡 🔴 |
+| <span class="sb-inline-rule-number">R064</span> [`no-path-separators-in-template-icon-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-path-separators-in-template-icon-name) | — | 🗂️ 🧱 🟣 |
+| <span class="sb-inline-rule-number">R046</span> [`no-post-if-without-post`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-post-if-without-post) | — | 🧩 🟣 |
+| <span class="sb-inline-rule-number">R030</span> [`no-pr-head-checkout-in-pull-request-target`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-pr-head-checkout-in-pull-request-target) | — | 🟣 🛡️ 🔴 |
+| <span class="sb-inline-rule-number">R045</span> [`no-pre-if-without-pre`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-pre-if-without-pre) | — | 🧩 🟣 |
+| <span class="sb-inline-rule-number">R047</span> [`no-required-input-with-default`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-required-input-with-default) | — | 🧩 🟣 |
+| <span class="sb-inline-rule-number">R027</span> [`no-secrets-in-if`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-secrets-in-if) | — | 🟣 🟡 🛡️ 🔴 |
+| <span class="sb-inline-rule-number">R036</span> [`no-self-hosted-runner-on-fork-pr-events`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-self-hosted-runner-on-fork-pr-events) | — | 🟣 🛡️ 🔴 |
+| <span class="sb-inline-rule-number">R062</span> [`no-subdirectory-template-file-pattern`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-subdirectory-template-file-pattern) | — | 🗂️ 🧱 🟣 |
+| <span class="sb-inline-rule-number">R069</span> [`no-template-placeholder-in-non-template-workflow`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-template-placeholder-in-non-template-workflow) | — | 🟡 🔴 🟣 |
+| <span class="sb-inline-rule-number">R013</span> [`no-top-level-env`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-top-level-env) | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R014</span> [`no-top-level-permissions`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-top-level-permissions) | — | 🟣 |
+| <span class="sb-inline-rule-number">R061</span> [`no-universal-template-file-pattern`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-universal-template-file-pattern) | — | 🗂️ 🧱 🟣 |
+| <span class="sb-inline-rule-number">R050</span> [`no-unknown-input-reference-in-composite`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unknown-input-reference-in-composite) | — | 🧩 🟣 |
+| <span class="sb-inline-rule-number">R037</span> [`no-unknown-job-output-reference`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unknown-job-output-reference) | — | 🟣 🟡 🔴 |
+| <span class="sb-inline-rule-number">R038</span> [`no-unknown-step-reference`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unknown-step-reference) | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R029</span> [`no-untrusted-input-in-run`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-untrusted-input-in-run) | — | 🟣 🛡️ 🔴 |
+| <span class="sb-inline-rule-number">R053</span> [`no-unused-input-in-composite`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unused-input-in-composite) | — | 🧩 🟣 |
+| <span class="sb-inline-rule-number">R023</span> [`no-write-all-permissions`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-write-all-permissions) | — | 🟣 🟡 🛡️ 🔴 |
+| <span class="sb-inline-rule-number">R003</span> [`pin-action-shas`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/pin-action-shas) | — | 🟣 🛡️ 🔴 |
+| <span class="sb-inline-rule-number">R043</span> [`prefer-action-yml`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/prefer-action-yml) | — | 🧩 🟣 |
+| <span class="sb-inline-rule-number">R015</span> [`prefer-fail-fast`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/prefer-fail-fast) | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R020</span> [`prefer-file-extension`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/prefer-file-extension) | — | 🟣 🟡 🔴 |
+| <span class="sb-inline-rule-number">R033</span> [`prefer-inputs-context`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/prefer-inputs-context) | 🔧 | 🟣 🟡 🔴 |
+| <span class="sb-inline-rule-number">R016</span> [`prefer-step-uses-style`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/prefer-step-uses-style) | — | 🟣 |
+| <span class="sb-inline-rule-number">R066</span> [`prefer-template-yml-extension`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/prefer-template-yml-extension) | — | 🧱 🟣 |
+| <span class="sb-inline-rule-number">R005</span> [`require-action-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-action-name) | — | 🟣 🟡 🔴 |
+| <span class="sb-inline-rule-number">R006</span> [`require-action-run-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-action-run-name) | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R025</span> [`require-checkout-before-local-action`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-checkout-before-local-action) | — | 🟣 🟡 🔴 |
+| <span class="sb-inline-rule-number">R052</span> [`require-composite-step-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-composite-step-name) | — | 🧩 🟣 |
+| <span class="sb-inline-rule-number">R007</span> [`require-job-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-job-name) | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R008</span> [`require-job-step-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-job-step-name) | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R002</span> [`require-job-timeout-minutes`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-job-timeout-minutes) | — | 🟣 🟡 🔴 |
+| <span class="sb-inline-rule-number">R035</span> [`require-merge-group-trigger`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-merge-group-trigger) | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R032</span> [`require-pull-request-target-branches`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-pull-request-target-branches) | — | 🟣 🛡️ 🔴 |
+| <span class="sb-inline-rule-number">R021</span> [`require-run-step-shell`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-run-step-shell) | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R057</span> [`require-template-categories`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-template-categories) | — | 🗂️ 🧱 🟣 |
+| <span class="sb-inline-rule-number">R058</span> [`require-template-file-patterns`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-template-file-patterns) | — | 🗂️ 🧱 🟣 |
+| <span class="sb-inline-rule-number">R065</span> [`require-template-icon-file-exists`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-template-icon-file-exists) | — | 🗂️ 🧱 🟣 |
+| <span class="sb-inline-rule-number">R056</span> [`require-template-icon-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-template-icon-name) | — | 🗂️ 🧱 🟣 |
+| <span class="sb-inline-rule-number">R067</span> [`require-template-workflow-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-template-workflow-name) | — | 🧱 🟣 |
+| <span class="sb-inline-rule-number">R031</span> [`require-trigger-types`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-trigger-types) | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R034</span> [`require-workflow-call-input-type`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-call-input-type) | — | 🟣 🟡 🔴 |
+| <span class="sb-inline-rule-number">R039</span> [`require-workflow-call-output-value`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-call-output-value) | — | 🟣 🟡 🔴 |
+| <span class="sb-inline-rule-number">R004</span> [`require-workflow-concurrency`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-concurrency) | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R022</span> [`require-workflow-dispatch-input-type`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-dispatch-input-type) | — | 🟣 🟡 🔴 |
+| <span class="sb-inline-rule-number">R024</span> [`require-workflow-interface-description`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-interface-description) | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R001</span> [`require-workflow-permissions`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-permissions) | — | 🟣 🟡 🛡️ 🔴 |
+| <span class="sb-inline-rule-number">R028</span> [`require-workflow-run-branches`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-run-branches) | — | 🟣 🛡️ 🔴 |
+| <span class="sb-inline-rule-number">R054</span> [`require-workflow-template-pair`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-template-pair) | — | 🧱 🟣 |
+| <span class="sb-inline-rule-number">R055</span> [`require-workflow-template-properties-pair`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-workflow-template-properties-pair) | — | 🗂️ 🧱 🟣 |
+| <span class="sb-inline-rule-number">R017</span> [`valid-timeout-minutes`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/valid-timeout-minutes) | — | 🟣 🟡 🔴 |
+| <span class="sb-inline-rule-number">R018</span> [`valid-trigger-events`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/valid-trigger-events) | — | 🟣 🟡 🔴 |
 
 ## Example
 

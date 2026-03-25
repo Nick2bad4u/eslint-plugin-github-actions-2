@@ -3,7 +3,7 @@
 
 /**
  * @packageDocumentation
- * Synchronize or validate the README rules table from the built plugin metadata.
+ * Synchronize or validate matrix sections in README and docs from plugin metadata.
  */
 
 import { readFile, writeFile } from "node:fs/promises";
@@ -12,19 +12,24 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 import builtPlugin from "../dist/plugin.js";
 import {
-    githubActionsConfigMetadataByName,
-    githubActionsConfigNames,
-    githubActionsConfigReferenceToName,
-} from "../dist/_internal/github-actions-config-references.js";
+    generatePresetRulesMatrixFromRules,
+    syncPresetRulesMatrix,
+} from "./sync-presets-rules-matrix.mjs";
 
-const presetOrder = [...githubActionsConfigNames];
 const rulesSectionHeading = "## Rules";
+const presetsIndexMatrixHeading = "## Rule Matrix";
 
 const getReadmePath = () =>
     resolve(fileURLToPath(new URL("..", import.meta.url)), "README.md");
 
-const getReadmeRulesSectionBounds = (markdown) => {
-    const startOffset = markdown.indexOf(rulesSectionHeading);
+const getPresetsIndexPath = () =>
+    resolve(
+        fileURLToPath(new URL("..", import.meta.url)),
+        "docs/rules/presets/index.md"
+    );
+
+const getSectionBounds = (markdown, sectionHeading) => {
+    const startOffset = markdown.indexOf(sectionHeading);
 
     if (startOffset < 0) {
         return null;
@@ -32,7 +37,7 @@ const getReadmeRulesSectionBounds = (markdown) => {
 
     const nextHeadingOffset = markdown.indexOf(
         "\n## ",
-        startOffset + rulesSectionHeading.length
+        startOffset + sectionHeading.length
     );
 
     return {
@@ -41,104 +46,93 @@ const getReadmeRulesSectionBounds = (markdown) => {
     };
 };
 
-const normalizePresetName = (reference) => {
-    if (Object.hasOwn(githubActionsConfigReferenceToName, reference)) {
-        return githubActionsConfigReferenceToName[reference];
-    }
-
-    return presetOrder.includes(reference) ? reference : null;
-};
-
-const normalizeRulePresetNames = (ruleModule) => {
-    const references = ruleModule.meta?.docs?.configs;
-    const values = Array.isArray(references)
-        ? references
-        : references === undefined
-          ? []
-          : [references];
-
-    const names = [];
-    const seen = new Set();
-
-    for (const reference of values) {
-        if (typeof reference !== "string") {
-            continue;
-        }
-
-        const presetName = normalizePresetName(reference);
-
-        if (presetName !== null && !seen.has(presetName)) {
-            seen.add(presetName);
-            names.push(presetName);
-        }
-    }
-
-    return names;
-};
-
-const createMatrixHeaderRow = () =>
-    [
-        "| Rule |",
-        ...presetOrder.map((presetName) => {
-            const metadata = githubActionsConfigMetadataByName[presetName];
-
-            return ` ${metadata.icon} ${presetName} |`;
-        }),
-    ].join("");
-
-const createMatrixDividerRow = () =>
-    ["| --- |", ...presetOrder.map(() => " :-: |")].join("");
-
-const createRuleMatrixRow = ([ruleName, ruleModule]) => {
-    const docsUrl = ruleModule.meta?.docs?.url;
-    const presetNameSet = new Set(normalizeRulePresetNames(ruleModule));
-    const presetCells = presetOrder.map((presetName) =>
-        presetNameSet.has(presetName) ? " ✅ |" : " — |"
-    );
-
-    return [`| [\`${ruleName}\`](${docsUrl}) |`, ...presetCells].join("");
-};
-
 export const generateReadmeRulesSectionFromRules = (rules) => {
-    const ruleEntries = Object.entries(rules).toSorted((left, right) =>
-        left[0].localeCompare(right[0])
-    );
+    const matrix = generatePresetRulesMatrixFromRules(rules, {
+        createRuleReference: (ruleName, ruleModule) => {
+            const docsUrl = ruleModule.meta?.docs?.url;
+
+            return typeof docsUrl === "string"
+                ? `[\`${ruleName}\`](${docsUrl})`
+                : `\`${ruleName}\``;
+        },
+    });
 
     return [
         rulesSectionHeading,
         "",
-        "Rule matrix by preset (matches the presets docs page).",
-        "",
-        createMatrixHeaderRow(),
-        createMatrixDividerRow(),
-        ...ruleEntries.map(createRuleMatrixRow),
+        matrix,
         "",
     ].join("\n");
 };
 
-export const syncReadmeRulesTable = async ({ check = false } = {}) => {
-    const readmePath = getReadmePath();
-    const currentReadme = await readFile(readmePath, "utf8");
-    const generatedSection = generateReadmeRulesSectionFromRules(
-        builtPlugin.rules
-    );
-    const bounds = getReadmeRulesSectionBounds(currentReadme);
-    const nextReadme =
-        bounds === null
-            ? `${currentReadme.trimEnd()}\n\n${generatedSection}`
-            : `${currentReadme.slice(0, bounds.startOffset)}${generatedSection}${currentReadme.slice(bounds.endOffset)}`;
+export const generatePresetsIndexMatrixSectionFromRules = (rules) => {
+    const matrix = generatePresetRulesMatrixFromRules(rules, {
+        createRuleReference: (ruleName) =>
+            `[\`${ruleName}\`](../${ruleName}.md)`,
+    });
+
+    return [
+        presetsIndexMatrixHeading,
+        "",
+        matrix,
+        "",
+    ].join("\n");
+};
+
+const writeSection = async ({
+    check,
+    filePath,
+    missingSectionError,
+    sectionHeading,
+    sectionMarkdown,
+}) => {
+    const currentMarkdown = await readFile(filePath, "utf8");
+    const bounds = getSectionBounds(currentMarkdown, sectionHeading);
+
+    if (bounds === null) {
+        throw new Error(missingSectionError);
+    }
+
+    const nextMarkdown = `${currentMarkdown.slice(0, bounds.startOffset)}${sectionMarkdown}${currentMarkdown.slice(bounds.endOffset)}`;
 
     if (check) {
-        if (currentReadme !== nextReadme) {
+        if (currentMarkdown !== nextMarkdown) {
             throw new Error(
-                "README rules section is out of sync. Run node scripts/sync-readme-rules-table.mjs."
+                `${filePath} is out of sync. Run node scripts/sync-readme-rules-table.mjs.`
             );
         }
 
         return;
     }
 
-    await writeFile(readmePath, nextReadme, "utf8");
+    if (currentMarkdown !== nextMarkdown) {
+        await writeFile(filePath, nextMarkdown, "utf8");
+    }
+};
+
+export const syncReadmeRulesTable = async ({ check = false } = {}) => {
+    const readmePath = getReadmePath();
+    const presetsIndexPath = getPresetsIndexPath();
+
+    await writeSection({
+        check,
+        filePath: readmePath,
+        missingSectionError: "README rules section heading not found.",
+        sectionHeading: rulesSectionHeading,
+        sectionMarkdown: generateReadmeRulesSectionFromRules(builtPlugin.rules),
+    });
+
+    await writeSection({
+        check,
+        filePath: presetsIndexPath,
+        missingSectionError: "Presets index matrix heading not found.",
+        sectionHeading: presetsIndexMatrixHeading,
+        sectionMarkdown: generatePresetsIndexMatrixSectionFromRules(
+            builtPlugin.rules
+        ),
+    });
+
+    await syncPresetRulesMatrix({ check });
 };
 
 if (

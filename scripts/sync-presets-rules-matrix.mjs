@@ -2,101 +2,314 @@
 
 /**
  * @packageDocumentation
- * Generate a Markdown matrix of GitHub Actions rules by preset from the built plugin metadata.
+ * Generate and sync the canonical rules matrix used by README and docs.
  */
+
+import { readFile, writeFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import builtPlugin from "../dist/plugin.js";
 import {
     githubActionsConfigMetadataByName,
     githubActionsConfigNames,
+    githubActionsConfigReferenceToName,
 } from "../dist/_internal/github-actions-config-references.js";
 
 /**
  * @typedef {{
- *     meta?: {
- *         docs?: object | undefined;
- *     };
+ *     configs?: string | readonly string[];
+ *     ruleId?: string;
+ *     ruleNumber?: number;
+ * }} MatrixRuleDocsMetadata
+ */
+
+/**
+ * @typedef {{
+ *     docs?: unknown;
+ *     fixable?: unknown;
+ *     hasSuggestions?: unknown;
+ * }} MatrixRuleMeta
+ */
+
+/**
+ * @typedef {{
+ *     meta?: unknown;
  * }} MatrixRuleModule
  */
 
 /**
  * @typedef {{
- *     rules: Record<string, MatrixRuleModule>;
+ *     rules: Record<string, unknown>;
  * }} MatrixPlugin
  */
 
 const presetOrder = [...githubActionsConfigNames];
-
-const createHeaderRow = () =>
-    [
-        "| Rule |",
-        ...presetOrder.map(
-            (presetName) =>
-                ` ${githubActionsConfigMetadataByName[presetName].icon} ${presetName} |`
-        ),
-    ].join("");
-
-const createDividerRow = () =>
-    ["| --- |", ...presetOrder.map(() => " :-: |")].join("");
+const matrixFilePath = resolve(
+    fileURLToPath(new URL("..", import.meta.url)),
+    "presets-matrix.md"
+);
 
 /**
- * @param {[string, MatrixRuleModule]} matrixEntry
+ * @param {unknown} value
+ *
+ * @returns {value is Record<string, unknown>}
+ */
+const isRecord = (value) => value !== null && typeof value === "object";
+
+/**
+ * @param {unknown} ruleModule
+ *
+ * @returns {MatrixRuleMeta | undefined}
+ */
+const getRuleMeta = (ruleModule) => {
+    if (!isRecord(ruleModule)) {
+        return undefined;
+    }
+
+    const meta = ruleModule["meta"];
+
+    return isRecord(meta) ? meta : undefined;
+};
+
+/**
+ * @param {unknown} ruleModule
+ *
+ * @returns {MatrixRuleDocsMetadata | undefined}
+ */
+const getRuleDocsMetadata = (ruleModule) => {
+    const meta = getRuleMeta(ruleModule);
+    const docs = meta?.docs;
+
+    return isRecord(docs) ? docs : undefined;
+};
+
+/**
+ * @param {string} reference
+ *
+ * @returns {(typeof presetOrder)[number] | null}
+ */
+const normalizePresetName = (reference) => {
+    if (Object.hasOwn(githubActionsConfigReferenceToName, reference)) {
+        const presetName =
+            githubActionsConfigReferenceToName[
+                /** @type {keyof typeof githubActionsConfigReferenceToName} */ (
+                    reference
+                )
+            ];
+
+        return presetName ?? null;
+    }
+
+    if (Object.hasOwn(githubActionsConfigMetadataByName, reference)) {
+        return /** @type {(typeof presetOrder)[number]} */ (reference);
+    }
+
+    return null;
+};
+
+/**
+ * @param {unknown} ruleModule
+ *
+ * @returns {(typeof presetOrder)[number][]}
+ */
+const normalizeRulePresetNames = (ruleModule) => {
+    const references = getRuleDocsMetadata(ruleModule)?.configs;
+    const values = Array.isArray(references)
+        ? references
+        : references === undefined
+          ? []
+          : [references];
+
+    /** @type {(typeof presetOrder)[number][]} */
+    const names = [];
+    const seen = new Set();
+
+    for (const reference of values) {
+        if (typeof reference !== "string") {
+            continue;
+        }
+
+        const presetName = normalizePresetName(reference);
+
+        if (presetName !== null && !seen.has(presetName)) {
+            seen.add(presetName);
+            names.push(presetName);
+        }
+    }
+
+    return names;
+};
+
+/**
+ * @param {unknown} ruleModule
  *
  * @returns {string}
  */
-const createMatrixRow = ([ruleName, ruleModule]) => {
-    /** @type {unknown} */
-    let docsConfigs;
+const getRuleId = (ruleModule) => {
+    const docsMetadata = getRuleDocsMetadata(ruleModule);
 
-    const docsMetadata = ruleModule.meta?.docs;
-
-    if (
-        docsMetadata !== undefined &&
-        typeof docsMetadata === "object" &&
-        "configs" in docsMetadata
-    ) {
-        docsConfigs = docsMetadata.configs;
+    if (typeof docsMetadata?.ruleId === "string") {
+        return docsMetadata.ruleId;
     }
 
-    /** @type {unknown[]} */
-    const presetReferences = [];
-
-    if (Array.isArray(docsConfigs)) {
-        presetReferences.push(...docsConfigs);
-    } else if (docsConfigs !== undefined) {
-        presetReferences.push(docsConfigs);
+    if (typeof docsMetadata?.ruleNumber === "number") {
+        return `R${String(docsMetadata.ruleNumber).padStart(3, "0")}`;
     }
 
-    const presetRefs = new Set(presetReferences);
+    return "R???";
+};
 
-    const cells = presetOrder.map((presetName) =>
-        presetRefs.has(`github-actions.configs.${presetName}`) ||
-        presetRefs.has(presetName)
-            ? " ✅ |"
-            : " — |"
+/**
+ * @param {unknown} ruleModule
+ *
+ * @returns {"🔧 💡" | "🔧" | "💡" | "—"}
+ */
+const getRuleFixLegendCell = (ruleModule) => {
+    const meta = getRuleMeta(ruleModule);
+    const isAutofixable = meta?.fixable !== undefined;
+    const hasSuggestions = meta?.hasSuggestions === true;
+
+    if (isAutofixable && hasSuggestions) {
+        return "🔧 💡";
+    }
+
+    if (isAutofixable) {
+        return "🔧";
+    }
+
+    if (hasSuggestions) {
+        return "💡";
+    }
+
+    return "—";
+};
+
+const createHeaderRow = () => "| Rule | Fix | Preset key |";
+
+const createDividerRow = () => "| --- | :-: | --- |";
+
+const createFixLegendSection = () => [
+    "Fix legend:",
+    "🔧 = autofixable",
+    "💡 = suggestions available",
+    "— = report only",
+    "",
+];
+
+const createPresetKeyLegendSection = () => [
+    "Preset key legend:",
+    ...presetOrder.map((presetName) => {
+        const metadata = githubActionsConfigMetadataByName[presetName];
+
+        return `${metadata.icon} — githubActions.configs.${presetName}`;
+    }),
+    "",
+];
+
+/**
+ * @param {string} ruleName
+ * @param {unknown} ruleModule
+ * @param {((ruleName: string, ruleModule: unknown) => string) | undefined} createRuleReference
+ *
+ * @returns {string}
+ */
+const createRuleCell = (ruleName, ruleModule, createRuleReference) => {
+    const ruleId = getRuleId(ruleModule);
+    const ruleReference =
+        createRuleReference?.(ruleName, ruleModule) ?? `\`${ruleName}\``;
+
+    return `<span class="sb-inline-rule-number">${ruleId}</span> ${ruleReference}`;
+};
+
+/**
+ * @param {[string, unknown]} matrixEntry
+ * @param {((ruleName: string, ruleModule: unknown) => string) | undefined} createRuleReference
+ *
+ * @returns {string}
+ */
+const createMatrixRow = ([ruleName, ruleModule], createRuleReference) => {
+    const presetNames = normalizeRulePresetNames(ruleModule);
+    const presetIcons = presetNames
+        .map((presetName) => githubActionsConfigMetadataByName[presetName].icon)
+        .join(" ");
+
+    return [
+        `| ${createRuleCell(ruleName, ruleModule, createRuleReference)} |`,
+        ` ${getRuleFixLegendCell(ruleModule)} |`,
+        ` ${presetIcons.length > 0 ? presetIcons : "—"} |`,
+    ].join("");
+};
+
+/**
+ * @param {Record<string, unknown>} rules
+ * @param {{
+ *     createRuleReference?:
+ *         | ((ruleName: string, ruleModule: unknown) => string)
+ *         | undefined;
+ * }} [options]
+ *
+ * @returns {string}
+ */
+export const generatePresetRulesMatrixFromRules = (rules, options = {}) => {
+    const rows = Object.entries(rules).toSorted((left, right) =>
+        left[0].localeCompare(right[0])
     );
 
-    return [`| \`${ruleName}\` |`, ...cells].join("");
+    return [
+        ...createFixLegendSection(),
+        ...createPresetKeyLegendSection(),
+        createHeaderRow(),
+        createDividerRow(),
+        ...rows.map((entry) =>
+            createMatrixRow(entry, options.createRuleReference)
+        ),
+    ].join("\n");
 };
 
 /**
  * @param {MatrixPlugin} [plugin] - Plugin data source (defaults to the built
  *   plugin export).
+ * @param {{
+ *     createRuleReference?:
+ *         | ((ruleName: string, ruleModule: unknown) => string)
+ *         | undefined;
+ * }} [options]
  *
  * @returns {string}
  */
-export const generatePresetRulesMatrixFromPlugin = (plugin = builtPlugin) => {
-    const rows = Object.entries(plugin.rules).toSorted((left, right) =>
-        left[0].localeCompare(right[0])
-    );
+export const generatePresetRulesMatrixFromPlugin = (
+    plugin = builtPlugin,
+    options = {}
+) => generatePresetRulesMatrixFromRules(plugin.rules, options);
 
-    return [
-        createHeaderRow(),
-        createDividerRow(),
-        ...rows.map(createMatrixRow),
-    ].join("\n");
+/**
+ * @param {{ check?: boolean }} [options]
+ *
+ * @returns {Promise<void>}
+ */
+export const syncPresetRulesMatrix = async ({ check = false } = {}) => {
+    const currentMatrix = await readFile(matrixFilePath, "utf8");
+    const generatedMatrix = `${generatePresetRulesMatrixFromPlugin()}\n`;
+
+    if (check) {
+        if (currentMatrix !== generatedMatrix) {
+            throw new Error(
+                "presets-matrix.md is out of sync. Run node scripts/sync-presets-rules-matrix.mjs."
+            );
+        }
+
+        return;
+    }
+
+    if (currentMatrix !== generatedMatrix) {
+        await writeFile(matrixFilePath, generatedMatrix, "utf8");
+    }
 };
 
-if (process.argv[1] !== undefined) {
-    console.log(generatePresetRulesMatrixFromPlugin());
+if (
+    process.argv[1] !== undefined &&
+    import.meta.url === pathToFileURL(process.argv[1]).href
+) {
+    await syncPresetRulesMatrix({ check: process.argv.includes("--check") });
 }

@@ -89,8 +89,6 @@ const homeCards = [
 export default function Home() {
     const logoSrc = useBaseUrl("/img/logo.svg");
     const cardLinkClassName = styles["cardLink"] ?? "";
-    const heroRuleLinkClassName = styles["heroInlineLinkGitHubActions"] ?? "";
-    const heroReferenceLinkClassName = styles["heroInlineLinkTsExtras"] ?? "";
 
     return (
         <Layout
@@ -158,26 +156,6 @@ export default function Home() {
                                     🧭 Compare presets
                                 </Link>
                             </div>
-
-                            <p className={styles["heroSubtitle"]}>
-                                Read the authoritative{" "}
-                                <Link
-                                    className={heroRuleLinkClassName}
-                                    to="/docs/rules/overview"
-                                >
-                                    rule docs
-                                </Link>{" "}
-                                and cross-check syntax against the official{" "}
-                                <Link
-                                    className={heroReferenceLinkClassName}
-                                    href="https://docs.github.com/actions/using-workflows/workflow-syntax-for-github-actions"
-                                    rel="noopener noreferrer"
-                                    target="_blank"
-                                >
-                                    GitHub Actions workflow reference
-                                </Link>
-                                .
-                            </p>
                         </div>
 
                         <aside className={styles["heroPanel"]}>

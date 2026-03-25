@@ -59,6 +59,9 @@ const config: Config = {
                     routeBasePath: "docs",
                     sidebarPath: "./sidebars.ts",
                 },
+                googleTagManager: {
+                    containerId: "GTM-T8J6HPLF",
+                },
                 theme: {
                     customCss: "./src/css/custom.css",
                 },
@@ -104,27 +107,6 @@ const config: Config = {
                         {
                             label: "📏 Rule reference",
                             to: "/docs/rules",
-                        },
-                    ],
-                },
-                {
-                    title: "🧭 Presets",
-                    items: [
-                        {
-                            label: "🟡 Recommended",
-                            to: "/docs/rules/presets/recommended",
-                        },
-                        {
-                            label: "🛡️ Security",
-                            to: "/docs/rules/presets/security",
-                        },
-                        {
-                            label: "🔴 Strict",
-                            to: "/docs/rules/presets/strict",
-                        },
-                        {
-                            label: "🟣 All",
-                            to: "/docs/rules/presets/all",
                         },
                     ],
                 },
@@ -265,6 +247,7 @@ const config: Config = {
                 {
                     label: "👨‍💻 Developer",
                     to: "/docs/developer",
+                    position: "right",
                     type: "dropdown",
                     items: [
                         {
