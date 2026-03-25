@@ -62,6 +62,9 @@ const config: Config = {
                 googleTagManager: {
                     containerId: "GTM-T8J6HPLF",
                 },
+                gtag: {
+                    trackingID: "G-18DR1S6R1T",
+                },
                 theme: {
                     customCss: "./src/css/custom.css",
                 },
