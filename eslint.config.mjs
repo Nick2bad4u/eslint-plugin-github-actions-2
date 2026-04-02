@@ -11,7 +11,6 @@
 import pluginDocusaurus from "@docusaurus/eslint-plugin";
 import comments from "@eslint-community/eslint-plugin-eslint-comments/configs";
 import eslintReactPlugin from "@eslint-react/eslint-plugin";
-import { fixupPluginRules } from "@eslint/compat";
 import { defineConfig, globalIgnores } from "@eslint/config-helpers";
 import css from "@eslint/css";
 import js from "@eslint/js";
@@ -42,13 +41,11 @@ import jsdocPlugin from "eslint-plugin-jsdoc";
 import eslintPluginJsonc from "eslint-plugin-jsonc";
 import eslintPluginJsxA11y from "eslint-plugin-jsx-a11y";
 import listeners from "eslint-plugin-listeners";
-import loadbleImportsPlugin from "eslint-plugin-loadable-imports";
 import eslintPluginMath from "eslint-plugin-math";
 import moduleInterop from "eslint-plugin-module-interop";
 import nodePlugin from "eslint-plugin-n";
 import nitpick from "eslint-plugin-nitpick";
 import noBarrelFiles from "eslint-plugin-no-barrel-files";
-import noExplicitTypeExports from "eslint-plugin-no-explicit-type-exports";
 import * as pluginNFDAR from "eslint-plugin-no-function-declare-after-return";
 import pluginRegexLook from "eslint-plugin-no-lookahead-lookbehind-regexp";
 import pluginNoOnly from "eslint-plugin-no-only-tests";
@@ -66,10 +63,8 @@ import pluginRegexp from "eslint-plugin-regexp";
 import * as pluginJSDoc from "eslint-plugin-require-jsdoc";
 import pluginSecurity from "eslint-plugin-security";
 import sonarjs, { configs as sonarjsConfigs } from "eslint-plugin-sonarjs";
-import pluginSortClassMembers from "eslint-plugin-sort-class-members";
 import pluginTestingLibrary from "eslint-plugin-testing-library";
 import eslintPluginToml from "eslint-plugin-toml";
-import pluginTotalFunctions from "eslint-plugin-total-functions";
 import pluginTsdoc from "eslint-plugin-tsdoc";
 import tsdocRequire from "eslint-plugin-tsdoc-require-2";
 import pluginUndefinedCss from "eslint-plugin-undefined-css-classes";
@@ -118,115 +113,6 @@ const jsonSchemaValidatorPlugins = enableJsonSchemaValidation
 const jsonSchemaValidatorRules = enableJsonSchemaValidation
     ? { "json-schema-validator/no-invalid": "error" }
     : {};
-
-/**
- * @param {unknown} pluginValue
- *
- * @returns {import("eslint").ESLint.Plugin}
- */
-const asEslintPlugin = (pluginValue) =>
-    /** @type {import("eslint").ESLint.Plugin} */ (pluginValue);
-
-const canonicalPlugin = fixupPluginRules(pluginCanonical);
-const noExplicitTypeExportsPlugin = fixupPluginRules(
-    asEslintPlugin(noExplicitTypeExports)
-);
-const noUnsanitizedPlugin = fixupPluginRules(asEslintPlugin(nounsanitized));
-const preferArrowPlugin = fixupPluginRules(asEslintPlugin(pluginPreferArrow));
-const sortClassMembersPlugin = fixupPluginRules(
-    asEslintPlugin(pluginSortClassMembers)
-);
-const writeGoodCommentsPlugin = fixupPluginRules(pluginWriteGood);
-const pluginLoadableImports = fixupPluginRules(
-    asEslintPlugin(loadbleImportsPlugin)
-);
-const jsxA11yPlugin = fixupPluginRules(eslintPluginJsxA11y);
-const eslintReactStrictTypeCheckedConfig = /**
- * @type {{
- *     plugins: Record<string, unknown>;
- *     rules: Record<string, unknown>;
- *     settings: Record<string, unknown>;
- * }}
- */ (eslintReactPlugin.configs["strict-type-checked"]);
-
-/** @typedef {import("eslint").Linter.Config} EslintConfig */
-/** @typedef {import("eslint").Linter.BaseConfig} BaseEslintConfig */
-/** @typedef {import("eslint").Linter.LinterOptions} LinterOptions */
-/** @typedef {NonNullable<EslintConfig["rules"]>} EslintRulesConfig */
-/** @typedef {EslintConfig | readonly EslintConfig[]} EslintConfigValue */
-/** @typedef {Parameters<typeof defineConfig>[0]} DefineConfigValue */
-
-/**
- * @param {unknown} value
- *
- * @returns {value is Readonly<Record<string, unknown>>}
- */
-const isReadonlyRecord = (value) =>
-    typeof value === "object" && value !== null && !Array.isArray(value);
-
-/**
- * Read `rules` from a flat/legacy ESLint config object safely.
- *
- * @param {unknown} configValue
- *
- * @returns {EslintRulesConfig}
- */
-const readConfigRules = (configValue) => {
-    if (Array.isArray(configValue)) {
-        return /** @type {EslintRulesConfig} */ (
-            Object.assign(
-                {},
-                ...configValue.map((nestedConfigValue) =>
-                    readConfigRules(nestedConfigValue)
-                )
-            )
-        );
-    }
-
-    if (!isReadonlyRecord(configValue)) {
-        return /** @type {EslintRulesConfig} */ ({});
-    }
-
-    const { rules } = configValue;
-    return isReadonlyRecord(rules)
-        ? /** @type {EslintRulesConfig} */ (rules)
-        : /** @type {EslintRulesConfig} */ ({});
-};
-
-/**
- * Read a named flat config from a plugin/config provider safely.
- *
- * @param {unknown} pluginValue
- * @param {string} configName
- *
- * @returns {EslintConfigValue | undefined}
- */
-const readPluginNamedConfigValue = (pluginValue, configName) => {
-    if (!isReadonlyRecord(pluginValue)) {
-        return undefined;
-    }
-
-    const { configs } = pluginValue;
-    if (!isReadonlyRecord(configs)) {
-        return undefined;
-    }
-
-    if (!Object.hasOwn(configs, configName)) {
-        return undefined;
-    }
-
-    // eslint-disable-next-line security/detect-object-injection -- configName is a controlled constant, not user input.
-    return /** @type {EslintConfigValue | undefined} */ (configs[configName]);
-};
-
-/**
- * @param {unknown} pluginValue
- * @param {string} configName
- *
- * @returns {EslintRulesConfig}
- */
-const readPluginConfigRules = (pluginValue, configName) =>
-    readConfigRules(readPluginNamedConfigValue(pluginValue, configName));
 
 const require = createRequire(import.meta.url);
 // eslint-disable-next-line unicorn/prefer-import-meta-properties -- n/no-unsupported-features reports import.meta.dirname as unsupported in this config context.
@@ -599,7 +485,7 @@ export default defineConfig([
         },
         rules: {
             ...css.configs.recommended.rules,
-            ...readPluginConfigRules(pluginUndefinedCss, "recommended"),
+            ...pluginUndefinedCss.default?.configs?.recommended?.rules,
             ...pluginCssModules.configs.recommended.rules,
             // CSS Eslint Rules (css/*)
             "css/no-empty-blocks": "error",
@@ -649,18 +535,18 @@ export default defineConfig([
         },
         name: "Docusaurus Workspace Files",
         plugins: {
-            ...eslintReactStrictTypeCheckedConfig.plugins,
             "@docusaurus": pluginDocusaurus,
             "@eslint-react": eslintReactPlugin,
-            "jsx-a11y": jsxA11yPlugin,
+            "jsx-a11y": eslintPluginJsxA11y,
         },
         rules: {
-            ...eslintReactStrictTypeCheckedConfig.rules,
+            ...eslintReactPlugin.configs["strict-type-checked"].rules,
             ...eslintPluginJsxA11y.flatConfigs.recommended.rules,
             "@docusaurus/no-html-links": "warn",
             "@docusaurus/no-untranslated-text": "off",
             "@docusaurus/prefer-docusaurus-heading": "warn",
             "@docusaurus/string-literal-i18n-messages": "off",
+            "@eslint-react/dom-prefer-namespace-import": "warn",
             "@eslint-react/immutability": "warn",
             "@eslint-react/no-duplicate-key": "warn",
             "@eslint-react/no-implicit-children": "warn",
@@ -675,7 +561,7 @@ export default defineConfig([
             "jsx-a11y/prefer-tag-over-role": "warn",
         },
         settings: {
-            ...eslintReactStrictTypeCheckedConfig.settings,
+            ...eslintReactPlugin.configs["strict-type-checked"]?.settings,
         },
     },
     // #endregion
@@ -903,7 +789,7 @@ export default defineConfig([
         plugins: {
             "@microsoft/sdl": pluginMicrosoftSdl,
             "@typescript-eslint": tseslint,
-            canonical: canonicalPlugin,
+            canonical: pluginCanonical,
             "comment-length": eslintPluginCommentLength,
             "eslint-comments": comments,
             "eslint-plugin": eslintPluginEslintPlugin,
@@ -911,7 +797,6 @@ export default defineConfig([
             js: js,
             jsdoc: jsdocPlugin,
             listeners,
-            "loadable-imports": pluginLoadableImports,
             math: eslintPluginMath,
             "module-interop": moduleInterop,
             n: nodePlugin,
@@ -925,8 +810,6 @@ export default defineConfig([
             "require-jsdoc": pluginJSDoc,
             security: pluginSecurity,
             sonarjs: sonarjs,
-            "sort-class-members": sortClassMembersPlugin,
-            "total-functions": fixupPluginRules(pluginTotalFunctions),
             "tsdoc-require-2": tsdocRequire,
             unicorn: eslintPluginUnicorn,
             "unused-imports": pluginUnusedImports,
@@ -935,11 +818,11 @@ export default defineConfig([
             // TypeScript backend rules
             ...js.configs.all.rules,
             ...tseslint.configs["recommendedTypeChecked"],
-            ...readConfigRules(tseslint.configs["recommended"]),
+            ...tseslint.configs["recommended"]?.rules,
             ...tseslint.configs["strictTypeChecked"],
-            ...readConfigRules(tseslint.configs["strict"]),
+            ...tseslint.configs["strict"]?.rules,
             ...tseslint.configs["stylisticTypeChecked"],
-            ...readConfigRules(tseslint.configs["stylistic"]),
+            ...tseslint.configs["stylistic"]?.rules,
             ...pluginRegexp.configs.all.rules,
             ...importX.flatConfigs.recommended.rules,
             ...importX.flatConfigs.electron.rules,
@@ -953,12 +836,10 @@ export default defineConfig([
             ...eslintPluginMath.configs.recommended.rules,
             ...comments.recommended.rules,
             ...pluginCanonical.configs.recommended.rules,
-            ...pluginSortClassMembers.configs["flat/recommended"].rules,
             ...eslintPluginNoUseExtendNative.configs.recommended.rules,
             ...pluginMicrosoftSdl.configs.required.rules,
-            ...readPluginConfigRules(listeners, "strict"),
+            ...listeners.configs.strict?.rules,
             ...moduleInterop.configs.recommended.rules,
-            ...readPluginConfigRules(pluginTotalFunctions, "recommended"),
             "@eslint-community/eslint-comments/no-restricted-disable": "warn",
             // Deprecated rule - turned off
             "@eslint-community/eslint-comments/no-unused-disable": "off",
@@ -1527,7 +1408,6 @@ export default defineConfig([
             "jsdoc/require-description": "warn",
             "jsdoc/require-param-description": "warn",
             "jsdoc/require-returns-description": "warn",
-            "loadable-imports/sort": "error",
             "math/abs": "warn",
             "math/prefer-exponentiation-operator": "warn",
             "math/prefer-math-sum-precise": "warn",
@@ -1547,36 +1427,6 @@ export default defineConfig([
             "promise/spec-only": "warn",
             "security/detect-non-literal-fs-filename": "off",
             "security/detect-object-injection": "off",
-            "sort-class-members/sort-class-members": [
-                "warn",
-                {
-                    accessorPairPositioning: "together",
-                    order: [
-                        "[static-properties]",
-                        "[properties]",
-                        "[conventional-private-properties]",
-                        "[arrow-function-properties]",
-                        "[everything-else]",
-                        "[accessor-pairs]",
-                        "[getters]",
-                        "[setters]",
-                        "[static-methods]",
-                        "[async-methods]",
-                        "[methods]",
-                        "[conventional-private-methods]",
-                    ],
-                    sortInterfaces: true,
-                    stopAfterFirstProblem: false,
-                },
-            ],
-            "total-functions/no-hidden-type-assertions": "warn",
-            "total-functions/no-nested-fp-ts-effects": "warn",
-            "total-functions/no-partial-division": "warn",
-            "total-functions/no-partial-url-constructor": "warn",
-            "total-functions/no-unsafe-mutable-readonly-assignment": "off",
-            "total-functions/no-unsafe-readonly-mutable-assignment": "off",
-            "total-functions/no-unsafe-type-assertion": "off",
-            "total-functions/require-strict-mode": "warn",
             "unused-imports/no-unused-imports": "error",
             "unused-imports/no-unused-vars": "error",
         },
@@ -1772,7 +1622,6 @@ export default defineConfig([
         plugins: {
             "@typescript-eslint": tseslint,
             "import-x": importX,
-            "loadable-imports": pluginLoadableImports,
             n: nodePlugin,
             "no-only-tests": pluginNoOnly,
             "testing-library": pluginTestingLibrary,
@@ -1783,11 +1632,11 @@ export default defineConfig([
         rules: {
             ...js.configs.all.rules,
             ...tseslint.configs["recommendedTypeChecked"],
-            ...readConfigRules(tseslint.configs["recommended"]),
+            ...tseslint.configs["recommended"]?.rules,
             ...tseslint.configs["strictTypeChecked"],
-            ...readConfigRules(tseslint.configs["strict"]),
+            ...tseslint.configs["strict"]?.rules,
             ...tseslint.configs["stylisticTypeChecked"],
-            ...readConfigRules(tseslint.configs["stylistic"]),
+            ...tseslint.configs["stylistic"]?.rules,
             ...vitest.configs.all.rules,
             ...eslintPluginUnicorn.configs.all.rules,
             ...pluginTestingLibrary.configs["flat/react"].rules,
@@ -1829,7 +1678,6 @@ export default defineConfig([
             "func-style": "off",
             "id-length": "off",
             "init-declarations": "off",
-            "loadable-imports/sort": "error",
             "max-classes-per-file": "off",
             "max-depth": "off",
             "max-lines": "off",
@@ -2738,19 +2586,18 @@ export default defineConfig([
             js: js,
             math: eslintPluginMath,
             n: nodePlugin,
-            "no-unsanitized": noUnsanitizedPlugin,
+            "no-unsanitized": nounsanitized,
             perfectionist: pluginPerfectionist,
-            "prefer-arrow": preferArrowPlugin,
+            "prefer-arrow": pluginPreferArrow,
             prettier: pluginPrettier,
             promise: pluginPromise,
             redos: pluginRedos,
             regexp: pluginRegexp,
             security: pluginSecurity,
             sonarjs: sonarjs,
-            "sort-class-members": sortClassMembersPlugin,
             unicorn: eslintPluginUnicorn,
             "unused-imports": pluginUnusedImports,
-            "write-good-comments": writeGoodCommentsPlugin,
+            "write-good-comments": pluginWriteGood,
         },
         rules: {
             ...js.configs.all.rules,
@@ -2762,7 +2609,7 @@ export default defineConfig([
             ...eslintPluginUnicorn.configs.all.rules,
             ...sonarjsConfigs.recommended.rules,
             ...pluginPerfectionist.configs["recommended-natural"].rules,
-            ...readPluginConfigRules(pluginRedos, "recommended"),
+            ...pluginRedos.configs.recommended?.rules,
             ...pluginSecurity.configs.recommended.rules,
             ...nodePlugin.configs["flat/recommended"].rules,
             ...eslintPluginMath.configs.recommended.rules,
@@ -3007,12 +2854,11 @@ export default defineConfig([
         files: ["**/*.{js,jsx,mjs,cjs,ts,tsx,cts,mts}"],
         name: "Global: Globals",
         plugins: {
-            canonical: canonicalPlugin,
-            "no-explicit-type-exports": noExplicitTypeExportsPlugin,
+            canonical: pluginCanonical,
             "no-secrets": noSecrets,
-            "no-unsanitized": noUnsanitizedPlugin,
-            "prefer-arrow": preferArrowPlugin,
-            "write-good-comments": writeGoodCommentsPlugin,
+            "no-unsanitized": nounsanitized,
+            "prefer-arrow": pluginPreferArrow,
+            "write-good-comments": pluginWriteGood,
         },
         rules: {
             "callback-return": "off",
@@ -3057,7 +2903,6 @@ export default defineConfig([
                 },
             ],
             "no-empty-character-class": "error",
-            "no-explicit-type-exports/no-explicit-type-exports": "error",
             "no-inline-comments": "off",
             "no-invalid-regexp": "error",
             "no-magic-numbers": "off",
