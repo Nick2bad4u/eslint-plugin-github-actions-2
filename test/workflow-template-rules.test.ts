@@ -1,10 +1,20 @@
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, describe, expect, it } from "vitest";
 
 import { lintWorkflow } from "./_shared/lint-workflow.js";
 
 const temporaryDirectories: string[] = [];
+const deferredCleanupDirectories: string[] = [];
+
+const removeTemporaryDirectory = (temporaryDirectory: string): void => {
+    rmSync(temporaryDirectory, {
+        force: true,
+        maxRetries: 10,
+        recursive: true,
+        retryDelay: 100,
+    });
+};
 
 const createTemporaryTemplateDirectory = (): string => {
     const temporaryRoot = path.join(process.cwd(), "temp");
@@ -30,10 +40,23 @@ describe("workflow template rules", () => {
     // eslint-disable-next-line vitest/no-hooks -- shared temp-directory cleanup after each isolated test case
     afterEach(() => {
         for (const temporaryDirectory of temporaryDirectories.splice(0)) {
-            rmSync(temporaryDirectory, {
-                force: true,
-                recursive: true,
-            });
+            try {
+                removeTemporaryDirectory(temporaryDirectory);
+            } catch {
+                deferredCleanupDirectories.push(temporaryDirectory);
+            }
+        }
+    });
+
+    // eslint-disable-next-line vitest/no-hooks -- deferred Windows cleanup for file-handle races observed in temp directories
+    afterAll(() => {
+        for (const temporaryDirectory of deferredCleanupDirectories.splice(0)) {
+            try {
+                removeTemporaryDirectory(temporaryDirectory);
+            } catch {
+                // Best-effort cleanup only. Windows and synced folders can keep
+                // short-lived handles open after the test logic has completed.
+            }
         }
     });
 

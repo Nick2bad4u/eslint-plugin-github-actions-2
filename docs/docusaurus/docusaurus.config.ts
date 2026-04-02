@@ -199,6 +199,10 @@ const config: Config = {
                             to: "/docs/rules/category/workflow-rules",
                         },
                         {
+                            label: "🤖 Dependabot rules",
+                            to: "/docs/rules/category/dependabot-rules",
+                        },
+                        {
                             label: "🧩 Action metadata rules",
                             to: "/docs/rules/category/action-metadata-rules",
                         },
@@ -232,6 +236,10 @@ const config: Config = {
                         {
                             label: "🟣 All",
                             to: "/docs/rules/presets/all",
+                        },
+                        {
+                            label: "🤖 Dependabot",
+                            to: "/docs/rules/presets/dependabot",
                         },
                         {
                             label: "🧩 Action metadata",

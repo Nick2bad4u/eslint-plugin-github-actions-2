@@ -1,6 +1,6 @@
 import builtPlugin from "./dist/plugin.js";
 
-/** @type {import("eslint").ESLint.Plugin} */
+/** @type {typeof import("./dist/plugin.js").default} */
 const plugin = builtPlugin;
 
 export default plugin;

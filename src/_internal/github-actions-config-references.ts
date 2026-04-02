@@ -4,6 +4,7 @@
  */
 import {
     ACTION_METADATA_FILE_GLOBS,
+    DEPENDABOT_FILE_GLOBS,
     WORKFLOW_TEMPLATE_FILE_GLOBS,
     WORKFLOW_TEMPLATE_PROPERTIES_FILE_GLOBS,
 } from "./lint-targets.js";
@@ -12,6 +13,7 @@ import { WORKFLOW_FILE_GLOBS } from "./workflow-yaml.js";
 /** Ordered preset names exposed through `plugin.configs`. */
 export const githubActionsConfigNames = [
     "actionMetadata",
+    "dependabot",
     "workflowTemplateProperties",
     "workflowTemplates",
     "recommended",
@@ -29,6 +31,7 @@ export const githubActionsConfigReferenceToName: Readonly<
 > = {
     "github-actions.configs.actionMetadata": "actionMetadata",
     "github-actions.configs.all": "all",
+    "github-actions.configs.dependabot": "dependabot",
     "github-actions.configs.recommended": "recommended",
     "github-actions.configs.security": "security",
     "github-actions.configs.strict": "strict",
@@ -62,14 +65,22 @@ export const githubActionsConfigMetadataByName: Readonly<
     },
     all: {
         description:
-            "Enables every available GitHub Actions workflow rule published by this plugin.",
+            "Enables every available rule published by this plugin across workflows, action metadata, workflow templates, and Dependabot configuration.",
         files: [
             ...WORKFLOW_FILE_GLOBS,
             ...ACTION_METADATA_FILE_GLOBS,
+            ...DEPENDABOT_FILE_GLOBS,
             ...WORKFLOW_TEMPLATE_FILE_GLOBS,
         ],
         icon: "🟣",
         presetName: "github-actions:all",
+    },
+    dependabot: {
+        description:
+            "Linting defaults for repository Dependabot configuration files (`.github/dependabot.yml`).",
+        files: DEPENDABOT_FILE_GLOBS,
+        icon: "🤖",
+        presetName: "github-actions:dependabot",
     },
     recommended: {
         description:

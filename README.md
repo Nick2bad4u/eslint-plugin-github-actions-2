@@ -60,6 +60,7 @@ Fix legend:
 
 Preset key legend:
 🧩 — githubActions.configs.actionMetadata
+🤖 — githubActions.configs.dependabot
 🗂️ — githubActions.configs.workflowTemplateProperties
 🧱 — githubActions.configs.workflowTemplates
 🟡 — githubActions.configs.recommended
@@ -98,10 +99,12 @@ Preset key legend:
 | <span class="sb-inline-rule-number">R013</span> [`no-top-level-env`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-top-level-env) | — | 🟣 🔴 |
 | <span class="sb-inline-rule-number">R014</span> [`no-top-level-permissions`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-top-level-permissions) | — | 🟣 |
 | <span class="sb-inline-rule-number">R061</span> [`no-universal-template-file-pattern`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-universal-template-file-pattern) | — | 🗂️ 🧱 🟣 |
+| <span class="sb-inline-rule-number">R081</span> [`no-unknown-dependabot-multi-ecosystem-group`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unknown-dependabot-multi-ecosystem-group) | — | 🟣 🤖 |
 | <span class="sb-inline-rule-number">R050</span> [`no-unknown-input-reference-in-composite`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unknown-input-reference-in-composite) | — | 🧩 🟣 |
 | <span class="sb-inline-rule-number">R037</span> [`no-unknown-job-output-reference`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unknown-job-output-reference) | — | 🟣 🟡 🔴 |
 | <span class="sb-inline-rule-number">R038</span> [`no-unknown-step-reference`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unknown-step-reference) | — | 🟣 🔴 |
 | <span class="sb-inline-rule-number">R029</span> [`no-untrusted-input-in-run`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-untrusted-input-in-run) | — | 🟣 🛡️ 🔴 |
+| <span class="sb-inline-rule-number">R085</span> [`no-unused-dependabot-enable-beta-ecosystems`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unused-dependabot-enable-beta-ecosystems) | — | 🟣 🤖 |
 | <span class="sb-inline-rule-number">R053</span> [`no-unused-input-in-composite`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unused-input-in-composite) | — | 🧩 🟣 |
 | <span class="sb-inline-rule-number">R023</span> [`no-write-all-permissions`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-write-all-permissions) | — | 🟣 🟡 🛡️ 🔴 |
 | <span class="sb-inline-rule-number">R003</span> [`pin-action-shas`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/pin-action-shas) | — | 🟣 🛡️ 🔴 |
@@ -115,6 +118,20 @@ Preset key legend:
 | <span class="sb-inline-rule-number">R006</span> [`require-action-run-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-action-run-name) | — | 🟣 🔴 |
 | <span class="sb-inline-rule-number">R025</span> [`require-checkout-before-local-action`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-checkout-before-local-action) | — | 🟣 🟡 🔴 |
 | <span class="sb-inline-rule-number">R052</span> [`require-composite-step-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-composite-step-name) | — | 🧩 🟣 |
+| <span class="sb-inline-rule-number">R077</span> [`require-dependabot-assignees`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-dependabot-assignees) | — | 🟣 🤖 |
+| <span class="sb-inline-rule-number">R079</span> [`require-dependabot-commit-message-prefix`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-dependabot-commit-message-prefix) | — | 🟣 🤖 |
+| <span class="sb-inline-rule-number">R073</span> [`require-dependabot-directory`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-dependabot-directory) | — | 🟣 🤖 |
+| <span class="sb-inline-rule-number">R084</span> [`require-dependabot-github-actions-directory-root`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-dependabot-github-actions-directory-root) | — | 🟣 🤖 |
+| <span class="sb-inline-rule-number">R080</span> [`require-dependabot-labels`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-dependabot-labels) | — | 🟣 🤖 |
+| <span class="sb-inline-rule-number">R072</span> [`require-dependabot-package-ecosystem`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-dependabot-package-ecosystem) | — | 🟣 🤖 |
+| <span class="sb-inline-rule-number">R082</span> [`require-dependabot-patterns-for-multi-ecosystem-group`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-dependabot-patterns-for-multi-ecosystem-group) | — | 🟣 🤖 |
+| <span class="sb-inline-rule-number">R083</span> [`require-dependabot-schedule-cronjob`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-dependabot-schedule-cronjob) | — | 🟣 🤖 |
+| <span class="sb-inline-rule-number">R074</span> [`require-dependabot-schedule-interval`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-dependabot-schedule-interval) | — | 🟣 🤖 |
+| <span class="sb-inline-rule-number">R075</span> [`require-dependabot-schedule-time`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-dependabot-schedule-time) | — | 🟣 🤖 |
+| <span class="sb-inline-rule-number">R076</span> [`require-dependabot-schedule-timezone`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-dependabot-schedule-timezone) | — | 🟣 🤖 |
+| <span class="sb-inline-rule-number">R078</span> [`require-dependabot-target-branch`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-dependabot-target-branch) | — | 🟣 🤖 |
+| <span class="sb-inline-rule-number">R071</span> [`require-dependabot-updates`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-dependabot-updates) | — | 🟣 🤖 |
+| <span class="sb-inline-rule-number">R070</span> [`require-dependabot-version`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-dependabot-version) | — | 🟣 🤖 |
 | <span class="sb-inline-rule-number">R007</span> [`require-job-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-job-name) | — | 🟣 🔴 |
 | <span class="sb-inline-rule-number">R008</span> [`require-job-step-name`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-job-step-name) | — | 🟣 🔴 |
 | <span class="sb-inline-rule-number">R002</span> [`require-job-timeout-minutes`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-job-timeout-minutes) | — | 🟣 🟡 🔴 |

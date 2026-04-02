@@ -1,6 +1,6 @@
 # Rule overview
 
-`eslint-plugin-github-actions-2` targets GitHub Actions workflow YAML files, action metadata files (`action.yml` / `action.yaml`), and workflow-template package files under `workflow-templates/`.
+`eslint-plugin-github-actions-2` targets GitHub Actions workflow YAML files, action metadata files (`action.yml` / `action.yaml`), repository Dependabot configuration files (`.github/dependabot.yml`), and workflow-template package files under `workflow-templates/`.
 
 New to the plugin? Start with [Getting started](./getting-started.md). Need
 config guidance? See the [preset reference](./presets/index.md). Looking for a
@@ -17,6 +17,7 @@ specific check? Jump to [Current rules](#current-rules).
 - **Reusable workflow hygiene**: explicit checkout ordering, narrowly scoped secret passing, and valid reusable-workflow caller job keys
 - **Workflow safety**: safer conditional secret handling, untrusted-script handling, scoped workflow chaining, safer privileged PR automation, fork-triggered self-hosted runner hardening, and scoped privileged PR targets
 - **Trigger precision**: explicit activity-type scoping for broad multi-activity events and merge-queue-aware pull request validation
+- **Dependency automation**: required Dependabot keys, explicit schedules, PR routing, labels, ownership, and commit-title conventions
 
 ## Current rules
 
@@ -52,6 +53,8 @@ specific check? Jump to [Current rules](#current-rules).
 - [`no-template-placeholder-in-non-template-workflow`](./no-template-placeholder-in-non-template-workflow.md)
 - [`no-top-level-env`](./no-top-level-env.md)
 - [`no-top-level-permissions`](./no-top-level-permissions.md)
+- [`no-unused-dependabot-enable-beta-ecosystems`](./no-unused-dependabot-enable-beta-ecosystems.md)
+- [`no-unknown-dependabot-multi-ecosystem-group`](./no-unknown-dependabot-multi-ecosystem-group.md)
 - [`no-universal-template-file-pattern`](./no-universal-template-file-pattern.md)
 - [`no-unknown-input-reference-in-composite`](./no-unknown-input-reference-in-composite.md)
 - [`no-unknown-job-output-reference`](./no-unknown-job-output-reference.md)
@@ -69,6 +72,20 @@ specific check? Jump to [Current rules](#current-rules).
 - [`require-action-run-name`](./require-action-run-name.md)
 - [`require-checkout-before-local-action`](./require-checkout-before-local-action.md)
 - [`require-composite-step-name`](./require-composite-step-name.md)
+- [`require-dependabot-assignees`](./require-dependabot-assignees.md)
+- [`require-dependabot-commit-message-prefix`](./require-dependabot-commit-message-prefix.md)
+- [`require-dependabot-directory`](./require-dependabot-directory.md)
+- [`require-dependabot-github-actions-directory-root`](./require-dependabot-github-actions-directory-root.md)
+- [`require-dependabot-labels`](./require-dependabot-labels.md)
+- [`require-dependabot-package-ecosystem`](./require-dependabot-package-ecosystem.md)
+- [`require-dependabot-patterns-for-multi-ecosystem-group`](./require-dependabot-patterns-for-multi-ecosystem-group.md)
+- [`require-dependabot-schedule-cronjob`](./require-dependabot-schedule-cronjob.md)
+- [`require-dependabot-schedule-interval`](./require-dependabot-schedule-interval.md)
+- [`require-dependabot-schedule-time`](./require-dependabot-schedule-time.md)
+- [`require-dependabot-schedule-timezone`](./require-dependabot-schedule-timezone.md)
+- [`require-dependabot-target-branch`](./require-dependabot-target-branch.md)
+- [`require-dependabot-updates`](./require-dependabot-updates.md)
+- [`require-dependabot-version`](./require-dependabot-version.md)
 - [`require-job-name`](./require-job-name.md)
 - [`require-job-step-name`](./require-job-step-name.md)
 - [`require-merge-group-trigger`](./require-merge-group-trigger.md)

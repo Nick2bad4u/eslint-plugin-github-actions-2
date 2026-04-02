@@ -9,6 +9,11 @@ export const ACTION_METADATA_FILE_GLOBS: readonly string[] = [
     "**/action.{yml,yaml}",
 ];
 
+/** Dependabot configuration file globs. */
+export const DEPENDABOT_FILE_GLOBS: readonly string[] = [
+    ".github/dependabot.{yml,yaml}",
+];
+
 /** Workflow template metadata (`.properties.json`) file globs. */
 export const WORKFLOW_TEMPLATE_PROPERTIES_FILE_GLOBS: readonly string[] = [
     "**/workflow-templates/*.properties.json",
@@ -36,6 +41,18 @@ export const isActionMetadataFile = (filePath: string): boolean => {
     return (
         normalizedFilePath.endsWith("/action.yml") ||
         normalizedFilePath.endsWith("/action.yaml")
+    );
+};
+
+/** Determine whether a filename is the repository Dependabot config file. */
+export const isDependabotFile = (filePath: string): boolean => {
+    const normalizedFilePath = normalizePathForMatching(filePath);
+
+    return (
+        normalizedFilePath.endsWith("/.github/dependabot.yml") ||
+        normalizedFilePath.endsWith("/.github/dependabot.yaml") ||
+        normalizedFilePath === ".github/dependabot.yml" ||
+        normalizedFilePath === ".github/dependabot.yaml"
     );
 };
 

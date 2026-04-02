@@ -33,10 +33,12 @@ import noTemplatePlaceholderInNonTemplateWorkflow from "../rules/no-template-pla
 import noTopLevelEnv from "../rules/no-top-level-env.js";
 import noTopLevelPermissions from "../rules/no-top-level-permissions.js";
 import noUniversalTemplateFilePattern from "../rules/no-universal-template-file-pattern.js";
+import noUnknownDependabotMultiEcosystemGroup from "../rules/no-unknown-dependabot-multi-ecosystem-group.js";
 import noUnknownInputReferenceInComposite from "../rules/no-unknown-input-reference-in-composite.js";
 import noUnknownJobOutputReference from "../rules/no-unknown-job-output-reference.js";
 import noUnknownStepReference from "../rules/no-unknown-step-reference.js";
 import noUntrustedInputInRun from "../rules/no-untrusted-input-in-run.js";
+import noUnusedDependabotEnableBetaEcosystems from "../rules/no-unused-dependabot-enable-beta-ecosystems.js";
 import noUnusedInputInComposite from "../rules/no-unused-input-in-composite.js";
 import noWriteAllPermissions from "../rules/no-write-all-permissions.js";
 import pinActionShas from "../rules/pin-action-shas.js";
@@ -50,6 +52,20 @@ import requireActionName from "../rules/require-action-name.js";
 import requireActionRunName from "../rules/require-action-run-name.js";
 import requireCheckoutBeforeLocalAction from "../rules/require-checkout-before-local-action.js";
 import requireCompositeStepName from "../rules/require-composite-step-name.js";
+import requireDependabotAssignees from "../rules/require-dependabot-assignees.js";
+import requireDependabotCommitMessagePrefix from "../rules/require-dependabot-commit-message-prefix.js";
+import requireDependabotDirectory from "../rules/require-dependabot-directory.js";
+import requireDependabotGithubActionsDirectoryRoot from "../rules/require-dependabot-github-actions-directory-root.js";
+import requireDependabotLabels from "../rules/require-dependabot-labels.js";
+import requireDependabotPackageEcosystem from "../rules/require-dependabot-package-ecosystem.js";
+import requireDependabotPatternsForMultiEcosystemGroup from "../rules/require-dependabot-patterns-for-multi-ecosystem-group.js";
+import requireDependabotScheduleCronjob from "../rules/require-dependabot-schedule-cronjob.js";
+import requireDependabotScheduleInterval from "../rules/require-dependabot-schedule-interval.js";
+import requireDependabotScheduleTime from "../rules/require-dependabot-schedule-time.js";
+import requireDependabotScheduleTimezone from "../rules/require-dependabot-schedule-timezone.js";
+import requireDependabotTargetBranch from "../rules/require-dependabot-target-branch.js";
+import requireDependabotUpdates from "../rules/require-dependabot-updates.js";
+import requireDependabotVersion from "../rules/require-dependabot-version.js";
 import requireJobName from "../rules/require-job-name.js";
 import requireJobStepName from "../rules/require-job-step-name.js";
 import requireJobTimeoutMinutes from "../rules/require-job-timeout-minutes.js";
@@ -105,10 +121,12 @@ const githubActionsRulesDefinition: {
     readonly "no-top-level-env": typeof noTopLevelEnv;
     readonly "no-top-level-permissions": typeof noTopLevelPermissions;
     readonly "no-universal-template-file-pattern": typeof noUniversalTemplateFilePattern;
+    readonly "no-unknown-dependabot-multi-ecosystem-group": typeof noUnknownDependabotMultiEcosystemGroup;
     readonly "no-unknown-input-reference-in-composite": typeof noUnknownInputReferenceInComposite;
     readonly "no-unknown-job-output-reference": typeof noUnknownJobOutputReference;
     readonly "no-unknown-step-reference": typeof noUnknownStepReference;
     readonly "no-untrusted-input-in-run": typeof noUntrustedInputInRun;
+    readonly "no-unused-dependabot-enable-beta-ecosystems": typeof noUnusedDependabotEnableBetaEcosystems;
     readonly "no-unused-input-in-composite": typeof noUnusedInputInComposite;
     readonly "no-write-all-permissions": typeof noWriteAllPermissions;
     readonly "pin-action-shas": typeof pinActionShas;
@@ -122,6 +140,20 @@ const githubActionsRulesDefinition: {
     readonly "require-action-run-name": typeof requireActionRunName;
     readonly "require-checkout-before-local-action": typeof requireCheckoutBeforeLocalAction;
     readonly "require-composite-step-name": typeof requireCompositeStepName;
+    readonly "require-dependabot-assignees": typeof requireDependabotAssignees;
+    readonly "require-dependabot-commit-message-prefix": typeof requireDependabotCommitMessagePrefix;
+    readonly "require-dependabot-directory": typeof requireDependabotDirectory;
+    readonly "require-dependabot-github-actions-directory-root": typeof requireDependabotGithubActionsDirectoryRoot;
+    readonly "require-dependabot-labels": typeof requireDependabotLabels;
+    readonly "require-dependabot-package-ecosystem": typeof requireDependabotPackageEcosystem;
+    readonly "require-dependabot-patterns-for-multi-ecosystem-group": typeof requireDependabotPatternsForMultiEcosystemGroup;
+    readonly "require-dependabot-schedule-cronjob": typeof requireDependabotScheduleCronjob;
+    readonly "require-dependabot-schedule-interval": typeof requireDependabotScheduleInterval;
+    readonly "require-dependabot-schedule-time": typeof requireDependabotScheduleTime;
+    readonly "require-dependabot-schedule-timezone": typeof requireDependabotScheduleTimezone;
+    readonly "require-dependabot-target-branch": typeof requireDependabotTargetBranch;
+    readonly "require-dependabot-updates": typeof requireDependabotUpdates;
+    readonly "require-dependabot-version": typeof requireDependabotVersion;
     readonly "require-job-name": typeof requireJobName;
     readonly "require-job-step-name": typeof requireJobStepName;
     readonly "require-job-timeout-minutes": typeof requireJobTimeoutMinutes;
@@ -180,11 +212,15 @@ const githubActionsRulesDefinition: {
     "no-top-level-env": noTopLevelEnv,
     "no-top-level-permissions": noTopLevelPermissions,
     "no-universal-template-file-pattern": noUniversalTemplateFilePattern,
+    "no-unknown-dependabot-multi-ecosystem-group":
+        noUnknownDependabotMultiEcosystemGroup,
     "no-unknown-input-reference-in-composite":
         noUnknownInputReferenceInComposite,
     "no-unknown-job-output-reference": noUnknownJobOutputReference,
     "no-unknown-step-reference": noUnknownStepReference,
     "no-untrusted-input-in-run": noUntrustedInputInRun,
+    "no-unused-dependabot-enable-beta-ecosystems":
+        noUnusedDependabotEnableBetaEcosystems,
     "no-unused-input-in-composite": noUnusedInputInComposite,
     "no-write-all-permissions": noWriteAllPermissions,
     "pin-action-shas": pinActionShas,
@@ -198,6 +234,23 @@ const githubActionsRulesDefinition: {
     "require-action-run-name": requireActionRunName,
     "require-checkout-before-local-action": requireCheckoutBeforeLocalAction,
     "require-composite-step-name": requireCompositeStepName,
+    "require-dependabot-assignees": requireDependabotAssignees,
+    "require-dependabot-commit-message-prefix":
+        requireDependabotCommitMessagePrefix,
+    "require-dependabot-directory": requireDependabotDirectory,
+    "require-dependabot-github-actions-directory-root":
+        requireDependabotGithubActionsDirectoryRoot,
+    "require-dependabot-labels": requireDependabotLabels,
+    "require-dependabot-package-ecosystem": requireDependabotPackageEcosystem,
+    "require-dependabot-patterns-for-multi-ecosystem-group":
+        requireDependabotPatternsForMultiEcosystemGroup,
+    "require-dependabot-schedule-cronjob": requireDependabotScheduleCronjob,
+    "require-dependabot-schedule-interval": requireDependabotScheduleInterval,
+    "require-dependabot-schedule-time": requireDependabotScheduleTime,
+    "require-dependabot-schedule-timezone": requireDependabotScheduleTimezone,
+    "require-dependabot-target-branch": requireDependabotTargetBranch,
+    "require-dependabot-updates": requireDependabotUpdates,
+    "require-dependabot-version": requireDependabotVersion,
     "require-job-name": requireJobName,
     "require-job-step-name": requireJobStepName,
     "require-job-timeout-minutes": requireJobTimeoutMinutes,

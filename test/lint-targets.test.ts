@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import {
     ACTION_METADATA_FILE_GLOBS,
+    DEPENDABOT_FILE_GLOBS,
     getTemplateStem,
     isActionMetadataFile,
+    isDependabotFile,
     isWorkflowTemplateFile,
     isWorkflowTemplatePropertiesFile,
     isWorkflowTemplateYamlFile,
@@ -16,6 +18,9 @@ import {
 describe("lint target helpers", () => {
     it("exports stable file-glob contracts", () => {
         expect(ACTION_METADATA_FILE_GLOBS).toEqual(["**/action.{yml,yaml}"]);
+        expect(DEPENDABOT_FILE_GLOBS).toEqual([
+            ".github/dependabot.{yml,yaml}",
+        ]);
         expect(WORKFLOW_TEMPLATE_PROPERTIES_FILE_GLOBS).toEqual([
             "**/workflow-templates/*.properties.json",
         ]);
@@ -39,6 +44,17 @@ describe("lint target helpers", () => {
         ).toBeTruthy();
         expect(isActionMetadataFile(".github/workflows/ci.yml")).toBeFalsy();
         expect(isActionMetadataFile("action.yaml.backup")).toBeFalsy();
+    });
+
+    it("detects repository Dependabot configuration files", () => {
+        expect(isDependabotFile(".github/dependabot.yml")).toBeTruthy();
+        expect(
+            isDependabotFile(String.raw`C:\Repo\.github\dependabot.yaml`)
+        ).toBeTruthy();
+        expect(isDependabotFile("dependabot.yml")).toBeFalsy();
+        expect(
+            isDependabotFile(".github/workflows/dependabot.yml")
+        ).toBeFalsy();
     });
 
     it("detects workflow template properties files", () => {

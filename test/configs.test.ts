@@ -11,6 +11,7 @@ describe("exported presets", () => {
         ).toEqual([
             "actionMetadata",
             "all",
+            "dependabot",
             "recommended",
             "security",
             "strict",
@@ -28,6 +29,9 @@ describe("exported presets", () => {
     it("exports dedicated action metadata and workflow template scopes", () => {
         expect(githubActionsPlugin.configs.actionMetadata.files).toEqual([
             "**/action.{yml,yaml}",
+        ]);
+        expect(githubActionsPlugin.configs.dependabot.files).toEqual([
+            ".github/dependabot.{yml,yaml}",
         ]);
         expect(
             githubActionsPlugin.configs.workflowTemplateProperties.files
@@ -144,6 +148,29 @@ describe("exported presets", () => {
             "github-actions/no-unused-input-in-composite",
             "github-actions/prefer-action-yml",
             "github-actions/require-composite-step-name",
+        ]);
+
+        expect(
+            Object.keys(githubActionsPlugin.configs.dependabot.rules).toSorted(
+                (left, right) => left.localeCompare(right)
+            )
+        ).toEqual([
+            "github-actions/no-unknown-dependabot-multi-ecosystem-group",
+            "github-actions/no-unused-dependabot-enable-beta-ecosystems",
+            "github-actions/require-dependabot-assignees",
+            "github-actions/require-dependabot-commit-message-prefix",
+            "github-actions/require-dependabot-directory",
+            "github-actions/require-dependabot-github-actions-directory-root",
+            "github-actions/require-dependabot-labels",
+            "github-actions/require-dependabot-package-ecosystem",
+            "github-actions/require-dependabot-patterns-for-multi-ecosystem-group",
+            "github-actions/require-dependabot-schedule-cronjob",
+            "github-actions/require-dependabot-schedule-interval",
+            "github-actions/require-dependabot-schedule-time",
+            "github-actions/require-dependabot-schedule-timezone",
+            "github-actions/require-dependabot-target-branch",
+            "github-actions/require-dependabot-updates",
+            "github-actions/require-dependabot-version",
         ]);
 
         expect(

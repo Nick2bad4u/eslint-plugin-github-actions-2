@@ -65,6 +65,7 @@
     --sb-accent-rules: #8250df;
     --sb-accent-presets: #9a6700;
     --sb-accent-guides: #06b6d4;
+    --sb-accent-dependabot: #f97316;
     --sb-accent-api-overview: #6366f1;
     --sb-accent-api-types: #14b8a6;
     --sb-accent-api-runtime: #f43f5e;
@@ -104,6 +105,7 @@ footer .footer__logo {
     --sb-accent-rules: #a371f7;
     --sb-accent-presets: #d29922;
     --sb-accent-guides: #67e8f9;
+    --sb-accent-dependabot: #fb923c;
     --sb-accent-api-overview: #a5b4fc;
     --sb-accent-api-types: #2dd4bf;
     --sb-accent-api-runtime: #fb7185;
@@ -182,6 +184,7 @@ footer .footer__logo {
 .sb-cat-api-runtime > .menu__list-item-collapsible .menu__link,
 .sb-cat-dev-charts > .menu__list-item-collapsible .menu__link,
 .sb-cat-dev-links > .menu__list-item-collapsible .menu__link,
+.sb-cat-rules-dependabot > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules-workflows > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules-action-metadata > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules-workflow-templates > .menu__list-item-collapsible .menu__link,
@@ -233,6 +236,10 @@ footer .footer__logo {
     border-inline-start-color: var(--sb-accent-rules);
 }
 
+.sb-cat-rules-dependabot > .menu__list-item-collapsible .menu__link {
+    border-inline-start-color: var(--sb-accent-dependabot);
+}
+
 .sb-cat-developer > .menu__link,
 .sb-cat-developer-adr > .menu__list-item-collapsible .menu__link,
 .sb-cat-presets > .menu__list-item-collapsible .menu__link,
@@ -242,6 +249,7 @@ footer .footer__logo {
 .sb-cat-dev-charts > .menu__list-item-collapsible .menu__link,
 .sb-cat-api-overview > .menu__list-item-collapsible .menu__link,
 .sb-cat-dev-links > .menu__list-item-collapsible .menu__link,
+.sb-cat-rules-dependabot > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules-workflows > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules-action-metadata > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules-workflow-templates > .menu__list-item-collapsible .menu__link,
@@ -260,6 +268,7 @@ footer .footer__logo {
 .sb-cat-dev-charts > .menu__list-item-collapsible .menu__link::before,
 .sb-cat-api-overview > .menu__list-item-collapsible .menu__link::before,
 .sb-cat-dev-links > .menu__list-item-collapsible .menu__link::before,
+.sb-cat-rules-dependabot > .menu__list-item-collapsible .menu__link::before,
 .sb-cat-rules-workflows > .menu__list-item-collapsible .menu__link::before,
 .sb-cat-rules-action-metadata
     > .menu__list-item-collapsible
@@ -299,6 +308,13 @@ footer .footer__logo {
     background-color: rgb(249 115 22 / 12%);
     border: 1px solid rgb(249 115 22 / 40%);
     color: var(--sb-accent-rules);
+}
+
+.sb-cat-rules-dependabot > .menu__list-item-collapsible .menu__link::before {
+    content: "🤖";
+    background-color: rgb(249 115 22 / 12%);
+    border: 1px solid rgb(249 115 22 / 40%);
+    color: var(--sb-accent-dependabot);
 }
 
 /* Mermaid chart readability: preserve legibility and allow horizontal scroll on narrow viewports. */
@@ -467,6 +483,12 @@ footer .footer__logo {
     box-shadow: inset 0 0 0 1px rgb(168 85 247 / 25%);
 }
 
+.sb-cat-rules-dependabot:not(.menu__list-item--collapsed)
+    > .menu__list-item-collapsible
+    .menu__link {
+    box-shadow: inset 0 0 0 1px rgb(249 115 22 / 25%);
+}
+
 .sb-cat-api-types:not(.menu__list-item--collapsed)
     > .menu__list-item-collapsible
     .menu__link {
@@ -516,6 +538,7 @@ footer .footer__logo {
 }
 
 .sb-cat-rules-workflows .theme-doc-sidebar-item-link-level-3 > .menu__link,
+.sb-cat-rules-dependabot .theme-doc-sidebar-item-link-level-3 > .menu__link,
 .sb-cat-rules-action-metadata
     .theme-doc-sidebar-item-link-level-3
     > .menu__link,

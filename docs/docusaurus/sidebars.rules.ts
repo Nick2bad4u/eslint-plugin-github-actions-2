@@ -56,6 +56,7 @@ const presetOrder = [
     "security",
     "strict",
     "all",
+    "dependabot",
     "action-metadata",
     "workflow-template-properties",
     "workflow-templates",
@@ -70,10 +71,14 @@ const presetLabelById = new Map<string, string>([
     ["security", "🛡️ Security"],
     ["strict", "🔴 Strict"],
     ["all", "🟣 All"],
+    ["dependabot", "🤖 Dependabot"],
     ["action-metadata", "🧩 Action metadata"],
     ["workflow-template-properties", "🧱 Workflow template properties"],
     ["workflow-templates", "🧪 Workflow templates"],
 ]);
+
+const isDependabotRule = (docId: string): boolean =>
+    docId.includes("dependabot");
 
 /**
  * Classify rule docs by lint target family for clearer navigation.
@@ -98,13 +103,20 @@ const isActionMetadataRule = (docId: string): boolean =>
     docId === "prefer-action-yml";
 
 const workflowTemplateRuleDocIds = topLevelRuleDocIds.filter(
-    isWorkflowTemplateRule
+    (docId) => !isDependabotRule(docId) && isWorkflowTemplateRule(docId)
 );
 const actionMetadataRuleDocIds = topLevelRuleDocIds.filter(
-    (docId) => !isWorkflowTemplateRule(docId) && isActionMetadataRule(docId)
+    (docId) =>
+        !isDependabotRule(docId) &&
+        !isWorkflowTemplateRule(docId) &&
+        isActionMetadataRule(docId)
 );
+const dependabotRuleDocIds = topLevelRuleDocIds.filter(isDependabotRule);
 const workflowRuleDocIds = topLevelRuleDocIds.filter(
-    (docId) => !isWorkflowTemplateRule(docId) && !isActionMetadataRule(docId)
+    (docId) =>
+        !isDependabotRule(docId) &&
+        !isWorkflowTemplateRule(docId) &&
+        !isActionMetadataRule(docId)
 );
 
 /** Build labeled doc items for a list of rule doc ids. */
@@ -179,6 +191,22 @@ const sidebars: SidebarsConfig = {
                         type: "generated-index",
                     },
                     items: toRuleItems(workflowRuleDocIds, {
+                        showRuleIcon: true,
+                    }),
+                    type: "category",
+                },
+                {
+                    className: "sb-cat-rules-dependabot",
+                    collapsed: true,
+                    label: "🤖 Dependabot rules",
+                    link: {
+                        description:
+                            "Rules targeting `.github/dependabot.{yml,yaml}` configuration files.",
+                        slug: "/category/dependabot-rules",
+                        title: "Dependabot rules",
+                        type: "generated-index",
+                    },
+                    items: toRuleItems(dependabotRuleDocIds, {
                         showRuleIcon: true,
                     }),
                     type: "category",

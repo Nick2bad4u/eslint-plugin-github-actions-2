@@ -128,6 +128,7 @@ const createPresetRuleNamesByConfig = (): Record<
     > = {
         actionMetadata: [],
         all: [],
+        dependabot: [],
         recommended: [],
         security: [],
         strict: [],

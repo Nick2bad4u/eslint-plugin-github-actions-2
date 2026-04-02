@@ -91,7 +91,7 @@
         "typedoc": "^0.28.18",
         "typedoc-docusaurus-theme": "^1.4.2",
         "typedoc-plugin-coverage": "^4.0.2",
-        "typedoc-plugin-dt-links": "^2.0.47",
+        "typedoc-plugin-dt-links": "^2.0.48",
         "typedoc-plugin-external-package-links": "^0.2.0",
         "typedoc-plugin-markdown": "^4.11.0",
         "typedoc-plugin-mdn-links": "^5.1.1",
@@ -105,7 +105,7 @@
         "react": "^19.2.4",
         "react-dom": "^19.2.4"
     },
-    "packageManager": "npm@11.12.0",
+    "packageManager": "npm@11.12.1",
     "engines": {
         "node": ">=22.0.0"
     },
