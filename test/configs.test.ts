@@ -80,6 +80,10 @@ describe("exported presets", () => {
             "github-actions/no-untrusted-input-in-run",
             "github-actions/no-write-all-permissions",
             "github-actions/pin-action-shas",
+            "github-actions/require-dependency-review-action",
+            "github-actions/require-dependency-review-fail-on-severity",
+            "github-actions/require-dependency-review-permissions-contents-read",
+            "github-actions/require-dependency-review-pull-request-trigger",
             "github-actions/require-pull-request-target-branches",
             "github-actions/require-workflow-permissions",
             "github-actions/require-workflow-run-branches",
@@ -155,13 +159,18 @@ describe("exported presets", () => {
                 (left, right) => left.localeCompare(right)
             )
         ).toEqual([
+            "github-actions/no-overlapping-dependabot-directories",
             "github-actions/no-unknown-dependabot-multi-ecosystem-group",
             "github-actions/no-unused-dependabot-enable-beta-ecosystems",
             "github-actions/require-dependabot-assignees",
+            "github-actions/require-dependabot-commit-message-include-scope",
             "github-actions/require-dependabot-commit-message-prefix",
+            "github-actions/require-dependabot-commit-message-prefix-development",
+            "github-actions/require-dependabot-cooldown",
             "github-actions/require-dependabot-directory",
             "github-actions/require-dependabot-github-actions-directory-root",
             "github-actions/require-dependabot-labels",
+            "github-actions/require-dependabot-open-pull-requests-limit",
             "github-actions/require-dependabot-package-ecosystem",
             "github-actions/require-dependabot-patterns-for-multi-ecosystem-group",
             "github-actions/require-dependabot-schedule-cronjob",
@@ -171,6 +180,7 @@ describe("exported presets", () => {
             "github-actions/require-dependabot-target-branch",
             "github-actions/require-dependabot-updates",
             "github-actions/require-dependabot-version",
+            "github-actions/require-dependabot-versioning-strategy-for-npm",
         ]);
 
         expect(

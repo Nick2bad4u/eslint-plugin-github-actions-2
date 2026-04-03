@@ -3,9 +3,11 @@ import { describe, expect, it } from "vitest";
 import {
     ACTION_METADATA_FILE_GLOBS,
     DEPENDABOT_FILE_GLOBS,
+    DEPENDENCY_REVIEW_WORKFLOW_FILE_GLOBS,
     getTemplateStem,
     isActionMetadataFile,
     isDependabotFile,
+    isDependencyReviewWorkflowFile,
     isWorkflowTemplateFile,
     isWorkflowTemplatePropertiesFile,
     isWorkflowTemplateYamlFile,
@@ -20,6 +22,9 @@ describe("lint target helpers", () => {
         expect(ACTION_METADATA_FILE_GLOBS).toEqual(["**/action.{yml,yaml}"]);
         expect(DEPENDABOT_FILE_GLOBS).toEqual([
             ".github/dependabot.{yml,yaml}",
+        ]);
+        expect(DEPENDENCY_REVIEW_WORKFLOW_FILE_GLOBS).toEqual([
+            ".github/workflows/dependency-review*.{yml,yaml}",
         ]);
         expect(WORKFLOW_TEMPLATE_PROPERTIES_FILE_GLOBS).toEqual([
             "**/workflow-templates/*.properties.json",
@@ -54,6 +59,22 @@ describe("lint target helpers", () => {
         expect(isDependabotFile("dependabot.yml")).toBeFalsy();
         expect(
             isDependabotFile(".github/workflows/dependabot.yml")
+        ).toBeFalsy();
+    });
+
+    it("detects dependency review workflow files", () => {
+        expect(
+            isDependencyReviewWorkflowFile(
+                ".github/workflows/dependency-review.yml"
+            )
+        ).toBeTruthy();
+        expect(
+            isDependencyReviewWorkflowFile(
+                ".github/workflows/dependency-review-security.yaml"
+            )
+        ).toBeTruthy();
+        expect(
+            isDependencyReviewWorkflowFile(".github/workflows/ci.yml")
         ).toBeFalsy();
     });
 

@@ -14,6 +14,11 @@ export const DEPENDABOT_FILE_GLOBS: readonly string[] = [
     ".github/dependabot.{yml,yaml}",
 ];
 
+/** Dependency review workflow file globs. */
+export const DEPENDENCY_REVIEW_WORKFLOW_FILE_GLOBS: readonly string[] = [
+    ".github/workflows/dependency-review*.{yml,yaml}",
+];
+
 /** Workflow template metadata (`.properties.json`) file globs. */
 export const WORKFLOW_TEMPLATE_PROPERTIES_FILE_GLOBS: readonly string[] = [
     "**/workflow-templates/*.properties.json",
@@ -53,6 +58,20 @@ export const isDependabotFile = (filePath: string): boolean => {
         normalizedFilePath.endsWith("/.github/dependabot.yaml") ||
         normalizedFilePath === ".github/dependabot.yml" ||
         normalizedFilePath === ".github/dependabot.yaml"
+    );
+};
+
+/** Determine whether a filename is a dependency review workflow file. */
+export const isDependencyReviewWorkflowFile = (filePath: string): boolean => {
+    const normalizedFilePath = normalizePathForMatching(filePath);
+
+    return (
+        (normalizedFilePath.includes("/.github/workflows/") ||
+            normalizedFilePath.startsWith(".github/workflows/")) &&
+        (normalizedFilePath.endsWith("dependency-review.yml") ||
+            normalizedFilePath.endsWith("dependency-review.yaml") ||
+            normalizedFilePath.includes("/dependency-review-") ||
+            normalizedFilePath.includes("/dependency-review."))
     );
 };
 

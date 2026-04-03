@@ -21,6 +21,7 @@ import noInvalidKey from "../rules/no-invalid-key.js";
 import noInvalidReusableWorkflowJobKey from "../rules/no-invalid-reusable-workflow-job-key.js";
 import noInvalidTemplateFilePatternRegex from "../rules/no-invalid-template-file-pattern-regex.js";
 import noInvalidWorkflowCallOutputValue from "../rules/no-invalid-workflow-call-output-value.js";
+import noOverlappingDependabotDirectories from "../rules/no-overlapping-dependabot-directories.js";
 import noPathSeparatorsInTemplateIconName from "../rules/no-path-separators-in-template-icon-name.js";
 import noPostIfWithoutPost from "../rules/no-post-if-without-post.js";
 import noPrHeadCheckoutInPullRequestTarget from "../rules/no-pr-head-checkout-in-pull-request-target.js";
@@ -31,7 +32,7 @@ import noSelfHostedRunnerOnForkPrEvents from "../rules/no-self-hosted-runner-on-
 import noSubdirectoryTemplateFilePattern from "../rules/no-subdirectory-template-file-pattern.js";
 import noTemplatePlaceholderInNonTemplateWorkflow from "../rules/no-template-placeholder-in-non-template-workflow.js";
 import noTopLevelEnv from "../rules/no-top-level-env.js";
-import noTopLevelPermissions from "../rules/no-top-level-permissions.js";
+import * as noTopLevelPermissionsModule from "../rules/no-top-level-permissions.js";
 import noUniversalTemplateFilePattern from "../rules/no-universal-template-file-pattern.js";
 import noUnknownDependabotMultiEcosystemGroup from "../rules/no-unknown-dependabot-multi-ecosystem-group.js";
 import noUnknownInputReferenceInComposite from "../rules/no-unknown-input-reference-in-composite.js";
@@ -46,17 +47,21 @@ import preferActionYml from "../rules/prefer-action-yml.js";
 import preferFailFast from "../rules/prefer-fail-fast.js";
 import preferFileExtension from "../rules/prefer-file-extension.js";
 import preferInputsContext from "../rules/prefer-inputs-context.js";
-import preferStepUsesStyle from "../rules/prefer-step-uses-style.js";
+import * as preferStepUsesStyleModule from "../rules/prefer-step-uses-style.js";
 import preferTemplateYmlExtension from "../rules/prefer-template-yml-extension.js";
 import requireActionName from "../rules/require-action-name.js";
 import requireActionRunName from "../rules/require-action-run-name.js";
 import requireCheckoutBeforeLocalAction from "../rules/require-checkout-before-local-action.js";
 import requireCompositeStepName from "../rules/require-composite-step-name.js";
 import requireDependabotAssignees from "../rules/require-dependabot-assignees.js";
+import requireDependabotCommitMessageIncludeScope from "../rules/require-dependabot-commit-message-include-scope.js";
+import requireDependabotCommitMessagePrefixDevelopment from "../rules/require-dependabot-commit-message-prefix-development.js";
 import requireDependabotCommitMessagePrefix from "../rules/require-dependabot-commit-message-prefix.js";
+import requireDependabotCooldown from "../rules/require-dependabot-cooldown.js";
 import requireDependabotDirectory from "../rules/require-dependabot-directory.js";
 import requireDependabotGithubActionsDirectoryRoot from "../rules/require-dependabot-github-actions-directory-root.js";
 import requireDependabotLabels from "../rules/require-dependabot-labels.js";
+import requireDependabotOpenPullRequestsLimit from "../rules/require-dependabot-open-pull-requests-limit.js";
 import requireDependabotPackageEcosystem from "../rules/require-dependabot-package-ecosystem.js";
 import requireDependabotPatternsForMultiEcosystemGroup from "../rules/require-dependabot-patterns-for-multi-ecosystem-group.js";
 import requireDependabotScheduleCronjob from "../rules/require-dependabot-schedule-cronjob.js";
@@ -66,6 +71,11 @@ import requireDependabotScheduleTimezone from "../rules/require-dependabot-sched
 import requireDependabotTargetBranch from "../rules/require-dependabot-target-branch.js";
 import requireDependabotUpdates from "../rules/require-dependabot-updates.js";
 import requireDependabotVersion from "../rules/require-dependabot-version.js";
+import requireDependabotVersioningStrategyForNpm from "../rules/require-dependabot-versioning-strategy-for-npm.js";
+import requireDependencyReviewAction from "../rules/require-dependency-review-action.js";
+import requireDependencyReviewFailOnSeverity from "../rules/require-dependency-review-fail-on-severity.js";
+import requireDependencyReviewPermissionsContentsRead from "../rules/require-dependency-review-permissions-contents-read.js";
+import requireDependencyReviewPullRequestTrigger from "../rules/require-dependency-review-pull-request-trigger.js";
 import requireJobName from "../rules/require-job-name.js";
 import requireJobStepName from "../rules/require-job-step-name.js";
 import requireJobTimeoutMinutes from "../rules/require-job-timeout-minutes.js";
@@ -90,6 +100,14 @@ import requireWorkflowTemplatePropertiesPair from "../rules/require-workflow-tem
 import validTimeoutMinutes from "../rules/valid-timeout-minutes.js";
 import validTriggerEvents from "../rules/valid-trigger-events.js";
 
+const noTopLevelPermissions: Rule.RuleModule =
+    Reflect.get(noTopLevelPermissionsModule, "default") ??
+    noTopLevelPermissionsModule;
+
+const preferStepUsesStyle: Rule.RuleModule =
+    Reflect.get(preferStepUsesStyleModule, "default") ??
+    preferStepUsesStyleModule;
+
 /** Strongly typed plugin rule registry keyed by unqualified rule name. */
 const githubActionsRulesDefinition: {
     readonly "action-name-casing": typeof actionNameCasing;
@@ -109,6 +127,7 @@ const githubActionsRulesDefinition: {
     readonly "no-invalid-reusable-workflow-job-key": typeof noInvalidReusableWorkflowJobKey;
     readonly "no-invalid-template-file-pattern-regex": typeof noInvalidTemplateFilePatternRegex;
     readonly "no-invalid-workflow-call-output-value": typeof noInvalidWorkflowCallOutputValue;
+    readonly "no-overlapping-dependabot-directories": typeof noOverlappingDependabotDirectories;
     readonly "no-path-separators-in-template-icon-name": typeof noPathSeparatorsInTemplateIconName;
     readonly "no-post-if-without-post": typeof noPostIfWithoutPost;
     readonly "no-pr-head-checkout-in-pull-request-target": typeof noPrHeadCheckoutInPullRequestTarget;
@@ -141,10 +160,14 @@ const githubActionsRulesDefinition: {
     readonly "require-checkout-before-local-action": typeof requireCheckoutBeforeLocalAction;
     readonly "require-composite-step-name": typeof requireCompositeStepName;
     readonly "require-dependabot-assignees": typeof requireDependabotAssignees;
+    readonly "require-dependabot-commit-message-include-scope": typeof requireDependabotCommitMessageIncludeScope;
     readonly "require-dependabot-commit-message-prefix": typeof requireDependabotCommitMessagePrefix;
+    readonly "require-dependabot-commit-message-prefix-development": typeof requireDependabotCommitMessagePrefixDevelopment;
+    readonly "require-dependabot-cooldown": typeof requireDependabotCooldown;
     readonly "require-dependabot-directory": typeof requireDependabotDirectory;
     readonly "require-dependabot-github-actions-directory-root": typeof requireDependabotGithubActionsDirectoryRoot;
     readonly "require-dependabot-labels": typeof requireDependabotLabels;
+    readonly "require-dependabot-open-pull-requests-limit": typeof requireDependabotOpenPullRequestsLimit;
     readonly "require-dependabot-package-ecosystem": typeof requireDependabotPackageEcosystem;
     readonly "require-dependabot-patterns-for-multi-ecosystem-group": typeof requireDependabotPatternsForMultiEcosystemGroup;
     readonly "require-dependabot-schedule-cronjob": typeof requireDependabotScheduleCronjob;
@@ -154,6 +177,11 @@ const githubActionsRulesDefinition: {
     readonly "require-dependabot-target-branch": typeof requireDependabotTargetBranch;
     readonly "require-dependabot-updates": typeof requireDependabotUpdates;
     readonly "require-dependabot-version": typeof requireDependabotVersion;
+    readonly "require-dependabot-versioning-strategy-for-npm": typeof requireDependabotVersioningStrategyForNpm;
+    readonly "require-dependency-review-action": typeof requireDependencyReviewAction;
+    readonly "require-dependency-review-fail-on-severity": typeof requireDependencyReviewFailOnSeverity;
+    readonly "require-dependency-review-permissions-contents-read": typeof requireDependencyReviewPermissionsContentsRead;
+    readonly "require-dependency-review-pull-request-trigger": typeof requireDependencyReviewPullRequestTrigger;
     readonly "require-job-name": typeof requireJobName;
     readonly "require-job-step-name": typeof requireJobStepName;
     readonly "require-job-timeout-minutes": typeof requireJobTimeoutMinutes;
@@ -197,6 +225,7 @@ const githubActionsRulesDefinition: {
     "no-invalid-reusable-workflow-job-key": noInvalidReusableWorkflowJobKey,
     "no-invalid-template-file-pattern-regex": noInvalidTemplateFilePatternRegex,
     "no-invalid-workflow-call-output-value": noInvalidWorkflowCallOutputValue,
+    "no-overlapping-dependabot-directories": noOverlappingDependabotDirectories,
     "no-path-separators-in-template-icon-name":
         noPathSeparatorsInTemplateIconName,
     "no-post-if-without-post": noPostIfWithoutPost,
@@ -235,12 +264,19 @@ const githubActionsRulesDefinition: {
     "require-checkout-before-local-action": requireCheckoutBeforeLocalAction,
     "require-composite-step-name": requireCompositeStepName,
     "require-dependabot-assignees": requireDependabotAssignees,
+    "require-dependabot-commit-message-include-scope":
+        requireDependabotCommitMessageIncludeScope,
     "require-dependabot-commit-message-prefix":
         requireDependabotCommitMessagePrefix,
+    "require-dependabot-commit-message-prefix-development":
+        requireDependabotCommitMessagePrefixDevelopment,
+    "require-dependabot-cooldown": requireDependabotCooldown,
     "require-dependabot-directory": requireDependabotDirectory,
     "require-dependabot-github-actions-directory-root":
         requireDependabotGithubActionsDirectoryRoot,
     "require-dependabot-labels": requireDependabotLabels,
+    "require-dependabot-open-pull-requests-limit":
+        requireDependabotOpenPullRequestsLimit,
     "require-dependabot-package-ecosystem": requireDependabotPackageEcosystem,
     "require-dependabot-patterns-for-multi-ecosystem-group":
         requireDependabotPatternsForMultiEcosystemGroup,
@@ -251,6 +287,15 @@ const githubActionsRulesDefinition: {
     "require-dependabot-target-branch": requireDependabotTargetBranch,
     "require-dependabot-updates": requireDependabotUpdates,
     "require-dependabot-version": requireDependabotVersion,
+    "require-dependabot-versioning-strategy-for-npm":
+        requireDependabotVersioningStrategyForNpm,
+    "require-dependency-review-action": requireDependencyReviewAction,
+    "require-dependency-review-fail-on-severity":
+        requireDependencyReviewFailOnSeverity,
+    "require-dependency-review-permissions-contents-read":
+        requireDependencyReviewPermissionsContentsRead,
+    "require-dependency-review-pull-request-trigger":
+        requireDependencyReviewPullRequestTrigger,
     "require-job-name": requireJobName,
     "require-job-step-name": requireJobStepName,
     "require-job-timeout-minutes": requireJobTimeoutMinutes,

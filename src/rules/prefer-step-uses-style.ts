@@ -22,7 +22,7 @@ const usesStyles = [
 
 /** Object-style configuration for `prefer-step-uses-style`. */
 type PreferStepUsesStyleObjectOption = Partial<
-    Record<"branch" | "commit" | "release", boolean>
+    Record<StepUsesStyle, boolean>
 > & {
     readonly allowDocker?: boolean;
     readonly allowRepository?: boolean;

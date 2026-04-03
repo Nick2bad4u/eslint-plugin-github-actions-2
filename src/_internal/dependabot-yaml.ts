@@ -16,6 +16,12 @@ import {
     unwrapYamlValue,
 } from "./workflow-yaml.js";
 
+/** Directory selector entry declared by a Dependabot update block. */
+export type DependabotDirectorySelectorEntry = {
+    readonly node: AST.YAMLNode;
+    readonly value: string;
+};
+
 /** String scalar entry contained in a YAML sequence. */
 export type DependabotStringSequenceEntry = {
     readonly node: AST.YAMLNode;
@@ -192,5 +198,51 @@ export const getDependabotUpdateLabel = (
     update.packageEcosystem === null
         ? `updates[${String(update.index)}]`
         : `updates[${String(update.index)}] (${update.packageEcosystem})`;
+
+/**
+ * Resolve the effective target branch for an update, defaulting to the
+ * repository default branch.
+ */
+export const getEffectiveDependabotTargetBranch = (
+    root: AST.YAMLMapping,
+    update: DependabotUpdateEntry
+): string =>
+    getScalarStringValue(
+        getEffectiveDependabotUpdateValue(root, update, "target-branch")
+    )?.trim() || "<default-branch>";
+
+/** Collect normalized directory selectors declared by a Dependabot update block. */
+export const getDependabotDirectorySelectorEntries = (
+    update: DependabotUpdateEntry
+): readonly DependabotDirectorySelectorEntry[] => {
+    const selectors: DependabotDirectorySelectorEntry[] = [];
+    const directoryPair = getMappingPair(update.mapping, "directory");
+    const directoryValue = getScalarStringValue(
+        directoryPair?.value ?? null
+    )?.trim();
+
+    if (
+        directoryPair?.value !== null &&
+        directoryPair?.value !== undefined &&
+        directoryValue !== undefined &&
+        directoryValue !== null &&
+        directoryValue.length > 0
+    ) {
+        selectors.push({
+            node: directoryPair.value,
+            value: directoryValue,
+        });
+    }
+
+    const directoriesPair = getMappingPair(update.mapping, "directories");
+
+    for (const entry of getNonEmptyStringSequenceEntries(
+        directoriesPair?.value
+    )) {
+        selectors.push(entry);
+    }
+
+    return selectors;
+};
 
 /* eslint-enable @typescript-eslint/prefer-readonly-parameter-types -- Re-enable readonly-parameter checks outside parser AST helper signatures. */
