@@ -115,11 +115,15 @@ const normalizePresetName = (reference) => {
  */
 const normalizeRulePresetNames = (ruleModule) => {
     const references = getRuleDocsMetadata(ruleModule)?.configs;
-    const values = Array.isArray(references)
-        ? references
-        : references === undefined
-          ? []
-          : [references];
+    let values;
+
+    if (Array.isArray(references)) {
+        values = references;
+    } else if (references === undefined) {
+        values = [];
+    } else {
+        values = [references];
+    }
 
     /** @type {(typeof presetOrder)[number][]} */
     const names = [];

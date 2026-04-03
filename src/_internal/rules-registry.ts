@@ -32,7 +32,7 @@ import noSelfHostedRunnerOnForkPrEvents from "../rules/no-self-hosted-runner-on-
 import noSubdirectoryTemplateFilePattern from "../rules/no-subdirectory-template-file-pattern.js";
 import noTemplatePlaceholderInNonTemplateWorkflow from "../rules/no-template-placeholder-in-non-template-workflow.js";
 import noTopLevelEnv from "../rules/no-top-level-env.js";
-import * as noTopLevelPermissionsModule from "../rules/no-top-level-permissions.js";
+import noTopLevelPermissions from "../rules/no-top-level-permissions.js";
 import noUniversalTemplateFilePattern from "../rules/no-universal-template-file-pattern.js";
 import noUnknownDependabotMultiEcosystemGroup from "../rules/no-unknown-dependabot-multi-ecosystem-group.js";
 import noUnknownInputReferenceInComposite from "../rules/no-unknown-input-reference-in-composite.js";
@@ -47,7 +47,7 @@ import preferActionYml from "../rules/prefer-action-yml.js";
 import preferFailFast from "../rules/prefer-fail-fast.js";
 import preferFileExtension from "../rules/prefer-file-extension.js";
 import preferInputsContext from "../rules/prefer-inputs-context.js";
-import * as preferStepUsesStyleModule from "../rules/prefer-step-uses-style.js";
+import preferStepUsesStyle from "../rules/prefer-step-uses-style.js";
 import preferTemplateYmlExtension from "../rules/prefer-template-yml-extension.js";
 import requireActionName from "../rules/require-action-name.js";
 import requireActionRunName from "../rules/require-action-run-name.js";
@@ -99,14 +99,6 @@ import requireWorkflowTemplatePair from "../rules/require-workflow-template-pair
 import requireWorkflowTemplatePropertiesPair from "../rules/require-workflow-template-properties-pair.js";
 import validTimeoutMinutes from "../rules/valid-timeout-minutes.js";
 import validTriggerEvents from "../rules/valid-trigger-events.js";
-
-const noTopLevelPermissions: Rule.RuleModule =
-    Reflect.get(noTopLevelPermissionsModule, "default") ??
-    noTopLevelPermissionsModule;
-
-const preferStepUsesStyle: Rule.RuleModule =
-    Reflect.get(preferStepUsesStyleModule, "default") ??
-    preferStepUsesStyleModule;
 
 /** Strongly typed plugin rule registry keyed by unqualified rule name. */
 const githubActionsRulesDefinition: {

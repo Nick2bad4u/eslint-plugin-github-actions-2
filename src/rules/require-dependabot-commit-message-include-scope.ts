@@ -5,15 +5,13 @@
 import type { Rule } from "eslint";
 
 import {
+    getDependabotMappingStringValue,
     getDependabotRoot,
     getDependabotUpdateEntries,
     getDependabotUpdateLabel,
     getEffectiveDependabotUpdateMapping,
 } from "../_internal/dependabot-yaml.js";
-import {
-    getMappingPair,
-    getScalarStringValue,
-} from "../_internal/workflow-yaml.js";
+import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for commit-message.include requirements. */
 const rule: Rule.RuleModule = {
@@ -37,9 +35,13 @@ const rule: Rule.RuleModule = {
                         commitMessageMapping === null
                             ? null
                             : getMappingPair(commitMessageMapping, "include");
-                    const includeValue = getScalarStringValue(
-                        includePair?.value ?? null
-                    )?.trim();
+                    const includeValue =
+                        commitMessageMapping === null
+                            ? null
+                            : getDependabotMappingStringValue(
+                                  commitMessageMapping,
+                                  "include"
+                              );
 
                     if (includeValue === "scope") {
                         continue;

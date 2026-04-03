@@ -4,11 +4,11 @@
  */
 import type { Rule } from "eslint";
 
-import { getDependabotRoot } from "../_internal/dependabot-yaml.js";
 import {
-    getMappingPair,
-    getScalarStringValue,
-} from "../_internal/workflow-yaml.js";
+    getDependabotMappingStringValue,
+    getDependabotRoot,
+} from "../_internal/dependabot-yaml.js";
+import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for requiring `version: 2` in Dependabot config. */
 const rule: Rule.RuleModule = {
@@ -22,9 +22,10 @@ const rule: Rule.RuleModule = {
                 }
 
                 const versionPair = getMappingPair(root, "version");
-                const versionValue = getScalarStringValue(
-                    versionPair?.value
-                )?.trim();
+                const versionValue = getDependabotMappingStringValue(
+                    root,
+                    "version"
+                );
 
                 if (versionValue === "2") {
                     return;

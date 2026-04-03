@@ -8,9 +8,9 @@ import {
     getDependabotRoot,
     getDependabotUpdateEntries,
     getDependabotUpdateLabel,
+    getEffectiveDependabotStringValue,
     getEffectiveDependabotUpdateValue,
 } from "../_internal/dependabot-yaml.js";
-import { getScalarStringValue } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for requiring effective target branches. */
 const rule: Rule.RuleModule = {
@@ -29,14 +29,13 @@ const rule: Rule.RuleModule = {
                         update,
                         "target-branch"
                     );
-                    const targetBranch =
-                        getScalarStringValue(targetBranchValue)?.trim();
+                    const targetBranch = getEffectiveDependabotStringValue(
+                        root,
+                        update,
+                        "target-branch"
+                    );
 
-                    if (
-                        targetBranch !== undefined &&
-                        targetBranch !== null &&
-                        targetBranch.length > 0
-                    ) {
+                    if (targetBranch !== null) {
                         continue;
                     }
 

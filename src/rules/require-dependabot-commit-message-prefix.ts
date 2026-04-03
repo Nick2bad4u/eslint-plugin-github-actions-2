@@ -5,15 +5,13 @@
 import type { Rule } from "eslint";
 
 import {
+    getDependabotMappingStringValue,
     getDependabotRoot,
     getDependabotUpdateEntries,
     getDependabotUpdateLabel,
     getEffectiveDependabotUpdateMapping,
 } from "../_internal/dependabot-yaml.js";
-import {
-    getMappingPair,
-    getScalarStringValue,
-} from "../_internal/workflow-yaml.js";
+import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for requiring effective commit-message prefixes. */
 const rule: Rule.RuleModule = {
@@ -37,15 +35,15 @@ const rule: Rule.RuleModule = {
                         commitMessageMapping === null
                             ? null
                             : getMappingPair(commitMessageMapping, "prefix");
-                    const prefixValue = getScalarStringValue(
-                        prefixPair?.value
-                    )?.trim();
+                    const prefixValue =
+                        commitMessageMapping === null
+                            ? null
+                            : getDependabotMappingStringValue(
+                                  commitMessageMapping,
+                                  "prefix"
+                              );
 
-                    if (
-                        prefixValue !== undefined &&
-                        prefixValue !== null &&
-                        prefixValue.length > 0
-                    ) {
+                    if (prefixValue !== null) {
                         continue;
                     }
 

@@ -5,14 +5,12 @@
 import type { Rule } from "eslint";
 
 import {
+    getDependabotMappingStringValue,
     getDependabotRoot,
     getDependabotUpdateEntries,
     getDependabotUpdateLabel,
 } from "../_internal/dependabot-yaml.js";
-import {
-    getMappingPair,
-    getScalarStringValue,
-} from "../_internal/workflow-yaml.js";
+import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for npm versioning strategy requirements. */
 const rule: Rule.RuleModule = {
@@ -34,15 +32,12 @@ const rule: Rule.RuleModule = {
                         update.mapping,
                         "versioning-strategy"
                     );
-                    const strategyValue = getScalarStringValue(
-                        strategyPair?.value ?? null
-                    )?.trim();
+                    const strategyValue = getDependabotMappingStringValue(
+                        update.mapping,
+                        "versioning-strategy"
+                    );
 
-                    if (
-                        strategyValue !== undefined &&
-                        strategyValue !== null &&
-                        strategyValue.length > 0
-                    ) {
+                    if (strategyValue !== null) {
                         continue;
                     }
 

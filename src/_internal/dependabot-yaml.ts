@@ -37,6 +37,29 @@ export type DependabotUpdateEntry = {
     readonly packageEcosystem: null | string;
 };
 
+/**
+ * Normalize a scalar-like Dependabot string value into a trimmed non-empty
+ * string.
+ */
+export const getDependabotTrimmedStringValue = (
+    node: AST.YAMLContent | AST.YAMLWithMeta | null | undefined
+): null | string => {
+    const stringValue = getScalarStringValue(node ?? null)?.trim();
+
+    return stringValue === undefined || stringValue.length === 0
+        ? null
+        : stringValue;
+};
+
+/** Read a trimmed non-empty string value from a mapping pair by key. */
+export const getDependabotMappingStringValue = (
+    mapping: AST.YAMLMapping,
+    key: string
+): null | string =>
+    getDependabotTrimmedStringValue(
+        getMappingPair(mapping, key)?.value ?? null
+    );
+
 /** Resolve the root mapping for a Dependabot configuration file. */
 export const getDependabotRoot = (
     context: Rule.RuleContext
@@ -141,6 +164,16 @@ export const getEffectiveDependabotUpdateValue = (
     );
 };
 
+/** Read a trimmed non-empty string value from an effective update-scoped key. */
+export const getEffectiveDependabotStringValue = (
+    root: AST.YAMLMapping,
+    update: DependabotUpdateEntry,
+    key: string
+): null | string =>
+    getDependabotTrimmedStringValue(
+        getEffectiveDependabotUpdateValue(root, update, key)
+    );
+
 /**
  * Resolve an update-scoped mapping value, honoring multi-ecosystem-group
  * fallback.
@@ -206,10 +239,15 @@ export const getDependabotUpdateLabel = (
 export const getEffectiveDependabotTargetBranch = (
     root: AST.YAMLMapping,
     update: DependabotUpdateEntry
-): string =>
-    getScalarStringValue(
-        getEffectiveDependabotUpdateValue(root, update, "target-branch")
-    )?.trim() || "<default-branch>";
+): string => {
+    const targetBranch = getEffectiveDependabotStringValue(
+        root,
+        update,
+        "target-branch"
+    );
+
+    return targetBranch === null ? "<default-branch>" : targetBranch;
+};
 
 /** Collect normalized directory selectors declared by a Dependabot update block. */
 export const getDependabotDirectorySelectorEntries = (

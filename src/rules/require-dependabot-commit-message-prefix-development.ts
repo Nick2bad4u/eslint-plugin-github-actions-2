@@ -5,15 +5,13 @@
 import type { Rule } from "eslint";
 
 import {
+    getDependabotMappingStringValue,
     getDependabotRoot,
     getDependabotUpdateEntries,
     getDependabotUpdateLabel,
     getEffectiveDependabotUpdateMapping,
 } from "../_internal/dependabot-yaml.js";
-import {
-    getMappingPair,
-    getScalarStringValue,
-} from "../_internal/workflow-yaml.js";
+import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 const ecosystemsSupportingPrefixDevelopment = new Set([
     "bundler",
@@ -62,15 +60,15 @@ const rule: Rule.RuleModule = {
                                   commitMessageMapping,
                                   "prefix-development"
                               );
-                    const prefixDevelopmentValue = getScalarStringValue(
-                        prefixDevelopmentPair?.value ?? null
-                    )?.trim();
+                    const prefixDevelopmentValue =
+                        commitMessageMapping === null
+                            ? null
+                            : getDependabotMappingStringValue(
+                                  commitMessageMapping,
+                                  "prefix-development"
+                              );
 
-                    if (
-                        prefixDevelopmentValue !== undefined &&
-                        prefixDevelopmentValue !== null &&
-                        prefixDevelopmentValue.length > 0
-                    ) {
+                    if (prefixDevelopmentValue !== null) {
                         continue;
                     }
 

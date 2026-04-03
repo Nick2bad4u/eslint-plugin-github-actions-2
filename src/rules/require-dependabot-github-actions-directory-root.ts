@@ -5,14 +5,12 @@
 import type { Rule } from "eslint";
 
 import {
+    getDependabotMappingStringValue,
     getDependabotRoot,
     getDependabotUpdateEntries,
     getDependabotUpdateLabel,
 } from "../_internal/dependabot-yaml.js";
-import {
-    getMappingPair,
-    getScalarStringValue,
-} from "../_internal/workflow-yaml.js";
+import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for GitHub Actions directory-root enforcement. */
 const rule: Rule.RuleModule = {
@@ -38,9 +36,10 @@ const rule: Rule.RuleModule = {
                         update.mapping,
                         "directories"
                     );
-                    const directoryValue = getScalarStringValue(
-                        directoryPair?.value
-                    )?.trim();
+                    const directoryValue = getDependabotMappingStringValue(
+                        update.mapping,
+                        "directory"
+                    );
 
                     if (directoryValue === "/" && directoriesPair === null) {
                         continue;

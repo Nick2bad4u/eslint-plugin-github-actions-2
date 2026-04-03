@@ -3,6 +3,7 @@
  * Disallow guaranteed overlapping Dependabot directory selectors for the same ecosystem and target branch.
  */
 import type { Rule } from "eslint";
+import type { AST } from "yaml-eslint-parser";
 
 import {
     type DependabotUpdateEntry,
@@ -14,7 +15,7 @@ import {
 } from "../_internal/dependabot-yaml.js";
 
 type SeenSelectorEntry = {
-    readonly directoryNode: import("yaml-eslint-parser").AST.YAMLNode;
+    readonly directoryNode: AST.YAMLNode;
     readonly directorySelector: string;
     readonly packageEcosystem: string;
     readonly targetBranch: string;

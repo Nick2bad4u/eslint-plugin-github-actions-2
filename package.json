@@ -134,9 +134,6 @@
         "update-deps": "npx ncu -i --install never && npm run sync:peer-eslint-range && npm install --force",
         "verify:readme-rules-table": "npm run build && npm run sync:readme-rules-table"
     },
-    "overrides": {
-        "jsonc-eslint-parser": "$jsonc-eslint-parser"
-    },
     "dependencies": {
         "yaml-eslint-parser": "^2.0.0"
     },
