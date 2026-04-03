@@ -1,0 +1,58 @@
+/**
+ * @packageDocumentation
+ * Require CodeQL workflows to run on pull_request.
+ */
+import type { Rule } from "eslint";
+
+import { getCodeqlInitSteps } from "../_internal/code-scanning-workflow.ts";
+import {
+    getWorkflowEventNames,
+    getWorkflowRoot,
+} from "../_internal/workflow-yaml.js";
+
+/** Rule implementation for requiring pull_request triggers on CodeQL workflows. */
+const rule: Rule.RuleModule = {
+    create(context) {
+        return {
+            Program(node) {
+                const root = getWorkflowRoot(context);
+
+                if (root === null || getCodeqlInitSteps(root).length === 0) {
+                    return;
+                }
+
+                if (getWorkflowEventNames(root).has("pull_request")) {
+                    return;
+                }
+
+                context.report({
+                    messageId: "missingPullRequestTrigger",
+                    node: node as unknown as Rule.Node,
+                });
+            },
+        };
+    },
+    meta: {
+        docs: {
+            configs: [
+                "github-actions.configs.all",
+                "github-actions.configs.codeScanning",
+            ],
+            description:
+                "require CodeQL workflows to listen for `pull_request`.",
+            recommended: true,
+            requiresTypeChecking: false,
+            ruleId: "R100",
+            ruleNumber: 100,
+            url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-codeql-pull-request-trigger",
+        },
+        messages: {
+            missingPullRequestTrigger:
+                "CodeQL workflows should listen for `pull_request` so code scanning runs on incoming pull requests.",
+        },
+        schema: [],
+        type: "problem",
+    } as Rule.RuleMetaData,
+};
+
+export default rule;

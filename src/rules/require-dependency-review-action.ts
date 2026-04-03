@@ -38,6 +38,7 @@ const rule: Rule.RuleModule = {
         docs: {
             configs: [
                 "github-actions.configs.all",
+                "github-actions.configs.codeScanning",
                 "github-actions.configs.security",
             ],
             description:

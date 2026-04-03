@@ -13,6 +13,7 @@ import { WORKFLOW_FILE_GLOBS } from "./workflow-yaml.js";
 /** Ordered preset names exposed through `plugin.configs`. */
 export const githubActionsConfigNames = [
     "actionMetadata",
+    "codeScanning",
     "dependabot",
     "workflowTemplateProperties",
     "workflowTemplates",
@@ -31,6 +32,7 @@ export const githubActionsConfigReferenceToName: Readonly<
 > = {
     "github-actions.configs.actionMetadata": "actionMetadata",
     "github-actions.configs.all": "all",
+    "github-actions.configs.codeScanning": "codeScanning",
     "github-actions.configs.dependabot": "dependabot",
     "github-actions.configs.recommended": "recommended",
     "github-actions.configs.security": "security",
@@ -74,6 +76,13 @@ export const githubActionsConfigMetadataByName: Readonly<
         ],
         icon: "🟣",
         presetName: "github-actions:all",
+    },
+    codeScanning: {
+        description:
+            "Workflow security defaults for CodeQL, SARIF uploads, dependency review, and related code-scanning integrations.",
+        files: WORKFLOW_FILE_GLOBS,
+        icon: "🔎",
+        presetName: "github-actions:code-scanning",
     },
     dependabot: {
         description:

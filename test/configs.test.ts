@@ -11,6 +11,7 @@ describe("exported presets", () => {
         ).toEqual([
             "actionMetadata",
             "all",
+            "codeScanning",
             "dependabot",
             "recommended",
             "security",
@@ -32,6 +33,9 @@ describe("exported presets", () => {
         ]);
         expect(githubActionsPlugin.configs.dependabot.files).toEqual([
             ".github/dependabot.{yml,yaml}",
+        ]);
+        expect(githubActionsPlugin.configs.codeScanning.files).toEqual([
+            ".github/workflows/*.{yml,yaml}",
         ]);
         expect(
             githubActionsPlugin.configs.workflowTemplateProperties.files
@@ -69,6 +73,27 @@ describe("exported presets", () => {
             "github-actions/valid-trigger-events",
         ]);
         expect(
+            Object.keys(
+                githubActionsPlugin.configs.codeScanning.rules
+            ).toSorted((left, right) => left.localeCompare(right))
+        ).toEqual([
+            "github-actions/no-codeql-autobuild-for-javascript-typescript",
+            "github-actions/no-codeql-javascript-typescript-split-language-matrix",
+            "github-actions/require-codeql-actions-read",
+            "github-actions/require-codeql-branch-filters",
+            "github-actions/require-codeql-category-when-language-matrix",
+            "github-actions/require-codeql-pull-request-trigger",
+            "github-actions/require-codeql-schedule",
+            "github-actions/require-codeql-security-events-write",
+            "github-actions/require-dependency-review-action",
+            "github-actions/require-dependency-review-fail-on-severity",
+            "github-actions/require-dependency-review-permissions-contents-read",
+            "github-actions/require-dependency-review-pull-request-trigger",
+            "github-actions/require-sarif-upload-security-events-write",
+            "github-actions/require-scorecard-results-format-sarif",
+            "github-actions/require-scorecard-upload-sarif-step",
+        ]);
+        expect(
             Object.keys(githubActionsPlugin.configs.security.rules).toSorted(
                 (left, right) => left.localeCompare(right)
             )
@@ -80,11 +105,21 @@ describe("exported presets", () => {
             "github-actions/no-untrusted-input-in-run",
             "github-actions/no-write-all-permissions",
             "github-actions/pin-action-shas",
+            "github-actions/require-codeql-security-events-write",
+            "github-actions/require-dependabot-automation-permissions",
+            "github-actions/require-dependabot-automation-pull-request-trigger",
+            "github-actions/require-dependabot-bot-actor-guard",
             "github-actions/require-dependency-review-action",
             "github-actions/require-dependency-review-fail-on-severity",
             "github-actions/require-dependency-review-permissions-contents-read",
             "github-actions/require-dependency-review-pull-request-trigger",
+            "github-actions/require-fetch-metadata-github-token",
             "github-actions/require-pull-request-target-branches",
+            "github-actions/require-sarif-upload-security-events-write",
+            "github-actions/require-secret-scan-contents-read",
+            "github-actions/require-secret-scan-fetch-depth-zero",
+            "github-actions/require-secret-scan-schedule",
+            "github-actions/require-trufflehog-verified-results-mode",
             "github-actions/require-workflow-permissions",
             "github-actions/require-workflow-run-branches",
         ]);

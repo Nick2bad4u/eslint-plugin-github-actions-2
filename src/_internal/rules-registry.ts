@@ -8,6 +8,8 @@ import actionNameCasing from "../rules/action-name-casing.js";
 import jobIdCasing from "../rules/job-id-casing.js";
 import maxJobsPerAction from "../rules/max-jobs-per-action.js";
 import noCaseInsensitiveInputIdCollision from "../rules/no-case-insensitive-input-id-collision.js";
+import noCodeqlAutobuildForJavaScriptTypeScript from "../rules/no-codeql-autobuild-for-javascript-typescript.js";
+import noCodeqlJavascriptTypeScriptSplitLanguageMatrix from "../rules/no-codeql-javascript-typescript-split-language-matrix.js";
 import noCompositeInputEnvAccess from "../rules/no-composite-input-env-access.js";
 import noDeprecatedNodeRuntime from "../rules/no-deprecated-node-runtime.js";
 import noDuplicateCompositeStepId from "../rules/no-duplicate-composite-step-id.js";
@@ -52,8 +54,17 @@ import preferTemplateYmlExtension from "../rules/prefer-template-yml-extension.j
 import requireActionName from "../rules/require-action-name.js";
 import requireActionRunName from "../rules/require-action-run-name.js";
 import requireCheckoutBeforeLocalAction from "../rules/require-checkout-before-local-action.js";
+import requireCodeqlActionsRead from "../rules/require-codeql-actions-read.js";
+import requireCodeqlBranchFilters from "../rules/require-codeql-branch-filters.js";
+import requireCodeqlCategoryWhenLanguageMatrix from "../rules/require-codeql-category-when-language-matrix.js";
+import requireCodeqlPullRequestTrigger from "../rules/require-codeql-pull-request-trigger.js";
+import requireCodeqlSchedule from "../rules/require-codeql-schedule.js";
+import requireCodeqlSecurityEventsWrite from "../rules/require-codeql-security-events-write.js";
 import requireCompositeStepName from "../rules/require-composite-step-name.js";
 import requireDependabotAssignees from "../rules/require-dependabot-assignees.js";
+import requireDependabotAutomationPermissions from "../rules/require-dependabot-automation-permissions.js";
+import requireDependabotAutomationPullRequestTrigger from "../rules/require-dependabot-automation-pull-request-trigger.js";
+import requireDependabotBotActorGuard from "../rules/require-dependabot-bot-actor-guard.js";
 import requireDependabotCommitMessageIncludeScope from "../rules/require-dependabot-commit-message-include-scope.js";
 import requireDependabotCommitMessagePrefixDevelopment from "../rules/require-dependabot-commit-message-prefix-development.js";
 import requireDependabotCommitMessagePrefix from "../rules/require-dependabot-commit-message-prefix.js";
@@ -76,18 +87,26 @@ import requireDependencyReviewAction from "../rules/require-dependency-review-ac
 import requireDependencyReviewFailOnSeverity from "../rules/require-dependency-review-fail-on-severity.js";
 import requireDependencyReviewPermissionsContentsRead from "../rules/require-dependency-review-permissions-contents-read.js";
 import requireDependencyReviewPullRequestTrigger from "../rules/require-dependency-review-pull-request-trigger.js";
+import requireFetchMetadataGithubToken from "../rules/require-fetch-metadata-github-token.js";
 import requireJobName from "../rules/require-job-name.js";
 import requireJobStepName from "../rules/require-job-step-name.js";
 import requireJobTimeoutMinutes from "../rules/require-job-timeout-minutes.js";
 import requireMergeGroupTrigger from "../rules/require-merge-group-trigger.js";
 import requirePullRequestTargetBranches from "../rules/require-pull-request-target-branches.js";
 import requireRunStepShell from "../rules/require-run-step-shell.js";
+import requireSarifUploadSecurityEventsWrite from "../rules/require-sarif-upload-security-events-write.js";
+import requireScorecardResultsFormatSarif from "../rules/require-scorecard-results-format-sarif.js";
+import requireScorecardUploadSarifStep from "../rules/require-scorecard-upload-sarif-step.js";
+import requireSecretScanContentsRead from "../rules/require-secret-scan-contents-read.js";
+import requireSecretScanFetchDepthZero from "../rules/require-secret-scan-fetch-depth-zero.js";
+import requireSecretScanSchedule from "../rules/require-secret-scan-schedule.js";
 import requireTemplateCategories from "../rules/require-template-categories.js";
 import requireTemplateFilePatterns from "../rules/require-template-file-patterns.js";
 import requireTemplateIconFileExists from "../rules/require-template-icon-file-exists.js";
 import requireTemplateIconName from "../rules/require-template-icon-name.js";
 import requireTemplateWorkflowName from "../rules/require-template-workflow-name.js";
 import requireTriggerTypes from "../rules/require-trigger-types.js";
+import requireTrufflehogVerifiedResultsMode from "../rules/require-trufflehog-verified-results-mode.js";
 import requireWorkflowCallInputType from "../rules/require-workflow-call-input-type.js";
 import requireWorkflowCallOutputValue from "../rules/require-workflow-call-output-value.js";
 import requireWorkflowConcurrency from "../rules/require-workflow-concurrency.js";
@@ -106,6 +125,8 @@ const githubActionsRulesDefinition: {
     readonly "job-id-casing": typeof jobIdCasing;
     readonly "max-jobs-per-action": typeof maxJobsPerAction;
     readonly "no-case-insensitive-input-id-collision": typeof noCaseInsensitiveInputIdCollision;
+    readonly "no-codeql-autobuild-for-javascript-typescript": typeof noCodeqlAutobuildForJavaScriptTypeScript;
+    readonly "no-codeql-javascript-typescript-split-language-matrix": typeof noCodeqlJavascriptTypeScriptSplitLanguageMatrix;
     readonly "no-composite-input-env-access": typeof noCompositeInputEnvAccess;
     readonly "no-deprecated-node-runtime": typeof noDeprecatedNodeRuntime;
     readonly "no-duplicate-composite-step-id": typeof noDuplicateCompositeStepId;
@@ -150,8 +171,17 @@ const githubActionsRulesDefinition: {
     readonly "require-action-name": typeof requireActionName;
     readonly "require-action-run-name": typeof requireActionRunName;
     readonly "require-checkout-before-local-action": typeof requireCheckoutBeforeLocalAction;
+    readonly "require-codeql-actions-read": typeof requireCodeqlActionsRead;
+    readonly "require-codeql-branch-filters": typeof requireCodeqlBranchFilters;
+    readonly "require-codeql-category-when-language-matrix": typeof requireCodeqlCategoryWhenLanguageMatrix;
+    readonly "require-codeql-pull-request-trigger": typeof requireCodeqlPullRequestTrigger;
+    readonly "require-codeql-schedule": typeof requireCodeqlSchedule;
+    readonly "require-codeql-security-events-write": typeof requireCodeqlSecurityEventsWrite;
     readonly "require-composite-step-name": typeof requireCompositeStepName;
     readonly "require-dependabot-assignees": typeof requireDependabotAssignees;
+    readonly "require-dependabot-automation-permissions": typeof requireDependabotAutomationPermissions;
+    readonly "require-dependabot-automation-pull-request-trigger": typeof requireDependabotAutomationPullRequestTrigger;
+    readonly "require-dependabot-bot-actor-guard": typeof requireDependabotBotActorGuard;
     readonly "require-dependabot-commit-message-include-scope": typeof requireDependabotCommitMessageIncludeScope;
     readonly "require-dependabot-commit-message-prefix": typeof requireDependabotCommitMessagePrefix;
     readonly "require-dependabot-commit-message-prefix-development": typeof requireDependabotCommitMessagePrefixDevelopment;
@@ -174,18 +204,26 @@ const githubActionsRulesDefinition: {
     readonly "require-dependency-review-fail-on-severity": typeof requireDependencyReviewFailOnSeverity;
     readonly "require-dependency-review-permissions-contents-read": typeof requireDependencyReviewPermissionsContentsRead;
     readonly "require-dependency-review-pull-request-trigger": typeof requireDependencyReviewPullRequestTrigger;
+    readonly "require-fetch-metadata-github-token": typeof requireFetchMetadataGithubToken;
     readonly "require-job-name": typeof requireJobName;
     readonly "require-job-step-name": typeof requireJobStepName;
     readonly "require-job-timeout-minutes": typeof requireJobTimeoutMinutes;
     readonly "require-merge-group-trigger": typeof requireMergeGroupTrigger;
     readonly "require-pull-request-target-branches": typeof requirePullRequestTargetBranches;
     readonly "require-run-step-shell": typeof requireRunStepShell;
+    readonly "require-sarif-upload-security-events-write": typeof requireSarifUploadSecurityEventsWrite;
+    readonly "require-scorecard-results-format-sarif": typeof requireScorecardResultsFormatSarif;
+    readonly "require-scorecard-upload-sarif-step": typeof requireScorecardUploadSarifStep;
+    readonly "require-secret-scan-contents-read": typeof requireSecretScanContentsRead;
+    readonly "require-secret-scan-fetch-depth-zero": typeof requireSecretScanFetchDepthZero;
+    readonly "require-secret-scan-schedule": typeof requireSecretScanSchedule;
     readonly "require-template-categories": typeof requireTemplateCategories;
     readonly "require-template-file-patterns": typeof requireTemplateFilePatterns;
     readonly "require-template-icon-file-exists": typeof requireTemplateIconFileExists;
     readonly "require-template-icon-name": typeof requireTemplateIconName;
     readonly "require-template-workflow-name": typeof requireTemplateWorkflowName;
     readonly "require-trigger-types": typeof requireTriggerTypes;
+    readonly "require-trufflehog-verified-results-mode": typeof requireTrufflehogVerifiedResultsMode;
     readonly "require-workflow-call-input-type": typeof requireWorkflowCallInputType;
     readonly "require-workflow-call-output-value": typeof requireWorkflowCallOutputValue;
     readonly "require-workflow-concurrency": typeof requireWorkflowConcurrency;
@@ -202,6 +240,10 @@ const githubActionsRulesDefinition: {
     "job-id-casing": jobIdCasing,
     "max-jobs-per-action": maxJobsPerAction,
     "no-case-insensitive-input-id-collision": noCaseInsensitiveInputIdCollision,
+    "no-codeql-autobuild-for-javascript-typescript":
+        noCodeqlAutobuildForJavaScriptTypeScript,
+    "no-codeql-javascript-typescript-split-language-matrix":
+        noCodeqlJavascriptTypeScriptSplitLanguageMatrix,
     "no-composite-input-env-access": noCompositeInputEnvAccess,
     "no-deprecated-node-runtime": noDeprecatedNodeRuntime,
     "no-duplicate-composite-step-id": noDuplicateCompositeStepId,
@@ -254,8 +296,20 @@ const githubActionsRulesDefinition: {
     "require-action-name": requireActionName,
     "require-action-run-name": requireActionRunName,
     "require-checkout-before-local-action": requireCheckoutBeforeLocalAction,
+    "require-codeql-actions-read": requireCodeqlActionsRead,
+    "require-codeql-branch-filters": requireCodeqlBranchFilters,
+    "require-codeql-category-when-language-matrix":
+        requireCodeqlCategoryWhenLanguageMatrix,
+    "require-codeql-pull-request-trigger": requireCodeqlPullRequestTrigger,
+    "require-codeql-schedule": requireCodeqlSchedule,
+    "require-codeql-security-events-write": requireCodeqlSecurityEventsWrite,
     "require-composite-step-name": requireCompositeStepName,
     "require-dependabot-assignees": requireDependabotAssignees,
+    "require-dependabot-automation-permissions":
+        requireDependabotAutomationPermissions,
+    "require-dependabot-automation-pull-request-trigger":
+        requireDependabotAutomationPullRequestTrigger,
+    "require-dependabot-bot-actor-guard": requireDependabotBotActorGuard,
     "require-dependabot-commit-message-include-scope":
         requireDependabotCommitMessageIncludeScope,
     "require-dependabot-commit-message-prefix":
@@ -288,18 +342,29 @@ const githubActionsRulesDefinition: {
         requireDependencyReviewPermissionsContentsRead,
     "require-dependency-review-pull-request-trigger":
         requireDependencyReviewPullRequestTrigger,
+    "require-fetch-metadata-github-token": requireFetchMetadataGithubToken,
     "require-job-name": requireJobName,
     "require-job-step-name": requireJobStepName,
     "require-job-timeout-minutes": requireJobTimeoutMinutes,
     "require-merge-group-trigger": requireMergeGroupTrigger,
     "require-pull-request-target-branches": requirePullRequestTargetBranches,
     "require-run-step-shell": requireRunStepShell,
+    "require-sarif-upload-security-events-write":
+        requireSarifUploadSecurityEventsWrite,
+    "require-scorecard-results-format-sarif":
+        requireScorecardResultsFormatSarif,
+    "require-scorecard-upload-sarif-step": requireScorecardUploadSarifStep,
+    "require-secret-scan-contents-read": requireSecretScanContentsRead,
+    "require-secret-scan-fetch-depth-zero": requireSecretScanFetchDepthZero,
+    "require-secret-scan-schedule": requireSecretScanSchedule,
     "require-template-categories": requireTemplateCategories,
     "require-template-file-patterns": requireTemplateFilePatterns,
     "require-template-icon-file-exists": requireTemplateIconFileExists,
     "require-template-icon-name": requireTemplateIconName,
     "require-template-workflow-name": requireTemplateWorkflowName,
     "require-trigger-types": requireTriggerTypes,
+    "require-trufflehog-verified-results-mode":
+        requireTrufflehogVerifiedResultsMode,
     "require-workflow-call-input-type": requireWorkflowCallInputType,
     "require-workflow-call-output-value": requireWorkflowCallOutputValue,
     "require-workflow-concurrency": requireWorkflowConcurrency,

@@ -54,6 +54,7 @@ const presetDocIds = readdirSync(presetsDocsDirectoryPath, {
 const presetOrder = [
     "recommended",
     "security",
+    "code-scanning",
     "strict",
     "all",
     "dependabot",
@@ -69,6 +70,7 @@ const presetOrderSet = new Set<string>(presetOrder);
 const presetLabelById = new Map<string, string>([
     ["recommended", "🟡 Recommended"],
     ["security", "🛡️ Security"],
+    ["code-scanning", "🔎 Code scanning"],
     ["strict", "🔴 Strict"],
     ["all", "🟣 All"],
     ["dependabot", "🤖 Dependabot"],

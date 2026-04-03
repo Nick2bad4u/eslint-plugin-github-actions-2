@@ -1,8 +1,9 @@
 # Presets
 
-The plugin exports eight flat-config presets:
+The plugin exports nine flat-config presets:
 
 - [`githubActions.configs.actionMetadata`](./action-metadata.md)
+- [`githubActions.configs.codeScanning`](./code-scanning.md)
 - [`githubActions.configs.dependabot`](./dependabot.md)
 - [`githubActions.configs.workflowTemplateProperties`](./workflow-template-properties.md)
 - [`githubActions.configs.workflowTemplates`](./workflow-templates.md)
@@ -20,6 +21,7 @@ template package files (`workflow-templates/*.yml`, `*.yaml`, and
 
 - Start with **recommended** for broad baseline quality and safety.
 - Layer **security** for stronger supply-chain and permissions-focused checks.
+- Use **codeScanning** for CodeQL, dependency review, SARIF upload, and related code-scanning workflows.
 - Use **strict** when you want high signal on operational consistency.
 - Use **all** for complete rule coverage (best for internal policy repos).
 - Use **dependabot** when you want a dedicated policy surface for dependency update automation.
@@ -36,6 +38,7 @@ Fix legend:
 
 Preset key legend:
 🧩 — githubActions.configs.actionMetadata
+🔎 — githubActions.configs.codeScanning
 🤖 — githubActions.configs.dependabot
 🗂️ — githubActions.configs.workflowTemplateProperties
 🧱 — githubActions.configs.workflowTemplates
@@ -50,6 +53,8 @@ Preset key legend:
 | <span class="sb-inline-rule-number">R010</span> [`job-id-casing`](../job-id-casing.md) | — | 🟣 🔴 |
 | <span class="sb-inline-rule-number">R011</span> [`max-jobs-per-action`](../max-jobs-per-action.md) | — | 🟣 🔴 |
 | <span class="sb-inline-rule-number">R048</span> [`no-case-insensitive-input-id-collision`](../no-case-insensitive-input-id-collision.md) | — | 🧩 🟣 |
+| <span class="sb-inline-rule-number">R097</span> [`no-codeql-autobuild-for-javascript-typescript`](../no-codeql-autobuild-for-javascript-typescript.md) | — | 🟣 🔎 |
+| <span class="sb-inline-rule-number">R096</span> [`no-codeql-javascript-typescript-split-language-matrix`](../no-codeql-javascript-typescript-split-language-matrix.md) | — | 🟣 🔎 |
 | <span class="sb-inline-rule-number">R049</span> [`no-composite-input-env-access`](../no-composite-input-env-access.md) | — | 🧩 🟣 |
 | <span class="sb-inline-rule-number">R044</span> [`no-deprecated-node-runtime`](../no-deprecated-node-runtime.md) | — | 🧩 🟣 |
 | <span class="sb-inline-rule-number">R051</span> [`no-duplicate-composite-step-id`](../no-duplicate-composite-step-id.md) | — | 🧩 🟣 |
@@ -94,8 +99,17 @@ Preset key legend:
 | <span class="sb-inline-rule-number">R005</span> [`require-action-name`](../require-action-name.md) | — | 🟣 🟡 🔴 |
 | <span class="sb-inline-rule-number">R006</span> [`require-action-run-name`](../require-action-run-name.md) | — | 🟣 🔴 |
 | <span class="sb-inline-rule-number">R025</span> [`require-checkout-before-local-action`](../require-checkout-before-local-action.md) | — | 🟣 🟡 🔴 |
+| <span class="sb-inline-rule-number">R099</span> [`require-codeql-actions-read`](../require-codeql-actions-read.md) | — | 🟣 🔎 |
+| <span class="sb-inline-rule-number">R113</span> [`require-codeql-branch-filters`](../require-codeql-branch-filters.md) | — | 🟣 🔎 |
+| <span class="sb-inline-rule-number">R114</span> [`require-codeql-category-when-language-matrix`](../require-codeql-category-when-language-matrix.md) | — | 🟣 🔎 |
+| <span class="sb-inline-rule-number">R100</span> [`require-codeql-pull-request-trigger`](../require-codeql-pull-request-trigger.md) | — | 🟣 🔎 |
+| <span class="sb-inline-rule-number">R101</span> [`require-codeql-schedule`](../require-codeql-schedule.md) | — | 🟣 🔎 |
+| <span class="sb-inline-rule-number">R098</span> [`require-codeql-security-events-write`](../require-codeql-security-events-write.md) | — | 🟣 🔎 🛡️ |
 | <span class="sb-inline-rule-number">R052</span> [`require-composite-step-name`](../require-composite-step-name.md) | — | 🧩 🟣 |
 | <span class="sb-inline-rule-number">R077</span> [`require-dependabot-assignees`](../require-dependabot-assignees.md) | — | 🟣 🤖 |
+| <span class="sb-inline-rule-number">R111</span> [`require-dependabot-automation-permissions`](../require-dependabot-automation-permissions.md) | — | 🟣 🛡️ |
+| <span class="sb-inline-rule-number">R112</span> [`require-dependabot-automation-pull-request-trigger`](../require-dependabot-automation-pull-request-trigger.md) | — | 🟣 🛡️ |
+| <span class="sb-inline-rule-number">R109</span> [`require-dependabot-bot-actor-guard`](../require-dependabot-bot-actor-guard.md) | — | 🟣 🛡️ |
 | <span class="sb-inline-rule-number">R089</span> [`require-dependabot-commit-message-include-scope`](../require-dependabot-commit-message-include-scope.md) | — | 🟣 🤖 |
 | <span class="sb-inline-rule-number">R079</span> [`require-dependabot-commit-message-prefix`](../require-dependabot-commit-message-prefix.md) | — | 🟣 🤖 |
 | <span class="sb-inline-rule-number">R090</span> [`require-dependabot-commit-message-prefix-development`](../require-dependabot-commit-message-prefix-development.md) | — | 🟣 🤖 |
@@ -114,22 +128,30 @@ Preset key legend:
 | <span class="sb-inline-rule-number">R071</span> [`require-dependabot-updates`](../require-dependabot-updates.md) | — | 🟣 🤖 |
 | <span class="sb-inline-rule-number">R070</span> [`require-dependabot-version`](../require-dependabot-version.md) | — | 🟣 🤖 |
 | <span class="sb-inline-rule-number">R088</span> [`require-dependabot-versioning-strategy-for-npm`](../require-dependabot-versioning-strategy-for-npm.md) | — | 🟣 🤖 |
-| <span class="sb-inline-rule-number">R091</span> [`require-dependency-review-action`](../require-dependency-review-action.md) | — | 🟣 🛡️ |
-| <span class="sb-inline-rule-number">R093</span> [`require-dependency-review-fail-on-severity`](../require-dependency-review-fail-on-severity.md) | — | 🟣 🛡️ |
-| <span class="sb-inline-rule-number">R092</span> [`require-dependency-review-permissions-contents-read`](../require-dependency-review-permissions-contents-read.md) | — | 🟣 🛡️ |
-| <span class="sb-inline-rule-number">R094</span> [`require-dependency-review-pull-request-trigger`](../require-dependency-review-pull-request-trigger.md) | — | 🟣 🛡️ |
+| <span class="sb-inline-rule-number">R091</span> [`require-dependency-review-action`](../require-dependency-review-action.md) | — | 🟣 🔎 🛡️ |
+| <span class="sb-inline-rule-number">R093</span> [`require-dependency-review-fail-on-severity`](../require-dependency-review-fail-on-severity.md) | — | 🟣 🔎 🛡️ |
+| <span class="sb-inline-rule-number">R092</span> [`require-dependency-review-permissions-contents-read`](../require-dependency-review-permissions-contents-read.md) | — | 🟣 🔎 🛡️ |
+| <span class="sb-inline-rule-number">R094</span> [`require-dependency-review-pull-request-trigger`](../require-dependency-review-pull-request-trigger.md) | — | 🟣 🔎 🛡️ |
+| <span class="sb-inline-rule-number">R110</span> [`require-fetch-metadata-github-token`](../require-fetch-metadata-github-token.md) | — | 🟣 🛡️ |
 | <span class="sb-inline-rule-number">R007</span> [`require-job-name`](../require-job-name.md) | — | 🟣 🔴 |
 | <span class="sb-inline-rule-number">R008</span> [`require-job-step-name`](../require-job-step-name.md) | — | 🟣 🔴 |
 | <span class="sb-inline-rule-number">R002</span> [`require-job-timeout-minutes`](../require-job-timeout-minutes.md) | — | 🟣 🟡 🔴 |
 | <span class="sb-inline-rule-number">R035</span> [`require-merge-group-trigger`](../require-merge-group-trigger.md) | — | 🟣 🔴 |
 | <span class="sb-inline-rule-number">R032</span> [`require-pull-request-target-branches`](../require-pull-request-target-branches.md) | — | 🟣 🛡️ 🔴 |
 | <span class="sb-inline-rule-number">R021</span> [`require-run-step-shell`](../require-run-step-shell.md) | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R102</span> [`require-sarif-upload-security-events-write`](../require-sarif-upload-security-events-write.md) | — | 🟣 🔎 🛡️ |
+| <span class="sb-inline-rule-number">R103</span> [`require-scorecard-results-format-sarif`](../require-scorecard-results-format-sarif.md) | — | 🟣 🔎 |
+| <span class="sb-inline-rule-number">R104</span> [`require-scorecard-upload-sarif-step`](../require-scorecard-upload-sarif-step.md) | — | 🟣 🔎 |
+| <span class="sb-inline-rule-number">R107</span> [`require-secret-scan-contents-read`](../require-secret-scan-contents-read.md) | — | 🟣 🛡️ |
+| <span class="sb-inline-rule-number">R105</span> [`require-secret-scan-fetch-depth-zero`](../require-secret-scan-fetch-depth-zero.md) | — | 🟣 🛡️ |
+| <span class="sb-inline-rule-number">R106</span> [`require-secret-scan-schedule`](../require-secret-scan-schedule.md) | — | 🟣 🛡️ |
 | <span class="sb-inline-rule-number">R057</span> [`require-template-categories`](../require-template-categories.md) | — | 🗂️ 🧱 🟣 |
 | <span class="sb-inline-rule-number">R058</span> [`require-template-file-patterns`](../require-template-file-patterns.md) | — | 🗂️ 🧱 🟣 |
 | <span class="sb-inline-rule-number">R065</span> [`require-template-icon-file-exists`](../require-template-icon-file-exists.md) | — | 🗂️ 🧱 🟣 |
 | <span class="sb-inline-rule-number">R056</span> [`require-template-icon-name`](../require-template-icon-name.md) | — | 🗂️ 🧱 🟣 |
 | <span class="sb-inline-rule-number">R067</span> [`require-template-workflow-name`](../require-template-workflow-name.md) | — | 🧱 🟣 |
 | <span class="sb-inline-rule-number">R031</span> [`require-trigger-types`](../require-trigger-types.md) | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R108</span> [`require-trufflehog-verified-results-mode`](../require-trufflehog-verified-results-mode.md) | — | 🟣 🛡️ |
 | <span class="sb-inline-rule-number">R034</span> [`require-workflow-call-input-type`](../require-workflow-call-input-type.md) | — | 🟣 🟡 🔴 |
 | <span class="sb-inline-rule-number">R039</span> [`require-workflow-call-output-value`](../require-workflow-call-output-value.md) | — | 🟣 🟡 🔴 |
 | <span class="sb-inline-rule-number">R004</span> [`require-workflow-concurrency`](../require-workflow-concurrency.md) | — | 🟣 🔴 |

@@ -230,6 +230,10 @@ const config: Config = {
                             to: "/docs/rules/presets/security",
                         },
                         {
+                            label: "🔎 Code scanning",
+                            to: "/docs/rules/presets/code-scanning",
+                        },
+                        {
                             label: "🔴 Strict",
                             to: "/docs/rules/presets/strict",
                         },

@@ -5,6 +5,7 @@ Fix legend:
 
 Preset key legend:
 🧩 — githubActions.configs.actionMetadata
+🔎 — githubActions.configs.codeScanning
 🤖 — githubActions.configs.dependabot
 🗂️ — githubActions.configs.workflowTemplateProperties
 🧱 — githubActions.configs.workflowTemplates
@@ -19,6 +20,8 @@ Preset key legend:
 | <span class="sb-inline-rule-number">R010</span> `job-id-casing` | — | 🟣 🔴 |
 | <span class="sb-inline-rule-number">R011</span> `max-jobs-per-action` | — | 🟣 🔴 |
 | <span class="sb-inline-rule-number">R048</span> `no-case-insensitive-input-id-collision` | — | 🧩 🟣 |
+| <span class="sb-inline-rule-number">R097</span> `no-codeql-autobuild-for-javascript-typescript` | — | 🟣 🔎 |
+| <span class="sb-inline-rule-number">R096</span> `no-codeql-javascript-typescript-split-language-matrix` | — | 🟣 🔎 |
 | <span class="sb-inline-rule-number">R049</span> `no-composite-input-env-access` | — | 🧩 🟣 |
 | <span class="sb-inline-rule-number">R044</span> `no-deprecated-node-runtime` | — | 🧩 🟣 |
 | <span class="sb-inline-rule-number">R051</span> `no-duplicate-composite-step-id` | — | 🧩 🟣 |
@@ -63,8 +66,17 @@ Preset key legend:
 | <span class="sb-inline-rule-number">R005</span> `require-action-name` | — | 🟣 🟡 🔴 |
 | <span class="sb-inline-rule-number">R006</span> `require-action-run-name` | — | 🟣 🔴 |
 | <span class="sb-inline-rule-number">R025</span> `require-checkout-before-local-action` | — | 🟣 🟡 🔴 |
+| <span class="sb-inline-rule-number">R099</span> `require-codeql-actions-read` | — | 🟣 🔎 |
+| <span class="sb-inline-rule-number">R113</span> `require-codeql-branch-filters` | — | 🟣 🔎 |
+| <span class="sb-inline-rule-number">R114</span> `require-codeql-category-when-language-matrix` | — | 🟣 🔎 |
+| <span class="sb-inline-rule-number">R100</span> `require-codeql-pull-request-trigger` | — | 🟣 🔎 |
+| <span class="sb-inline-rule-number">R101</span> `require-codeql-schedule` | — | 🟣 🔎 |
+| <span class="sb-inline-rule-number">R098</span> `require-codeql-security-events-write` | — | 🟣 🔎 🛡️ |
 | <span class="sb-inline-rule-number">R052</span> `require-composite-step-name` | — | 🧩 🟣 |
 | <span class="sb-inline-rule-number">R077</span> `require-dependabot-assignees` | — | 🟣 🤖 |
+| <span class="sb-inline-rule-number">R111</span> `require-dependabot-automation-permissions` | — | 🟣 🛡️ |
+| <span class="sb-inline-rule-number">R112</span> `require-dependabot-automation-pull-request-trigger` | — | 🟣 🛡️ |
+| <span class="sb-inline-rule-number">R109</span> `require-dependabot-bot-actor-guard` | — | 🟣 🛡️ |
 | <span class="sb-inline-rule-number">R089</span> `require-dependabot-commit-message-include-scope` | — | 🟣 🤖 |
 | <span class="sb-inline-rule-number">R079</span> `require-dependabot-commit-message-prefix` | — | 🟣 🤖 |
 | <span class="sb-inline-rule-number">R090</span> `require-dependabot-commit-message-prefix-development` | — | 🟣 🤖 |
@@ -83,22 +95,30 @@ Preset key legend:
 | <span class="sb-inline-rule-number">R071</span> `require-dependabot-updates` | — | 🟣 🤖 |
 | <span class="sb-inline-rule-number">R070</span> `require-dependabot-version` | — | 🟣 🤖 |
 | <span class="sb-inline-rule-number">R088</span> `require-dependabot-versioning-strategy-for-npm` | — | 🟣 🤖 |
-| <span class="sb-inline-rule-number">R091</span> `require-dependency-review-action` | — | 🟣 🛡️ |
-| <span class="sb-inline-rule-number">R093</span> `require-dependency-review-fail-on-severity` | — | 🟣 🛡️ |
-| <span class="sb-inline-rule-number">R092</span> `require-dependency-review-permissions-contents-read` | — | 🟣 🛡️ |
-| <span class="sb-inline-rule-number">R094</span> `require-dependency-review-pull-request-trigger` | — | 🟣 🛡️ |
+| <span class="sb-inline-rule-number">R091</span> `require-dependency-review-action` | — | 🟣 🔎 🛡️ |
+| <span class="sb-inline-rule-number">R093</span> `require-dependency-review-fail-on-severity` | — | 🟣 🔎 🛡️ |
+| <span class="sb-inline-rule-number">R092</span> `require-dependency-review-permissions-contents-read` | — | 🟣 🔎 🛡️ |
+| <span class="sb-inline-rule-number">R094</span> `require-dependency-review-pull-request-trigger` | — | 🟣 🔎 🛡️ |
+| <span class="sb-inline-rule-number">R110</span> `require-fetch-metadata-github-token` | — | 🟣 🛡️ |
 | <span class="sb-inline-rule-number">R007</span> `require-job-name` | — | 🟣 🔴 |
 | <span class="sb-inline-rule-number">R008</span> `require-job-step-name` | — | 🟣 🔴 |
 | <span class="sb-inline-rule-number">R002</span> `require-job-timeout-minutes` | — | 🟣 🟡 🔴 |
 | <span class="sb-inline-rule-number">R035</span> `require-merge-group-trigger` | — | 🟣 🔴 |
 | <span class="sb-inline-rule-number">R032</span> `require-pull-request-target-branches` | — | 🟣 🛡️ 🔴 |
 | <span class="sb-inline-rule-number">R021</span> `require-run-step-shell` | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R102</span> `require-sarif-upload-security-events-write` | — | 🟣 🔎 🛡️ |
+| <span class="sb-inline-rule-number">R103</span> `require-scorecard-results-format-sarif` | — | 🟣 🔎 |
+| <span class="sb-inline-rule-number">R104</span> `require-scorecard-upload-sarif-step` | — | 🟣 🔎 |
+| <span class="sb-inline-rule-number">R107</span> `require-secret-scan-contents-read` | — | 🟣 🛡️ |
+| <span class="sb-inline-rule-number">R105</span> `require-secret-scan-fetch-depth-zero` | — | 🟣 🛡️ |
+| <span class="sb-inline-rule-number">R106</span> `require-secret-scan-schedule` | — | 🟣 🛡️ |
 | <span class="sb-inline-rule-number">R057</span> `require-template-categories` | — | 🗂️ 🧱 🟣 |
 | <span class="sb-inline-rule-number">R058</span> `require-template-file-patterns` | — | 🗂️ 🧱 🟣 |
 | <span class="sb-inline-rule-number">R065</span> `require-template-icon-file-exists` | — | 🗂️ 🧱 🟣 |
 | <span class="sb-inline-rule-number">R056</span> `require-template-icon-name` | — | 🗂️ 🧱 🟣 |
 | <span class="sb-inline-rule-number">R067</span> `require-template-workflow-name` | — | 🧱 🟣 |
 | <span class="sb-inline-rule-number">R031</span> `require-trigger-types` | — | 🟣 🔴 |
+| <span class="sb-inline-rule-number">R108</span> `require-trufflehog-verified-results-mode` | — | 🟣 🛡️ |
 | <span class="sb-inline-rule-number">R034</span> `require-workflow-call-input-type` | — | 🟣 🟡 🔴 |
 | <span class="sb-inline-rule-number">R039</span> `require-workflow-call-output-value` | — | 🟣 🟡 🔴 |
 | <span class="sb-inline-rule-number">R004</span> `require-workflow-concurrency` | — | 🟣 🔴 |

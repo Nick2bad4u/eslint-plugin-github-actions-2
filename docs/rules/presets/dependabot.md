@@ -26,3 +26,5 @@ Linting defaults for repository Dependabot configuration files.
 - [`require-dependabot-commit-message-prefix`](../require-dependabot-commit-message-prefix.md)
 - [`require-dependabot-commit-message-prefix-development`](../require-dependabot-commit-message-prefix-development.md)
 - [`require-dependabot-labels`](../require-dependabot-labels.md)
+
+For workflow automation around Dependabot pull requests, see the security-oriented rules in [`githubActions.configs.security`](./security.md).

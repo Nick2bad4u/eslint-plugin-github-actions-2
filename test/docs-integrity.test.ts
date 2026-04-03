@@ -19,7 +19,7 @@ describe("docs integrity", () => {
             );
 
             expect(contents).toContain("## Further reading");
-            expect(contents).toContain("> **Rule catalog ID:** R0");
+            expect(contents).toMatch(/> \*\*Rule catalog ID:\*\* R\d+/v);
         }
     });
 });
