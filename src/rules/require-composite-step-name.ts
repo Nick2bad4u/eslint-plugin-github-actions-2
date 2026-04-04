@@ -80,6 +80,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.actionMetadata",
@@ -87,6 +88,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require each composite action step to declare a descriptive `name`.",
+            dialects: ["GitHub Action metadata"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R052",

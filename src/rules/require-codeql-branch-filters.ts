@@ -97,6 +97,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -104,6 +105,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require CodeQL `push` and `pull_request` triggers to scope branches explicitly.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R113",

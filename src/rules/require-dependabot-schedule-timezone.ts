@@ -83,6 +83,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -90,6 +91,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require explicit `schedule.timezone` when Dependabot schedules use `time` or `cron` semantics.",
+            dialects: ["Dependabot configuration"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R076",

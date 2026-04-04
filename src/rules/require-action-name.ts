@@ -50,6 +50,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -58,6 +59,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require a non-empty string workflow `name` so workflow runs stay readable in the GitHub Actions UI.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R005",

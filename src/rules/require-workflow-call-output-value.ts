@@ -88,6 +88,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -96,6 +97,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require every `workflow_call` output to declare a non-empty `value` so reusable workflows expose concrete runtime output mappings.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R039",

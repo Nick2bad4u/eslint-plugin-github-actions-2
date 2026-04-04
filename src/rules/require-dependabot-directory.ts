@@ -78,6 +78,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -85,6 +86,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require every Dependabot `updates` entry to define exactly one of `directory` or `directories`.",
+            dialects: ["Dependabot configuration"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R073",

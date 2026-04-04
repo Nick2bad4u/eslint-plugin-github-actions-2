@@ -33,6 +33,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -41,6 +42,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require workflows using `actions/dependency-review-action` to listen for `pull_request`.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R094",

@@ -111,6 +111,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -120,6 +121,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow direct `secrets.*` references in job and step `if` conditionals; move secret values into `env` first and condition on that instead.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R027",

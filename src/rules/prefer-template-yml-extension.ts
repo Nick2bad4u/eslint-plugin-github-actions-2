@@ -30,6 +30,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.workflowTemplates",
@@ -37,6 +38,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require workflow template files to prefer `.yml` over `.yaml`.",
+            dialects: ["GitHub Actions workflow template"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R066",

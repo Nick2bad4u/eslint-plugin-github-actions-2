@@ -112,6 +112,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -120,6 +121,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow invalid GitHub Actions trigger events under the workflow `on` key.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R018",

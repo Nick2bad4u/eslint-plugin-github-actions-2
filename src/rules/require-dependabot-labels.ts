@@ -49,6 +49,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -56,6 +57,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require Dependabot update entries to define effective `labels` directly or via a multi-ecosystem group.",
+            dialects: ["Dependabot configuration"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R080",

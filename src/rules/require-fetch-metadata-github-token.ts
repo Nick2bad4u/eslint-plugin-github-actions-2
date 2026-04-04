@@ -53,6 +53,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -60,6 +61,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require `dependabot/fetch-metadata` steps to configure `with.github-token`.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R110",

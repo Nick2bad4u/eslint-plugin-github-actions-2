@@ -29,6 +29,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -36,6 +37,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow top-level workflow `env` when you want environment variables scoped closer to the jobs and steps that use them.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R013",

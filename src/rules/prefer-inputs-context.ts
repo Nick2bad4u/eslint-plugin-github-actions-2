@@ -111,6 +111,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -119,6 +120,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "enforce the `inputs` context instead of `github.event.inputs` in `workflow_dispatch` workflows so boolean inputs preserve their native type semantics.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R033",

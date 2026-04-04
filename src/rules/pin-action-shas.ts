@@ -135,6 +135,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -143,6 +144,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require third-party `uses` references to pin full-length commit SHAs instead of mutable tags or branches.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R003",

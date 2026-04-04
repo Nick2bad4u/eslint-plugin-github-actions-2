@@ -196,6 +196,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -204,6 +205,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow unavailable contexts in workflow-level and job-level `concurrency` expressions.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R042",

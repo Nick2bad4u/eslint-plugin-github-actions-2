@@ -114,6 +114,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -122,6 +123,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow self-hosted runners in workflows triggered by fork-capable pull-request events that can execute untrusted contributor activity.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R036",

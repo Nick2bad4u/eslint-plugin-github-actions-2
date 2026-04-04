@@ -243,6 +243,38 @@ describe("action metadata rules", () => {
         expect(result.messages).toHaveLength(1);
     });
 
+    it("autofixes pre-if without pre by removing the orphaned key", async () => {
+        const result = await lintWorkflow(
+            [
+                "name: Example",
+                "description: Example action",
+                "runs:",
+                "  using: node20",
+                "  main: dist/index.js",
+                "  pre-if: runner.os == 'Linux'",
+            ].join("\n"),
+            {
+                configName: "actionMetadata",
+                filePath: ".github/actions/example/action.yml",
+                fix: true,
+                rules: {
+                    "github-actions/no-pre-if-without-pre": "error",
+                },
+            }
+        );
+
+        expect(result.output).toBe(
+            [
+                "name: Example",
+                "description: Example action",
+                "runs:",
+                "  using: node20",
+                "  main: dist/index.js",
+                "",
+            ].join("\n")
+        );
+    });
+
     it("reports post-if without post", async () => {
         const result = await lintWorkflow(
             [
@@ -263,6 +295,38 @@ describe("action metadata rules", () => {
         );
 
         expect(result.messages).toHaveLength(1);
+    });
+
+    it("autofixes post-if without post by removing the orphaned key", async () => {
+        const result = await lintWorkflow(
+            [
+                "name: Example",
+                "description: Example action",
+                "runs:",
+                "  using: node20",
+                "  main: dist/index.js",
+                "  post-if: runner.os == 'Linux'",
+            ].join("\n"),
+            {
+                configName: "actionMetadata",
+                filePath: ".github/actions/example/action.yml",
+                fix: true,
+                rules: {
+                    "github-actions/no-post-if-without-post": "error",
+                },
+            }
+        );
+
+        expect(result.output).toBe(
+            [
+                "name: Example",
+                "description: Example action",
+                "runs:",
+                "  using: node20",
+                "  main: dist/index.js",
+                "",
+            ].join("\n")
+        );
     });
 
     it("reports required inputs with defaults", async () => {
@@ -291,6 +355,43 @@ describe("action metadata rules", () => {
         );
 
         expect(result.messages).toHaveLength(1);
+    });
+
+    it("offers suggestions to remove either required or default when both are set", async () => {
+        const result = await lintWorkflow(
+            [
+                "name: Example",
+                "description: Example action",
+                "inputs:",
+                "  token:",
+                "    description: API token",
+                "    required: true",
+                "    default: abc",
+                "runs:",
+                "  using: composite",
+                "  steps:",
+                "    - run: echo hi",
+                "      shell: bash",
+            ].join("\n"),
+            {
+                configName: "actionMetadata",
+                filePath: ".github/actions/example/action.yml",
+                rules: {
+                    "github-actions/no-required-input-with-default": "error",
+                },
+            }
+        );
+
+        expect(result.messages).toHaveLength(1);
+        expect(result.messages[0]?.suggestions).toHaveLength(2);
+        expect(
+            result.messages[0]?.suggestions?.map(
+                (suggestion) => suggestion.desc
+            )
+        ).toEqual([
+            "Remove `required: true` from input 'token' and keep the default value.",
+            "Remove the default value from input 'token' and keep it required.",
+        ]);
     });
 
     it("accepts inputs that are defaulted but not strictly required", async () => {

@@ -10,6 +10,7 @@ import {
     getMappingValueAsMapping,
     getWorkflowRoot,
 } from "../_internal/workflow-yaml.js";
+import { getEnclosingLineRemovalRange } from "../_internal/yaml-fixes.js";
 
 /** Rule implementation for invalid `runs.pre-if` usage. */
 const rule: Rule.RuleModule = {
@@ -37,6 +38,13 @@ const rule: Rule.RuleModule = {
                 }
 
                 context.report({
+                    fix: (fixer) =>
+                        fixer.removeRange(
+                            getEnclosingLineRemovalRange(
+                                context.sourceCode.text,
+                                preIfPair.range
+                            )
+                        ),
                     messageId: "preIfWithoutPre",
                     node: (preIfPair.value ??
                         preIfPair) as unknown as Rule.Node,
@@ -45,6 +53,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.actionMetadata",
@@ -52,12 +61,15 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow `runs.pre-if` when `runs.pre` is not configured in action metadata.",
+            dialects: ["GitHub Action metadata"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R045",
             ruleNumber: 45,
             url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-pre-if-without-pre",
         },
+        fixable: "code",
         messages: {
             preIfWithoutPre:
                 "`runs.pre-if` is set, but `runs.pre` is missing. Remove `pre-if` or add `pre`.",

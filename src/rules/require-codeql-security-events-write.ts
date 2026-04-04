@@ -43,6 +43,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -51,6 +52,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require jobs running CodeQL analysis to grant `security-events: write`.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R098",

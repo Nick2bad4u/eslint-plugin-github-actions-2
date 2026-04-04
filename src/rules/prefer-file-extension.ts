@@ -93,6 +93,7 @@ const rule: Rule.RuleModule = {
     },
     meta: {
         defaultOptions: [DEFAULT_WORKFLOW_FILE_EXTENSION],
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -101,6 +102,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "enforce a consistent file extension for GitHub Actions workflow files.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R020",

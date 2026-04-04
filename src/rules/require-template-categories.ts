@@ -53,6 +53,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.workflowTemplateProperties",
@@ -61,6 +62,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require non-empty `categories` in workflow-template metadata.",
+            dialects: ["GitHub Actions workflow template metadata"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R057",

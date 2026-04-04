@@ -50,6 +50,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.workflowTemplateProperties",
@@ -58,6 +59,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow syntactically invalid regexes in workflow-template `filePatterns`.",
+            dialects: ["GitHub Actions workflow template metadata"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R059",

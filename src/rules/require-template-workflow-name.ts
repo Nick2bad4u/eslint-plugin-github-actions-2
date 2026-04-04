@@ -41,6 +41,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.workflowTemplates",
@@ -48,6 +49,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require workflow template YAML files to declare a non-empty top-level `name`.",
+            dialects: ["GitHub Actions workflow template"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R067",

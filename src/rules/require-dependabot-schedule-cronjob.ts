@@ -93,6 +93,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -100,6 +101,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require Dependabot `schedule.cronjob` for `interval: cron` and disallow it for non-cron intervals.",
+            dialects: ["Dependabot configuration"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R083",

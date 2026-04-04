@@ -70,6 +70,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -77,6 +78,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require Dependabot automation jobs to guard execution on `dependabot[bot]`.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R109",

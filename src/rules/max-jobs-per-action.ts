@@ -54,6 +54,7 @@ const rule: Rule.RuleModule = {
     },
     meta: {
         defaultOptions: [DEFAULT_MAX_JOBS],
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -61,6 +62,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "enforce a maximum number of jobs per workflow file so large pipelines stay modular and reviewable.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R011",

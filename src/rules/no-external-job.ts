@@ -41,6 +41,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -48,6 +49,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow reusable-workflow jobs declared with `jobs.<id>.uses` when you want every job defined inline in the workflow file.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R012",

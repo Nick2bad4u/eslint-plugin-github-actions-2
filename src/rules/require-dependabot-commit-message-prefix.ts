@@ -61,6 +61,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -68,6 +69,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require Dependabot update entries to define an effective `commit-message.prefix` directly or via a multi-ecosystem group.",
+            dialects: ["Dependabot configuration"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R079",

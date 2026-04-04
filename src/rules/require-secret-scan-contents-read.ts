@@ -44,6 +44,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -51,6 +52,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require secret scanning workflows to grant `contents: read`.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R107",

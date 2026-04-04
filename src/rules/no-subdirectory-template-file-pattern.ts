@@ -45,6 +45,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.workflowTemplateProperties",
@@ -53,6 +54,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow workflow-template `filePatterns` that match subdirectory paths instead of repository-root files.",
+            dialects: ["GitHub Actions workflow template metadata"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R062",

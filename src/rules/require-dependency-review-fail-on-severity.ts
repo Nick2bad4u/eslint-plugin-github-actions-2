@@ -59,6 +59,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -67,6 +68,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require `actions/dependency-review-action` steps to set `with.fail-on-severity`.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R093",

@@ -139,6 +139,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -147,6 +148,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require `on.pull_request_target` triggers to scope target base branches with `branches` or `branches-ignore` so privileged workflows do not react to every branch by default.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R032",

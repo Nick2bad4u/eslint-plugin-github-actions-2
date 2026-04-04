@@ -33,6 +33,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -40,6 +41,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require CodeQL workflows to listen for `pull_request`.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R100",

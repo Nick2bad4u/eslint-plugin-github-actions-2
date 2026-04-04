@@ -72,6 +72,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -79,6 +80,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require pull-request validation workflows to include the `merge_group` trigger so required checks also run for merge queues.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R035",

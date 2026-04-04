@@ -53,6 +53,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -60,6 +61,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require `ossf/scorecard-action` steps to set `results_format: sarif`.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R103",

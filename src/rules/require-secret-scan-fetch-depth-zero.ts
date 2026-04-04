@@ -97,6 +97,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -104,6 +105,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require secret scanning workflows to checkout full history with `fetch-depth: 0`.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R105",

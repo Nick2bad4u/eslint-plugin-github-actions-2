@@ -205,6 +205,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -212,6 +213,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow guaranteed overlapping Dependabot directory selectors for the same package ecosystem and target branch.",
+            dialects: ["Dependabot configuration"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R095",

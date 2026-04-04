@@ -190,6 +190,40 @@ describe("workflow template rules", () => {
         expect(universalPatternResult.messages).toHaveLength(1);
     });
 
+    it("autofixes empty filePatterns entries by removing the invalid element", async () => {
+        const result = await lintWorkflow(
+            [
+                "{",
+                '  "name": "CI Template",',
+                '  "description": "Template",',
+                '  "iconName": "workflow",',
+                '  "categories": ["JavaScript"],',
+                '  "filePatterns": ["  "]',
+                "}",
+            ].join("\n"),
+            {
+                configName: "workflowTemplateProperties",
+                filePath: ".github/workflow-templates/ci.properties.json",
+                fix: true,
+                rules: {
+                    "github-actions/no-empty-template-file-pattern": "error",
+                },
+            }
+        );
+
+        expect(result.output).toBe(
+            [
+                "{",
+                '  "name": "CI Template",',
+                '  "description": "Template",',
+                '  "iconName": "workflow",',
+                '  "categories": ["JavaScript"],',
+                '  "filePatterns": []',
+                "}",
+            ].join("\n")
+        );
+    });
+
     it("rejects subdirectory template file patterns", async () => {
         const result = await lintWorkflow(
             [
@@ -308,6 +342,72 @@ describe("workflow template rules", () => {
         expect(pathSeparatorResult.messages).toHaveLength(1);
         expect(missingIconResult.messages).toHaveLength(1);
         expect(existingIconResult.messages).toHaveLength(0);
+    });
+
+    it("offers a basename suggestion for iconName values containing path separators", async () => {
+        const result = await lintWorkflow(
+            [
+                "{",
+                '  "name": "CI Template",',
+                '  "description": "Template",',
+                '  "iconName": "icons/workflow",',
+                '  "categories": ["JavaScript"],',
+                '  "filePatterns": ["package.json$"]',
+                "}",
+            ].join("\n"),
+            {
+                configName: "workflowTemplateProperties",
+                filePath: ".github/workflow-templates/ci.properties.json",
+                rules: {
+                    "github-actions/no-path-separators-in-template-icon-name":
+                        "error",
+                },
+            }
+        );
+
+        expect(result.messages).toHaveLength(1);
+        expect(result.messages[0]?.suggestions).toHaveLength(1);
+        expect(result.messages[0]?.suggestions?.[0]?.desc).toBe(
+            "Replace 'icons/workflow' with 'workflow'."
+        );
+        expect(result.messages[0]?.suggestions?.[0]?.fix?.text).toBe(
+            '"workflow"'
+        );
+    });
+
+    it("autofixes iconName values by removing the .svg extension", async () => {
+        const result = await lintWorkflow(
+            [
+                "{",
+                '  "name": "CI Template",',
+                '  "description": "Template",',
+                '  "iconName": "workflow.svg",',
+                '  "categories": ["JavaScript"],',
+                '  "filePatterns": ["package.json$"]',
+                "}",
+            ].join("\n"),
+            {
+                configName: "workflowTemplateProperties",
+                filePath: ".github/workflow-templates/ci.properties.json",
+                fix: true,
+                rules: {
+                    "github-actions/no-icon-file-extension-in-template-icon-name":
+                        "error",
+                },
+            }
+        );
+
+        expect(result.output).toBe(
+            [
+                "{",
+                '  "name": "CI Template",',
+                '  "description": "Template",',
+                '  "iconName": "workflow",',
+                '  "categories": ["JavaScript"],',
+                '  "filePatterns": ["package.json$"]',
+                "}",
+            ].join("\n")
+        );
     });
 
     it("requires iconName, categories, and filePatterns", async () => {

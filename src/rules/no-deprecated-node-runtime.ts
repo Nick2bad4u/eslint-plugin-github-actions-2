@@ -59,6 +59,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.actionMetadata",
@@ -66,6 +67,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow deprecated Node.js runtimes in action metadata `runs.using`.",
+            dialects: ["GitHub Action metadata"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R044",

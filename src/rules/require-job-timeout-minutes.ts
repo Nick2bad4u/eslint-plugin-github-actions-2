@@ -99,6 +99,7 @@ const rule: Rule.RuleModule = {
     },
     meta: {
         defaultOptions: [{}],
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -107,6 +108,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require every non-reusable workflow job to define a bounded `timeout-minutes` value.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R002",

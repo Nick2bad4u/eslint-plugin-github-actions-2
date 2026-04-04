@@ -70,6 +70,27 @@ describe("dependabot rules", () => {
         expect(result.messages).toHaveLength(1);
     });
 
+    it("autofixes unused enable-beta-ecosystems settings by removing the key", async () => {
+        const result = await lintWorkflow(
+            [
+                "version: 2",
+                "enable-beta-ecosystems: true",
+                "updates: []",
+            ].join("\n"),
+            {
+                configName: "dependabot",
+                filePath: ".github/dependabot.yml",
+                fix: true,
+                rules: {
+                    "github-actions/no-unused-dependabot-enable-beta-ecosystems":
+                        "error",
+                },
+            }
+        );
+
+        expect(result.output).toBe(["version: 2", "updates: []"].join("\n"));
+    });
+
     it("requires `version: 2` and a non-empty `updates` sequence", async () => {
         const missingVersionResult = await lintWorkflow("updates: []", {
             configName: "dependabot",
@@ -91,6 +112,35 @@ describe("dependabot rules", () => {
 
         expect(missingVersionResult.messages).toHaveLength(1);
         expect(emptyUpdatesResult.messages).toHaveLength(1);
+    });
+
+    it("autofixes missing or invalid Dependabot versions to version 2", async () => {
+        const missingVersionResult = await lintWorkflow("updates: []", {
+            configName: "dependabot",
+            filePath: ".github/dependabot.yml",
+            fix: true,
+            rules: {
+                "github-actions/require-dependabot-version": "error",
+            },
+        });
+        const invalidVersionResult = await lintWorkflow(
+            ["version: 1", "updates: []"].join("\n"),
+            {
+                configName: "dependabot",
+                filePath: ".github/dependabot.yml",
+                fix: true,
+                rules: {
+                    "github-actions/require-dependabot-version": "error",
+                },
+            }
+        );
+
+        expect(missingVersionResult.output).toBe(
+            ["version: 2", "updates: []"].join("\n")
+        );
+        expect(invalidVersionResult.output).toBe(
+            ["version: 2", "updates: []"].join("\n")
+        );
     });
 
     it("requires cooldown and open-pull-requests-limit", async () => {

@@ -74,6 +74,7 @@ const rule: Rule.RuleModule = {
     },
     meta: {
         defaultOptions: [{}],
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -83,6 +84,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require explicit `permissions` to avoid relying on GitHub Actions' default token scope.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R001",

@@ -29,10 +29,13 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: ["github-actions.configs.all"],
             description:
                 "disallow top-level workflow `permissions` when you want every job to declare its own token scope explicitly.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R014",

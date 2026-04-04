@@ -32,6 +32,24 @@ const rule: Rule.RuleModule = {
                 }
 
                 context.report({
+                    fix: (fixer) => {
+                        if (versionPair === null) {
+                            return fixer.insertTextBeforeRange(
+                                [root.range[0], root.range[0]],
+                                "version: 2\n"
+                            );
+                        }
+
+                        return versionPair.value === null
+                            ? fixer.replaceTextRange(
+                                  versionPair.range,
+                                  "version: 2"
+                              )
+                            : fixer.replaceTextRange(
+                                  versionPair.value.range,
+                                  "2"
+                              );
+                    },
                     messageId:
                         versionPair === null
                             ? "missingDependabotVersion"
@@ -44,6 +62,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -51,12 +70,15 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require Dependabot configuration files to declare `version: 2`.",
+            dialects: ["Dependabot configuration"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R070",
             ruleNumber: 70,
             url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-dependabot-version",
         },
+        fixable: "code",
         messages: {
             invalidDependabotVersion:
                 "Dependabot configuration must declare `version: 2`.",

@@ -42,6 +42,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.workflowTemplateProperties",
@@ -50,6 +51,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require `iconName` in workflow-template `.properties.json` metadata.",
+            dialects: ["GitHub Actions workflow template metadata"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R056",

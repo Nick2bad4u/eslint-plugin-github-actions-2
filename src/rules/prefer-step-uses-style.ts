@@ -225,10 +225,13 @@ const rule: Rule.RuleModule = {
     },
     meta: {
         defaultOptions: [DEFAULT_STEP_USES_STYLE],
+        deprecated: false,
         docs: {
             configs: ["github-actions.configs.all"],
             description:
                 "enforce a consistent style for step-level `uses` references.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R016",

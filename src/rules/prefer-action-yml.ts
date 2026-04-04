@@ -21,6 +21,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.actionMetadata",
@@ -28,6 +29,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require action metadata files to prefer `action.yml` over `action.yaml`.",
+            dialects: ["GitHub Action metadata"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R043",

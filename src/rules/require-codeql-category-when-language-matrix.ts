@@ -75,6 +75,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -82,6 +83,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require CodeQL analyze steps to set `with.category` using `matrix.language` when the job uses a language matrix.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R114",

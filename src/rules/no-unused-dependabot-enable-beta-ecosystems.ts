@@ -6,6 +6,7 @@ import type { Rule } from "eslint";
 
 import { getDependabotRoot } from "../_internal/dependabot-yaml.js";
 import { getMappingPair } from "../_internal/workflow-yaml.js";
+import { getEnclosingLineRemovalRange } from "../_internal/yaml-fixes.js";
 
 /** Rule implementation for the unused `enable-beta-ecosystems` key. */
 const rule: Rule.RuleModule = {
@@ -28,6 +29,13 @@ const rule: Rule.RuleModule = {
                 }
 
                 context.report({
+                    fix: (fixer) =>
+                        fixer.removeRange(
+                            getEnclosingLineRemovalRange(
+                                context.sourceCode.text,
+                                enableBetaEcosystemsPair.range
+                            )
+                        ),
                     messageId: "unusedEnableBetaEcosystems",
                     node: (enableBetaEcosystemsPair.value ??
                         enableBetaEcosystemsPair) as unknown as Rule.Node,
@@ -36,6 +44,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -43,12 +52,15 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow the top-level Dependabot `enable-beta-ecosystems` setting because GitHub currently documents it as unused.",
+            dialects: ["Dependabot configuration"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R085",
             ruleNumber: 85,
             url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unused-dependabot-enable-beta-ecosystems",
         },
+        fixable: "code",
         messages: {
             unusedEnableBetaEcosystems:
                 "Remove `enable-beta-ecosystems`. GitHub currently documents this Dependabot setting as not in use.",

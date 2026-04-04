@@ -127,6 +127,7 @@ const rule: Rule.RuleModule = {
     },
     meta: {
         defaultOptions: [DEFAULT_ACTION_NAME_CASING],
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -134,6 +135,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "enforce a consistent casing convention for workflow `name` values.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R009",

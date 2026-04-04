@@ -37,6 +37,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.workflowTemplates",
@@ -44,6 +45,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require each workflow template YAML file to have a matching `.properties.json` metadata file.",
+            dialects: ["GitHub Actions workflow template"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R054",

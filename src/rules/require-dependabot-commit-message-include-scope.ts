@@ -61,6 +61,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -68,6 +69,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 'require Dependabot commit messages to set `commit-message.include: "scope"`.',
+            dialects: ["Dependabot configuration"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R089",

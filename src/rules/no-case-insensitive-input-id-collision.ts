@@ -66,6 +66,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.actionMetadata",
@@ -73,6 +74,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow case-insensitive collisions between action input ids.",
+            dialects: ["GitHub Action metadata"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R048",

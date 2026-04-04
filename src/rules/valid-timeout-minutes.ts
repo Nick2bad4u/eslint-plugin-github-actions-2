@@ -238,6 +238,7 @@ const rule: Rule.RuleModule = {
     },
     meta: {
         defaultOptions: [DEFAULT_MAX_TIMEOUT_MINUTES],
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -246,6 +247,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow invalid literal `timeout-minutes` values for jobs and steps.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R017",

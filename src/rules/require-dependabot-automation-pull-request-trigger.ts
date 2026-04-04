@@ -36,6 +36,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -43,6 +44,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require Dependabot pull request automation workflows to listen for `pull_request`.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R112",

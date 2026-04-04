@@ -163,6 +163,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -170,6 +171,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require `run` steps to use an explicit shell directly or through `defaults.run.shell` so execution behavior stays predictable across runners.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R021",

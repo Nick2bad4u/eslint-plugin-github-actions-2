@@ -43,6 +43,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.workflowTemplates",
@@ -50,6 +51,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow hardcoded `main`/`master` branch literals in workflow template YAML files.",
+            dialects: ["GitHub Actions workflow template"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R068",

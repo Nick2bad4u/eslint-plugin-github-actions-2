@@ -89,6 +89,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -97,6 +98,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require every `workflow_dispatch` input to declare an explicit `type` so manual runs expose clearer controls and preserve intended value semantics.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R022",

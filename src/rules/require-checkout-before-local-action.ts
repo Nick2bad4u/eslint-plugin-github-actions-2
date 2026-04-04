@@ -85,6 +85,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -93,6 +94,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require an `actions/checkout` step before using repository-local step actions so local action paths resolve reliably.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R025",

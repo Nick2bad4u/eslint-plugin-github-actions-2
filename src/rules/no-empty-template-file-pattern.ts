@@ -9,6 +9,7 @@ import {
     getWorkflowTemplateFilePatternEntries,
     getWorkflowTemplatePropertiesRoot,
 } from "../_internal/workflow-template-properties.js";
+import { getFlowSequenceEntryRemovalRange } from "../_internal/yaml-fixes.js";
 
 /** Rule implementation for empty template file pattern checks. */
 const rule: Rule.RuleModule = {
@@ -34,6 +35,13 @@ const rule: Rule.RuleModule = {
                     }
 
                     context.report({
+                        fix: (fixer) =>
+                            fixer.removeRange(
+                                getFlowSequenceEntryRemovalRange(
+                                    context.sourceCode.text,
+                                    node.range
+                                )
+                            ),
                         messageId: "emptyTemplateFilePattern",
                         node: node as unknown as Rule.Node,
                     });
@@ -42,6 +50,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.workflowTemplateProperties",
@@ -50,12 +59,15 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow empty or whitespace-only entries in workflow-template `filePatterns`.",
+            dialects: ["GitHub Actions workflow template metadata"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R060",
             ruleNumber: 60,
             url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-empty-template-file-pattern",
         },
+        fixable: "code",
         messages: {
             emptyTemplateFilePattern:
                 "Template `filePatterns` entries must be non-empty regex strings.",

@@ -128,6 +128,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -136,6 +137,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow `workflow_call` output values that use unavailable contexts or fail to map from `jobs.<job_id>.outputs.<output_name>`.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R040",

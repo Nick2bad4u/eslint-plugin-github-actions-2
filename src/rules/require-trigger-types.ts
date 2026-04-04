@@ -160,6 +160,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -167,6 +168,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require explicit `types` filters for selected multi-activity workflow events so workflows do not subscribe to every supported activity implicitly.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R031",

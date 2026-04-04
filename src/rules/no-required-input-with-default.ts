@@ -12,6 +12,7 @@ import {
     getWorkflowRoot,
     unwrapYamlValue,
 } from "../_internal/workflow-yaml.js";
+import { getEnclosingLineRemovalRange } from "../_internal/yaml-fixes.js";
 
 /** Rule implementation for contradictory action input definitions. */
 const rule: Rule.RuleModule = {
@@ -69,12 +70,41 @@ const rule: Rule.RuleModule = {
                         messageId: "requiredInputWithDefault",
                         node: (defaultPair.value ??
                             defaultPair) as unknown as Rule.Node,
+                        suggest: [
+                            {
+                                data: {
+                                    inputId,
+                                },
+                                fix: (fixer) =>
+                                    fixer.removeRange(
+                                        getEnclosingLineRemovalRange(
+                                            context.sourceCode.text,
+                                            requiredPair.range
+                                        )
+                                    ),
+                                messageId: "removeRequiredSuggestion",
+                            },
+                            {
+                                data: {
+                                    inputId,
+                                },
+                                fix: (fixer) =>
+                                    fixer.removeRange(
+                                        getEnclosingLineRemovalRange(
+                                            context.sourceCode.text,
+                                            defaultPair.range
+                                        )
+                                    ),
+                                messageId: "removeDefaultSuggestion",
+                            },
+                        ],
                     });
                 }
             },
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.actionMetadata",
@@ -82,13 +112,20 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow action inputs that set both `required: true` and `default`.",
+            dialects: ["GitHub Action metadata"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R047",
             ruleNumber: 47,
             url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-required-input-with-default",
         },
+        hasSuggestions: true,
         messages: {
+            removeDefaultSuggestion:
+                "Remove the default value from input '{{inputId}}' and keep it required.",
+            removeRequiredSuggestion:
+                "Remove `required: true` from input '{{inputId}}' and keep the default value.",
             requiredInputWithDefault:
                 "Input '{{inputId}}' sets both `required: true` and `default`, which is contradictory for action callers.",
         },

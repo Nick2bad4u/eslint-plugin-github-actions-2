@@ -65,6 +65,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.actionMetadata",
@@ -72,6 +73,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow `INPUT_*` environment-variable access in composite actions and require `inputs.*` context references.",
+            dialects: ["GitHub Action metadata"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R049",

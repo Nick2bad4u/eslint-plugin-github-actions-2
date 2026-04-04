@@ -113,6 +113,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -121,6 +122,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow `actions/checkout` configurations in `pull_request_target` workflows that fetch pull request head refs, SHAs, or repositories into a privileged run.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R030",

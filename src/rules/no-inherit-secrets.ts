@@ -59,6 +59,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -67,6 +68,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow `secrets: inherit` on reusable-workflow jobs so callers pass only the named secrets each workflow actually needs.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R026",

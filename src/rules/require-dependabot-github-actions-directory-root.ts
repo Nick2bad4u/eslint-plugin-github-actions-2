@@ -59,6 +59,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -66,6 +67,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 'require Dependabot `github-actions` update entries to use `directory: "/"`.',
+            dialects: ["Dependabot configuration"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R084",

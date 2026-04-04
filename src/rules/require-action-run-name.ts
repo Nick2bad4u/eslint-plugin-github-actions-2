@@ -50,6 +50,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -57,6 +58,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require a non-empty string workflow `run-name` when you want queued and in-progress runs to remain self-describing.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R006",

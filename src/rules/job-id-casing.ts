@@ -100,6 +100,7 @@ const rule: Rule.RuleModule = {
     },
     meta: {
         defaultOptions: [DEFAULT_JOB_ID_CASING],
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -107,6 +108,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "enforce a consistent casing convention for workflow job identifiers.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R010",

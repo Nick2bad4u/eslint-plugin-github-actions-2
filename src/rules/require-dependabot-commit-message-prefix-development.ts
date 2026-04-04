@@ -86,6 +86,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -93,6 +94,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require npm-like Dependabot update entries to define `commit-message.prefix-development`.",
+            dialects: ["Dependabot configuration"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R090",

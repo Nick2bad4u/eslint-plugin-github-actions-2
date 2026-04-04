@@ -76,6 +76,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -83,6 +84,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require every workflow step to declare a non-empty string `name` so job logs remain readable.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R008",

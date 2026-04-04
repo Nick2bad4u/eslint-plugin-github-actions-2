@@ -52,6 +52,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -59,6 +60,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require Dependabot update entries to define `open-pull-requests-limit`.",
+            dialects: ["Dependabot configuration"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R087",

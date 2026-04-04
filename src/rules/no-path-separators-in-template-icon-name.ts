@@ -5,10 +5,11 @@
 import type { Rule } from "eslint";
 
 import { isWorkflowTemplatePropertiesFile } from "../_internal/lint-targets.js";
+import { getWorkflowTemplatePropertiesRoot } from "../_internal/workflow-template-properties.js";
 import {
-    getWorkflowTemplatePropertiesRoot,
-    getWorkflowTemplateStringProperty,
-} from "../_internal/workflow-template-properties.js";
+    getMappingPair,
+    getScalarStringValue,
+} from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for icon path-separator checks. */
 const rule: Rule.RuleModule = {
@@ -25,10 +26,9 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                const iconName = getWorkflowTemplateStringProperty(
-                    root,
-                    "iconName"
-                );
+                const iconNamePair = getMappingPair(root, "iconName");
+                const iconNameNode = iconNamePair?.value ?? null;
+                const iconName = getScalarStringValue(iconNameNode);
 
                 if (
                     iconName === null ||
@@ -37,17 +37,39 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
+                const suggestedIconName = iconName.split(/[/\\]/u).at(-1);
+
                 context.report({
                     data: {
                         iconName,
                     },
                     messageId: "iconNameContainsPathSeparator",
-                    node: node as unknown as Rule.Node,
+                    node: (iconNameNode ?? node) as unknown as Rule.Node,
+                    suggest:
+                        suggestedIconName === undefined ||
+                        suggestedIconName.length === 0 ||
+                        iconNameNode === null
+                            ? undefined
+                            : [
+                                  {
+                                      data: {
+                                          iconName,
+                                          suggestedIconName,
+                                      },
+                                      fix: (fixer) =>
+                                          fixer.replaceTextRange(
+                                              iconNameNode.range,
+                                              JSON.stringify(suggestedIconName)
+                                          ),
+                                      messageId: "replaceIconNameWithBasename",
+                                  },
+                              ],
                 });
             },
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.workflowTemplateProperties",
@@ -56,15 +78,20 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow path separators in workflow-template `iconName` values.",
+            dialects: ["GitHub Actions workflow template metadata"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R064",
             ruleNumber: 64,
             url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-path-separators-in-template-icon-name",
         },
+        hasSuggestions: true,
         messages: {
             iconNameContainsPathSeparator:
                 "Template `iconName` '{{iconName}}' should be a plain icon token, not a path.",
+            replaceIconNameWithBasename:
+                "Replace '{{iconName}}' with '{{suggestedIconName}}'.",
         },
         schema: [],
         type: "problem",

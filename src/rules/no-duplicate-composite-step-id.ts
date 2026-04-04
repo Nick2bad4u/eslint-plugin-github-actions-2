@@ -85,6 +85,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.actionMetadata",
@@ -92,6 +93,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow duplicate step IDs in `runs.steps` for composite actions.",
+            dialects: ["GitHub Action metadata"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R051",

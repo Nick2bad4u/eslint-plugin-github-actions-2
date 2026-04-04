@@ -47,6 +47,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -54,6 +55,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require Dependabot configuration files to define a non-empty top-level `updates` sequence.",
+            dialects: ["Dependabot configuration"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R071",

@@ -41,6 +41,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -48,6 +49,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow CodeQL language matrices that split JavaScript and TypeScript instead of using `javascript-typescript`.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R096",

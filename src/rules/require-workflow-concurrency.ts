@@ -173,6 +173,7 @@ const rule: Rule.RuleModule = {
     },
     meta: {
         defaultOptions: [{}],
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -180,6 +181,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require workflow-level `concurrency` so redundant runs can be deduplicated predictably.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R004",

@@ -123,6 +123,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -131,6 +132,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow directly embedding untrusted event payload values inside `run` scripts; move them through `env` first or pass them to an action input.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R029",

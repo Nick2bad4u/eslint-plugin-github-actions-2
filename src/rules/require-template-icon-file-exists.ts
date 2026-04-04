@@ -62,6 +62,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.workflowTemplateProperties",
@@ -70,6 +71,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require local `iconName` references in workflow-template metadata to point to existing SVG files.",
+            dialects: ["GitHub Actions workflow template metadata"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R065",

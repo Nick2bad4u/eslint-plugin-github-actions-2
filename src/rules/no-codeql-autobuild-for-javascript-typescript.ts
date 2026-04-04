@@ -54,6 +54,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -61,6 +62,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow `github/codeql-action/autobuild` when CodeQL is only scanning JavaScript/TypeScript.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R097",

@@ -52,6 +52,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -59,6 +60,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow Dependabot `multi-ecosystem-group` references that do not match a declared top-level group.",
+            dialects: ["Dependabot configuration"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R081",

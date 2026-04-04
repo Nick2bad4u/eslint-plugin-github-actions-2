@@ -307,6 +307,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -315,6 +316,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow `needs.*.outputs.*` and reusable-workflow `jobs.*.outputs.*` references that point at undeclared jobs or outputs.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R037",

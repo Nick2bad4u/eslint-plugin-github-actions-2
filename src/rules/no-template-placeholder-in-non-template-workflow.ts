@@ -47,6 +47,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.recommended",
@@ -55,6 +56,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow `$default-branch` placeholder usage outside workflow template YAML files.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R069",

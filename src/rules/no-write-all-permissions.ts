@@ -78,6 +78,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -87,6 +88,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow `permissions: write-all` so workflows and jobs keep GitHub token scopes least-privileged.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R023",

@@ -105,6 +105,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -113,6 +114,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require every `workflow_call` input to declare one of the documented reusable-workflow input types so callers and validators agree on interface semantics.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R034",

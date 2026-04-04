@@ -177,6 +177,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -184,6 +185,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow `steps.<id>.*` references that target a missing step id or a step that has not run yet.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R038",

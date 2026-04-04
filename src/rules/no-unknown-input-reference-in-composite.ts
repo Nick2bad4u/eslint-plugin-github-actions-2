@@ -88,6 +88,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.actionMetadata",
@@ -95,6 +96,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow `inputs.<id>` references in composite action metadata when the input id is not declared.",
+            dialects: ["GitHub Action metadata"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R050",

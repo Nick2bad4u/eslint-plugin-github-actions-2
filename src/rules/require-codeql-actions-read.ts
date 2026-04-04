@@ -62,6 +62,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -69,6 +70,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "require jobs running CodeQL actions to grant `actions: read`.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: true,
             requiresTypeChecking: false,
             ruleId: "R099",

@@ -73,6 +73,7 @@ const rule: Rule.RuleModule = {
         };
     },
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "github-actions.configs.all",
@@ -80,6 +81,8 @@ const rule: Rule.RuleModule = {
             ],
             description:
                 "disallow `strategy.fail-fast: false` so failing matrix jobs can stop redundant work sooner.",
+            dialects: ["GitHub Actions workflow"],
+            frozen: false,
             recommended: false,
             requiresTypeChecking: false,
             ruleId: "R015",
