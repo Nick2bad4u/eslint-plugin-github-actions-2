@@ -52,6 +52,9 @@ jobs:
       - run: echo release
 ```
 
+## Behavior and migration notes
+
+The autofixer rewrites `github.event.inputs.` references to `inputs.` within the same scalar value. It only runs in workflows that actually declare `workflow_dispatch`, so unrelated files are left unchanged.
 
 ## Additional examples
 
@@ -78,7 +81,8 @@ export default [
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
-- [https://docs.github.com/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch](https://docs.github.com/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch)
-- [https://docs.github.com/actions/reference/workflows-and-actions/contexts#inputs-context](https://docs.github.com/actions/reference/workflows-and-actions/contexts#inputs-context)
+- [GitHub Actions event reference: `workflow_dispatch`](https://docs.github.com/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch)
+- [GitHub Actions contexts reference: `inputs` context](https://docs.github.com/actions/reference/workflows-and-actions/contexts#inputs-context)

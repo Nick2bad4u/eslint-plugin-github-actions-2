@@ -32,6 +32,9 @@ name: release-pipeline
 
 _The second example is valid when the rule is configured for `kebab-case`._
 
+## Behavior and migration notes
+
+When the rule is configured with exactly one allowed casing, the autofixer rewrites the workflow `name` into that casing. If multiple casings are allowed at once, the rule stays report-only because there is no single unambiguous target format.
 
 ## Additional examples
 
@@ -58,7 +61,8 @@ export default [
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
-- [https://docs.github.com/actions/reference/workflows-and-actions/workflow-syntax#name](https://docs.github.com/actions/reference/workflows-and-actions/workflow-syntax#name)
-- [https://docs.github.com/actions/monitoring-and-troubleshooting-workflows/using-workflow-run-logs](https://docs.github.com/actions/monitoring-and-troubleshooting-workflows/using-workflow-run-logs)
+- [GitHub Actions workflow syntax: `name`](https://docs.github.com/actions/reference/workflows-and-actions/workflow-syntax#name)
+- [GitHub Actions docs: Using workflow run logs](https://docs.github.com/actions/monitoring-and-troubleshooting-workflows/using-workflow-run-logs)

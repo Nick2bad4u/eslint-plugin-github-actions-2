@@ -12,6 +12,52 @@ import {
     getWorkflowRoot,
     unwrapYamlValue,
 } from "../_internal/workflow-yaml.js";
+import {
+    getIndexAfterLine,
+    getLineIndentation,
+} from "../_internal/yaml-fixes.js";
+
+/** Maximum suggested step-name length derived from a run command. */
+const MAX_SUGGESTED_STEP_NAME_LENGTH = 60;
+
+/** Derive a suggestion label from a step's `uses` or `run` content. */
+const getSuggestedStepName = (
+    stepMapping: Readonly<ReturnType<typeof unwrapYamlValue>>
+): string | undefined => {
+    if (stepMapping?.type !== "YAMLMapping") {
+        return undefined;
+    }
+
+    const usesReference = getScalarStringValue(
+        getMappingPair(stepMapping, "uses")?.value
+    )?.trim();
+
+    if (usesReference !== undefined && usesReference.length > 0) {
+        const atSignIndex = usesReference.lastIndexOf("@");
+
+        return atSignIndex === -1
+            ? usesReference
+            : usesReference.slice(0, atSignIndex);
+    }
+
+    const runScript = getScalarStringValue(
+        getMappingPair(stepMapping, "run")?.value
+    );
+
+    if (runScript === null) {
+        return undefined;
+    }
+
+    const firstNonEmptyLine = runScript
+        .split(/\r?\n/u)
+        .map((line) => line.trim())
+        .find((line) => line.length > 0);
+
+    return firstNonEmptyLine === undefined ||
+        firstNonEmptyLine.length > MAX_SUGGESTED_STEP_NAME_LENGTH
+        ? undefined
+        : firstNonEmptyLine;
+};
 
 /** Rule implementation for requiring explicit job step names. */
 const rule: Rule.RuleModule = {
@@ -41,15 +87,59 @@ const rule: Rule.RuleModule = {
                             continue;
                         }
 
+                        const suggestedStepName =
+                            getSuggestedStepName(stepMapping);
+
                         const namePair = getMappingPair(stepMapping, "name");
 
                         if (namePair === null) {
+                            const firstStepPair = stepMapping.pairs[0];
+                            const firstStepKeyNode = firstStepPair?.key;
+
                             context.report({
                                 data: {
                                     jobId: job.id,
                                 },
                                 messageId: "missingStepName",
                                 node: stepMapping as unknown as Rule.Node,
+                                suggest:
+                                    suggestedStepName === undefined ||
+                                    firstStepKeyNode === null ||
+                                    firstStepKeyNode === undefined
+                                        ? undefined
+                                        : [
+                                              {
+                                                  data: {
+                                                      jobId: job.id,
+                                                      suggestedStepName,
+                                                  },
+                                                  fix: (fixer) => {
+                                                      const insertionIndex =
+                                                          getIndexAfterLine(
+                                                              context.sourceCode
+                                                                  .text,
+                                                              firstStepKeyNode
+                                                                  .range[1]
+                                                          );
+                                                      const childIndentation = `${getLineIndentation(
+                                                          context.sourceCode
+                                                              .text,
+                                                          firstStepKeyNode
+                                                              .range[0]
+                                                      )}  `;
+
+                                                      return fixer.insertTextBeforeRange(
+                                                          [
+                                                              insertionIndex,
+                                                              insertionIndex,
+                                                          ],
+                                                          `${childIndentation}name: ${JSON.stringify(suggestedStepName)}\n`
+                                                      );
+                                                  },
+                                                  messageId:
+                                                      "insertStepNameSuggestion",
+                                              },
+                                          ],
                             });
 
                             continue;
@@ -61,6 +151,8 @@ const rule: Rule.RuleModule = {
                             nameValue === null ||
                             nameValue.trim().length === 0
                         ) {
+                            const nameValueNode = namePair.value;
+
                             context.report({
                                 data: {
                                     jobId: job.id,
@@ -68,6 +160,27 @@ const rule: Rule.RuleModule = {
                                 messageId: "invalidStepName",
                                 node: (namePair.value ??
                                     namePair) as unknown as Rule.Node,
+                                suggest:
+                                    suggestedStepName === undefined ||
+                                    nameValueNode === null
+                                        ? undefined
+                                        : [
+                                              {
+                                                  data: {
+                                                      jobId: job.id,
+                                                      suggestedStepName,
+                                                  },
+                                                  fix: (fixer) =>
+                                                      fixer.replaceTextRange(
+                                                          nameValueNode.range,
+                                                          JSON.stringify(
+                                                              suggestedStepName
+                                                          )
+                                                      ),
+                                                  messageId:
+                                                      "replaceStepNameSuggestion",
+                                              },
+                                          ],
                             });
                         }
                     }
@@ -92,11 +205,16 @@ const rule: Rule.RuleModule = {
             ruleNumber: 8,
             url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-job-step-name",
         },
+        hasSuggestions: true,
         messages: {
+            insertStepNameSuggestion:
+                "Insert `name: {{suggestedStepName}}` for this step in job '{{jobId}}'.",
             invalidStepName:
                 "A step in job '{{jobId}}' must set `name` to a non-empty string.",
             missingStepName:
                 "A step in job '{{jobId}}' is missing a human-readable `name`.",
+            replaceStepNameSuggestion:
+                "Replace the blank step name with `{{suggestedStepName}}` in job '{{jobId}}'.",
         },
         schema: [],
         type: "suggestion",

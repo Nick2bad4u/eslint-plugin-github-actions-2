@@ -736,6 +736,77 @@ describe("dependabot rules", () => {
         expect(result.messages).toHaveLength(1);
     });
 
+    it("autofixes github-actions ecosystems to use directory root", async () => {
+        const invalidDirectoryResult = await lintWorkflow(
+            [
+                "version: 2",
+                "updates:",
+                '  - package-ecosystem: "github-actions"',
+                '    directory: "/.github/workflows"',
+                "    schedule:",
+                '      interval: "weekly"',
+                '      time: "05:30"',
+                '      timezone: "UTC"',
+            ].join("\n"),
+            {
+                configName: "dependabot",
+                filePath: ".github/dependabot.yml",
+                fix: true,
+                rules: {
+                    "github-actions/require-dependabot-github-actions-directory-root":
+                        "error",
+                },
+            }
+        );
+        const directoriesResult = await lintWorkflow(
+            [
+                "version: 2",
+                "updates:",
+                '  - package-ecosystem: "github-actions"',
+                "    directories:",
+                '      - "/.github/workflows"',
+                "    schedule:",
+                '      interval: "weekly"',
+                '      time: "05:30"',
+                '      timezone: "UTC"',
+            ].join("\n"),
+            {
+                configName: "dependabot",
+                filePath: ".github/dependabot.yml",
+                fix: true,
+                rules: {
+                    "github-actions/require-dependabot-github-actions-directory-root":
+                        "error",
+                },
+            }
+        );
+
+        expect(invalidDirectoryResult.output).toBe(
+            [
+                "version: 2",
+                "updates:",
+                '  - package-ecosystem: "github-actions"',
+                '    directory: "/"',
+                "    schedule:",
+                '      interval: "weekly"',
+                '      time: "05:30"',
+                '      timezone: "UTC"',
+            ].join("\n")
+        );
+        expect(directoriesResult.output).toBe(
+            [
+                "version: 2",
+                "updates:",
+                '  - package-ecosystem: "github-actions"',
+                '    directory: "/"',
+                "    schedule:",
+                '      interval: "weekly"',
+                '      time: "05:30"',
+                '      timezone: "UTC"',
+            ].join("\n")
+        );
+    });
+
     it("ignores workflow files even when Dependabot rules are enabled explicitly", async () => {
         const result = await lintWorkflow(
             [

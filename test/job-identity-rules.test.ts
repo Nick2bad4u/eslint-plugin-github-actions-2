@@ -151,6 +151,13 @@ describe("job identity rules", () => {
         expect(result.messages[0]?.ruleId).toBe(
             "github-actions/require-job-name"
         );
+        expect(result.messages[0]?.suggestions).toHaveLength(1);
+        expect(result.messages[0]?.suggestions?.[0]?.desc).toBe(
+            "Insert `name: build` for this job."
+        );
+        expect(result.messages[0]?.suggestions?.[0]?.fix?.text).toBe(
+            '    name: "build"\n'
+        );
     });
 
     it("requires every job step to declare a name", async () => {
@@ -176,6 +183,13 @@ describe("job identity rules", () => {
         expect(result.messages).toHaveLength(1);
         expect(result.messages[0]?.ruleId).toBe(
             "github-actions/require-job-step-name"
+        );
+        expect(result.messages[0]?.suggestions).toHaveLength(1);
+        expect(result.messages[0]?.suggestions?.[0]?.desc).toBe(
+            "Insert `name: npm test` for this step in job 'build'."
+        );
+        expect(result.messages[0]?.suggestions?.[0]?.fix?.text).toBe(
+            '        name: "npm test"\n'
         );
     });
 
@@ -251,6 +265,11 @@ describe("job identity rules", () => {
         expect(result.messages[0]?.ruleId).toBe(
             "github-actions/require-job-name"
         );
+        expect(result.messages[0]?.suggestions).toHaveLength(1);
+        expect(result.messages[0]?.suggestions?.[0]?.desc).toBe(
+            "Replace the blank job name with `build`."
+        );
+        expect(result.messages[0]?.suggestions?.[0]?.fix?.text).toBe('"build"');
     });
 
     it("reports null job names and unknown job ids for non-scalar keys", async () => {
@@ -341,6 +360,13 @@ describe("job identity rules", () => {
         expect(result.messages[0]?.ruleId).toBe(
             "github-actions/require-job-step-name"
         );
+        expect(result.messages[0]?.suggestions).toHaveLength(1);
+        expect(result.messages[0]?.suggestions?.[0]?.desc).toBe(
+            "Replace the blank step name with `npm test` in job 'build'."
+        );
+        expect(result.messages[0]?.suggestions?.[0]?.fix?.text).toBe(
+            '"npm test"'
+        );
     });
 
     it("reports null step names", async () => {
@@ -367,6 +393,36 @@ describe("job identity rules", () => {
         expect(result.messages).toHaveLength(1);
         expect(result.messages[0]?.ruleId).toBe(
             "github-actions/require-job-step-name"
+        );
+    });
+
+    it("offers a uses-based step-name suggestion", async () => {
+        const result = await lintWorkflow(
+            [
+                "name: CI",
+                "on:",
+                "  push:",
+                "jobs:",
+                "  build:",
+                "    name: Build",
+                "    runs-on: ubuntu-latest",
+                "    steps:",
+                "      - uses: actions/checkout@v4",
+            ].join("\n"),
+            {
+                rules: {
+                    "github-actions/require-job-step-name": "error",
+                },
+            }
+        );
+
+        expect(result.messages).toHaveLength(1);
+        expect(result.messages[0]?.suggestions).toHaveLength(1);
+        expect(result.messages[0]?.suggestions?.[0]?.desc).toBe(
+            "Insert `name: actions/checkout` for this step in job 'build'."
+        );
+        expect(result.messages[0]?.suggestions?.[0]?.fix?.text).toBe(
+            '        name: "actions/checkout"\n'
         );
     });
 

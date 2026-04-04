@@ -12,6 +12,10 @@ import {
     getWorkflowRoot,
     unwrapYamlValue,
 } from "../_internal/workflow-yaml.js";
+import {
+    getIndexAfterLine,
+    getLineIndentation,
+} from "../_internal/yaml-fixes.js";
 
 /** Rule implementation for requiring explicit job names. */
 const rule: Rule.RuleModule = {
@@ -31,6 +35,7 @@ const rule: Rule.RuleModule = {
                 }
 
                 for (const pair of jobsMapping.pairs) {
+                    const jobKeyNode = pair.key;
                     const jobId = getScalarStringValue(pair.key) ?? "<unknown>";
                     const jobValue = unwrapYamlValue(pair.value);
 
@@ -51,12 +56,43 @@ const rule: Rule.RuleModule = {
                             data: { jobId },
                             messageId: "missingJobName",
                             node: pair.key as AST.YAMLNode as unknown as Rule.Node,
+                            suggest:
+                                jobId === "<unknown>" || jobKeyNode === null
+                                    ? undefined
+                                    : [
+                                          {
+                                              data: { jobId },
+                                              fix: (fixer) => {
+                                                  const insertionIndex =
+                                                      getIndexAfterLine(
+                                                          context.sourceCode
+                                                              .text,
+                                                          jobKeyNode.range[1]
+                                                      );
+                                                  const childIndentation = `${getLineIndentation(
+                                                      context.sourceCode.text,
+                                                      jobKeyNode.range[0]
+                                                  )}  `;
+
+                                                  return fixer.insertTextBeforeRange(
+                                                      [
+                                                          insertionIndex,
+                                                          insertionIndex,
+                                                      ],
+                                                      `${childIndentation}name: ${JSON.stringify(jobId)}\n`
+                                                  );
+                                              },
+                                              messageId:
+                                                  "insertJobNameSuggestion",
+                                          },
+                                      ],
                         });
 
                         continue;
                     }
 
                     const nameValue = getScalarStringValue(namePair.value);
+                    const nameValueNode = namePair.value;
 
                     if (nameValue === null || nameValue.trim().length === 0) {
                         context.report({
@@ -64,6 +100,21 @@ const rule: Rule.RuleModule = {
                             messageId: "invalidJobName",
                             node: (namePair.value ??
                                 namePair) as unknown as Rule.Node,
+                            suggest:
+                                jobId === "<unknown>" || nameValueNode === null
+                                    ? undefined
+                                    : [
+                                          {
+                                              data: { jobId },
+                                              fix: (fixer) =>
+                                                  fixer.replaceTextRange(
+                                                      nameValueNode.range,
+                                                      JSON.stringify(jobId)
+                                                  ),
+                                              messageId:
+                                                  "replaceJobNameSuggestion",
+                                          },
+                                      ],
                         });
                     }
                 }
@@ -87,11 +138,15 @@ const rule: Rule.RuleModule = {
             ruleNumber: 7,
             url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-job-name",
         },
+        hasSuggestions: true,
         messages: {
+            insertJobNameSuggestion: "Insert `name: {{jobId}}` for this job.",
             invalidJobName:
                 "Job '{{jobId}}' must set `name` to a non-empty string.",
             missingJobName:
                 "Job '{{jobId}}' is missing a human-readable `name`.",
+            replaceJobNameSuggestion:
+                "Replace the blank job name with `{{jobId}}`.",
         },
         schema: [],
         type: "suggestion",

@@ -37,6 +37,10 @@ updates:
       interval: "weekly"
 ```
 
+## Behavior and migration notes
+
+The autofixer removes the top-level `enable-beta-ecosystems` key entirely. That is safe because GitHub currently documents the setting as unused, so keeping it only adds noise to the file.
+
 ## Additional examples
 
 This rule is especially helpful in repositories that were initialized from older Dependabot snippets and still carry forward unused top-level keys.

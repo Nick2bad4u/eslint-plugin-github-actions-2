@@ -44,6 +44,10 @@ updates:
       interval: "weekly"
 ```
 
+## Behavior and migration notes
+
+The autofixer inserts `version: 2` when the top-level key is missing and rewrites any other version value to `2`. That fix is safe because Dependabot configuration currently requires schema version 2.
+
 ## Additional examples
 
 This rule pairs well with `require-dependabot-updates` so the file always declares both the schema version and at least one update block.

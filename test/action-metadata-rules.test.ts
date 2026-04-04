@@ -392,6 +392,11 @@ describe("action metadata rules", () => {
             "Remove `required: true` from input 'token' and keep the default value.",
             "Remove the default value from input 'token' and keep it required.",
         ]);
+        expect(
+            result.messages[0]?.suggestions?.map(
+                (suggestion) => suggestion.fix?.text
+            )
+        ).toEqual(["", ""]);
     });
 
     it("accepts inputs that are defaulted but not strictly required", async () => {

@@ -33,6 +33,14 @@ inputs:
     required: true
 ```
 
+## Behavior and migration notes
+
+This rule offers two suggestions rather than an autofix because both outcomes can be valid:
+
+- remove `required: true` and keep the default value, or
+- remove the default value and keep the input required.
+
+Choose the suggestion that matches how callers are meant to supply the input.
 
 ## Additional examples
 
@@ -59,6 +67,7 @@ export default [
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
-- [https://docs.github.com/actions/reference/workflows-and-actions/metadata-syntax#inputs](https://docs.github.com/actions/reference/workflows-and-actions/metadata-syntax#inputs)
+- [GitHub Actions metadata syntax: `inputs`](https://docs.github.com/actions/reference/workflows-and-actions/metadata-syntax#inputs)

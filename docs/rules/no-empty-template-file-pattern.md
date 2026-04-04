@@ -26,6 +26,9 @@ Template matching requires meaningful regex patterns.
 { "filePatterns": ["package.json$"] }
 ```
 
+## Behavior and migration notes
+
+The autofixer removes empty or whitespace-only entries from the `filePatterns` array while preserving the remaining valid items. If the array only contains invalid entries, the fix leaves an empty array behind so you can add the intended patterns explicitly.
 
 ## Additional examples
 
@@ -52,6 +55,7 @@ export default [
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
-- [https://www.schemastore.org/github-workflow-template-properties.json](https://www.schemastore.org/github-workflow-template-properties.json)
+- [SchemaStore: GitHub workflow template properties schema](https://www.schemastore.org/github-workflow-template-properties.json)

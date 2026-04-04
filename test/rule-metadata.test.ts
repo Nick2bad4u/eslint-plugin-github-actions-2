@@ -11,6 +11,7 @@ const fixableRuleNames = new Set([
     "no-pre-if-without-pre",
     "no-unused-dependabot-enable-beta-ecosystems",
     "prefer-inputs-context",
+    "require-dependabot-github-actions-directory-root",
     "require-dependabot-version",
 ]);
 
@@ -18,6 +19,8 @@ const fixableRuleNames = new Set([
 const suggestionRuleNames = new Set([
     "no-path-separators-in-template-icon-name",
     "no-required-input-with-default",
+    "require-job-name",
+    "require-job-step-name",
 ]);
 
 /** Determine whether a rule accepts configurable options. */

@@ -31,6 +31,9 @@ jobs:
     runs-on: ubuntu-latest
 ```
 
+## Behavior and migration notes
+
+This rule provides a suggestion that uses the job ID as a fallback display name when `name` is missing or blank. That is useful for quick cleanup, but you should still review the suggestion and replace it with a more descriptive label when the job does more than the raw ID implies.
 
 ## Additional examples
 
@@ -57,7 +60,8 @@ export default [
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
-- [https://docs.github.com/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idname](https://docs.github.com/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idname)
-- [https://docs.github.com/actions/using-jobs/using-jobs-in-a-workflow](https://docs.github.com/actions/using-jobs/using-jobs-in-a-workflow)
+- [GitHub Actions workflow syntax: `jobs.<job_id>.name`](https://docs.github.com/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idname)
+- [GitHub Actions docs: Using jobs in a workflow](https://docs.github.com/actions/using-jobs/using-jobs-in-a-workflow)

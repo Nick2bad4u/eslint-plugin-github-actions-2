@@ -11,6 +11,7 @@ import {
     getDependabotUpdateLabel,
 } from "../_internal/dependabot-yaml.js";
 import { getMappingPair } from "../_internal/workflow-yaml.js";
+import { getEnclosingLineRemovalRange } from "../_internal/yaml-fixes.js";
 
 /** Rule implementation for GitHub Actions directory-root enforcement. */
 const rule: Rule.RuleModule = {
@@ -49,6 +50,43 @@ const rule: Rule.RuleModule = {
                         data: {
                             updateLabel: getDependabotUpdateLabel(update),
                         },
+                        fix: (fixer) => {
+                            const fixes = [];
+
+                            if (directoryPair !== null) {
+                                fixes.push(
+                                    directoryPair.value === null
+                                        ? fixer.replaceTextRange(
+                                              directoryPair.range,
+                                              'directory: "/"'
+                                          )
+                                        : fixer.replaceTextRange(
+                                              directoryPair.value.range,
+                                              '"/"'
+                                          )
+                                );
+
+                                if (directoriesPair !== null) {
+                                    fixes.push(
+                                        fixer.removeRange(
+                                            getEnclosingLineRemovalRange(
+                                                context.sourceCode.text,
+                                                directoriesPair.range
+                                            )
+                                        )
+                                    );
+                                }
+                            } else if (directoriesPair !== null) {
+                                fixes.push(
+                                    fixer.replaceTextRange(
+                                        directoriesPair.range,
+                                        'directory: "/"'
+                                    )
+                                );
+                            }
+
+                            return fixes;
+                        },
                         messageId: "githubActionsDirectoryMustBeRoot",
                         node: (directoriesPair ??
                             directoryPair ??
@@ -75,6 +113,7 @@ const rule: Rule.RuleModule = {
             ruleNumber: 84,
             url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/require-dependabot-github-actions-directory-root",
         },
+        fixable: "code",
         messages: {
             githubActionsDirectoryMustBeRoot:
                 '{{updateLabel}} uses `package-ecosystem: github-actions` and should use `directory: "/"` so Dependabot scans the standard workflow and root action metadata locations.',

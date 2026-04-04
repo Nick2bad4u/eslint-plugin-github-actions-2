@@ -37,6 +37,14 @@ jobs:
         run: npm test
 ```
 
+## Behavior and migration notes
+
+This rule provides suggestions when it can infer a meaningful step label from existing step content:
+
+- for `uses:` steps, it suggests the action reference without the version suffix, and
+- for `run:` steps, it suggests the first non-empty command line when that line is short enough to read well in logs.
+
+Those suggestions are intentionally reviewable rather than automatically applied because human-friendly step names often need a little more context than the raw command or action reference.
 
 ## Additional examples
 
@@ -63,7 +71,8 @@ export default [
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
-- [https://docs.github.com/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idsteps](https://docs.github.com/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idsteps)
-- [https://docs.github.com/actions/monitoring-and-troubleshooting-workflows/using-workflow-run-logs](https://docs.github.com/actions/monitoring-and-troubleshooting-workflows/using-workflow-run-logs)
+- [GitHub Actions workflow syntax: `jobs.<job_id>.steps`](https://docs.github.com/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idsteps)
+- [GitHub Actions docs: Using workflow run logs](https://docs.github.com/actions/monitoring-and-troubleshooting-workflows/using-workflow-run-logs)

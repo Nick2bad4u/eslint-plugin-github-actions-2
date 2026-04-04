@@ -33,6 +33,9 @@ runs:
   main: dist/index.js
 ```
 
+## Behavior and migration notes
+
+The autofixer removes the orphaned `runs.pre-if` line because that key has no effect without `runs.pre`. If you meant to run setup conditionally, add the missing `runs.pre` hook after applying the fix.
 
 ## Additional examples
 
@@ -59,6 +62,7 @@ export default [
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
-- [https://docs.github.com/actions/reference/workflows-and-actions/metadata-syntax#runs-for-javascript-actions](https://docs.github.com/actions/reference/workflows-and-actions/metadata-syntax#runs-for-javascript-actions)
+- [GitHub Actions metadata syntax: `runs` for JavaScript actions](https://docs.github.com/actions/reference/workflows-and-actions/metadata-syntax#runs-for-javascript-actions)

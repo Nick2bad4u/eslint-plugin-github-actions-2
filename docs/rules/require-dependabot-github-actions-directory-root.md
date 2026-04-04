@@ -36,6 +36,10 @@ updates:
       interval: "weekly"
 ```
 
+## Behavior and migration notes
+
+The autofixer rewrites GitHub Actions ecosystem entries to the canonical `directory: "/"` form. If the entry incorrectly uses `directories`, the fix replaces that block with the single documented `directory` key because that is the only supported location for `package-ecosystem: "github-actions"`.
+
 ## Additional examples
 
 This rule is a good fit for repositories that maintain both workflow YAML and root-level composite or JavaScript actions, because the documented root scan location covers both surfaces.

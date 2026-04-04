@@ -26,6 +26,9 @@ Reports `iconName` values containing `/` or `\\`.
 { "iconName": "workflow" }
 ```
 
+## Behavior and migration notes
+
+This rule intentionally provides a suggestion instead of an autofix. When the value looks like a path such as `icons/workflow`, the suggestion offers the basename (`workflow`) as the likely icon token. Review the suggestion before applying it in case the path encoded additional meaning you want to preserve elsewhere.
 
 ## Additional examples
 
@@ -52,6 +55,7 @@ export default [
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
-- [https://www.schemastore.org/github-workflow-template-properties.json](https://www.schemastore.org/github-workflow-template-properties.json)
+- [SchemaStore: GitHub workflow template properties schema](https://www.schemastore.org/github-workflow-template-properties.json)

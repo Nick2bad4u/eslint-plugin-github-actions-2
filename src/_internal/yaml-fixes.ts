@@ -14,6 +14,51 @@ const isWhitespace = (character: string | undefined): boolean =>
     character === "\n" ||
     character === "\r";
 
+/** Return the start index of the line containing the provided offset. */
+const getLineStartIndex = (sourceText: string, offset: number): number => {
+    const previousLineBreakIndex = sourceText.lastIndexOf(
+        "\n",
+        Math.max(0, offset - 1)
+    );
+
+    return previousLineBreakIndex === -1 ? 0 : previousLineBreakIndex + 1;
+};
+
+/** Return the end index of the line containing the provided offset. */
+const getLineEndIndex = (sourceText: string, offset: number): number => {
+    const nextLineBreakIndex = sourceText.indexOf("\n", offset);
+
+    return nextLineBreakIndex === -1 ? sourceText.length : nextLineBreakIndex;
+};
+
+/** Read the indentation prefix of the line containing the provided offset. */
+export const getLineIndentation = (
+    sourceText: string,
+    offset: number
+): string => {
+    const lineStart = getLineStartIndex(sourceText, offset);
+    let index = lineStart;
+
+    while (
+        index < sourceText.length &&
+        isHorizontalWhitespace(sourceText[index])
+    ) {
+        index += 1;
+    }
+
+    return sourceText.slice(lineStart, index);
+};
+
+/** Return the insertion point immediately after the line containing the offset. */
+export const getIndexAfterLine = (
+    sourceText: string,
+    offset: number
+): number => {
+    const lineEnd = getLineEndIndex(sourceText, offset);
+
+    return lineEnd === sourceText.length ? sourceText.length : lineEnd + 1;
+};
+
 /** Expand a node range to cover its entire containing line. */
 export const getEnclosingLineRemovalRange = (
     sourceText: string,

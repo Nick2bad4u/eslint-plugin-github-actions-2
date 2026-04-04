@@ -26,6 +26,9 @@ Template icon names should be bare icon identifiers, not filenames with extensio
 { "iconName": "workflow" }
 ```
 
+## Behavior and migration notes
+
+The autofixer removes a trailing `.svg` suffix from `iconName`. It does not try to normalize any other part of the value, so path segments or different file extensions are still left for other rules or manual review.
 
 ## Additional examples
 
@@ -52,6 +55,7 @@ export default [
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
-- [https://docs.github.com/actions/reference/workflows-and-actions/reusing-workflow-configurations#metadata-file-requirements](https://docs.github.com/actions/reference/workflows-and-actions/reusing-workflow-configurations#metadata-file-requirements)
+- [GitHub Actions docs: Workflow template metadata file requirements](https://docs.github.com/actions/reference/workflows-and-actions/reusing-workflow-configurations#metadata-file-requirements)
