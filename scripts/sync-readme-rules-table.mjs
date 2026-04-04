@@ -11,11 +11,16 @@ import { resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import builtPlugin from "../dist/plugin.js";
+import { githubActionsConfigNames } from "../dist/_internal/github-actions-config-references.js";
 import {
+    filterRulesByPresetName,
+    getPresetDocsSlug,
+    generatePresetPageRulesTableFromRules,
     generatePresetRulesMatrixFromRules,
     syncPresetRulesMatrix,
 } from "./sync-presets-rules-matrix.mjs";
 
+const includedRulesSectionHeading = "## Included rules";
 const rulesSectionHeading = "## Rules";
 const presetsIndexMatrixHeading = "## Rule Matrix";
 
@@ -27,6 +32,16 @@ const getPresetsIndexPath = () =>
         fileURLToPath(new URL("..", import.meta.url)),
         "docs/rules/presets/index.md"
     );
+
+const getPresetDocPath = (presetName) =>
+    resolve(
+        fileURLToPath(new URL("..", import.meta.url)),
+        "docs/rules/presets",
+        `${getPresetDocsSlug(presetName)}.md`
+    );
+
+const docsSiteBaseUrl =
+    "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules";
 
 const getSectionBounds = (markdown, sectionHeading) => {
     const startOffset = markdown.indexOf(sectionHeading);
@@ -48,6 +63,8 @@ const getSectionBounds = (markdown, sectionHeading) => {
 
 export const generateReadmeRulesSectionFromRules = (rules) => {
     const matrix = generatePresetRulesMatrixFromRules(rules, {
+        createPresetHref: (presetName) =>
+            `${docsSiteBaseUrl}/presets/${getPresetDocsSlug(presetName)}`,
         createRuleReference: (ruleName, ruleModule) => {
             const docsUrl = ruleModule.meta?.docs?.url;
 
@@ -67,12 +84,31 @@ export const generateReadmeRulesSectionFromRules = (rules) => {
 
 export const generatePresetsIndexMatrixSectionFromRules = (rules) => {
     const matrix = generatePresetRulesMatrixFromRules(rules, {
+        createPresetHref: (presetName) =>
+            `./${getPresetDocsSlug(presetName)}.md`,
         createRuleReference: (ruleName) =>
             `[\`${ruleName}\`](../${ruleName}.md)`,
     });
 
     return [
         presetsIndexMatrixHeading,
+        "",
+        matrix,
+        "",
+    ].join("\n");
+};
+
+export const generatePresetIncludedRulesSectionFromRules = (
+    rules,
+    presetName
+) => {
+    const matrix = generatePresetPageRulesTableFromRules(rules, presetName, {
+        createRuleReference: (ruleName) =>
+            `[\`${ruleName}\`](../${ruleName}.md)`,
+    });
+
+    return [
+        includedRulesSectionHeading,
         "",
         matrix,
         "",
@@ -131,6 +167,25 @@ export const syncReadmeRulesTable = async ({ check = false } = {}) => {
             builtPlugin.rules
         ),
     });
+
+    for (const presetName of githubActionsConfigNames) {
+        const presetDocPath = getPresetDocPath(presetName);
+        const presetRules = filterRulesByPresetName(
+            builtPlugin.rules,
+            presetName
+        );
+
+        await writeSection({
+            check,
+            filePath: presetDocPath,
+            missingSectionError: `${presetDocPath} included-rules section heading not found.`,
+            sectionHeading: includedRulesSectionHeading,
+            sectionMarkdown: generatePresetIncludedRulesSectionFromRules(
+                presetRules,
+                presetName
+            ),
+        });
+    }
 
     await syncPresetRulesMatrix({ check });
 };

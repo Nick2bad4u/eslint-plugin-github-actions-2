@@ -125,12 +125,12 @@ const config: Config = {
                             to: "/docs/developer/getting-started",
                         },
                         {
-                            label: "📐 ADR index",
-                            to: "/docs/developer/adr",
+                            label: "🔎 ESLint Config Inspector",
+                            to: "/eslint-inspector",
                         },
                         {
-                            label: "👨‍💻 Developer API",
-                            to: "/docs/developer/api",
+                            label: "🎨 Stylelint Config Inspector",
+                            to: "/stylelint-inspector",
                         },
                     ],
                 },

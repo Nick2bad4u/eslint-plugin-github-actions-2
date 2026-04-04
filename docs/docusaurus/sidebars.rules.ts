@@ -52,15 +52,15 @@ const presetDocIds = readdirSync(presetsDocsDirectoryPath, {
 
 /** Preset order for primary docs UX. */
 const presetOrder = [
-    "recommended",
-    "security",
-    "code-scanning",
-    "strict",
-    "all",
-    "dependabot",
     "action-metadata",
+    "code-scanning",
+    "dependabot",
     "workflow-template-properties",
     "workflow-templates",
+    "recommended",
+    "security",
+    "strict",
+    "all",
 ] as const;
 
 /** Fast membership lookup for preset IDs included in preferred display order. */
@@ -68,15 +68,15 @@ const presetOrderSet = new Set<string>(presetOrder);
 
 /** Preferred label overrides for rule category docs. */
 const presetLabelById = new Map<string, string>([
+    ["action-metadata", "🧩 Action metadata"],
+    ["code-scanning", "🔎 Code scanning"],
+    ["dependabot", "🤖 Dependabot"],
+    ["workflow-template-properties", "🗂️ Workflow template properties"],
+    ["workflow-templates", "🧱 Workflow templates"],
     ["recommended", "🟡 Recommended"],
     ["security", "🛡️ Security"],
-    ["code-scanning", "🔎 Code scanning"],
     ["strict", "🔴 Strict"],
     ["all", "🟣 All"],
-    ["dependabot", "🤖 Dependabot"],
-    ["action-metadata", "🧩 Action metadata"],
-    ["workflow-template-properties", "🧱 Workflow template properties"],
-    ["workflow-templates", "🧪 Workflow templates"],
 ]);
 
 const isDependabotRule = (docId: string): boolean =>
@@ -122,13 +122,11 @@ const workflowRuleDocIds = topLevelRuleDocIds.filter(
 );
 
 /** Build labeled doc items for a list of rule doc ids. */
-const toRuleItems = (
-    docIds: readonly string[],
-    options: { readonly showRuleIcon: boolean }
-): SidebarDocItem[] =>
+const toRuleItems = (docIds: readonly string[]): SidebarDocItem[] =>
     docIds.map((docId) => ({
+        className: "sb-rule-doc-item",
         id: docId,
-        label: options.showRuleIcon ? `📄 ${docId}` : docId,
+        label: docId,
         type: "doc",
     }));
 
@@ -160,7 +158,8 @@ const sidebars: SidebarsConfig = {
         },
         {
             className: "sb-cat-presets",
-            collapsed: true,
+            collapsed: false,
+            collapsible: true,
             link: {
                 id: "presets/index",
                 type: "doc",
@@ -171,7 +170,8 @@ const sidebars: SidebarsConfig = {
         },
         {
             className: "sb-cat-rules",
-            collapsed: true,
+            collapsed: false,
+            collapsible: true,
             label: "📚 Rule reference",
             link: {
                 description:
@@ -184,6 +184,7 @@ const sidebars: SidebarsConfig = {
                 {
                     className: "sb-cat-rules-workflows",
                     collapsed: true,
+                    collapsible: true,
                     label: "⚙️ Workflow rules",
                     link: {
                         description:
@@ -192,14 +193,13 @@ const sidebars: SidebarsConfig = {
                         title: "Workflow rules",
                         type: "generated-index",
                     },
-                    items: toRuleItems(workflowRuleDocIds, {
-                        showRuleIcon: true,
-                    }),
+                    items: toRuleItems(workflowRuleDocIds),
                     type: "category",
                 },
                 {
                     className: "sb-cat-rules-dependabot",
                     collapsed: true,
+                    collapsible: true,
                     label: "🤖 Dependabot rules",
                     link: {
                         description:
@@ -208,14 +208,13 @@ const sidebars: SidebarsConfig = {
                         title: "Dependabot rules",
                         type: "generated-index",
                     },
-                    items: toRuleItems(dependabotRuleDocIds, {
-                        showRuleIcon: true,
-                    }),
+                    items: toRuleItems(dependabotRuleDocIds),
                     type: "category",
                 },
                 {
                     className: "sb-cat-rules-action-metadata",
                     collapsed: true,
+                    collapsible: true,
                     label: "🧩 Action metadata rules",
                     link: {
                         description:
@@ -224,14 +223,13 @@ const sidebars: SidebarsConfig = {
                         title: "Action metadata rules",
                         type: "generated-index",
                     },
-                    items: toRuleItems(actionMetadataRuleDocIds, {
-                        showRuleIcon: true,
-                    }),
+                    items: toRuleItems(actionMetadataRuleDocIds),
                     type: "category",
                 },
                 {
                     className: "sb-cat-rules-workflow-templates",
                     collapsed: true,
+                    collapsible: true,
                     label: "🧪 Workflow template rules",
                     link: {
                         description:
@@ -240,9 +238,7 @@ const sidebars: SidebarsConfig = {
                         title: "Workflow template rules",
                         type: "generated-index",
                     },
-                    items: toRuleItems(workflowTemplateRuleDocIds, {
-                        showRuleIcon: true,
-                    }),
+                    items: toRuleItems(workflowTemplateRuleDocIds),
                     type: "category",
                 },
             ],

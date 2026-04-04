@@ -11,6 +11,8 @@ This section is for contributors and maintainers of
 - 📐 [Architecture Decision Records](pathname:///docs/developer/adr)
 - 🛠️ [Maintenance playbooks](pathname:///docs/developer/maintenance)
 - 👨‍💻 [Developer API reference](pathname:///docs/developer/api)
+- 🔎 [ESLint Config Inspector](pathname:///eslint-inspector)
+- 🎨 [Stylelint Config Inspector](pathname:///stylelint-inspector)
 
 ## Scope
 

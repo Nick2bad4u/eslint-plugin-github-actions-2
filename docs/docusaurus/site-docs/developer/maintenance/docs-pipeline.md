@@ -15,6 +15,11 @@ npm run --workspace docs/docusaurus build:fast
 node scripts/sync-readme-rules-table.mjs --check
 ```
 
+## Published inspector tools
+
+- [ESLint Config Inspector](pathname:///eslint-inspector)
+- [Stylelint Config Inspector](pathname:///stylelint-inspector)
+
 ## Common failure classes
 
 - stale generated docs or table output

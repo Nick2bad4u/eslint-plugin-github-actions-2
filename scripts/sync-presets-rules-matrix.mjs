@@ -8,7 +8,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-
 import builtPlugin from "../dist/plugin.js";
 import {
     githubActionsConfigMetadataByName,
@@ -49,6 +48,14 @@ const matrixFilePath = resolve(
     fileURLToPath(new URL("..", import.meta.url)),
     "presets-matrix.md"
 );
+
+/**
+ * @param {(typeof presetOrder)[number]} presetName
+ *
+ * @returns {string}
+ */
+export const getPresetDocsSlug = (presetName) =>
+    presetName.replace(/[A-Z]/g, (character) => `-${character.toLowerCase()}`);
 
 /**
  * @param {unknown} value
@@ -195,18 +202,63 @@ const createDividerRow = () => "| --- | :-: | --- |";
 
 const createFixLegendSection = () => [
     "Fix legend:",
-    "🔧 = autofixable",
-    "💡 = suggestions available",
-    "— = report only",
+    "",
+    "- 🔧 = autofixable",
+    "- 💡 = suggestions available",
+    "- — = report only",
     "",
 ];
 
-const createPresetKeyLegendSection = () => [
+/**
+ * @param {(typeof presetOrder)[number]} presetName
+ * @param {((
+ *           presetName: (typeof presetOrder)[number],
+ *           metadata: {
+ *               description: string;
+ *               files: readonly string[];
+ *               icon: string;
+ *               presetName: string;
+ *           }
+ *       ) => string)
+ *     | undefined} createPresetHref
+ *
+ * @returns {string}
+ */
+const createPresetIconReference = (presetName, createPresetHref) => {
+    const metadata = githubActionsConfigMetadataByName[presetName];
+    const presetHref = createPresetHref?.(presetName, metadata);
+
+    return typeof presetHref === "string"
+        ? `[${metadata.icon}](${presetHref})`
+        : metadata.icon;
+};
+
+/**
+ * @param {((
+ *           presetName: (typeof presetOrder)[number],
+ *           metadata: {
+ *               description: string;
+ *               files: readonly string[];
+ *               icon: string;
+ *               presetName: string;
+ *           }
+ *       ) => string)
+ *     | undefined} createPresetHref
+ *
+ * @returns {string[]}
+ */
+const createPresetKeyLegendSection = (createPresetHref) => [
     "Preset key legend:",
+    "",
     ...presetOrder.map((presetName) => {
         const metadata = githubActionsConfigMetadataByName[presetName];
+        const presetHref = createPresetHref?.(presetName, metadata);
+        const presetReference =
+            typeof presetHref === "string"
+                ? `[\`githubActions.configs.${presetName}\`](${presetHref})`
+                : `\`githubActions.configs.${presetName}\``;
 
-        return `${metadata.icon} — githubActions.configs.${presetName}`;
+        return `- ${createPresetIconReference(presetName, createPresetHref)} — ${presetReference}`;
     }),
     "",
 ];
@@ -229,13 +281,29 @@ const createRuleCell = (ruleName, ruleModule, createRuleReference) => {
 /**
  * @param {[string, unknown]} matrixEntry
  * @param {((ruleName: string, ruleModule: unknown) => string) | undefined} createRuleReference
+ * @param {((
+ *           presetName: (typeof presetOrder)[number],
+ *           metadata: {
+ *               description: string;
+ *               files: readonly string[];
+ *               icon: string;
+ *               presetName: string;
+ *           }
+ *       ) => string)
+ *     | undefined} createPresetHref
  *
  * @returns {string}
  */
-const createMatrixRow = ([ruleName, ruleModule], createRuleReference) => {
+const createMatrixRow = (
+    [ruleName, ruleModule],
+    createRuleReference,
+    createPresetHref
+) => {
     const presetNames = normalizeRulePresetNames(ruleModule);
     const presetIcons = presetNames
-        .map((presetName) => githubActionsConfigMetadataByName[presetName].icon)
+        .map((presetName) =>
+            createPresetIconReference(presetName, createPresetHref)
+        )
         .join(" ");
 
     return [
@@ -251,6 +319,17 @@ const createMatrixRow = ([ruleName, ruleModule], createRuleReference) => {
  *     createRuleReference?:
  *         | ((ruleName: string, ruleModule: unknown) => string)
  *         | undefined;
+ *     createPresetHref?:
+ *         | ((
+ *               presetName: (typeof presetOrder)[number],
+ *               metadata: {
+ *                   description: string;
+ *                   files: readonly string[];
+ *                   icon: string;
+ *                   presetName: string;
+ *               }
+ *           ) => string)
+ *         | undefined;
  * }} [options]
  *
  * @returns {string}
@@ -262,11 +341,70 @@ export const generatePresetRulesMatrixFromRules = (rules, options = {}) => {
 
     return [
         ...createFixLegendSection(),
-        ...createPresetKeyLegendSection(),
+        ...createPresetKeyLegendSection(options.createPresetHref),
         createHeaderRow(),
         createDividerRow(),
         ...rows.map((entry) =>
-            createMatrixRow(entry, options.createRuleReference)
+            createMatrixRow(
+                entry,
+                options.createRuleReference,
+                options.createPresetHref
+            )
+        ),
+    ].join("\n");
+};
+
+/**
+ * @param {Record<string, unknown>} rules
+ * @param {(typeof presetOrder)[number]} presetName
+ *
+ * @returns {Record<string, unknown>}
+ */
+export const filterRulesByPresetName = (rules, presetName) =>
+    Object.fromEntries(
+        Object.entries(rules).filter(([, ruleModule]) =>
+            normalizeRulePresetNames(ruleModule).includes(presetName)
+        )
+    );
+
+const createPresetPageHeaderRow = () => "| Rule | Fix |";
+
+const createPresetPageDividerRow = () => "| --- | :-: |";
+
+/**
+ * @param {Record<string, unknown>} rules
+ * @param {(typeof presetOrder)[number]} presetName
+ * @param {{
+ *     createRuleReference?:
+ *         | ((ruleName: string, ruleModule: unknown) => string)
+ *         | undefined;
+ * }} [options]
+ *
+ * @returns {string}
+ */
+export const generatePresetPageRulesTableFromRules = (
+    rules,
+    presetName,
+    options = {}
+) => {
+    const filteredRules = filterRulesByPresetName(rules, presetName);
+    const rows = Object.entries(filteredRules).toSorted((left, right) =>
+        left[0].localeCompare(right[0])
+    );
+
+    return [
+        ...createFixLegendSection(),
+        createPresetPageHeaderRow(),
+        createPresetPageDividerRow(),
+        ...rows.map(([ruleName, ruleModule]) =>
+            [
+                `| ${createRuleCell(
+                    ruleName,
+                    ruleModule,
+                    options.createRuleReference
+                )} |`,
+                ` ${getRuleFixLegendCell(ruleModule)} |`,
+            ].join("")
         ),
     ].join("\n");
 };
@@ -277,6 +415,17 @@ export const generatePresetRulesMatrixFromRules = (rules, options = {}) => {
  * @param {{
  *     createRuleReference?:
  *         | ((ruleName: string, ruleModule: unknown) => string)
+ *         | undefined;
+ *     createPresetHref?:
+ *         | ((
+ *               presetName: (typeof presetOrder)[number],
+ *               metadata: {
+ *                   description: string;
+ *                   files: readonly string[];
+ *                   icon: string;
+ *                   presetName: string;
+ *               }
+ *           ) => string)
  *         | undefined;
  * }} [options]
  *
@@ -294,7 +443,16 @@ export const generatePresetRulesMatrixFromPlugin = (
  */
 export const syncPresetRulesMatrix = async ({ check = false } = {}) => {
     const currentMatrix = await readFile(matrixFilePath, "utf8");
-    const generatedMatrix = `${generatePresetRulesMatrixFromPlugin()}\n`;
+    const generatedMatrix = `${generatePresetRulesMatrixFromPlugin(
+        builtPlugin,
+        {
+            createPresetHref: (presetName) =>
+                `./docs/rules/presets/${getPresetDocsSlug(presetName)}.md`,
+            createRuleReference: (ruleName) =>
+                `[\`${ruleName}\`](./docs/rules/${ruleName}.md)`,
+        }
+    )}
+`;
 
     if (check) {
         if (currentMatrix !== generatedMatrix) {
