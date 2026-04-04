@@ -8,10 +8,12 @@ import {
     isActionMetadataFile,
     isDependabotFile,
     isDependencyReviewWorkflowFile,
+    isWorkflowFile,
     isWorkflowTemplateFile,
     isWorkflowTemplatePropertiesFile,
     isWorkflowTemplateYamlFile,
     usesYamlExtension,
+    WORKFLOW_FILE_GLOBS,
     WORKFLOW_TEMPLATE_FILE_GLOBS,
     WORKFLOW_TEMPLATE_PROPERTIES_FILE_GLOBS,
     WORKFLOW_TEMPLATE_YAML_FILE_GLOBS,
@@ -26,6 +28,7 @@ describe("lint target helpers", () => {
         expect(DEPENDENCY_REVIEW_WORKFLOW_FILE_GLOBS).toEqual([
             ".github/workflows/dependency-review*.{yml,yaml}",
         ]);
+        expect(WORKFLOW_FILE_GLOBS).toEqual([".github/workflows/*.{yml,yaml}"]);
         expect(WORKFLOW_TEMPLATE_PROPERTIES_FILE_GLOBS).toEqual([
             "**/workflow-templates/*.properties.json",
         ]);
@@ -75,6 +78,17 @@ describe("lint target helpers", () => {
         ).toBeTruthy();
         expect(
             isDependencyReviewWorkflowFile(".github/workflows/ci.yml")
+        ).toBeFalsy();
+    });
+
+    it("detects standard workflow files while excluding dependabot and template paths", () => {
+        expect(isWorkflowFile(".github/workflows/ci.yml")).toBeTruthy();
+        expect(
+            isWorkflowFile(String.raw`C:\Repo\.github\workflows\release.YAML`)
+        ).toBeTruthy();
+        expect(isWorkflowFile(".github/dependabot.yml")).toBeFalsy();
+        expect(
+            isWorkflowFile(".github/workflow-templates/deploy.yml")
         ).toBeFalsy();
     });
 

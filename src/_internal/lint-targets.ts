@@ -19,6 +19,11 @@ export const DEPENDENCY_REVIEW_WORKFLOW_FILE_GLOBS: readonly string[] = [
     ".github/workflows/dependency-review*.{yml,yaml}",
 ];
 
+/** Standard GitHub Actions workflow file globs. */
+export const WORKFLOW_FILE_GLOBS: readonly string[] = [
+    ".github/workflows/*.{yml,yaml}",
+];
+
 /** Workflow template metadata (`.properties.json`) file globs. */
 export const WORKFLOW_TEMPLATE_PROPERTIES_FILE_GLOBS: readonly string[] = [
     "**/workflow-templates/*.properties.json",
@@ -72,6 +77,21 @@ export const isDependencyReviewWorkflowFile = (filePath: string): boolean => {
             normalizedFilePath.endsWith("dependency-review.yaml") ||
             normalizedFilePath.includes("/dependency-review-") ||
             normalizedFilePath.includes("/dependency-review."))
+    );
+};
+
+/**
+ * Determine whether a filename is a standard workflow file under
+ * `.github/workflows/`.
+ */
+export const isWorkflowFile = (filePath: string): boolean => {
+    const normalizedFilePath = normalizePathForMatching(filePath);
+
+    return (
+        (normalizedFilePath.includes("/.github/workflows/") ||
+            normalizedFilePath.startsWith(".github/workflows/")) &&
+        (normalizedFilePath.endsWith(".yml") ||
+            normalizedFilePath.endsWith(".yaml"))
     );
 };
 

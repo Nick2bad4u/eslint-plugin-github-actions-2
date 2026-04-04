@@ -43,6 +43,8 @@ const getPresetDocPath = (presetName) =>
 const docsSiteBaseUrl =
     "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules";
 
+const toWindowsLineEndings = (text) => text.replaceAll("\n", "\r\n");
+
 const getSectionBounds = (markdown, sectionHeading) => {
     const startOffset = markdown.indexOf(sectionHeading);
 
@@ -129,7 +131,9 @@ const writeSection = async ({
         throw new Error(missingSectionError);
     }
 
-    const nextMarkdown = `${currentMarkdown.slice(0, bounds.startOffset)}${sectionMarkdown}${currentMarkdown.slice(bounds.endOffset)}`;
+    const nextMarkdown = toWindowsLineEndings(
+        `${currentMarkdown.slice(0, bounds.startOffset)}${sectionMarkdown}${currentMarkdown.slice(bounds.endOffset)}`
+    );
 
     if (check) {
         if (currentMarkdown !== nextMarkdown) {

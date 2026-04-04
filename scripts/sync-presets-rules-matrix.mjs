@@ -50,6 +50,13 @@ const matrixFilePath = resolve(
 );
 
 /**
+ * @param {string} text
+ *
+ * @returns {string}
+ */
+const toWindowsLineEndings = (text) => text.replaceAll("\n", "\r\n");
+
+/**
  * @param {(typeof presetOrder)[number]} presetName
  *
  * @returns {string}
@@ -443,16 +450,15 @@ export const generatePresetRulesMatrixFromPlugin = (
  */
 export const syncPresetRulesMatrix = async ({ check = false } = {}) => {
     const currentMatrix = await readFile(matrixFilePath, "utf8");
-    const generatedMatrix = `${generatePresetRulesMatrixFromPlugin(
-        builtPlugin,
-        {
+    const generatedMatrix = toWindowsLineEndings(
+        `${generatePresetRulesMatrixFromPlugin(builtPlugin, {
             createPresetHref: (presetName) =>
                 `./docs/rules/presets/${getPresetDocsSlug(presetName)}.md`,
             createRuleReference: (ruleName) =>
                 `[\`${ruleName}\`](./docs/rules/${ruleName}.md)`,
-        }
-    )}
-`;
+        })}
+`
+    );
 
     if (check) {
         if (currentMatrix !== generatedMatrix) {

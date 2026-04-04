@@ -50,6 +50,15 @@ describe("dependabot rules", () => {
         expect(result.messages).toHaveLength(0);
     });
 
+    it("does not run workflow-only rules on valid Dependabot files under the all preset", async () => {
+        const result = await lintWorkflow(validDependabotConfig, {
+            configName: "all",
+            filePath: ".github/dependabot.yml",
+        });
+
+        expect(result.messages).toHaveLength(0);
+    });
+
     it("reports unused top-level enable-beta-ecosystems settings", async () => {
         const result = await lintWorkflow(
             [
