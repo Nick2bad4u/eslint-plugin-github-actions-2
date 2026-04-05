@@ -4,8 +4,9 @@
  */
 import type { Rule } from "eslint";
 
+import { isWorkflowFile } from "../_internal/lint-targets.js";
 import { getSecretScanningActionSteps } from "../_internal/secret-scanning-workflow.ts";
-import { hasRequiredWorkflowPermission } from "../_internal/workflow-permissions.ts";
+import { hasExactWorkflowPermission } from "../_internal/workflow-permissions.ts";
 import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /**
@@ -16,6 +17,10 @@ const rule: Rule.RuleModule = {
     create(context) {
         return {
             Program() {
+                if (!isWorkflowFile(context.filename)) {
+                    return;
+                }
+
                 const root = getWorkflowRoot(context);
 
                 if (root === null) {
@@ -24,7 +29,7 @@ const rule: Rule.RuleModule = {
 
                 for (const step of getSecretScanningActionSteps(root)) {
                     if (
-                        hasRequiredWorkflowPermission(
+                        hasExactWorkflowPermission(
                             root,
                             step.job,
                             "contents",
@@ -62,7 +67,7 @@ const rule: Rule.RuleModule = {
         },
         messages: {
             missingContentsRead:
-                "Job '{{jobId}}' runs a secret scanner and should grant `contents: read`.",
+                "Job '{{jobId}}' runs a secret scanner and should grant effective `contents: read` at the job or workflow level.",
         },
         schema: [],
         type: "problem",

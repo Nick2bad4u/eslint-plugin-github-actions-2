@@ -1,11 +1,11 @@
----
-sidebar_position: 2
----
-
-# `githubActions.configs.codeScanning`
-
-Workflow security defaults for CodeQL, SARIF upload, dependency review, and related code-scanning integrations.
-
+---
+sidebar_position: 2
+---
+
+# `githubActions.configs.codeScanning`
+
+Workflow security defaults for CodeQL, SARIF upload, dependency review, and related code-scanning integrations.
+
 ## Included rules
 
 Fix legend:

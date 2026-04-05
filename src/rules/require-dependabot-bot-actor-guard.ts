@@ -9,6 +9,7 @@ import {
     getDependabotFetchMetadataSteps,
     hasDependabotAutomation,
 } from "../_internal/dependabot-automation-workflow.ts";
+import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -23,6 +24,10 @@ const rule: Rule.RuleModule = {
     create(context) {
         return {
             Program() {
+                if (!isWorkflowFile(context.filename)) {
+                    return;
+                }
+
                 const root = getWorkflowRoot(context);
 
                 if (root === null || !hasDependabotAutomation(root)) {

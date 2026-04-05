@@ -60,6 +60,105 @@ describe("workflow template rules", () => {
         }
     });
 
+    it("does not run workflow-only rules on valid workflow-template metadata files under the all preset", async () => {
+        const temporaryDirectory = createTemporaryTemplateDirectory();
+        const templatePropertiesPath = path.join(
+            temporaryDirectory,
+            "workflow-templates",
+            "ci.properties.json"
+        );
+
+        writeFileSync(
+            path.join(temporaryDirectory, "workflow-templates", "ci.yml"),
+            [
+                "name: CI Template",
+                "on:",
+                "  push:",
+                "    branches: [$default-branch]",
+                "jobs:",
+                "  build:",
+                "    name: Build",
+                "    runs-on: ubuntu-latest",
+                "    steps:",
+                "      - name: Echo",
+                "        run: echo hi",
+            ].join("\n"),
+            "utf8"
+        );
+        writeFileSync(
+            path.join(temporaryDirectory, "workflow-templates", "workflow.svg"),
+            "<svg></svg>",
+            "utf8"
+        );
+
+        const result = await lintWorkflow(
+            [
+                "{",
+                '  "name": "CI Template",',
+                '  "description": "Template",',
+                '  "iconName": "workflow",',
+                '  "categories": ["JavaScript"],',
+                '  "filePatterns": ["package.json$"]',
+                "}",
+            ].join("\n"),
+            {
+                configName: "all",
+                filePath: templatePropertiesPath,
+            }
+        );
+
+        expect(result.messages).toHaveLength(0);
+    });
+
+    it("does not run workflow-only rules on valid workflow-template YAML files under the all preset", async () => {
+        const temporaryDirectory = createTemporaryTemplateDirectory();
+        const templateYamlPath = path.join(
+            temporaryDirectory,
+            "workflow-templates",
+            "ci.yml"
+        );
+
+        writeFileSync(
+            path.join(
+                temporaryDirectory,
+                "workflow-templates",
+                "ci.properties.json"
+            ),
+            [
+                "{",
+                '  "name": "CI Template",',
+                '  "description": "Template",',
+                '  "iconName": "workflow",',
+                '  "categories": ["JavaScript"],',
+                '  "filePatterns": ["package.json$"]',
+                "}",
+            ].join("\n"),
+            "utf8"
+        );
+
+        const result = await lintWorkflow(
+            [
+                "name: CI Template",
+                "on:",
+                "  push:",
+                "    branches: [$default-branch]",
+                "jobs:",
+                "  build:",
+                "    name: Build",
+                "    runs-on: ubuntu-latest",
+                "    steps:",
+                "      - name: Echo",
+                "        run: echo hi",
+            ].join("\n"),
+            {
+                configName: "all",
+                filePath: templateYamlPath,
+            }
+        );
+
+        expect(result.messages).toHaveLength(0);
+    });
+
     it("requires template YAML files to have paired properties metadata", async () => {
         const temporaryDirectory = createTemporaryTemplateDirectory();
         const templateYamlPath = path.join(

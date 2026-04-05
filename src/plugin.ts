@@ -82,9 +82,7 @@ const getRuleConfigReferences = (
     const referenceList = Array.isArray(references) ? references : [references];
 
     if (referenceList.length === 0 || referenceList[0] === undefined) {
-        throw new TypeError(
-            `Rule '${ruleName}' is missing docs.configs preset metadata.`
-        );
+        return [];
     }
 
     for (const reference of referenceList) {

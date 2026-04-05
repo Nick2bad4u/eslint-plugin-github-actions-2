@@ -8,7 +8,7 @@ Jobs that use supported secret-scanning actions.
 
 ## What this rule reports
 
-This rule reports secret-scanning jobs that do not grant `contents: read`.
+This rule reports secret-scanning jobs that do not have effective `contents: read` via either workflow-level or job-level `permissions`.
 
 ## Why this rule exists
 
@@ -17,7 +17,8 @@ Secret-scanning workflows generally only need read access to repository contents
 ## ❌ Incorrect
 
 ```yaml
-permissions: {}
+permissions:
+  contents: write
 ```
 
 ## ✅ Correct
@@ -25,6 +26,13 @@ permissions: {}
 ```yaml
 permissions:
   contents: read
+```
+
+```yaml
+jobs:
+  scan:
+    permissions:
+      contents: read
 ```
 
 ## Additional examples

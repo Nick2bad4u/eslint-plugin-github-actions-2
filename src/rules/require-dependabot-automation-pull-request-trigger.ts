@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { hasDependabotAutomation } from "../_internal/dependabot-automation-workflow.ts";
+import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getWorkflowEventNames,
     getWorkflowRoot,
@@ -18,6 +19,10 @@ const rule: Rule.RuleModule = {
     create(context) {
         return {
             Program(node) {
+                if (!isWorkflowFile(context.filename)) {
+                    return;
+                }
+
                 const root = getWorkflowRoot(context);
 
                 if (root === null || !hasDependabotAutomation(root)) {

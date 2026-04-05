@@ -4,6 +4,7 @@
  */
 import type { Rule } from "eslint";
 
+import { isWorkflowFile } from "../_internal/lint-targets.js";
 import { getMappingPair, getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for disallowing top-level workflow permissions. */
@@ -11,6 +12,10 @@ const rule: Rule.RuleModule = {
     create(context) {
         return {
             Program() {
+                if (!isWorkflowFile(context.filename)) {
+                    return;
+                }
+
                 const root = getWorkflowRoot(context);
 
                 if (root === null) {
@@ -31,7 +36,6 @@ const rule: Rule.RuleModule = {
     meta: {
         deprecated: false,
         docs: {
-            configs: ["github-actions.configs.all"],
             description:
                 "disallow top-level workflow `permissions` when you want every job to declare its own token scope explicitly.",
             dialects: ["GitHub Actions workflow"],

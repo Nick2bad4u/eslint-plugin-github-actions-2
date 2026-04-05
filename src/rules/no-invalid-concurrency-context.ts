@@ -8,6 +8,7 @@ import {
     getGithubExpressionBodies,
     getReferencedContextRoots,
 } from "../_internal/github-expressions.js";
+import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -155,6 +156,10 @@ const rule: Rule.RuleModule = {
     create(context) {
         return {
             Program() {
+                if (!isWorkflowFile(context.filename)) {
+                    return;
+                }
+
                 const root = getWorkflowRoot(context);
 
                 if (root === null) {

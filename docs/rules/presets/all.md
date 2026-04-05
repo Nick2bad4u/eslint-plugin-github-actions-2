@@ -1,11 +1,11 @@
----
-sidebar_position: 9
----
-
-# `githubActions.configs.all`
-
-Enables every available rule published by `eslint-plugin-github-actions-2`.
-
+---
+sidebar_position: 9
+---
+
+# `githubActions.configs.all`
+
+Enables every available rule published by `eslint-plugin-github-actions-2`.
+
 ## Included rules
 
 Fix legend:
@@ -46,7 +46,6 @@ Fix legend:
 | <span class="sb-inline-rule-number">R062</span> [`no-subdirectory-template-file-pattern`](../no-subdirectory-template-file-pattern.md) | — |
 | <span class="sb-inline-rule-number">R069</span> [`no-template-placeholder-in-non-template-workflow`](../no-template-placeholder-in-non-template-workflow.md) | — |
 | <span class="sb-inline-rule-number">R013</span> [`no-top-level-env`](../no-top-level-env.md) | — |
-| <span class="sb-inline-rule-number">R014</span> [`no-top-level-permissions`](../no-top-level-permissions.md) | — |
 | <span class="sb-inline-rule-number">R061</span> [`no-universal-template-file-pattern`](../no-universal-template-file-pattern.md) | — |
 | <span class="sb-inline-rule-number">R081</span> [`no-unknown-dependabot-multi-ecosystem-group`](../no-unknown-dependabot-multi-ecosystem-group.md) | — |
 | <span class="sb-inline-rule-number">R050</span> [`no-unknown-input-reference-in-composite`](../no-unknown-input-reference-in-composite.md) | — |

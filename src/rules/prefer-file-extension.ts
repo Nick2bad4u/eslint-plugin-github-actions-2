@@ -6,6 +6,8 @@ import type { Rule } from "eslint";
 
 import { extname } from "node:path";
 
+import { isWorkflowFile } from "../_internal/lint-targets.js";
+
 /** Supported workflow filename extensions. */
 const workflowFileExtensions = ["yaml", "yml"] as const;
 
@@ -57,6 +59,10 @@ const rule: Rule.RuleModule = {
 
         return {
             Program(node) {
+                if (!isWorkflowFile(context.filename)) {
+                    return;
+                }
+
                 const actualExtensionWithDot = extname(context.filename);
 
                 if (actualExtensionWithDot.length === 0) {

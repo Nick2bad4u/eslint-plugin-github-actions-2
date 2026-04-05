@@ -8,7 +8,7 @@ Workflows that use `actions/dependency-review-action`.
 
 ## What this rule reports
 
-This rule reports workflows using the dependency review action that do not set top-level `permissions.contents: read`.
+This rule reports jobs using the dependency review action that do not have effective `contents: read` via either workflow-level or job-level `permissions`.
 
 ## Why this rule exists
 
@@ -18,11 +18,11 @@ Dependency review only needs repository contents read access. Requiring that exp
 
 ```yaml
 on: [pull_request]
-permissions:
-  contents: write
 jobs:
   dependency-review:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/dependency-review-action@v4
 ```
@@ -40,9 +40,20 @@ jobs:
       - uses: actions/dependency-review-action@v4
 ```
 
+```yaml
+on: [pull_request]
+jobs:
+  dependency-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/dependency-review-action@v4
+```
+
 ## Additional examples
 
-This rule complements `require-workflow-permissions` by enforcing the narrower security expectation specific to dependency review workflows.
+This rule complements `require-workflow-permissions` by enforcing the narrower security expectation specific to dependency review jobs without forcing that permission to live only at the workflow root.
 
 ## ESLint flat config example
 

@@ -1,11 +1,11 @@
----
-sidebar_position: 6
----
-
-# `githubActions.configs.recommended`
-
-Balanced defaults for most repositories.
-
+---
+sidebar_position: 6
+---
+
+# `githubActions.configs.recommended`
+
+Balanced defaults for most repositories.
+
 ## Included rules
 
 Fix legend:

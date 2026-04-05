@@ -1,11 +1,11 @@
----
-sidebar_position: 4
----
-
-# `githubActions.configs.workflowTemplateProperties`
-
-Linting defaults for workflow-template metadata files (`*.properties.json`).
-
+---
+sidebar_position: 4
+---
+
+# `githubActions.configs.workflowTemplateProperties`
+
+Linting defaults for workflow-template metadata files (`*.properties.json`).
+
 ## Included rules
 
 Fix legend:

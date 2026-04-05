@@ -1,11 +1,11 @@
----
-sidebar_position: 3
----
-
-# `githubActions.configs.dependabot`
-
-Linting defaults for repository Dependabot configuration files.
-
+---
+sidebar_position: 3
+---
+
+# `githubActions.configs.dependabot`
+
+Linting defaults for repository Dependabot configuration files.
+
 ## Included rules
 
 Fix legend:

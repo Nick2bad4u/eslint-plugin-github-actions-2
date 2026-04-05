@@ -1,11 +1,11 @@
----
-sidebar_position: 7
----
-
-# `githubActions.configs.security`
-
-Security-focused workflow hardening checks.
-
+---
+sidebar_position: 7
+---
+
+# `githubActions.configs.security`
+
+Security-focused workflow hardening checks.
+
 ## Included rules
 
 Fix legend:

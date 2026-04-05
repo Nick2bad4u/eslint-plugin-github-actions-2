@@ -7,6 +7,27 @@ const githubExpression = (expression: string): string =>
 
 // eslint-disable-next-line max-lines-per-function -- Integration test catalog intentionally exercises many action-metadata rule permutations in one suite.
 describe("action metadata rules", () => {
+    it("does not run workflow-only rules on valid action metadata files under the all preset", async () => {
+        const result = await lintWorkflow(
+            [
+                "name: Example",
+                "description: Example action",
+                "runs:",
+                "  using: composite",
+                "  steps:",
+                "    - name: Echo",
+                "      run: echo hi",
+                "      shell: bash",
+            ].join("\n"),
+            {
+                configName: "all",
+                filePath: ".github/actions/example/action.yml",
+            }
+        );
+
+        expect(result.messages).toHaveLength(0);
+    });
+
     it("prefers action.yml over action.yaml", async () => {
         const result = await lintWorkflow(
             [

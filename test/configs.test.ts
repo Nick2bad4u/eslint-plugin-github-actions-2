@@ -73,6 +73,12 @@ describe("exported presets", () => {
             "github-actions/valid-trigger-events",
         ]);
         expect(
+            Object.hasOwn(
+                githubActionsPlugin.configs.all.rules,
+                "github-actions/no-top-level-permissions"
+            )
+        ).toBeFalsy();
+        expect(
             Object.keys(
                 githubActionsPlugin.configs.codeScanning.rules
             ).toSorted((left, right) => left.localeCompare(right))

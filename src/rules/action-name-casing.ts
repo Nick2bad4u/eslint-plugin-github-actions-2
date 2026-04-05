@@ -11,6 +11,7 @@ import {
     githubActionsCasingKinds,
     matchesGithubActionsCasing,
 } from "../_internal/casing.js";
+import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -74,6 +75,10 @@ const rule: Rule.RuleModule = {
 
         return {
             Program() {
+                if (!isWorkflowFile(context.filename)) {
+                    return;
+                }
+
                 const root = getWorkflowRoot(context);
 
                 if (root === null) {

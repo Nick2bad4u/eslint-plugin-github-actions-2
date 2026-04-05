@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { getSarifUploadSteps } from "../_internal/code-scanning-workflow.ts";
+import { isWorkflowFile } from "../_internal/lint-targets.js";
 import { hasRequiredWorkflowPermission } from "../_internal/workflow-permissions.ts";
 import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
@@ -13,6 +14,10 @@ const rule: Rule.RuleModule = {
     create(context) {
         return {
             Program() {
+                if (!isWorkflowFile(context.filename)) {
+                    return;
+                }
+
                 const root = getWorkflowRoot(context);
 
                 if (root === null) {

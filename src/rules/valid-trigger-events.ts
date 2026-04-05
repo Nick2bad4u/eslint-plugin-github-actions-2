@@ -6,6 +6,7 @@ import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
 import { githubActionsTriggerEventSet } from "../_internal/github-actions-trigger-events.js";
+import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -31,6 +32,10 @@ const rule: Rule.RuleModule = {
 
         return {
             Program() {
+                if (!isWorkflowFile(context.filename)) {
+                    return;
+                }
+
                 const root = getWorkflowRoot(context);
 
                 if (root === null) {

@@ -4,6 +4,7 @@
  */
 import type { Rule } from "eslint";
 
+import { isWorkflowFile } from "../_internal/lint-targets.js";
 import { getTrufflehogActionSteps } from "../_internal/secret-scanning-workflow.ts";
 import {
     getMappingPair,
@@ -19,6 +20,10 @@ const rule: Rule.RuleModule = {
     create(context) {
         return {
             Program() {
+                if (!isWorkflowFile(context.filename)) {
+                    return;
+                }
+
                 const root = getWorkflowRoot(context);
 
                 if (root === null) {

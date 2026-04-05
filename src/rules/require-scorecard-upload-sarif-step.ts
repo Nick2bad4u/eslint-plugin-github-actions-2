@@ -8,6 +8,7 @@ import {
     getSarifUploadSteps,
     getScorecardSteps,
 } from "../_internal/code-scanning-workflow.ts";
+import { isWorkflowFile } from "../_internal/lint-targets.js";
 import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for requiring SARIF upload in Scorecard workflows. */
@@ -15,6 +16,10 @@ const rule: Rule.RuleModule = {
     create(context) {
         return {
             Program(node) {
+                if (!isWorkflowFile(context.filename)) {
+                    return;
+                }
+
                 const root = getWorkflowRoot(context);
 
                 if (root === null || getScorecardSteps(root).length === 0) {

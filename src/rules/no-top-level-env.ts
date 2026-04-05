@@ -4,6 +4,7 @@
  */
 import type { Rule } from "eslint";
 
+import { isWorkflowFile } from "../_internal/lint-targets.js";
 import { getMappingPair, getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for disallowing top-level workflow env. */
@@ -11,6 +12,10 @@ const rule: Rule.RuleModule = {
     create(context) {
         return {
             Program() {
+                if (!isWorkflowFile(context.filename)) {
+                    return;
+                }
+
                 const root = getWorkflowRoot(context);
 
                 if (root === null) {

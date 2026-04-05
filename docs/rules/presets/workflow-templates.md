@@ -1,11 +1,11 @@
----
-sidebar_position: 5
----
-
-# `githubActions.configs.workflowTemplates`
-
-Workflow template package linting for both template YAML and metadata files.
-
+---
+sidebar_position: 5
+---
+
+# `githubActions.configs.workflowTemplates`
+
+Workflow template package linting for both template YAML and metadata files.
+
 ## Included rules
 
 Fix legend:

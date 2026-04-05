@@ -1,55 +1,55 @@
-# eslint-plugin-github-actions-2
-
-[![npm license.](https://flat.badgen.net/npm/license/eslint-plugin-github-actions-2?color=purple)](https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/blob/main/LICENSE) [![npm total downloads.](https://flat.badgen.net/npm/dt/eslint-plugin-github-actions-2?color=pink)](https://www.npmjs.com/package/eslint-plugin-github-actions-2) [![latest GitHub release.](https://flat.badgen.net/github/release/Nick2bad4u/eslint-plugin-github-actions-2?color=cyan)](https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/releases) [![GitHub stars.](https://flat.badgen.net/github/stars/Nick2bad4u/eslint-plugin-github-actions-2?color=yellow)](https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/stargazers) [![GitHub forks.](https://flat.badgen.net/github/forks/Nick2bad4u/eslint-plugin-github-actions-2?color=green)](https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/forks) [![GitHub open issues.](https://flat.badgen.net/github/open-issues/Nick2bad4u/eslint-plugin-github-actions-2?color=red)](https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/issues) [![codecov.](https://codecov.io/gh/Nick2bad4u/eslint-plugin-github-actions-2/branch/main/graph/badge.svg)](https://codecov.io/gh/Nick2bad4u/eslint-plugin-github-actions-2)
-
-ESLint plugin for GitHub Actions quality, reliability, security, and maintainability across the full GitHub Actions ecosystem.
-
-The plugin covers:
-
-- workflow YAML files (`.github/workflows/*.{yml,yaml}`)
-- action metadata files (`**/action.yml`, `**/action.yaml`)
-- Dependabot configuration (`.github/dependabot.{yml,yaml}`)
-- workflow template packages (`**/workflow-templates/*.{yml,yaml}` and `**/workflow-templates/*.properties.json`)
-
-The rules help teams:
-
-- standardize workflow, job, and step naming along with file-level conventions
-- validate workflow structure, supported keys, trigger declarations, interface definitions, timeouts, and concurrency settings
-- enforce safer permissions, shells, input handling, and pinned action references
-- harden CodeQL, dependency review, SARIF upload, secret-scanning, and Dependabot automation workflows
-- keep Dependabot and workflow-template metadata complete, consistent, and reviewable
-- apply targeted autofixes and suggestions where the intended change is safe and unambiguous
-
-## Installation
-
-```sh
-npm install --save-dev eslint eslint-plugin-github-actions-2
-```
-
-## Quick start
-
-```js
-import githubActions from "eslint-plugin-github-actions-2";
-
-export default [githubActions.configs.recommended];
-```
-
-Every exported preset already scopes itself to the intended GitHub Actions file surfaces.
-
-## Presets
-
-| Preset                                                                                                                                                            | Purpose                                                              |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| [`githubActions.configs.actionMetadata`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/action-metadata)                          | Action metadata hygiene and correctness checks.                      |
-| [`githubActions.configs.codeScanning`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/code-scanning)                              | CodeQL, dependency review, SARIF, and code-scanning workflow checks. |
-| [`githubActions.configs.dependabot`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/dependabot)                                   | Dependabot configuration quality and policy checks.                  |
-| [`githubActions.configs.workflowTemplateProperties`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/workflow-template-properties) | Workflow-template metadata quality checks.                           |
-| [`githubActions.configs.workflowTemplates`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/workflow-templates)                    | Combined workflow-template YAML + metadata checks.                   |
-| [`githubActions.configs.recommended`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/recommended)                                 | Balanced defaults for most repositories.                             |
-| [`githubActions.configs.security`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/security)                                       | Security-focused checks like immutable SHA pinning.                  |
-| [`githubActions.configs.strict`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/strict)                                           | Operational guardrails for mature workflow estates.                  |
-| [`githubActions.configs.all`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/all)                                                 | Every rule published by the plugin.                                  |
-
+# eslint-plugin-github-actions-2
+
+[![npm license.](https://flat.badgen.net/npm/license/eslint-plugin-github-actions-2?color=purple)](https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/blob/main/LICENSE) [![npm total downloads.](https://flat.badgen.net/npm/dt/eslint-plugin-github-actions-2?color=pink)](https://www.npmjs.com/package/eslint-plugin-github-actions-2) [![latest GitHub release.](https://flat.badgen.net/github/release/Nick2bad4u/eslint-plugin-github-actions-2?color=cyan)](https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/releases) [![GitHub stars.](https://flat.badgen.net/github/stars/Nick2bad4u/eslint-plugin-github-actions-2?color=yellow)](https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/stargazers) [![GitHub forks.](https://flat.badgen.net/github/forks/Nick2bad4u/eslint-plugin-github-actions-2?color=green)](https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/forks) [![GitHub open issues.](https://flat.badgen.net/github/open-issues/Nick2bad4u/eslint-plugin-github-actions-2?color=red)](https://github.com/Nick2bad4u/eslint-plugin-github-actions-2/issues) [![codecov.](https://codecov.io/gh/Nick2bad4u/eslint-plugin-github-actions-2/branch/main/graph/badge.svg)](https://codecov.io/gh/Nick2bad4u/eslint-plugin-github-actions-2)
+
+ESLint plugin for GitHub Actions quality, reliability, security, and maintainability across the full GitHub Actions ecosystem.
+
+The plugin covers:
+
+- workflow YAML files (`.github/workflows/*.{yml,yaml}`)
+- action metadata files (`**/action.yml`, `**/action.yaml`)
+- Dependabot configuration (`.github/dependabot.{yml,yaml}`)
+- workflow template packages (`**/workflow-templates/*.{yml,yaml}` and `**/workflow-templates/*.properties.json`)
+
+The rules help teams:
+
+- standardize workflow, job, and step naming along with file-level conventions
+- validate workflow structure, supported keys, trigger declarations, interface definitions, timeouts, and concurrency settings
+- enforce safer permissions, shells, input handling, and pinned action references
+- harden CodeQL, dependency review, SARIF upload, secret-scanning, and Dependabot automation workflows
+- keep Dependabot and workflow-template metadata complete, consistent, and reviewable
+- apply targeted autofixes and suggestions where the intended change is safe and unambiguous
+
+## Installation
+
+```sh
+npm install --save-dev eslint eslint-plugin-github-actions-2
+```
+
+## Quick start
+
+```js
+import githubActions from "eslint-plugin-github-actions-2";
+
+export default [githubActions.configs.recommended];
+```
+
+Every exported preset already scopes itself to the intended GitHub Actions file surfaces.
+
+## Presets
+
+| Preset                                                                                                                                                            | Purpose                                                              |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| [`githubActions.configs.actionMetadata`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/action-metadata)                          | Action metadata hygiene and correctness checks.                      |
+| [`githubActions.configs.codeScanning`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/code-scanning)                              | CodeQL, dependency review, SARIF, and code-scanning workflow checks. |
+| [`githubActions.configs.dependabot`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/dependabot)                                   | Dependabot configuration quality and policy checks.                  |
+| [`githubActions.configs.workflowTemplateProperties`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/workflow-template-properties) | Workflow-template metadata quality checks.                           |
+| [`githubActions.configs.workflowTemplates`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/workflow-templates)                    | Combined workflow-template YAML + metadata checks.                   |
+| [`githubActions.configs.recommended`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/recommended)                                 | Balanced defaults for most repositories.                             |
+| [`githubActions.configs.security`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/security)                                       | Security-focused checks like immutable SHA pinning.                  |
+| [`githubActions.configs.strict`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/strict)                                           | Operational guardrails for mature workflow estates.                  |
+| [`githubActions.configs.all`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/all)                                                 | Every rule published by the plugin.                                  |
+
 ## Rules
 
 Fix legend:
@@ -102,7 +102,7 @@ Preset key legend:
 | <span class="sb-inline-rule-number">R062</span> [`no-subdirectory-template-file-pattern`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-subdirectory-template-file-pattern) | — | [🗂️](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/workflow-template-properties) [🧱](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/workflow-templates) [🟣](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/all) |
 | <span class="sb-inline-rule-number">R069</span> [`no-template-placeholder-in-non-template-workflow`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-template-placeholder-in-non-template-workflow) | — | [🟡](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/recommended) [🔴](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/strict) [🟣](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/all) |
 | <span class="sb-inline-rule-number">R013</span> [`no-top-level-env`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-top-level-env) | — | [🟣](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/all) [🔴](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/strict) |
-| <span class="sb-inline-rule-number">R014</span> [`no-top-level-permissions`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-top-level-permissions) | — | [🟣](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/all) |
+| <span class="sb-inline-rule-number">R014</span> [`no-top-level-permissions`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-top-level-permissions) | — | — |
 | <span class="sb-inline-rule-number">R061</span> [`no-universal-template-file-pattern`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-universal-template-file-pattern) | — | [🗂️](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/workflow-template-properties) [🧱](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/workflow-templates) [🟣](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/all) |
 | <span class="sb-inline-rule-number">R081</span> [`no-unknown-dependabot-multi-ecosystem-group`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unknown-dependabot-multi-ecosystem-group) | — | [🟣](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/all) [🤖](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/dependabot) |
 | <span class="sb-inline-rule-number">R050</span> [`no-unknown-input-reference-in-composite`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/no-unknown-input-reference-in-composite) | — | [🧩](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/action-metadata) [🟣](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/all) |
@@ -187,38 +187,38 @@ Preset key legend:
 | <span class="sb-inline-rule-number">R017</span> [`valid-timeout-minutes`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/valid-timeout-minutes) | — | [🟣](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/all) [🟡](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/recommended) [🔴](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/strict) |
 | <span class="sb-inline-rule-number">R018</span> [`valid-trigger-events`](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/valid-trigger-events) | — | [🟣](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/all) [🟡](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/recommended) [🔴](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets/strict) |
 
-## Example
-
-```yaml
-name: ci
-
-on:
-  pull_request:
-  push:
-    branches:
-      - main
-
-permissions:
-  contents: read
-
-concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-      - run: npm test
-```
-
-## Documentation
-
-- Rule docs: `docs/rules/`
-- Site: <https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/overview>
-
-## Status
-
-`eslint-plugin-github-actions-2` ships workflow, action metadata, and workflow-template linting surfaces with policy, reliability, and security coverage.
+## Example
+
+```yaml
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+      - run: npm test
+```
+
+## Documentation
+
+- Rule docs: `docs/rules/`
+- Site: <https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/overview>
+
+## Status
+
+`eslint-plugin-github-actions-2` ships workflow, action metadata, and workflow-template linting surfaces with policy, reliability, and security coverage.

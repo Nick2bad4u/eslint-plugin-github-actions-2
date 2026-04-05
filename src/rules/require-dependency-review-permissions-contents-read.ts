@@ -4,48 +4,55 @@
  */
 import type { Rule } from "eslint";
 
-import { hasDependencyReviewAction } from "../_internal/dependency-review-workflow.ts";
 import {
-    getMappingPair,
-    getMappingValueAsMapping,
-    getScalarStringValue,
-    getWorkflowRoot,
-} from "../_internal/workflow-yaml.js";
+    getDependencyReviewActionSteps,
+    hasDependencyReviewAction,
+} from "../_internal/dependency-review-workflow.ts";
+import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { hasExactWorkflowPermission } from "../_internal/workflow-permissions.ts";
+import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for dependency-review contents permission requirements. */
 const rule: Rule.RuleModule = {
     create(context) {
         return {
             Program() {
+                if (!isWorkflowFile(context.filename)) {
+                    return;
+                }
+
                 const root = getWorkflowRoot(context);
 
                 if (root === null || !hasDependencyReviewAction(root)) {
                     return;
                 }
 
-                const permissionsMapping = getMappingValueAsMapping(
-                    root,
-                    "permissions"
-                );
-                const contentsPair =
-                    permissionsMapping === null
-                        ? null
-                        : getMappingPair(permissionsMapping, "contents");
-                const contentsValue = getScalarStringValue(
-                    contentsPair?.value ?? null
-                )?.trim();
+                const seenJobIds = new Set<string>();
 
-                if (contentsValue === "read") {
-                    return;
+                for (const step of getDependencyReviewActionSteps(root)) {
+                    if (seenJobIds.has(step.job.id)) {
+                        continue;
+                    }
+
+                    seenJobIds.add(step.job.id);
+
+                    if (
+                        hasExactWorkflowPermission(
+                            root,
+                            step.job,
+                            "contents",
+                            "read"
+                        )
+                    ) {
+                        continue;
+                    }
+
+                    context.report({
+                        data: { jobId: step.job.id },
+                        messageId: "missingContentsReadPermission",
+                        node: step.job.idNode as unknown as Rule.Node,
+                    });
                 }
-
-                context.report({
-                    messageId: "missingContentsReadPermission",
-                    node: (contentsPair?.value ??
-                        contentsPair ??
-                        permissionsMapping ??
-                        root) as unknown as Rule.Node,
-                });
             },
         };
     },
@@ -58,7 +65,7 @@ const rule: Rule.RuleModule = {
                 "github-actions.configs.security",
             ],
             description:
-                "require workflows using `actions/dependency-review-action` to set top-level `permissions.contents: read`.",
+                "require jobs using `actions/dependency-review-action` to grant effective `contents: read`.",
             dialects: ["GitHub Actions workflow"],
             frozen: false,
             recommended: false,
@@ -69,7 +76,7 @@ const rule: Rule.RuleModule = {
         },
         messages: {
             missingContentsReadPermission:
-                "Workflows using `actions/dependency-review-action` should set top-level `permissions.contents: read`.",
+                "Job '{{jobId}}' uses `actions/dependency-review-action` and should grant effective `contents: read` at the job or workflow level.",
         },
         schema: [],
         type: "problem",

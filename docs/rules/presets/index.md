@@ -1,38 +1,38 @@
----
-sidebar_position: 0
----
-
-# Presets
-
-The plugin exports nine flat-config presets:
-
-- [`githubActions.configs.actionMetadata`](./action-metadata.md)
-- [`githubActions.configs.codeScanning`](./code-scanning.md)
-- [`githubActions.configs.dependabot`](./dependabot.md)
-- [`githubActions.configs.workflowTemplateProperties`](./workflow-template-properties.md)
-- [`githubActions.configs.workflowTemplates`](./workflow-templates.md)
-- [`githubActions.configs.recommended`](./recommended.md)
-- [`githubActions.configs.security`](./security.md)
-- [`githubActions.configs.strict`](./strict.md)
-- [`githubActions.configs.all`](./all.md)
-
-These presets cover workflow YAML, action metadata (`action.yml` / `action.yaml`),
-repository Dependabot configuration (`.github/dependabot.yml`), and workflow
-template package files (`workflow-templates/*.yml`, `*.yaml`, and
-`*.properties.json`).
-
-## How to choose
-
-- Start with **recommended** for broad baseline quality and safety.
-- Layer **security** for stronger supply-chain and permissions-focused checks.
-- Use **codeScanning** for CodeQL, dependency review, SARIF upload, and related code-scanning workflows.
-- Use **strict** when you want high signal on operational consistency.
-- Use **all** for complete rule coverage (best for internal policy repos).
-- Use **dependabot** when you want a dedicated policy surface for dependency update automation.
-
-Then review [getting started](../getting-started.md) and the full
-[rule reference](../overview.md).
-
+---
+sidebar_position: 0
+---
+
+# Presets
+
+The plugin exports nine flat-config presets:
+
+- [`githubActions.configs.actionMetadata`](./action-metadata.md)
+- [`githubActions.configs.codeScanning`](./code-scanning.md)
+- [`githubActions.configs.dependabot`](./dependabot.md)
+- [`githubActions.configs.workflowTemplateProperties`](./workflow-template-properties.md)
+- [`githubActions.configs.workflowTemplates`](./workflow-templates.md)
+- [`githubActions.configs.recommended`](./recommended.md)
+- [`githubActions.configs.security`](./security.md)
+- [`githubActions.configs.strict`](./strict.md)
+- [`githubActions.configs.all`](./all.md)
+
+These presets cover workflow YAML, action metadata (`action.yml` / `action.yaml`),
+repository Dependabot configuration (`.github/dependabot.yml`), and workflow
+template package files (`workflow-templates/*.yml`, `*.yaml`, and
+`*.properties.json`).
+
+## How to choose
+
+- Start with **recommended** for broad baseline quality and safety.
+- Layer **security** for stronger supply-chain and permissions-focused checks.
+- Use **codeScanning** for CodeQL, dependency review, SARIF upload, and related code-scanning workflows.
+- Use **strict** when you want high signal on operational consistency.
+- Use **all** for complete rule coverage (best for internal policy repos).
+- Use **dependabot** when you want a dedicated policy surface for dependency update automation.
+
+Then review [getting started](../getting-started.md) and the full
+[rule reference](../overview.md).
+
 ## Rule Matrix
 
 Fix legend:
@@ -85,7 +85,7 @@ Preset key legend:
 | <span class="sb-inline-rule-number">R062</span> [`no-subdirectory-template-file-pattern`](../no-subdirectory-template-file-pattern.md) | — | [🗂️](./workflow-template-properties.md) [🧱](./workflow-templates.md) [🟣](./all.md) |
 | <span class="sb-inline-rule-number">R069</span> [`no-template-placeholder-in-non-template-workflow`](../no-template-placeholder-in-non-template-workflow.md) | — | [🟡](./recommended.md) [🔴](./strict.md) [🟣](./all.md) |
 | <span class="sb-inline-rule-number">R013</span> [`no-top-level-env`](../no-top-level-env.md) | — | [🟣](./all.md) [🔴](./strict.md) |
-| <span class="sb-inline-rule-number">R014</span> [`no-top-level-permissions`](../no-top-level-permissions.md) | — | [🟣](./all.md) |
+| <span class="sb-inline-rule-number">R014</span> [`no-top-level-permissions`](../no-top-level-permissions.md) | — | — |
 | <span class="sb-inline-rule-number">R061</span> [`no-universal-template-file-pattern`](../no-universal-template-file-pattern.md) | — | [🗂️](./workflow-template-properties.md) [🧱](./workflow-templates.md) [🟣](./all.md) |
 | <span class="sb-inline-rule-number">R081</span> [`no-unknown-dependabot-multi-ecosystem-group`](../no-unknown-dependabot-multi-ecosystem-group.md) | — | [🟣](./all.md) [🤖](./dependabot.md) |
 | <span class="sb-inline-rule-number">R050</span> [`no-unknown-input-reference-in-composite`](../no-unknown-input-reference-in-composite.md) | — | [🧩](./action-metadata.md) [🟣](./all.md) |

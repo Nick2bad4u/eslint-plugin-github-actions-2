@@ -4,6 +4,7 @@
  */
 import type { Rule } from "eslint";
 
+import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -17,6 +18,10 @@ const rule: Rule.RuleModule = {
     create(context) {
         return {
             Program() {
+                if (!isWorkflowFile(context.filename)) {
+                    return;
+                }
+
                 const root = getWorkflowRoot(context);
 
                 if (root === null) {

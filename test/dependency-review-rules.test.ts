@@ -85,6 +85,32 @@ describe("dependency review workflow rules", () => {
         expect(result.messages).toHaveLength(1);
     });
 
+    it("accepts job-level contents: read for dependency review when workflow-level permissions are omitted", async () => {
+        const result = await lintWorkflow(
+            [
+                'name: "Dependency Review"',
+                "on: [pull_request]",
+                "jobs:",
+                "  review:",
+                "    runs-on: ubuntu-latest",
+                "    permissions:",
+                "      contents: read",
+                "    steps:",
+                "      - uses: actions/dependency-review-action@v4",
+            ].join("\n"),
+            {
+                filePath: ".github/workflows/dependency-review.yml",
+                rules: {
+                    "github-actions/require-dependency-review-permissions-contents-read":
+                        "error",
+                    "github-actions/require-workflow-permissions": "error",
+                },
+            }
+        );
+
+        expect(result.messages).toHaveLength(0);
+    });
+
     it("requires dependency-review action steps to set fail-on-severity", async () => {
         const result = await lintWorkflow(
             [

@@ -1,11 +1,11 @@
----
-sidebar_position: 1
----
-
-# `githubActions.configs.actionMetadata`
-
-Linting defaults for GitHub Action metadata files (`action.yml` / `action.yaml`).
-
+---
+sidebar_position: 1
+---
+
+# `githubActions.configs.actionMetadata`
+
+Linting defaults for GitHub Action metadata files (`action.yml` / `action.yaml`).
+
 ## Included rules
 
 Fix legend:

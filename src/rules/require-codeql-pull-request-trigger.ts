@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { getCodeqlInitSteps } from "../_internal/code-scanning-workflow.ts";
+import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getWorkflowEventNames,
     getWorkflowRoot,
@@ -15,6 +16,10 @@ const rule: Rule.RuleModule = {
     create(context) {
         return {
             Program(node) {
+                if (!isWorkflowFile(context.filename)) {
+                    return;
+                }
+
                 const root = getWorkflowRoot(context);
 
                 if (root === null || getCodeqlInitSteps(root).length === 0) {
