@@ -1,11 +1,11 @@
----
-sidebar_position: 8
----
-
-# `githubActions.configs.strict`
-
-Opinionated operational guardrails for mature workflow estates.
-
+---
+sidebar_position: 8
+---
+
+# `githubActions.configs.strict`
+
+Opinionated operational guardrails for mature workflow estates.
+
 ## Included rules
 
 Fix legend:
