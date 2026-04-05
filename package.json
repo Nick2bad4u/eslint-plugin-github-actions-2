@@ -1,7 +1,7 @@
 {
     "$schema": "https://www.schemastore.org/package.json",
     "name": "eslint-plugin-github-actions-2",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "private": false,
     "description": "ESLint plugin for GitHub Actions workflow quality, reliability, and security rules.",
     "keywords": [
