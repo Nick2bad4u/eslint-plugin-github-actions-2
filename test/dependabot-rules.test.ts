@@ -25,7 +25,6 @@ const validDependabotConfig = [
     "    cooldown:",
     "      default-days: 3",
     '    directory: "/"',
-    "    open-pull-requests-limit: 5",
     '    multi-ecosystem-group: "app"',
     '    patterns: ["*"]',
     '  - package-ecosystem: "npm"',
@@ -34,7 +33,6 @@ const validDependabotConfig = [
     "    directories:",
     '      - "/"',
     '      - "/docs/docusaurus"',
-    "    open-pull-requests-limit: 5",
     '    multi-ecosystem-group: "app"',
     '    patterns: ["*"]',
     '    versioning-strategy: "increase"',
@@ -198,6 +196,105 @@ describe("dependabot rules", () => {
 
         expect(missingCooldownResult.messages).toHaveLength(1);
         expect(missingLimitResult.messages).toHaveLength(1);
+    });
+
+    it("does not require open-pull-requests-limit for updates using multi-ecosystem-group", async () => {
+        const result = await lintWorkflow(
+            [
+                "version: 2",
+                "multi-ecosystem-groups:",
+                "  app:",
+                "updates:",
+                '  - package-ecosystem: "github-actions"',
+                '    directory: "/"',
+                '    multi-ecosystem-group: "app"',
+                "    schedule:",
+                '      interval: "weekly"',
+                '      time: "05:30"',
+                '      timezone: "UTC"',
+            ].join("\n"),
+            {
+                configName: "dependabot",
+                filePath: ".github/dependabot.yml",
+                rules: {
+                    "github-actions/require-dependabot-open-pull-requests-limit":
+                        "error",
+                },
+            }
+        );
+
+        expect(result.messages).toHaveLength(0);
+    });
+
+    it("reports open-pull-requests-limit set directly on grouped updates", async () => {
+        const result = await lintWorkflow(
+            [
+                "version: 2",
+                "multi-ecosystem-groups:",
+                "  app:",
+                "updates:",
+                '  - package-ecosystem: "github-actions"',
+                '    directory: "/"',
+                "    open-pull-requests-limit: 5",
+                '    multi-ecosystem-group: "app"',
+                "    schedule:",
+                '      interval: "weekly"',
+                '      time: "05:30"',
+                '      timezone: "UTC"',
+            ].join("\n"),
+            {
+                configName: "dependabot",
+                filePath: ".github/dependabot.yml",
+                rules: {
+                    "github-actions/require-dependabot-open-pull-requests-limit":
+                        "error",
+                },
+            }
+        );
+
+        expect(result.messages).toHaveLength(1);
+        expect(result.messages[0]?.messageId).toBe(
+            "unsupportedOpenPullRequestsLimitOnGroupedUpdate"
+        );
+    });
+
+    it("reports open-pull-requests-limit set on a referenced multi-ecosystem group once", async () => {
+        const result = await lintWorkflow(
+            [
+                "version: 2",
+                "multi-ecosystem-groups:",
+                "  app:",
+                "    open-pull-requests-limit: 5",
+                "updates:",
+                '  - package-ecosystem: "github-actions"',
+                '    directory: "/"',
+                '    multi-ecosystem-group: "app"',
+                "    schedule:",
+                '      interval: "weekly"',
+                '      time: "05:30"',
+                '      timezone: "UTC"',
+                '  - package-ecosystem: "npm"',
+                '    directory: "/"',
+                '    multi-ecosystem-group: "app"',
+                "    schedule:",
+                '      interval: "weekly"',
+                '      time: "05:30"',
+                '      timezone: "UTC"',
+            ].join("\n"),
+            {
+                configName: "dependabot",
+                filePath: ".github/dependabot.yml",
+                rules: {
+                    "github-actions/require-dependabot-open-pull-requests-limit":
+                        "error",
+                },
+            }
+        );
+
+        expect(result.messages).toHaveLength(1);
+        expect(result.messages[0]?.messageId).toBe(
+            "unsupportedOpenPullRequestsLimitOnGroup"
+        );
     });
 
     it("requires `package-ecosystem` and `directory`/`directories` on every update entry", async () => {

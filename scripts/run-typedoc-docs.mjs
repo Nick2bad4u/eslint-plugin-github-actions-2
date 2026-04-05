@@ -112,6 +112,10 @@ const mdxEscapeMap = Object.freeze({
 
 const hasMdxUnsafeCharacterPattern = /[<>{}]/u;
 const mdxUnsafeCharacterPattern = /[<>{}]/gu;
+const typedocRelativeIndexMarkdownLinkPattern =
+    /\]\(((?:\.\.\/|\.\/)[^)#\s]*?)\/index\.md((?:#[^)]+)?)\)/gu;
+const typedocRelativeMarkdownLinkPattern =
+    /\]\(((?:\.\.\/|\.\/)[^)#\s]+?)\.md((?:#[^)]+)?)\)/gu;
 const typedocSidebarIdPrefixPattern = /id:"\.\.\/site-docs\//gu;
 
 /**
@@ -195,6 +199,26 @@ function sanitizeMarkdownForMdx(markdownText) {
 }
 
 /**
+ * Rewrite relative markdown links in generated TypeDoc output to Docusaurus doc
+ * routes.
+ *
+ * @param {string} markdownText - Generated markdown file contents.
+ *
+ * @returns {string} Markdown with relative `.md` links normalized.
+ */
+function normalizeTypedocMarkdownLinks(markdownText) {
+    return markdownText
+        .replace(
+            typedocRelativeIndexMarkdownLinkPattern,
+            (_, targetPath, hashSuffix = "") => `](${targetPath}/${hashSuffix})`
+        )
+        .replace(
+            typedocRelativeMarkdownLinkPattern,
+            (_, targetPath, hashSuffix = "") => `](${targetPath}${hashSuffix})`
+        );
+}
+
+/**
  * Recursively collect markdown files under a directory.
  *
  * @param {string} directoryPath - Root directory.
@@ -233,7 +257,9 @@ function sanitizeTypedocMarkdownOutput(outputDirectoryPath) {
 
     for (const markdownFilePath of getMarkdownFilePaths(outputDirectoryPath)) {
         const previousContent = readFileSync(markdownFilePath, "utf8");
-        const nextContent = sanitizeMarkdownForMdx(previousContent);
+        const nextContent = sanitizeMarkdownForMdx(
+            normalizeTypedocMarkdownLinks(previousContent)
+        );
 
         if (nextContent === previousContent) {
             continue;
@@ -376,11 +402,11 @@ function synthesizeMissingTypedocIndexes(directoryPath, outputDirectoryPath) {
     }
 
     const childDirectoryLinks = childDirectoriesWithIndex.map(
-        (directoryName) =>
-            `- [\`${directoryName}\`](./${directoryName}/index.md)`
+        (directoryName) => `- [\`${directoryName}\`](./${directoryName}/)`
     );
     const childMarkdownLinks = markdownChildren.map(
-        (fileName) => `- [\`${fileName.slice(0, -3)}\`](./${fileName})`
+        (fileName) =>
+            `- [\`${fileName.slice(0, -3)}\`](./${fileName.slice(0, -3)})`
     );
     const indexMarkdown = buildSyntheticTypedocIndexMarkdown({
         childDirectoryLinks,

@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import {
+    getDependabotReferencedGroup,
     getDependabotRoot,
     getDependabotUpdateEntries,
     getDependabotUpdateLabel,
@@ -17,6 +18,8 @@ import {
 /** Rule implementation for requiring open-pull-requests-limit. */
 const rule: Rule.RuleModule = {
     create(context) {
+        const reportedGroupNames = new Set<string>();
+
         return {
             Program() {
                 const root = getDependabotRoot(context);
@@ -30,6 +33,51 @@ const rule: Rule.RuleModule = {
                         update.mapping,
                         "open-pull-requests-limit"
                     );
+
+                    if (update.multiEcosystemGroup !== null) {
+                        if (limitPair !== null) {
+                            context.report({
+                                data: {
+                                    updateLabel:
+                                        getDependabotUpdateLabel(update),
+                                },
+                                messageId:
+                                    "unsupportedOpenPullRequestsLimitOnGroupedUpdate",
+                                node: limitPair.key as unknown as Rule.Node,
+                            });
+                        }
+
+                        const groupMapping = getDependabotReferencedGroup(
+                            root,
+                            update
+                        );
+                        const groupLimitPair =
+                            groupMapping === null
+                                ? null
+                                : getMappingPair(
+                                      groupMapping,
+                                      "open-pull-requests-limit"
+                                  );
+
+                        if (
+                            groupLimitPair !== null &&
+                            !reportedGroupNames.has(update.multiEcosystemGroup)
+                        ) {
+                            reportedGroupNames.add(update.multiEcosystemGroup);
+
+                            context.report({
+                                data: {
+                                    groupName: update.multiEcosystemGroup,
+                                },
+                                messageId:
+                                    "unsupportedOpenPullRequestsLimitOnGroup",
+                                node: groupLimitPair.key as unknown as Rule.Node,
+                            });
+                        }
+
+                        continue;
+                    }
+
                     const limitValue = getScalarNumberValue(
                         limitPair?.value ?? null
                     );
@@ -59,7 +107,7 @@ const rule: Rule.RuleModule = {
                 "github-actions.configs.dependabot",
             ],
             description:
-                "require Dependabot update entries to define `open-pull-requests-limit`.",
+                "require standalone Dependabot update entries to define `open-pull-requests-limit`.",
             dialects: ["Dependabot configuration"],
             frozen: false,
             recommended: true,
@@ -71,6 +119,10 @@ const rule: Rule.RuleModule = {
         messages: {
             missingOpenPullRequestsLimit:
                 "{{updateLabel}} should define `open-pull-requests-limit` so Dependabot pull request volume is explicitly controlled.",
+            unsupportedOpenPullRequestsLimitOnGroup:
+                "Multi-ecosystem group '{{groupName}}' should not define `open-pull-requests-limit`. Grouped updates already consolidate into a single Dependabot pull request.",
+            unsupportedOpenPullRequestsLimitOnGroupedUpdate:
+                "{{updateLabel}} uses `multi-ecosystem-group` and should not define `open-pull-requests-limit`. Grouped updates already consolidate into a single Dependabot pull request.",
         },
         schema: [],
         type: "suggestion",
