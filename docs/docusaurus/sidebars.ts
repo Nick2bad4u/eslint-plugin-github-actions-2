@@ -25,32 +25,6 @@ const sidebars: SidebarsConfig = {
                     collapsed: true,
                     items: [
                         {
-                            id: "developer/guides/authoring-rules",
-                            label: "📜 Authoring rules",
-                            type: "doc",
-                        },
-                        {
-                            id: "developer/guides/testing-rules",
-                            label: "🧪 Testing rules",
-                            type: "doc",
-                        },
-                        {
-                            id: "developer/guides/docs-authoring",
-                            label: "📝 Docs authoring",
-                            type: "doc",
-                        },
-                    ],
-                    label: "🧭 Guides",
-                    link: {
-                        id: "developer/guides/index",
-                        type: "doc",
-                    },
-                    type: "category",
-                },
-                {
-                    collapsed: true,
-                    items: [
-                        {
                             id: "developer/adr/rule-metadata-contract",
                             label: "ADR-0001 Rule metadata contract",
                             type: "doc",

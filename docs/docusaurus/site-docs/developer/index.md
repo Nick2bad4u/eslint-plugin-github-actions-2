@@ -5,12 +5,12 @@ This section is for contributors and maintainers of
 
 ## Start here
 
-- 🚀 [Maintainer quickstart](pathname:///docs/developer/getting-started)
-- 🧱 [Architecture overview](pathname:///docs/developer/architecture)
-- 🧭 [Guides](pathname:///docs/developer/guides)
-- 📐 [Architecture Decision Records](pathname:///docs/developer/adr)
-- 🛠️ [Maintenance playbooks](pathname:///docs/developer/maintenance)
-- 👨‍💻 [Developer API reference](pathname:///docs/developer/api)
+- 🚀 [Maintainer quickstart](./getting-started.md)
+- 🧱 [Architecture overview](./architecture.md)
+- 🧭 [Guides](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/guides)
+- 📐 [Architecture Decision Records](./adr/index.md)
+- 🛠️ [Maintenance playbooks](./maintenance/index.md)
+- 👨‍💻 [Developer API reference](./api/index.md)
 - 🔎 [ESLint Config Inspector](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/eslint-inspector/)
 - 🎨 [Stylelint Config Inspector](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/stylelint-inspector/)
 

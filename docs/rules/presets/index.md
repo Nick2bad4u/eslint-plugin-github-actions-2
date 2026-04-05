@@ -24,7 +24,7 @@ These presets cover workflow YAML, action metadata (`action.yml` / `action.yaml`
 - Layer **security** for stronger supply-chain and permissions-focused checks.
 - Use **codeScanning** for CodeQL, dependency review, SARIF upload, and related code-scanning workflows.
 - Use **strict** when you want high signal on operational consistency.
-- Use **all** for complete rule coverage (best for internal policy repos).
+- Use **all** for complete bundled rule coverage (best for internal policy repos), and layer opt-in policy rules manually when your standards require them.
 - Use **dependabot** when you want a dedicated policy surface for dependency update automation.
 
 Then review [getting started](../getting-started.md) and the full [rule reference](../overview.md).

@@ -79,6 +79,24 @@ describe("exported presets", () => {
             )
         ).toBeFalsy();
         expect(
+            Object.hasOwn(
+                githubActionsPlugin.configs.recommended.rules,
+                "github-actions/no-top-level-permissions"
+            )
+        ).toBeFalsy();
+        expect(
+            Object.hasOwn(
+                githubActionsPlugin.configs.security.rules,
+                "github-actions/no-top-level-permissions"
+            )
+        ).toBeFalsy();
+        expect(
+            Object.hasOwn(
+                githubActionsPlugin.configs.strict.rules,
+                "github-actions/no-top-level-permissions"
+            )
+        ).toBeFalsy();
+        expect(
             Object.keys(
                 githubActionsPlugin.configs.codeScanning.rules
             ).toSorted((left, right) => left.localeCompare(right))

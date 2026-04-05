@@ -17,8 +17,8 @@ membership, which drives both runtime validation and docs generation.
 
 See ADRs for rationale:
 
-- [ADR-0001 Rule metadata contract](pathname:///docs/developer/adr/rule-metadata-contract)
-- [ADR-0002 Docs sync and matrixes](pathname:///docs/developer/adr/docs-sync-and-matrixes)
+- [ADR-0001 Rule metadata contract](./adr/0001-rule-metadata-contract.md)
+- [ADR-0002 Docs sync and matrixes](./adr/0002-docs-sync-and-matrixes.md)
 
 ## Docs architecture
 
@@ -39,5 +39,5 @@ The repository emphasizes:
 - synchronized docs tables/matrixes from source metadata
 - reproducible docs builds
 
-See [Maintenance playbooks](pathname:///docs/developer/maintenance) for
+See [Maintenance playbooks](./maintenance/index.md) for
 operational detail.

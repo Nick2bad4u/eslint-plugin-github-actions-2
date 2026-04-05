@@ -67,7 +67,7 @@ export const githubActionsConfigMetadataByName: Readonly<
     },
     all: {
         description:
-            "Enables every available rule published by this plugin across workflows, action metadata, workflow templates, and Dependabot configuration.",
+            "Enables the complete bundled rule set across workflows, action metadata, workflow templates, and Dependabot configuration, while leaving explicitly opt-in policy rules manual.",
         files: [
             ...WORKFLOW_FILE_GLOBS,
             ...ACTION_METADATA_FILE_GLOBS,

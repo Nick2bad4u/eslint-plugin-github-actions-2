@@ -111,6 +111,50 @@ describe("dependency review workflow rules", () => {
         expect(result.messages).toHaveLength(0);
     });
 
+    it("accepts workflow-level read-all but rejects workflow-level write-all for dependency review permissions", async () => {
+        const readAllResult = await lintWorkflow(
+            [
+                'name: "Dependency Review"',
+                "on: [pull_request]",
+                "permissions: read-all",
+                "jobs:",
+                "  review:",
+                "    runs-on: ubuntu-latest",
+                "    steps:",
+                "      - uses: actions/dependency-review-action@v4",
+            ].join("\n"),
+            {
+                filePath: ".github/workflows/dependency-review.yml",
+                rules: {
+                    "github-actions/require-dependency-review-permissions-contents-read":
+                        "error",
+                },
+            }
+        );
+        const writeAllResult = await lintWorkflow(
+            [
+                'name: "Dependency Review"',
+                "on: [pull_request]",
+                "permissions: write-all",
+                "jobs:",
+                "  review:",
+                "    runs-on: ubuntu-latest",
+                "    steps:",
+                "      - uses: actions/dependency-review-action@v4",
+            ].join("\n"),
+            {
+                filePath: ".github/workflows/dependency-review.yml",
+                rules: {
+                    "github-actions/require-dependency-review-permissions-contents-read":
+                        "error",
+                },
+            }
+        );
+
+        expect(readAllResult.messages).toHaveLength(0);
+        expect(writeAllResult.messages).toHaveLength(1);
+    });
+
     it("requires dependency-review action steps to set fail-on-severity", async () => {
         const result = await lintWorkflow(
             [

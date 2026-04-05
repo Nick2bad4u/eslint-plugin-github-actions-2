@@ -276,6 +276,123 @@ function sanitizeTypedocSidebar(outputDirectoryPath) {
 }
 
 /**
+ * Normalize a filesystem path to a forward-slash docs-relative path.
+ *
+ * @param {string} fromPath - Base directory used for the relative path.
+ * @param {string} toPath - Destination path to normalize.
+ *
+ * @returns {string} Forward-slash relative path.
+ */
+function toDocsRelativePath(fromPath, toPath) {
+    return relative(fromPath, toPath).replaceAll("\\", "/");
+}
+
+/**
+ * Build a simple generated index page for a TypeDoc output subdirectory.
+ *
+ * @param {{
+ *     childDirectoryLinks: readonly string[];
+ *     childMarkdownLinks: readonly string[];
+ *     directoryPath: string;
+ *     outputDirectoryPath: string;
+ * }} options
+ *   - Index-generation inputs.
+ *
+ * @returns {string} Markdown contents for the synthetic index page.
+ */
+function buildSyntheticTypedocIndexMarkdown({
+    childDirectoryLinks,
+    childMarkdownLinks,
+    directoryPath,
+    outputDirectoryPath,
+}) {
+    const relativeDirectoryPath = toDocsRelativePath(
+        outputDirectoryPath,
+        directoryPath
+    );
+    const lines = [
+        `# \`${relativeDirectoryPath}\``,
+        "",
+        "Synthetic index generated after TypeDoc so Docusaurus has a stable landing page for this API section.",
+        "",
+    ];
+
+    if (childDirectoryLinks.length > 0) {
+        lines.push("## Sections", "", ...childDirectoryLinks, "");
+    }
+
+    if (childMarkdownLinks.length > 0) {
+        lines.push("## Members", "", ...childMarkdownLinks, "");
+    }
+
+    return `${lines.join("\n")}\n`;
+}
+
+/**
+ * Recursively synthesize missing TypeDoc index pages for documented folders.
+ *
+ * @param {string} directoryPath - Directory to inspect recursively.
+ * @param {string} outputDirectoryPath - Root TypeDoc output directory.
+ */
+function synthesizeMissingTypedocIndexes(directoryPath, outputDirectoryPath) {
+    const childEntries = readdirSync(directoryPath, { withFileTypes: true });
+
+    for (const entry of childEntries) {
+        if (!entry.isDirectory()) {
+            continue;
+        }
+
+        synthesizeMissingTypedocIndexes(
+            resolve(directoryPath, entry.name),
+            outputDirectoryPath
+        );
+    }
+
+    const markdownChildren = childEntries
+        .filter(
+            (entry) =>
+                entry.isFile() &&
+                entry.name.endsWith(".md") &&
+                entry.name !== "index.md"
+        )
+        .map((entry) => entry.name)
+        .sort();
+    const childDirectoriesWithIndex = childEntries
+        .filter(
+            (entry) =>
+                entry.isDirectory() &&
+                existsSync(resolve(directoryPath, entry.name, "index.md"))
+        )
+        .map((entry) => entry.name)
+        .sort();
+    const indexPath = resolve(directoryPath, "index.md");
+
+    if (
+        existsSync(indexPath) ||
+        (markdownChildren.length === 0 &&
+            childDirectoriesWithIndex.length === 0)
+    ) {
+        return;
+    }
+
+    const childDirectoryLinks = childDirectoriesWithIndex.map(
+        (directoryName) =>
+            `- [\`${directoryName}\`](./${directoryName}/index.md)`
+    );
+    const childMarkdownLinks = markdownChildren.map(
+        (fileName) => `- [\`${fileName.slice(0, -3)}\`](./${fileName})`
+    );
+    const indexMarkdown = buildSyntheticTypedocIndexMarkdown({
+        childDirectoryLinks,
+        childMarkdownLinks,
+        directoryPath,
+        outputDirectoryPath,
+    });
+
+    writeFileSync(indexPath, indexMarkdown, "utf8");
+}
+
+/**
  * Pick an unused drive letter suitable for a temporary `subst` mapping.
  *
  * @returns {string} Drive letter (without colon).
@@ -361,3 +478,4 @@ if (process.platform === "win32" && /[()]/u.test(repositoryRoot)) {
 
 sanitizeTypedocMarkdownOutput(typedocOutputDirectory);
 sanitizeTypedocSidebar(typedocOutputDirectory);
+synthesizeMissingTypedocIndexes(typedocOutputDirectory, typedocOutputDirectory);

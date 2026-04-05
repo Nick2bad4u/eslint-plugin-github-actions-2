@@ -7,20 +7,21 @@ Use this page as the entry point for **users** (rule/preset usage) and
 
 ## For users
 
-- 🚀 [Getting started](pathname:///docs/rules/getting-started)
-- 📏 [Rule reference](pathname:///docs/rules)
-- 🧭 [Preset reference + matrix](pathname:///docs/rules/presets)
+- 🚀 [Getting started](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/getting-started)
+- 📏 [Rule reference](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/overview)
+- 🧭 [Preset reference + matrix](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/presets)
 
 ## For maintainers
 
-- 👨‍💻 [Developer docs home](pathname:///docs/developer)
-- 🧱 [Architecture](pathname:///docs/developer/architecture)
-- 📐 [Architecture Decision Records (ADRs)](pathname:///docs/developer/adr)
-- 👨‍💻 [Developer API (TypeDoc)](pathname:///docs/developer/api)
+- 👨‍💻 [Developer docs home](./developer/index.md)
+- 🧭 [Rule authoring guides](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/guides)
+- 🧱 [Architecture](./developer/architecture.md)
+- 📐 [Architecture Decision Records (ADRs)](./developer/adr/index.md)
+- 👨‍💻 [Developer API (TypeDoc)](./developer/api/index.md)
 
 ## Updates and release notes
 
-- 📰 [Engineering blog](pathname:///blog)
+- 📰 [Engineering blog](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/blog/)
 
 ## Repository
 

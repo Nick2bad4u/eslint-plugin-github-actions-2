@@ -141,6 +141,25 @@ const presetItems: SidebarDocItem[] = [
     type: "doc",
 }));
 
+/** Maintainer guide docs surfaced with the rules/presets docs experience. */
+const guideItems: SidebarDocItem[] = [
+    {
+        id: "guides/authoring-rules",
+        label: "📜 Authoring rules",
+        type: "doc",
+    },
+    {
+        id: "guides/testing-rules",
+        label: "🧪 Testing rules",
+        type: "doc",
+    },
+    {
+        id: "guides/docs-authoring",
+        label: "📝 Docs authoring",
+        type: "doc",
+    },
+];
+
 /** Sidebar structure for rule and preset documentation. */
 const sidebars: SidebarsConfig = {
     rules: [
@@ -155,6 +174,18 @@ const sidebars: SidebarsConfig = {
             id: "getting-started",
             label: "🚀 Getting started",
             type: "doc",
+        },
+        {
+            className: "sb-cat-guides",
+            collapsed: true,
+            collapsible: true,
+            label: "🧭 Guides",
+            link: {
+                id: "guides/index",
+                type: "doc",
+            },
+            items: guideItems,
+            type: "category",
         },
         {
             className: "sb-cat-presets",

@@ -4,8 +4,8 @@ Operational docs for maintaining quality and release velocity.
 
 ## Playbooks
 
-- [Release flow](pathname:///docs/developer/maintenance/release-flow)
-- [Docs pipeline](pathname:///docs/developer/maintenance/docs-pipeline)
+- [Release flow](./release-flow.md)
+- [Docs pipeline](./docs-pipeline.md)
 
 ## Tooling
 

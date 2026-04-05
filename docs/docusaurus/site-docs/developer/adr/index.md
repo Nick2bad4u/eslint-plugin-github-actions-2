@@ -4,8 +4,8 @@ ADRs capture important technical decisions and their rationale.
 
 ## Current ADRs
 
-- [ADR-0001 Rule metadata contract](pathname:///docs/developer/adr/rule-metadata-contract)
-- [ADR-0002 Docs sync and matrixes](pathname:///docs/developer/adr/docs-sync-and-matrixes)
+- [ADR-0001 Rule metadata contract](./0001-rule-metadata-contract.md)
+- [ADR-0002 Docs sync and matrixes](./0002-docs-sync-and-matrixes.md)
 
 ## ADR conventions
 

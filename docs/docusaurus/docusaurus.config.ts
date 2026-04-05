@@ -104,6 +104,10 @@ const config: Config = {
                             to: "/docs/rules/getting-started",
                         },
                         {
+                            label: "🧭 Guides",
+                            to: "/docs/rules/guides",
+                        },
+                        {
                             label: "🧭 Presets",
                             to: "/docs/rules/presets",
                         },
@@ -180,8 +184,8 @@ const config: Config = {
                             to: "/docs/rules/getting-started",
                         },
                         {
-                            label: "🧭 Presets",
-                            to: "/docs/rules/presets",
+                            label: "🧭 Guides",
+                            to: "/docs/rules/guides",
                         },
                     ],
                 },
@@ -276,10 +280,6 @@ const config: Config = {
                         {
                             label: "🏗️ Architecture",
                             to: "/docs/developer/architecture",
-                        },
-                        {
-                            label: "🧭 Guides",
-                            to: "/docs/developer/guides",
                         },
                         {
                             label: "📐 ADRs",
