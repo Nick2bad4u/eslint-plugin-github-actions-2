@@ -17,8 +17,8 @@ node scripts/sync-readme-rules-table.mjs --check
 
 ## Published inspector tools
 
-- [ESLint Config Inspector](pathname:///eslint-inspector)
-- [Stylelint Config Inspector](pathname:///stylelint-inspector)
+- [ESLint Config Inspector](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/eslint-inspector/)
+- [Stylelint Config Inspector](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/stylelint-inspector/)
 
 ## Common failure classes
 

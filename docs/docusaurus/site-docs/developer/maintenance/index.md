@@ -9,8 +9,8 @@ Operational docs for maintaining quality and release velocity.
 
 ## Tooling
 
-- [ESLint Config Inspector](pathname:///eslint-inspector)
-- [Stylelint Config Inspector](pathname:///stylelint-inspector)
+- [ESLint Config Inspector](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/eslint-inspector/)
+- [Stylelint Config Inspector](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/stylelint-inspector/)
 
 ## Operational goals
 

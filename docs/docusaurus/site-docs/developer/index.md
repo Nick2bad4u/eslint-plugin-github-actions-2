@@ -11,8 +11,8 @@ This section is for contributors and maintainers of
 - 📐 [Architecture Decision Records](pathname:///docs/developer/adr)
 - 🛠️ [Maintenance playbooks](pathname:///docs/developer/maintenance)
 - 👨‍💻 [Developer API reference](pathname:///docs/developer/api)
-- 🔎 [ESLint Config Inspector](pathname:///eslint-inspector)
-- 🎨 [Stylelint Config Inspector](pathname:///stylelint-inspector)
+- 🔎 [ESLint Config Inspector](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/eslint-inspector/)
+- 🎨 [Stylelint Config Inspector](https://nick2bad4u.github.io/eslint-plugin-github-actions-2/stylelint-inspector/)
 
 ## Scope
 

@@ -54,7 +54,8 @@ const matrixFilePath = resolve(
  *
  * @returns {string}
  */
-const toWindowsLineEndings = (text) => text.replaceAll("\n", "\r\n");
+const toWindowsLineEndings = (text) =>
+    text.replaceAll(/\r+\n/gu, "\n").replaceAll("\n", "\r\n");
 
 /**
  * @param {(typeof presetOrder)[number]} presetName

@@ -43,7 +43,8 @@ const getPresetDocPath = (presetName) =>
 const docsSiteBaseUrl =
     "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules";
 
-const toWindowsLineEndings = (text) => text.replaceAll("\n", "\r\n");
+const toWindowsLineEndings = (text) =>
+    text.replaceAll(/\r+\n/gu, "\n").replaceAll("\n", "\r\n");
 
 const getSectionBounds = (markdown, sectionHeading) => {
     const startOffset = markdown.indexOf(sectionHeading);

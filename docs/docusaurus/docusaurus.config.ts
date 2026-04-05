@@ -125,12 +125,12 @@ const config: Config = {
                             to: "/docs/developer/getting-started",
                         },
                         {
-                            label: "🔎 ESLint Config Inspector",
-                            to: "/eslint-inspector",
+                            href: `https://nick2bad4u.github.io/eslint-plugin-github-actions-2/eslint-inspector/`,
+                            label: "\ue7d2 ESLint Inspector",
                         },
                         {
-                            label: "🎨 Stylelint Config Inspector",
-                            to: "/stylelint-inspector",
+                            href: `https://nick2bad4u.github.io/eslint-plugin-github-actions-2/stylelint-inspector/`,
+                            label: "\ue7d2 Stylelint Inspector",
                         },
                     ],
                 },
