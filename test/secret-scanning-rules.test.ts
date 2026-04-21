@@ -42,6 +42,8 @@ const validTrufflehogWorkflow = [
 
 describe("secret scanning workflow rules", () => {
     it("accepts secret scanning workflows that follow the security conventions", async () => {
+        expect.hasAssertions();
+
         const gitleaksResult = await lintWorkflow(validGitleaksWorkflow, {
             configName: "security",
             filePath: ".github/workflows/gitleaks.yml",
@@ -56,6 +58,8 @@ describe("secret scanning workflow rules", () => {
     });
 
     it("requires secret scanning workflows to checkout full history, schedule scans, and grant contents read", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 'name: "Gitleaks"',
@@ -82,6 +86,8 @@ describe("secret scanning workflow rules", () => {
     });
 
     it("rejects broader-than-necessary contents permissions for secret scanning jobs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 'name: "Gitleaks"',
@@ -112,6 +118,8 @@ describe("secret scanning workflow rules", () => {
     });
 
     it("accepts workflow-level read-all but rejects job-level write-all for secret scanning permissions", async () => {
+        expect.hasAssertions();
+
         const readAllResult = await lintWorkflow(
             [
                 'name: "Gitleaks"',
@@ -166,6 +174,8 @@ describe("secret scanning workflow rules", () => {
     });
 
     it("requires TruffleHog to use verified-results mode", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 'name: "TruffleHog"',

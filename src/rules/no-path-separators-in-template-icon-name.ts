@@ -4,7 +4,7 @@
  */
 import type { Rule } from "eslint";
 
-import { arrayAt, stringSplit  } from "ts-extras";
+import { arrayAt, isDefined, stringSplit } from "ts-extras";
 
 import { isWorkflowTemplatePropertiesFile } from "../_internal/lint-targets.js";
 import { getWorkflowTemplatePropertiesRoot } from "../_internal/workflow-template-properties.js";
@@ -39,7 +39,10 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                const suggestedIconName = arrayAt(stringSplit(iconName, /[/\\]/u), -1);
+                const suggestedIconName = arrayAt(
+                    stringSplit(iconName.replaceAll("\\", "/"), "/"),
+                    -1
+                );
 
                 context.report({
                     data: {
@@ -48,7 +51,7 @@ const rule: Rule.RuleModule = {
                     messageId: "iconNameContainsPathSeparator",
                     node: (iconNameNode ?? node) as unknown as Rule.Node,
                     suggest:
-                        suggestedIconName === undefined ||
+                        !isDefined(suggestedIconName) ||
                         suggestedIconName.length === 0 ||
                         iconNameNode === null
                             ? undefined

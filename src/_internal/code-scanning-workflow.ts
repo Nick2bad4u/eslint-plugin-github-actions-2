@@ -5,7 +5,7 @@
 /* eslint-disable @typescript-eslint/prefer-readonly-parameter-types -- YAML AST nodes come from parser-owned mutable types shared across helper boundaries. */
 import type { AST } from "yaml-eslint-parser";
 
-import { setHas, stringSplit  } from "ts-extras";
+import { isDefined, setHas, stringSplit } from "ts-extras";
 
 import type { WorkflowActionStep } from "./workflow-action-steps.js";
 
@@ -101,7 +101,7 @@ export const getCodeqlLanguageValues = (
     )?.trim();
 
     if (
-        languagesMappingValue === undefined ||
+        !isDefined(languagesMappingValue) ||
         languagesMappingValue.length === 0
     ) {
         return [];
@@ -139,7 +139,7 @@ export const getCodeqlLanguageValues = (
             getMappingPair(matrixMapping, "language")?.value ?? null
         )?.trim();
 
-        return singleLanguage === undefined || singleLanguage.length === 0
+        return !isDefined(singleLanguage) || singleLanguage.length === 0
             ? []
             : [singleLanguage];
     }

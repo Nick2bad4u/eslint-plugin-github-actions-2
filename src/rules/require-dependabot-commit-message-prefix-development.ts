@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { isDefined, setHas } from "ts-extras";
+
 import {
     getDependabotMappingStringValue,
     getDependabotRoot,
@@ -38,9 +40,10 @@ const rule: Rule.RuleModule = {
                     const packageEcosystem = update.packageEcosystem?.trim();
 
                     if (
-                        packageEcosystem === undefined ||
+                        !isDefined(packageEcosystem) ||
                         packageEcosystem === null ||
-                        !ecosystemsSupportingPrefixDevelopment.has(
+                        !setHas(
+                            ecosystemsSupportingPrefixDevelopment,
                             packageEcosystem
                         )
                     ) {

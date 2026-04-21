@@ -4,6 +4,8 @@ import { lintWorkflow } from "./_shared/lint-workflow.js";
 
 describe("require-job-timeout-minutes", () => {
     it("reports jobs that omit timeout-minutes", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -26,6 +28,8 @@ describe("require-job-timeout-minutes", () => {
     });
 
     it("accepts a positive integer timeout within the configured maximum", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",

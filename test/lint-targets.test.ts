@@ -21,27 +21,33 @@ import {
 
 describe("lint target helpers", () => {
     it("exports stable file-glob contracts", () => {
-        expect(ACTION_METADATA_FILE_GLOBS).toEqual(["**/action.{yml,yaml}"]);
-        expect(DEPENDABOT_FILE_GLOBS).toEqual([
+        expect.hasAssertions();
+        expect(ACTION_METADATA_FILE_GLOBS).toStrictEqual([
+            "**/action.{yml,yaml}",
+        ]);
+        expect(DEPENDABOT_FILE_GLOBS).toStrictEqual([
             ".github/dependabot.{yml,yaml}",
         ]);
-        expect(DEPENDENCY_REVIEW_WORKFLOW_FILE_GLOBS).toEqual([
+        expect(DEPENDENCY_REVIEW_WORKFLOW_FILE_GLOBS).toStrictEqual([
             ".github/workflows/dependency-review*.{yml,yaml}",
         ]);
-        expect(WORKFLOW_FILE_GLOBS).toEqual([".github/workflows/*.{yml,yaml}"]);
-        expect(WORKFLOW_TEMPLATE_PROPERTIES_FILE_GLOBS).toEqual([
+        expect(WORKFLOW_FILE_GLOBS).toStrictEqual([
+            ".github/workflows/*.{yml,yaml}",
+        ]);
+        expect(WORKFLOW_TEMPLATE_PROPERTIES_FILE_GLOBS).toStrictEqual([
             "**/workflow-templates/*.properties.json",
         ]);
-        expect(WORKFLOW_TEMPLATE_YAML_FILE_GLOBS).toEqual([
+        expect(WORKFLOW_TEMPLATE_YAML_FILE_GLOBS).toStrictEqual([
             "**/workflow-templates/*.{yml,yaml}",
         ]);
-        expect(WORKFLOW_TEMPLATE_FILE_GLOBS).toEqual([
+        expect(WORKFLOW_TEMPLATE_FILE_GLOBS).toStrictEqual([
             "**/workflow-templates/*.{yml,yaml}",
             "**/workflow-templates/*.properties.json",
         ]);
     });
 
     it("detects action metadata files case-insensitively across path separators", () => {
+        expect.hasAssertions();
         expect(
             isActionMetadataFile(".github/actions/setup-node/action.yml")
         ).toBeTruthy();
@@ -55,6 +61,7 @@ describe("lint target helpers", () => {
     });
 
     it("detects repository Dependabot configuration files", () => {
+        expect.hasAssertions();
         expect(isDependabotFile(".github/dependabot.yml")).toBeTruthy();
         expect(
             isDependabotFile(String.raw`C:\Repo\.github\dependabot.yaml`)
@@ -66,6 +73,7 @@ describe("lint target helpers", () => {
     });
 
     it("detects dependency review workflow files", () => {
+        expect.hasAssertions();
         expect(
             isDependencyReviewWorkflowFile(
                 ".github/workflows/dependency-review.yml"
@@ -82,6 +90,7 @@ describe("lint target helpers", () => {
     });
 
     it("detects standard workflow files while excluding dependabot and template paths", () => {
+        expect.hasAssertions();
         expect(isWorkflowFile(".github/workflows/ci.yml")).toBeTruthy();
         expect(
             isWorkflowFile(String.raw`C:\Repo\.github\workflows\release.YAML`)
@@ -93,6 +102,7 @@ describe("lint target helpers", () => {
     });
 
     it("detects workflow template properties files", () => {
+        expect.hasAssertions();
         expect(
             isWorkflowTemplatePropertiesFile(
                 ".github/workflow-templates/ci.properties.json"
@@ -114,6 +124,7 @@ describe("lint target helpers", () => {
     });
 
     it("detects workflow template YAML files", () => {
+        expect.hasAssertions();
         expect(
             isWorkflowTemplateYamlFile(".github/workflow-templates/ci.yml")
         ).toBeTruthy();
@@ -133,6 +144,7 @@ describe("lint target helpers", () => {
     });
 
     it("detects any workflow template surface via the combined helper", () => {
+        expect.hasAssertions();
         expect(
             isWorkflowTemplateFile(".github/workflow-templates/ci.yml")
         ).toBeTruthy();
@@ -145,6 +157,7 @@ describe("lint target helpers", () => {
     });
 
     it("detects .yaml extensions", () => {
+        expect.hasAssertions();
         expect(usesYamlExtension("action.yaml")).toBeTruthy();
         expect(usesYamlExtension("ACTION.YAML")).toBeTruthy();
         expect(usesYamlExtension("action.yml")).toBeFalsy();
@@ -152,6 +165,7 @@ describe("lint target helpers", () => {
     });
 
     it("derives template stems from known template suffixes", () => {
+        expect.hasAssertions();
         expect(getTemplateStem("ci.properties.json")).toBe("ci");
         expect(getTemplateStem("release.yaml")).toBe("release");
         expect(getTemplateStem("release.yml")).toBe("release");

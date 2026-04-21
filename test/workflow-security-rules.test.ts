@@ -7,6 +7,8 @@ const githubExpression = (expression: string): string =>
 
 describe("workflow security rules", () => {
     it("reports direct pull request title interpolation inside run steps", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -32,6 +34,8 @@ describe("workflow security rules", () => {
     });
 
     it("accepts env indirection for untrusted pull request data in run steps", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -56,6 +60,8 @@ describe("workflow security rules", () => {
     });
 
     it("reports all supported untrusted event payload sources when interpolated in run steps", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -90,6 +96,8 @@ describe("workflow security rules", () => {
     });
 
     it("ignores untrusted expressions when they are outside run scripts", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -115,6 +123,8 @@ describe("workflow security rules", () => {
     });
 
     it("ignores no-untrusted-input-in-run when workflow or step shapes do not expose runnable scripts", async () => {
+        expect.hasAssertions();
+
         const nonMappingRootResult = await lintWorkflow("- pull_request", {
             rules: {
                 "github-actions/no-untrusted-input-in-run": "error",
@@ -162,6 +172,8 @@ describe("workflow security rules", () => {
     });
 
     it("reports direct secret references in step if conditionals", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -189,6 +201,8 @@ describe("workflow security rules", () => {
     });
 
     it("reports direct secret references in job if conditionals without expression wrappers", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -212,6 +226,8 @@ describe("workflow security rules", () => {
     });
 
     it("accepts env-based conditional checks derived from secrets", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -238,6 +254,8 @@ describe("workflow security rules", () => {
     });
 
     it("ignores no-secrets-in-if when workflow root is not a mapping", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow("- secrets.DEPLOY_TOKEN", {
             rules: {
                 "github-actions/no-secrets-in-if": "error",
@@ -248,6 +266,8 @@ describe("workflow security rules", () => {
     });
 
     it("ignores no-secrets-in-if for jobs without steps", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -269,6 +289,8 @@ describe("workflow security rules", () => {
     });
 
     it("ignores non-mapping step entries while checking no-secrets-in-if", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -292,6 +314,8 @@ describe("workflow security rules", () => {
     });
 
     it("reports pull_request_target workflows that checkout pull request head refs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Comment",
@@ -321,6 +345,8 @@ describe("workflow security rules", () => {
     });
 
     it("accepts pull_request_target workflows that avoid pull request head checkout", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Comment",
@@ -352,6 +378,8 @@ describe("workflow security rules", () => {
     });
 
     it("reports pull_request_target workflows without base branch filters", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Comment",
@@ -380,6 +408,8 @@ describe("workflow security rules", () => {
     });
 
     it("reports scalar and sequence pull_request_target triggers without filters", async () => {
+        expect.hasAssertions();
+
         const scalarResult = await lintWorkflow(
             [
                 "name: Comment",
@@ -422,6 +452,8 @@ describe("workflow security rules", () => {
     });
 
     it("accepts pull_request_target workflows filtered by branches-ignore", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Comment",
@@ -446,6 +478,8 @@ describe("workflow security rules", () => {
     });
 
     it("reports non-mapping pull_request_target trigger configuration", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Comment",
@@ -469,6 +503,8 @@ describe("workflow security rules", () => {
     });
 
     it("accepts pull_request_target workflows with base branch filters", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Comment",
@@ -496,6 +532,8 @@ describe("workflow security rules", () => {
     });
 
     it("ignores pull_request_target branch rule when root/on mappings or trigger key are missing", async () => {
+        expect.hasAssertions();
+
         const nonMappingRootResult = await lintWorkflow(
             "- pull_request_target",
             {
@@ -569,6 +607,8 @@ describe("workflow security rules", () => {
     });
 
     it("reports pull_request_target with null or non-sequence branch filter values", async () => {
+        expect.hasAssertions();
+
         const nullPullRequestTargetValueResult = await lintWorkflow(
             [
                 "name: Comment",
@@ -614,6 +654,8 @@ describe("workflow security rules", () => {
     });
 
     it("reports workflow_run triggers without branch filters", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Follow up",
@@ -641,6 +683,8 @@ describe("workflow security rules", () => {
     });
 
     it("reports non-mapping workflow_run trigger configuration", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Follow up",
@@ -663,6 +707,8 @@ describe("workflow security rules", () => {
     });
 
     it("accepts workflow_run triggers scoped with scalar branches", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Follow up",
@@ -688,6 +734,8 @@ describe("workflow security rules", () => {
     });
 
     it("reports workflow_run triggers with empty branch filters", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Follow up",
@@ -714,6 +762,8 @@ describe("workflow security rules", () => {
     });
 
     it("accepts workflow_run triggers scoped with branches", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Follow up",
@@ -740,6 +790,8 @@ describe("workflow security rules", () => {
     });
 
     it("accepts workflow_run triggers scoped with branches-ignore", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Follow up",
@@ -766,6 +818,8 @@ describe("workflow security rules", () => {
     });
 
     it("ignores workflow_run branch rule when workflow root, on, or workflow_run are missing", async () => {
+        expect.hasAssertions();
+
         const nonMappingRootResult = await lintWorkflow("- workflow_run", {
             rules: {
                 "github-actions/require-workflow-run-branches": "error",
@@ -812,6 +866,8 @@ describe("workflow security rules", () => {
     });
 
     it("reports workflow_run with null value and non-sequence branch filter mappings", async () => {
+        expect.hasAssertions();
+
         const nullWorkflowRunValueResult = await lintWorkflow(
             [
                 "name: Follow up",
@@ -856,6 +912,8 @@ describe("workflow security rules", () => {
     });
 
     it("reports self-hosted runners on fork-capable pull request events", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: PR validation",
@@ -884,6 +942,8 @@ describe("workflow security rules", () => {
     });
 
     it("reports self-hosted runner label mappings on issue_comment workflows", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Comment automation",
@@ -915,6 +975,8 @@ describe("workflow security rules", () => {
     });
 
     it("accepts GitHub-hosted runners on fork-capable pull request events", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: PR validation",
@@ -940,6 +1002,8 @@ describe("workflow security rules", () => {
     });
 
     it("reports scalar and mapping self-hosted labels on fork-capable events", async () => {
+        expect.hasAssertions();
+
         const scalarLabelResult = await lintWorkflow(
             [
                 "name: PR validation",
@@ -984,6 +1048,8 @@ describe("workflow security rules", () => {
     });
 
     it("ignores no-self-hosted-runner rule when events are not fork-capable or runs-on is null", async () => {
+        expect.hasAssertions();
+
         const nonForkEventResult = await lintWorkflow(
             [
                 "name: Build",

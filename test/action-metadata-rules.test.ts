@@ -8,6 +8,8 @@ const githubExpression = (expression: string): string =>
 // eslint-disable-next-line max-lines-per-function -- Integration test catalog intentionally exercises many action-metadata rule permutations in one suite.
 describe("action metadata rules", () => {
     it("does not run workflow-only rules on valid action metadata files under the all preset", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -29,6 +31,8 @@ describe("action metadata rules", () => {
     });
 
     it("prefers action.yml over action.yaml", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -52,6 +56,8 @@ describe("action metadata rules", () => {
     });
 
     it("accepts action.yml metadata filenames", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -76,6 +82,8 @@ describe("action metadata rules", () => {
     });
 
     it("reports action.yaml metadata filenames regardless of extension casing", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -99,6 +107,8 @@ describe("action metadata rules", () => {
     });
 
     it("reports deprecated node runtimes", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -120,6 +130,8 @@ describe("action metadata rules", () => {
     });
 
     it("accepts supported node runtimes", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -141,6 +153,8 @@ describe("action metadata rules", () => {
     });
 
     it("reports node12 runtimes and ignores workflow files", async () => {
+        expect.hasAssertions();
+
         const deprecatedResult = await lintWorkflow(
             [
                 "name: Example",
@@ -183,6 +197,8 @@ describe("action metadata rules", () => {
     });
 
     it("ignores deprecated runtime checks for non-mapping roots, missing runs, and non-scalar using values", async () => {
+        expect.hasAssertions();
+
         const nonMappingRootResult = await lintWorkflow("- node16", {
             configName: "actionMetadata",
             filePath: ".github/actions/example/action.yml",
@@ -243,6 +259,8 @@ describe("action metadata rules", () => {
     });
 
     it("reports pre-if without pre", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -265,6 +283,8 @@ describe("action metadata rules", () => {
     });
 
     it("autofixes pre-if without pre by removing the orphaned key", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -297,6 +317,8 @@ describe("action metadata rules", () => {
     });
 
     it("reports post-if without post", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -319,6 +341,8 @@ describe("action metadata rules", () => {
     });
 
     it("autofixes post-if without post by removing the orphaned key", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -351,6 +375,8 @@ describe("action metadata rules", () => {
     });
 
     it("reports required inputs with defaults", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -379,6 +405,8 @@ describe("action metadata rules", () => {
     });
 
     it("offers suggestions to remove either required or default when both are set", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -409,7 +437,7 @@ describe("action metadata rules", () => {
             result.messages[0]?.suggestions?.map(
                 (suggestion) => suggestion.desc
             )
-        ).toEqual([
+        ).toStrictEqual([
             "Remove `required: true` from input 'token' and keep the default value.",
             "Remove the default value from input 'token' and keep it required.",
         ]);
@@ -417,10 +445,12 @@ describe("action metadata rules", () => {
             result.messages[0]?.suggestions?.map(
                 (suggestion) => suggestion.fix?.text
             )
-        ).toEqual(["", ""]);
+        ).toStrictEqual(["", ""]);
     });
 
     it("accepts inputs that are defaulted but not strictly required", async () => {
+        expect.hasAssertions();
+
         const optionalInputResult = await lintWorkflow(
             [
                 "name: Example",
@@ -474,6 +504,8 @@ describe("action metadata rules", () => {
     });
 
     it("ignores required-input-with-default checks outside action metadata and when inputs are missing", async () => {
+        expect.hasAssertions();
+
         const workflowFileResult = await lintWorkflow(
             [
                 "name: CI",
@@ -516,6 +548,8 @@ describe("action metadata rules", () => {
     });
 
     it("reports required inputs with null default values and skips non-mapping input entries", async () => {
+        expect.hasAssertions();
+
         const nullDefaultResult = await lintWorkflow(
             [
                 "name: Example",
@@ -566,6 +600,8 @@ describe("action metadata rules", () => {
     });
 
     it("reports case-insensitive input collisions", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -595,6 +631,8 @@ describe("action metadata rules", () => {
     });
 
     it("accepts distinct input ids without case-insensitive collisions", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -625,6 +663,8 @@ describe("action metadata rules", () => {
     });
 
     it("ignores case-collision checks outside action metadata and without inputs", async () => {
+        expect.hasAssertions();
+
         const nonActionFileResult = await lintWorkflow(
             [
                 "name: CI",
@@ -669,6 +709,8 @@ describe("action metadata rules", () => {
     });
 
     it("ignores non-scalar input keys and non-mapping roots", async () => {
+        expect.hasAssertions();
+
         const nonScalarInputKeyResult = await lintWorkflow(
             [
                 "name: Example",
@@ -708,6 +750,8 @@ describe("action metadata rules", () => {
     });
 
     it("reports INPUT_* env access in composite runs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -734,6 +778,8 @@ describe("action metadata rules", () => {
     });
 
     it("accepts composite inputs context references and non-composite actions", async () => {
+        expect.hasAssertions();
+
         const compositeResult = await lintWorkflow(
             [
                 "name: Example",
@@ -778,6 +824,8 @@ describe("action metadata rules", () => {
     });
 
     it("ignores composite INPUT env checks outside action metadata files and for lowercase env names", async () => {
+        expect.hasAssertions();
+
         const workflowFileResult = await lintWorkflow(
             [
                 "name: CI",
@@ -822,6 +870,8 @@ describe("action metadata rules", () => {
     });
 
     it("ignores composite INPUT env checks when root or runs mappings are missing", async () => {
+        expect.hasAssertions();
+
         const nonMappingRootResult = await lintWorkflow("- item", {
             configName: "actionMetadata",
             filePath: ".github/actions/example/action.yml",
@@ -846,6 +896,8 @@ describe("action metadata rules", () => {
     });
 
     it("reports unknown composite input references", async () => {
+        expect.hasAssertions();
+
         const unknownInputExpression = `${String.fromCodePoint(36, 123, 123)} inputs.missing }}`;
 
         const result = await lintWorkflow(
@@ -875,6 +927,8 @@ describe("action metadata rules", () => {
     });
 
     it("accepts declared composite input references and ignores non-composite runtimes", async () => {
+        expect.hasAssertions();
+
         const declaredInputExpression = `${String.fromCodePoint(36, 123, 123)} inputs.token }}`;
 
         const compositeResult = await lintWorkflow(
@@ -923,6 +977,8 @@ describe("action metadata rules", () => {
     });
 
     it("reports each distinct unknown composite input reference", async () => {
+        expect.hasAssertions();
+
         const unknownOne = `${String.fromCodePoint(36, 123, 123)} inputs.missing_one }}`;
         const unknownTwo = `${String.fromCodePoint(36, 123, 123)} inputs.missing_two }}`;
 
@@ -952,6 +1008,8 @@ describe("action metadata rules", () => {
     });
 
     it("ignores unknown-input checks outside action metadata and when runs/root mappings are missing", async () => {
+        expect.hasAssertions();
+
         const unknownInputExpression = `${String.fromCodePoint(36, 123, 123)} inputs.missing }}`;
 
         const nonActionFileResult = await lintWorkflow(
@@ -1008,6 +1066,8 @@ describe("action metadata rules", () => {
     });
 
     it("reports unused composite inputs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -1034,6 +1094,8 @@ describe("action metadata rules", () => {
     });
 
     it("accepts referenced composite inputs and only reports truly unused ones", async () => {
+        expect.hasAssertions();
+
         const partiallyUsedResult = await lintWorkflow(
             [
                 "name: Example",
@@ -1089,6 +1151,8 @@ describe("action metadata rules", () => {
     });
 
     it("accepts hyphenated input references and ignores non-composite metadata", async () => {
+        expect.hasAssertions();
+
         const referencedHyphenatedInputResult = await lintWorkflow(
             [
                 "name: Example",
@@ -1136,6 +1200,8 @@ describe("action metadata rules", () => {
     });
 
     it("ignores unused-input checks outside action metadata files and when inputs or runs are missing", async () => {
+        expect.hasAssertions();
+
         const workflowFileResult = await lintWorkflow(
             [
                 "name: CI",
@@ -1198,6 +1264,8 @@ describe("action metadata rules", () => {
     });
 
     it("ignores unused-input checks when action metadata root is not a mapping", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow("- token", {
             configName: "actionMetadata",
             filePath: ".github/actions/example/action.yml",
@@ -1210,6 +1278,8 @@ describe("action metadata rules", () => {
     });
 
     it("ignores non-scalar composite input keys when checking for unused inputs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -1237,6 +1307,8 @@ describe("action metadata rules", () => {
     });
 
     it("reports duplicate composite step ids", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -1264,6 +1336,8 @@ describe("action metadata rules", () => {
     });
 
     it("accepts unique composite step ids and ignores non-composite runtimes", async () => {
+        expect.hasAssertions();
+
         const compositeResult = await lintWorkflow(
             [
                 "name: Example",
@@ -1309,6 +1383,8 @@ describe("action metadata rules", () => {
     });
 
     it("ignores duplicate-step-id checks when runs or steps are missing", async () => {
+        expect.hasAssertions();
+
         const missingRunsResult = await lintWorkflow(
             ["name: Example", "description: Example action"].join("\n"),
             {
@@ -1341,6 +1417,8 @@ describe("action metadata rules", () => {
     });
 
     it("ignores non-mapping and id-less composite step entries for duplicate-id checks", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -1368,6 +1446,8 @@ describe("action metadata rules", () => {
     });
 
     it("reports each repeated duplicate composite step-id occurrence", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -1398,6 +1478,8 @@ describe("action metadata rules", () => {
     });
 
     it("requires names on composite steps", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -1421,6 +1503,8 @@ describe("action metadata rules", () => {
     });
 
     it("accepts composite steps that provide non-empty names", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -1448,6 +1532,8 @@ describe("action metadata rules", () => {
     });
 
     it("reports blank and non-scalar composite step names", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -1478,6 +1564,8 @@ describe("action metadata rules", () => {
     });
 
     it("ignores composite-step-name checks when runs/steps are missing or runtime is not composite", async () => {
+        expect.hasAssertions();
+
         const missingRunsResult = await lintWorkflow(
             ["name: Example", "description: Example action"].join("\n"),
             {
@@ -1528,6 +1616,8 @@ describe("action metadata rules", () => {
     });
 
     it("ignores scalar step entries for composite-step-name checks", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Example",
@@ -1553,6 +1643,8 @@ describe("action metadata rules", () => {
     });
 
     it("ignores require-composite-step-name outside action metadata files", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",

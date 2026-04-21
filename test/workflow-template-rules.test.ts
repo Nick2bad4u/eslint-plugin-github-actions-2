@@ -61,6 +61,8 @@ describe("workflow template rules", () => {
     });
 
     it("does not run workflow-only rules on valid workflow-template metadata files under the all preset", async () => {
+        expect.hasAssertions();
+
         const temporaryDirectory = createTemporaryTemplateDirectory();
         const templatePropertiesPath = path.join(
             temporaryDirectory,
@@ -111,6 +113,8 @@ describe("workflow template rules", () => {
     });
 
     it("does not run workflow-only rules on valid workflow-template YAML files under the all preset", async () => {
+        expect.hasAssertions();
+
         const temporaryDirectory = createTemporaryTemplateDirectory();
         const templateYamlPath = path.join(
             temporaryDirectory,
@@ -160,6 +164,8 @@ describe("workflow template rules", () => {
     });
 
     it("requires template YAML files to have paired properties metadata", async () => {
+        expect.hasAssertions();
+
         const temporaryDirectory = createTemporaryTemplateDirectory();
         const templateYamlPath = path.join(
             temporaryDirectory,
@@ -192,6 +198,8 @@ describe("workflow template rules", () => {
     });
 
     it("requires properties files to have paired template YAML", async () => {
+        expect.hasAssertions();
+
         const temporaryDirectory = createTemporaryTemplateDirectory();
         const templatePropertiesPath = path.join(
             temporaryDirectory,
@@ -223,6 +231,8 @@ describe("workflow template rules", () => {
     });
 
     it("validates filePatterns regex syntax", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "{",
@@ -247,6 +257,8 @@ describe("workflow template rules", () => {
     });
 
     it("reports empty and universal filePatterns", async () => {
+        expect.hasAssertions();
+
         const emptyPatternResult = await lintWorkflow(
             [
                 "{",
@@ -290,6 +302,8 @@ describe("workflow template rules", () => {
     });
 
     it("autofixes empty filePatterns entries by removing the invalid element", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "{",
@@ -324,6 +338,8 @@ describe("workflow template rules", () => {
     });
 
     it("rejects subdirectory template file patterns", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "{",
@@ -348,6 +364,8 @@ describe("workflow template rules", () => {
     });
 
     it("validates iconName formatting and local icon file existence", async () => {
+        expect.hasAssertions();
+
         const temporaryDirectory = createTemporaryTemplateDirectory();
         const templatePropertiesPath = path.join(
             temporaryDirectory,
@@ -444,6 +462,8 @@ describe("workflow template rules", () => {
     });
 
     it("offers a basename suggestion for iconName values containing path separators", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "{",
@@ -475,6 +495,8 @@ describe("workflow template rules", () => {
     });
 
     it("autofixes iconName values by removing the .svg extension", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "{",
@@ -510,6 +532,8 @@ describe("workflow template rules", () => {
     });
 
     it("requires iconName, categories, and filePatterns", async () => {
+        expect.hasAssertions();
+
         const resultIconName = await lintWorkflow(
             ['{"name":"CI","description":"Template"}'].join("\n"),
             {
@@ -547,6 +571,8 @@ describe("workflow template rules", () => {
     });
 
     it("enforces template-specific YAML extension and name/branch conventions", async () => {
+        expect.hasAssertions();
+
         const extensionResult = await lintWorkflow(
             [
                 "name: CI Template",
@@ -599,6 +625,8 @@ describe("workflow template rules", () => {
     });
 
     it("rejects template placeholder usage in non-template workflows", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",

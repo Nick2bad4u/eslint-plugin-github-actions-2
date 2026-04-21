@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { isDefined, setHas } from "ts-extras";
+
 import { isActionMetadataFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
@@ -55,7 +57,7 @@ const rule: Rule.RuleModule = {
                     )) {
                         const matchedInputId = match.groups?.["inputId"];
 
-                        if (matchedInputId === undefined) {
+                        if (!isDefined(matchedInputId)) {
                             continue;
                         }
 
@@ -70,7 +72,7 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    if (referencedInputIds.has(inputId)) {
+                    if (setHas(referencedInputIds, inputId)) {
                         continue;
                     }
 

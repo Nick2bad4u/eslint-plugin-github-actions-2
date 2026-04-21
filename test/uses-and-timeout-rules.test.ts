@@ -4,6 +4,8 @@ import { lintWorkflow } from "./_shared/lint-workflow.js";
 
 describe("uses and timeout rules", () => {
     it("reports step uses references that do not match the configured style", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -31,6 +33,8 @@ describe("uses and timeout rules", () => {
     });
 
     it("accepts commit-style step uses references by default", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -55,6 +59,8 @@ describe("uses and timeout rules", () => {
     });
 
     it("reports repository-local and docker uses references by default", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -84,6 +90,8 @@ describe("uses and timeout rules", () => {
     });
 
     it("accepts repository-local and docker uses references when explicitly allowed", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -116,6 +124,8 @@ describe("uses and timeout rules", () => {
     });
 
     it("supports release-style configuration and ignored references", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -148,6 +158,8 @@ describe("uses and timeout rules", () => {
     });
 
     it("falls back to commit-style when object options enable no style flags", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -181,6 +193,8 @@ describe("uses and timeout rules", () => {
     });
 
     it("reports invalid timeout-minutes values", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -206,6 +220,8 @@ describe("uses and timeout rules", () => {
     });
 
     it("accepts GitHub expressions for timeout-minutes", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -231,6 +247,8 @@ describe("uses and timeout rules", () => {
     });
 
     it("requires run steps to declare an explicit shell when none is inherited", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -258,6 +276,8 @@ describe("uses and timeout rules", () => {
     });
 
     it("accepts run steps with an explicit shell", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -283,6 +303,8 @@ describe("uses and timeout rules", () => {
     });
 
     it("accepts run steps that inherit a workflow default shell", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -310,6 +332,8 @@ describe("uses and timeout rules", () => {
     });
 
     it("accepts run steps that inherit a job-level default shell", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -336,6 +360,8 @@ describe("uses and timeout rules", () => {
     });
 
     it("reports invalid empty shell declarations at workflow, job, and step scope", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -372,6 +398,8 @@ describe("uses and timeout rules", () => {
     });
 
     it("accepts branch-style references when branch style is explicitly enabled", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",

@@ -3,7 +3,13 @@
  * Shared casing helpers for naming-oriented GitHub Actions rules.
  */
 
-import { arrayFirst, arrayJoin, isEmpty, objectEntries, stringSplit     } from "ts-extras";
+import {
+    arrayFirst,
+    arrayJoin,
+    isDefined,
+    isEmpty,
+    objectEntries,
+} from "ts-extras";
 
 import { casePoliceDictionary } from "./case-police-dictionary.js";
 
@@ -68,7 +74,7 @@ const splitIntoWords = (value: string): readonly string[] => {
     for (let index = 0; index < value.length; index += 1) {
         const character = value[index];
 
-        if (character === undefined) {
+        if (!isDefined(character)) {
             continue;
         }
 
@@ -86,12 +92,12 @@ const splitIntoWords = (value: string): readonly string[] => {
             index + 1 < value.length ? value[index + 1] : undefined;
         const startsNewWord =
             currentWord.length > 0 &&
-            previousCharacter !== undefined &&
+            isDefined(previousCharacter) &&
             ((isLowercaseCharacter(previousCharacter) &&
                 isUppercaseCharacter(character)) ||
                 (isUppercaseCharacter(previousCharacter) &&
                     isUppercaseCharacter(character) &&
-                    nextCharacter !== undefined &&
+                    isDefined(nextCharacter) &&
                     isLowercaseCharacter(nextCharacter)));
 
         if (startsNewWord) {
@@ -196,23 +202,26 @@ const resolveCasePoliceTitleSegments = (
         let matched = false;
 
         for (let span = maxSpan; span >= 1; span -= 1) {
-            const collapsedCandidate = arrayJoin(words
-                .slice(index, index + span), "");
+            const collapsedCandidate = arrayJoin(
+                words.slice(index, index + span),
+                ""
+            );
             const candidateMatches =
                 casePoliceDictionaryIndex.matchesByCollapsedKey.get(
                     collapsedCandidate
                 );
 
-            if (candidateMatches === undefined) {
+            if (!isDefined(candidateMatches)) {
                 continue;
             }
 
             const exactTokenCountMatch = candidateMatches.find(
                 (candidateMatch) => candidateMatch.tokenCount === span
             );
-            const selectedMatch = exactTokenCountMatch ?? arrayFirst(candidateMatches);
+            const selectedMatch =
+                exactTokenCountMatch ?? arrayFirst(candidateMatches);
 
-            if (selectedMatch === undefined) {
+            if (!isDefined(selectedMatch)) {
                 continue;
             }
 
@@ -229,7 +238,7 @@ const resolveCasePoliceTitleSegments = (
 
         const currentWord = words[index];
 
-        if (currentWord === undefined) {
+        if (!isDefined(currentWord)) {
             index += 1;
 
             continue;
@@ -258,7 +267,10 @@ export const convertToGithubActionsCasing = (
         case "camelCase": {
             const [firstWord = "", ...remainingWords] = words;
 
-            return `${firstWord}${arrayJoin(remainingWords.map((word) => capitalizeWord(word)), "")}`;
+            return `${firstWord}${arrayJoin(
+                remainingWords.map((word) => capitalizeWord(word)),
+                ""
+            )}`;
         }
 
         case "kebab-case": {
@@ -266,11 +278,17 @@ export const convertToGithubActionsCasing = (
         }
 
         case "PascalCase": {
-            return arrayJoin(words.map((word) => capitalizeWord(word)), "");
+            return arrayJoin(
+                words.map((word) => capitalizeWord(word)),
+                ""
+            );
         }
 
         case "SCREAMING_SNAKE_CASE": {
-            return arrayJoin(words.map((word) => word.toUpperCase()), "_");
+            return arrayJoin(
+                words.map((word) => word.toUpperCase()),
+                "_"
+            );
         }
 
         case "snake_case": {
@@ -282,9 +300,12 @@ export const convertToGithubActionsCasing = (
         }
 
         case "Train-Case": {
-            return arrayJoin(titleSegments
-                .flatMap((segment) => stringSplit(segment, /\s+/u))
-                .filter((segment) => segment.length > 0), "-");
+            return arrayJoin(
+                titleSegments
+                    .flatMap((segment) => segment.match(/\S+/gu) ?? [])
+                    .filter((segment) => segment.length > 0),
+                "-"
+            );
         }
 
         default: {

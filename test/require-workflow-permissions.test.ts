@@ -4,6 +4,8 @@ import { lintWorkflow } from "./_shared/lint-workflow.js";
 
 describe("require-workflow-permissions", () => {
     it("reports when neither workflow nor jobs declare permissions", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: ci",
@@ -29,6 +31,8 @@ describe("require-workflow-permissions", () => {
     });
 
     it("allows explicit workflow-level permissions", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: ci",
@@ -51,6 +55,8 @@ describe("require-workflow-permissions", () => {
     });
 
     it("reports each job missing permissions when workflow-level permissions are absent", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: ci",
@@ -84,6 +90,8 @@ describe("require-workflow-permissions", () => {
     });
 
     it("allows all jobs to declare permissions when workflow-level permissions are omitted", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: ci",
@@ -110,6 +118,8 @@ describe("require-workflow-permissions", () => {
     });
 
     it("requires top-level permissions when allowJobLevelPermissions is false", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: ci",
@@ -140,6 +150,8 @@ describe("require-workflow-permissions", () => {
     });
 
     it("reports workflows with no jobs and no permissions", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: ci",

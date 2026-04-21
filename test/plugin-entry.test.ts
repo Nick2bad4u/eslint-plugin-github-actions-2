@@ -4,6 +4,7 @@ import githubActionsPlugin from "../src/plugin.js";
 
 describe("plugin entry", () => {
     it("exports GitHub Actions plugin metadata", () => {
+        expect.hasAssertions();
         expect(githubActionsPlugin.meta).toMatchObject({
             name: "eslint-plugin-github-actions-2",
             namespace: "github-actions",
@@ -11,11 +12,12 @@ describe("plugin entry", () => {
     });
 
     it("exports the expected rule names", () => {
+        expect.hasAssertions();
         expect(
             Object.keys(githubActionsPlugin.rules).toSorted((left, right) =>
                 left.localeCompare(right)
             )
-        ).toEqual([
+        ).toStrictEqual([
             "action-name-casing",
             "job-id-casing",
             "max-jobs-per-action",

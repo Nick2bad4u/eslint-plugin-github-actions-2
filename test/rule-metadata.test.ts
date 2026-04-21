@@ -40,6 +40,8 @@ const ruleHasConfigurableOptions = (
 
 describe("rule metadata", () => {
     it("publishes normalized deprecation, frozen, and dialect metadata", () => {
+        expect.hasAssertions();
+
         for (const [ruleName, rule] of Object.entries(
             githubActionsPlugin.rules
         )) {
@@ -65,46 +67,55 @@ describe("rule metadata", () => {
     });
 
     it("publishes default options for every configurable rule", () => {
+        expect.hasAssertions();
+
         for (const [ruleName, rule] of Object.entries(
             githubActionsPlugin.rules
         )) {
             const meta = rule.meta;
+            const hasConfigurableOptions =
+                meta !== undefined && ruleHasConfigurableOptions(meta);
+            const hasDefaultOptions = meta?.defaultOptions !== undefined;
 
             expect(meta, `${ruleName} should define meta`).toBeDefined();
-
-            if (meta !== undefined && ruleHasConfigurableOptions(meta)) {
-                expect(
-                    meta.defaultOptions,
-                    `${ruleName} should define defaultOptions because it exposes options`
-                ).toBeDefined();
-                expect(Array.isArray(meta.defaultOptions)).toBeTruthy();
-            }
+            expect(
+                !hasConfigurableOptions || hasDefaultOptions,
+                `${ruleName} should define defaultOptions because it exposes options`
+            ).toBeTruthy();
+            expect(
+                !hasDefaultOptions || Array.isArray(meta?.defaultOptions),
+                `${ruleName} defaultOptions should be an array when provided`
+            ).toBeTruthy();
         }
     });
 
     it("marks every autofixing rule as fixable", () => {
+        expect.hasAssertions();
+
         for (const [ruleName, rule] of Object.entries(
             githubActionsPlugin.rules
         )) {
-            if (fixableRuleNames.has(ruleName)) {
-                expect(
-                    rule.meta?.fixable,
-                    `${ruleName} should declare fixable=code`
-                ).toBe("code");
-            }
+            const shouldBeFixable = fixableRuleNames.has(ruleName);
+
+            expect(
+                !shouldBeFixable || rule.meta?.fixable === "code",
+                `${ruleName} should declare fixable=code`
+            ).toBeTruthy();
         }
     });
 
     it("marks every suggestion-producing rule with hasSuggestions", () => {
+        expect.hasAssertions();
+
         for (const [ruleName, rule] of Object.entries(
             githubActionsPlugin.rules
         )) {
-            if (suggestionRuleNames.has(ruleName)) {
-                expect(
-                    rule.meta?.hasSuggestions,
-                    `${ruleName} should declare hasSuggestions=true`
-                ).toBeTruthy();
-            }
+            const shouldHaveSuggestions = suggestionRuleNames.has(ruleName);
+
+            expect(
+                !shouldHaveSuggestions || rule.meta?.hasSuggestions,
+                `${ruleName} should declare hasSuggestions=true`
+            ).toBeTruthy();
         }
     });
 });

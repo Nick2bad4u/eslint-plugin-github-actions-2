@@ -5,7 +5,7 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
-import { arrayFirst, safeCastTo  } from "ts-extras";
+import { arrayFirst, safeCastTo, setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
@@ -86,7 +86,7 @@ const rule: Rule.RuleModule = {
 
                 const eventNames = getWorkflowEventNames(root);
 
-                if (!eventNames.has("workflow_dispatch")) {
+                if (!setHas(eventNames, "workflow_dispatch")) {
                     return;
                 }
 

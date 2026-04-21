@@ -5,6 +5,8 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
+import { setHas } from "ts-extras";
+
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingValueAsMapping,
@@ -98,7 +100,7 @@ const reportInvalidKeys = (
     for (const pair of mapping.pairs) {
         const keyValue = getScalarStringValue(pair.key);
 
-        if (keyValue === null || validKeys.has(keyValue)) {
+        if (keyValue === null || setHas(validKeys, keyValue)) {
             continue;
         }
 

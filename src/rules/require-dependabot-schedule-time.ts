@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { isDefined, isPresent } from "ts-extras";
+
 import {
     getDependabotRoot,
     getDependabotUpdateEntries,
@@ -41,7 +43,7 @@ const rule: Rule.RuleModule = {
                         getMappingPair(scheduleMapping, "interval")?.value
                     )?.trim();
 
-                    if (intervalValue === undefined || intervalValue === null) {
+                    if (!isPresent(intervalValue)) {
                         continue;
                     }
 
@@ -55,7 +57,7 @@ const rule: Rule.RuleModule = {
                     )?.trim();
 
                     if (
-                        timeValue !== undefined &&
+                        isDefined(timeValue) &&
                         timeValue !== null &&
                         timeValue.length > 0
                     ) {

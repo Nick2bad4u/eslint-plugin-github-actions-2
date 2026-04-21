@@ -41,10 +41,15 @@ const parseRootMapping = (yamlText: string): AST.YAMLMapping => {
 
 describe("workflow YAML helpers", () => {
     it("exports stable workflow file globs", () => {
-        expect(WORKFLOW_FILE_GLOBS).toEqual([".github/workflows/*.{yml,yaml}"]);
+        expect.hasAssertions();
+        expect(WORKFLOW_FILE_GLOBS).toStrictEqual([
+            ".github/workflows/*.{yml,yaml}",
+        ]);
     });
 
     it("unwraps YAMLWithMeta values and supports type guards", () => {
+        expect.hasAssertions();
+
         const scalarNode = parseRootMapping("name: CI").pairs[0]?.value;
 
         expect(scalarNode).toBeTruthy();
@@ -65,6 +70,8 @@ describe("workflow YAML helpers", () => {
     });
 
     it("reads scalar values as strings or numbers where appropriate", () => {
+        expect.hasAssertions();
+
         const root = parseRootMapping(
             [
                 "name: Build",
@@ -93,6 +100,8 @@ describe("workflow YAML helpers", () => {
     });
 
     it("detects GitHub expression scalars with surrounding whitespace", () => {
+        expect.hasAssertions();
+
         const root = parseRootMapping(
             [
                 `expr: '  ${githubExpression("github.ref")}  '`,
@@ -109,6 +118,8 @@ describe("workflow YAML helpers", () => {
     });
 
     it("finds mapping pairs and narrows mapping or sequence values", () => {
+        expect.hasAssertions();
+
         const root = parseRootMapping(
             [
                 "jobs:",
@@ -136,6 +147,8 @@ describe("workflow YAML helpers", () => {
     });
 
     it("resolves workflow root mappings from ESLint rule context", () => {
+        expect.hasAssertions();
+
         const workflowContext = {
             sourceCode: {
                 ast: parseProgram("name: CI"),
@@ -152,6 +165,8 @@ describe("workflow YAML helpers", () => {
     });
 
     it("collects workflow jobs and ignores non-mapping job entries", () => {
+        expect.hasAssertions();
+
         const root = parseRootMapping(
             [
                 "jobs:",
@@ -166,11 +181,13 @@ describe("workflow YAML helpers", () => {
         const jobs = getWorkflowJobs(root);
 
         expect(jobs).toHaveLength(2);
-        expect(jobs.map((job) => job.id)).toEqual(["build", "deploy"]);
-        expect(getWorkflowJobs(parseRootMapping("name: CI"))).toEqual([]);
+        expect(jobs.map((job) => job.id)).toStrictEqual(["build", "deploy"]);
+        expect(getWorkflowJobs(parseRootMapping("name: CI"))).toStrictEqual([]);
     });
 
     it("collects workflow event names from scalar, sequence, and mapping forms", () => {
+        expect.hasAssertions();
+
         const scalarRoot = parseRootMapping("on: push");
         const sequenceRoot = parseRootMapping(
             [
@@ -189,14 +206,14 @@ describe("workflow YAML helpers", () => {
         );
         const missingOnRoot = parseRootMapping("name: CI");
 
-        expect([...getWorkflowEventNames(scalarRoot)]).toEqual(["push"]);
-        expect([...getWorkflowEventNames(sequenceRoot)]).toEqual([
+        expect([...getWorkflowEventNames(scalarRoot)]).toStrictEqual(["push"]);
+        expect([...getWorkflowEventNames(sequenceRoot)]).toStrictEqual([
             "pull_request",
             "workflow_dispatch",
         ]);
-        expect(getWorkflowEventNames(mappingRoot)).toEqual(
+        expect(getWorkflowEventNames(mappingRoot)).toStrictEqual(
             new Set(["push", "workflow_run"])
         );
-        expect([...getWorkflowEventNames(missingOnRoot)]).toEqual([]);
+        expect([...getWorkflowEventNames(missingOnRoot)]).toStrictEqual([]);
     });
 });

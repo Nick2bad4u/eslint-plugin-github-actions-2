@@ -19,6 +19,9 @@ const config = {
     baseUrl,
     deploymentBranch: "gh-pages",
     favicon: "img/logo.svg",
+    baseUrlIssueBanner: true,
+    onDuplicateRoutes: "throw",
+    trailingSlash: false,
     i18n: {
         defaultLocale: "en",
         locales: ["en"],
@@ -41,6 +44,34 @@ const config = {
                 path: "../rules",
                 routeBasePath: "docs/rules",
                 sidebarPath: "./sidebars.rules.ts",
+            },
+        ],
+        [
+            "@docusaurus/plugin-pwa",
+            {
+                debug: true,
+                offlineModeActivationStrategies: [
+                    "appInstalled",
+                    "standalone",
+                    "queryString",
+                ],
+                pwaHead: [
+                    {
+                        tagName: "link",
+                        rel: "icon",
+                        href: "/eslint-plugin-github-actions-2/img/logo.svg",
+                    },
+                    {
+                        tagName: "link",
+                        rel: "manifest",
+                        href: "/eslint-plugin-github-actions-2/manifest.json",
+                    },
+                    {
+                        tagName: "meta",
+                        name: "theme-color",
+                        content: "rgb(37, 194, 160)",
+                    },
+                ],
             },
         ],
     ],
@@ -86,6 +117,7 @@ const config = {
                 name: "keywords",
             },
         ],
+        image: "img/logo.png",
         footer: {
             copyright:
                 `© ${new Date().getFullYear()} ` +

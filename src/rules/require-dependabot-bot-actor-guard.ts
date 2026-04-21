@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { isDefined } from "ts-extras";
+
 import {
     getDependabotAutomationRunSteps,
     getDependabotFetchMetadataSteps,
@@ -59,7 +61,7 @@ const rule: Rule.RuleModule = {
                     );
 
                     if (
-                        pairedRunStep !== undefined &&
+                        isDefined(pairedRunStep) &&
                         hasDependabotBotGuard(runStepIfValue)
                     ) {
                         continue;

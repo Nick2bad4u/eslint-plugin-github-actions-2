@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { isDefined } from "ts-extras";
+
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import { getTrufflehogActionSteps } from "../_internal/secret-scanning-workflow.ts";
 import {
@@ -44,7 +46,7 @@ const rule: Rule.RuleModule = {
                     )?.trim();
 
                     if (
-                        extraArgsValue !== undefined &&
+                        isDefined(extraArgsValue) &&
                         verifiedResultsPattern.test(extraArgsValue)
                     ) {
                         continue;

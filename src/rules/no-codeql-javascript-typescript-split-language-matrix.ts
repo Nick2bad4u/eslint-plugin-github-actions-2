@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { setHas } from "ts-extras";
+
 import {
     getCodeqlInitSteps,
     getCodeqlLanguageValues,
@@ -32,8 +34,8 @@ const rule: Rule.RuleModule = {
                     );
 
                     if (
-                        languageValues.has("javascript") &&
-                        languageValues.has("typescript")
+                        setHas(languageValues, "javascript") &&
+                        setHas(languageValues, "typescript")
                     ) {
                         context.report({
                             messageId: "splitJavaScriptTypeScriptMatrix",

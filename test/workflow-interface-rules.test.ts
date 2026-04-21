@@ -8,6 +8,8 @@ const githubExpression = (expression: string): string =>
 // eslint-disable-next-line max-lines-per-function -- Integration tests intentionally cover many workflow interface rule paths in one suite.
 describe("workflow interface rules", () => {
     it("reports workflow_dispatch expressions that use github.event.inputs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Deploy",
@@ -41,6 +43,8 @@ describe("workflow interface rules", () => {
     });
 
     it("autofixes github.event.inputs references to inputs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Deploy",
@@ -73,6 +77,8 @@ describe("workflow interface rules", () => {
     });
 
     it("autofixes all github.event.inputs occurrences within the same scalar", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Deploy",
@@ -104,6 +110,8 @@ describe("workflow interface rules", () => {
     });
 
     it("accepts workflow_dispatch expressions that already use inputs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Deploy",
@@ -132,6 +140,8 @@ describe("workflow interface rules", () => {
     });
 
     it("does not report github.event.inputs references when workflow_dispatch is not configured", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Deploy",
@@ -155,6 +165,8 @@ describe("workflow interface rules", () => {
     });
 
     it("handles null-valued mapping entries while traversing workflow_dispatch documents", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Deploy",
@@ -178,6 +190,8 @@ describe("workflow interface rules", () => {
     });
 
     it("ignores prefer-inputs-context when workflow_dispatch is not declared", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Deploy",
@@ -199,6 +213,8 @@ describe("workflow interface rules", () => {
     });
 
     it("ignores non-string scalar values while traversing workflow_dispatch workflows", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Deploy",
@@ -222,6 +238,8 @@ describe("workflow interface rules", () => {
     });
 
     it("skips YAML alias nodes while traversing workflow_dispatch workflows", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Deploy",
@@ -247,6 +265,8 @@ describe("workflow interface rules", () => {
     });
 
     it("reports legacy inputs usage even when escaped scalars do not produce a fix", async () => {
+        expect.hasAssertions();
+
         const escapedGithubEventInputsExpression = String.raw`github\u002eevent\u002einputs\u002eenvironment == 'prod'`;
 
         const result = await lintWorkflow(
@@ -277,6 +297,8 @@ describe("workflow interface rules", () => {
     });
 
     it("ignores prefer-inputs-context when workflow root is not a mapping", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow("- workflow_dispatch", {
             rules: {
                 "github-actions/prefer-inputs-context": "error",
@@ -287,6 +309,8 @@ describe("workflow interface rules", () => {
     });
 
     it("reports missing descriptions for workflow_dispatch inputs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Deploy",
@@ -312,6 +336,8 @@ describe("workflow interface rules", () => {
     });
 
     it("reports missing descriptions for reusable workflow secrets", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Reusable deploy",
@@ -341,6 +367,8 @@ describe("workflow interface rules", () => {
     });
 
     it("reports missing types for reusable workflow inputs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Reusable deploy",
@@ -365,6 +393,8 @@ describe("workflow interface rules", () => {
     });
 
     it("reports unsupported reusable workflow input types", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Reusable deploy",
@@ -390,6 +420,8 @@ describe("workflow interface rules", () => {
     });
 
     it("accepts reusable workflow inputs with supported types", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Reusable deploy",
@@ -420,6 +452,8 @@ describe("workflow interface rules", () => {
     });
 
     it("ignores require-workflow-call-input-type when workflow_call is not configured", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Deploy",
@@ -440,6 +474,8 @@ describe("workflow interface rules", () => {
     });
 
     it("ignores non-mapping workflow_call declarations and workflow_call without inputs", async () => {
+        expect.hasAssertions();
+
         const scalarWorkflowCallResult = await lintWorkflow(
             [
                 "name: Reusable deploy",
@@ -473,6 +509,8 @@ describe("workflow interface rules", () => {
     });
 
     it("reports invalid reusable workflow input type values including null type entries", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Reusable deploy",
@@ -504,6 +542,8 @@ describe("workflow interface rules", () => {
     });
 
     it("reports missing descriptions for reusable workflow outputs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Reusable deploy",
@@ -536,6 +576,8 @@ describe("workflow interface rules", () => {
     });
 
     it("accepts described workflow_dispatch and workflow_call interfaces", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Deploy",
@@ -581,6 +623,8 @@ describe("workflow interface rules", () => {
     });
 
     it("ignores require-workflow-interface-description when root or on/workflow_call mappings are missing", async () => {
+        expect.hasAssertions();
+
         const nonMappingRootResult = await lintWorkflow("- workflow_dispatch", {
             rules: {
                 "github-actions/require-workflow-interface-description":
@@ -639,6 +683,8 @@ describe("workflow interface rules", () => {
     });
 
     it("reports invalid interface descriptions for non-mapping entries and null or blank values", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Deploy",
@@ -691,6 +737,8 @@ describe("workflow interface rules", () => {
     });
 
     it("reports needs output references to jobs that are not listed in direct needs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Deploy",
@@ -722,6 +770,8 @@ describe("workflow interface rules", () => {
     });
 
     it("reports unknown direct needs outputs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Deploy",
@@ -754,6 +804,8 @@ describe("workflow interface rules", () => {
     });
 
     it("reports unknown reusable workflow job outputs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Reusable deploy",
@@ -786,6 +838,8 @@ describe("workflow interface rules", () => {
     });
 
     it("accepts valid direct needs outputs and reusable workflow output mappings", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Reusable deploy",
@@ -824,6 +878,8 @@ describe("workflow interface rules", () => {
     });
 
     it("requires reusable workflow outputs to declare a value", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Reusable deploy",
@@ -848,6 +904,8 @@ describe("workflow interface rules", () => {
     });
 
     it("reports reusable workflow outputs that map directly from step outputs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Reusable deploy",
@@ -881,6 +939,8 @@ describe("workflow interface rules", () => {
     });
 
     it("reports reusable workflow outputs that do not map from a job output", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Reusable deploy",
@@ -911,6 +971,8 @@ describe("workflow interface rules", () => {
     });
 
     it("accepts reusable workflow outputs that combine allowed contexts with a job output mapping", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Reusable deploy",
@@ -943,6 +1005,8 @@ describe("workflow interface rules", () => {
     });
 
     it("reports missing step ids in step context references", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Build",
@@ -970,6 +1034,8 @@ describe("workflow interface rules", () => {
     });
 
     it("reports step references before the referenced step has run", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Build",
@@ -996,6 +1062,8 @@ describe("workflow interface rules", () => {
     });
 
     it("accepts valid prior-step references and job outputs that read later final step data", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Build",
@@ -1021,6 +1089,8 @@ describe("workflow interface rules", () => {
     });
 
     it("reports unknown step references when a job defines no steps", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Build",
@@ -1045,6 +1115,8 @@ describe("workflow interface rules", () => {
     });
 
     it("handles null, non-string, sequence, and alias traversal nodes without false positives", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Build",
@@ -1076,6 +1148,8 @@ describe("workflow interface rules", () => {
     });
 
     it("uses the first matching step id when duplicates exist and ignores non-mapping step entries", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Build",

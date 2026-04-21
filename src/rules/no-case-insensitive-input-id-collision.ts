@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { isDefined } from "ts-extras";
+
 import { isActionMetadataFile } from "../_internal/lint-targets.js";
 import {
     getMappingValueAsMapping,
@@ -43,7 +45,7 @@ const rule: Rule.RuleModule = {
                     const firstSeenInputId =
                         inputByCanonicalId.get(canonicalId);
 
-                    if (firstSeenInputId === undefined) {
+                    if (!isDefined(firstSeenInputId)) {
                         inputByCanonicalId.set(canonicalId, inputId);
 
                         continue;

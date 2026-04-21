@@ -5,6 +5,8 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
+import { isDefined } from "ts-extras";
+
 import {
     getDependabotRoot,
     getDependabotUpdateEntries,
@@ -23,7 +25,7 @@ const hasNonEmptyDirectory = (
     const directoryValue = getScalarStringValue(value)?.trim();
 
     return (
-        directoryValue !== undefined &&
+        isDefined(directoryValue) &&
         directoryValue !== null &&
         directoryValue.length > 0
     );

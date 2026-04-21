@@ -3,9 +3,10 @@
  * Validate literal job and step timeout-minutes values.
  */
 import type { Rule } from "eslint";
+import type { UnknownRecord } from "type-fest";
 import type { AST } from "yaml-eslint-parser";
 
-import { isInteger } from "ts-extras";
+import { isDefined, isInteger, keyIn } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
@@ -56,7 +57,7 @@ const normalizeTimeoutRange = (
         };
     }
 
-    if (value === undefined) {
+    if (!isDefined(value)) {
         return {
             max: fallback.max,
             min: fallback.min,
@@ -73,13 +74,15 @@ const normalizeTimeoutRange = (
 const isTimeoutRange = (value: unknown): value is TimeoutRange =>
     typeof value === "object" &&
     value !== null &&
-    ("min" in value || "max" in value);
+    (keyIn(value as UnknownRecord, "min") ||
+        keyIn(value as UnknownRecord, "max"));
 
 /** Determine whether an options value represents split job/step timeout config. */
 const isTimeoutScopeOptions = (value: unknown): value is TimeoutScopeOptions =>
     typeof value === "object" &&
     value !== null &&
-    ("job" in value || "step" in value);
+    (keyIn(value as UnknownRecord, "job") ||
+        keyIn(value as UnknownRecord, "step"));
 
 /** Rule implementation for validating timeout-minutes ranges. */
 const rule: Rule.RuleModule = {

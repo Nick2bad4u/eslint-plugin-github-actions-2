@@ -118,8 +118,9 @@ const rule: Rule.RuleModule = {
 
                 if (pullRequestTargetValue?.type !== "YAMLMapping") {
                     reportMissingBranchFilter(
-                        safeCastTo<AST.YAMLNode>(pullRequestTargetPair.value ??
-                            pullRequestTargetPair)
+                        safeCastTo<AST.YAMLNode>(
+                            pullRequestTargetPair.value ?? pullRequestTargetPair
+                        )
                     );
 
                     return;

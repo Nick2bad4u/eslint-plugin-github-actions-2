@@ -5,6 +5,8 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
+import { setHas } from "ts-extras";
+
 import { githubActionsTriggerEventSet } from "../_internal/github-actions-trigger-events.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
@@ -54,7 +56,7 @@ const rule: Rule.RuleModule = {
 
                     if (
                         eventName !== null &&
-                        !githubActionsTriggerEventSet.has(eventName)
+                        !setHas(githubActionsTriggerEventSet, eventName)
                     ) {
                         reportInvalidEvent(onValue, eventName);
                     }
@@ -70,7 +72,10 @@ const rule: Rule.RuleModule = {
                         if (
                             unwrappedEntry !== null &&
                             (eventName === null ||
-                                !githubActionsTriggerEventSet.has(eventName))
+                                !setHas(
+                                    githubActionsTriggerEventSet,
+                                    eventName
+                                ))
                         ) {
                             context.report({
                                 data: {
@@ -109,7 +114,7 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    if (!githubActionsTriggerEventSet.has(eventName)) {
+                    if (!setHas(githubActionsTriggerEventSet, eventName)) {
                         reportInvalidEvent(pair.key as AST.YAMLNode, eventName);
                     }
                 }

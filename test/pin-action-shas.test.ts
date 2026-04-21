@@ -4,6 +4,8 @@ import { lintWorkflow } from "./_shared/lint-workflow.js";
 
 describe("pin-action-shas", () => {
     it("reports tag-based action references", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -31,6 +33,8 @@ describe("pin-action-shas", () => {
     });
 
     it("allows full SHA pins", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -55,6 +59,8 @@ describe("pin-action-shas", () => {
     });
 
     it("reports unpinned reusable workflow references with the reusable-workflow message", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -75,6 +81,8 @@ describe("pin-action-shas", () => {
     });
 
     it("reports references that omit the @ref segment", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -99,6 +107,8 @@ describe("pin-action-shas", () => {
     });
 
     it("ignores local action and docker references", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -121,6 +131,8 @@ describe("pin-action-shas", () => {
     });
 
     it("reports each unpinned job-level and step-level uses reference", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",

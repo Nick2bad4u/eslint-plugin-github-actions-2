@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { setHas } from "ts-extras";
+
 import { isActionMetadataFile } from "../_internal/lint-targets.js";
 import {
     getMappingValueAsMapping,
@@ -42,7 +44,7 @@ const rule: Rule.RuleModule = {
 
                 if (
                     usingRuntime === null ||
-                    !deprecatedNodeRuntimes.has(usingRuntime)
+                    !setHas(deprecatedNodeRuntimes, usingRuntime)
                 ) {
                     return;
                 }

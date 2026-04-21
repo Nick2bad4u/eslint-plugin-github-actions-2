@@ -8,6 +8,8 @@ const docsRoot = path.join(process.cwd(), "docs", "rules");
 
 describe("docs integrity", () => {
     it("contains markdown pages for every published rule", () => {
+        expect.hasAssertions();
+
         const requiredRuleDocNames = Object.keys(githubActionsPlugin.rules)
             .toSorted((left, right) => left.localeCompare(right))
             .map((ruleName) => `${ruleName}.md`);

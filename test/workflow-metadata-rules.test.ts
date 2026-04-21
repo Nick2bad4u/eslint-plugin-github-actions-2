@@ -8,6 +8,8 @@ const githubExpression = (expression: string): string =>
 // eslint-disable-next-line max-lines-per-function -- Integration tests intentionally cover many workflow metadata rule permutations in one suite.
 describe("workflow metadata rules", () => {
     it("requires a workflow name", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(["on:", "  push:"].join("\n"), {
             rules: {
                 "github-actions/require-action-name": "error",
@@ -21,6 +23,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("accepts workflows with a non-empty name", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -38,6 +42,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports non-scalar workflow names", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: []",
@@ -58,6 +64,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports workflows whose YAML root is not a mapping", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow("- push", {
             rules: {
                 "github-actions/require-action-name": "error",
@@ -71,6 +79,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("requires a workflow run-name when enabled", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Release",
@@ -91,6 +101,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("accepts workflows with a non-empty run-name", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Release",
@@ -109,6 +121,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports blank workflow run-name values", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Release",
@@ -130,6 +144,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports non-scalar workflow run-name values", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Release",
@@ -151,6 +167,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports missing run-name for non-mapping workflow roots", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow("- workflow_dispatch", {
             rules: {
                 "github-actions/require-action-run-name": "error",
@@ -164,6 +182,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports null workflow run-name values", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Release",
@@ -185,6 +205,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports workflow names that do not match the configured casing", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: releasePipeline",
@@ -205,6 +227,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("accepts workflow names that match configured casing and ignored names", async () => {
+        expect.hasAssertions();
+
         const kebabCaseResult = await lintWorkflow(
             [
                 "name: release-pipeline",
@@ -247,6 +271,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("accepts case-police canonical title words with default casing", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: GitHub Actions HTTP API",
@@ -264,6 +290,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("falls back to the default casing when object options enable no casings", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: release-pipeline",
@@ -284,6 +312,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("autofixes names when a single target casing is configured", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: release pipeline",
@@ -305,6 +335,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("autofixes known case-police words in title casing", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: git hub actions http api",
@@ -326,6 +358,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports invalid workflow trigger events", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -349,6 +383,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("accepts valid scalar workflow trigger events", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(["name: CI", "on: push"].join("\n"), {
             rules: {
                 "github-actions/valid-trigger-events": "error",
@@ -359,6 +395,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("ignores valid-trigger-events when workflow root or on key is missing", async () => {
+        expect.hasAssertions();
+
         const nonMappingRootResult = await lintWorkflow("- push", {
             rules: {
                 "github-actions/valid-trigger-events": "error",
@@ -384,6 +422,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports invalid scalar trigger events", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             ["name: CI", "on: not_a_real_event"].join("\n"),
             {
@@ -400,6 +440,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports invalid sequence trigger entries", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -428,6 +470,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports non-string mapping trigger keys", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -452,6 +496,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("accepts valid mapping trigger keys", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -473,6 +519,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports alias trigger values that are not explicit scalar, sequence, or mapping nodes", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -497,6 +545,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports workflow files that do not use the preferred extension", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -518,6 +568,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("accepts the default preferred workflow extension", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -536,6 +588,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("supports configuring the preferred workflow extension", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -559,6 +613,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("supports string option form for preferred workflow extension", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -580,6 +636,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("handles case-insensitive preferred extension matching", async () => {
+        expect.hasAssertions();
+
         const caseInsensitiveResult = await lintWorkflow(
             [
                 "name: CI",
@@ -604,6 +662,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports mismatches under case-insensitive extension checks", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -631,6 +691,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("defaults extension options when extension is omitted", async () => {
+        expect.hasAssertions();
+
         const acceptedDefaultExtensionResult = await lintWorkflow(
             [
                 "name: CI",
@@ -674,6 +736,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("requires explicit types for workflow_dispatch inputs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Release",
@@ -699,6 +763,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("accepts explicitly typed workflow_dispatch inputs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Release",
@@ -722,6 +788,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports blank workflow_dispatch input types", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Release",
@@ -748,6 +816,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("ignores non-mapping workflow_dispatch input entries", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Release",
@@ -768,6 +838,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("ignores require-workflow-dispatch-input-type when root or on/workflow_dispatch mappings are missing", async () => {
+        expect.hasAssertions();
+
         const nonMappingRootResult = await lintWorkflow("- workflow_dispatch", {
             rules: {
                 "github-actions/require-workflow-dispatch-input-type": "error",
@@ -825,6 +897,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports null and non-scalar workflow_dispatch input types", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Release",
@@ -858,6 +932,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("requires explicit types for selected multi-activity events", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: PR review automation",
@@ -883,6 +959,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports selected events in scalar trigger form", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Review automation",
@@ -907,6 +985,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports selected events in sequence trigger form", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Review automation",
@@ -933,6 +1013,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports selected mapped events that do not define a mapping value", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Review automation",
@@ -958,6 +1040,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports selected mapped events with empty types filters", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Review automation",
@@ -984,6 +1068,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("accepts selected mapped events with non-empty scalar types", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Review automation",
@@ -1007,6 +1093,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("accepts selected mapped events with non-empty sequence types", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Review automation",
@@ -1032,6 +1120,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("accepts selected multi-activity events with explicit types", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: PR review automation",
@@ -1056,6 +1146,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("ignores require-trigger-types when workflow root or on key is missing", async () => {
+        expect.hasAssertions();
+
         const nonMappingRootResult = await lintWorkflow(
             "- pull_request_review",
             {
@@ -1086,6 +1178,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("ignores scalar trigger events that are not in the explicit-types list", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Push workflow",
@@ -1107,6 +1201,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("ignores mapped trigger events that do not require explicit types", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Push workflow",
@@ -1129,6 +1225,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports selected mapped events when types is not a scalar or sequence", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Review automation",
@@ -1156,6 +1254,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("ignores aliased on values that cannot be resolved as a mapping", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Review automation",
@@ -1179,6 +1279,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports pull_request workflows that do not include merge_group", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -1206,6 +1308,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("reports scalar and sequence pull_request triggers without merge_group", async () => {
+        expect.hasAssertions();
+
         const scalarResult = await lintWorkflow(
             [
                 "name: CI",
@@ -1246,6 +1350,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("ignores workflows that do not listen for pull_request", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -1268,6 +1374,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("accepts pull_request workflows that also declare merge_group", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -1295,6 +1403,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("ignores require-merge-group-trigger when on is missing", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -1315,6 +1425,8 @@ describe("workflow metadata rules", () => {
     });
 
     it("ignores require-merge-group-trigger when on uses a YAML alias node", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",

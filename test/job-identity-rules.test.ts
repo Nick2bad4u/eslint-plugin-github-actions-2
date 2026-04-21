@@ -4,6 +4,8 @@ import { lintWorkflow } from "./_shared/lint-workflow.js";
 
 describe("job identity rules", () => {
     it("reports job ids that do not match the configured casing", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -26,6 +28,8 @@ describe("job identity rules", () => {
     });
 
     it("accepts kebab-case job ids with the default configuration", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -47,6 +51,8 @@ describe("job identity rules", () => {
     });
 
     it("accepts configured alternate casing and ignored job ids", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -77,6 +83,8 @@ describe("job identity rules", () => {
     });
 
     it("accepts case-police canonical Train-Case job ids", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -103,6 +111,8 @@ describe("job identity rules", () => {
     });
 
     it("falls back to default casing when no casing flags are enabled", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -131,6 +141,8 @@ describe("job identity rules", () => {
     });
 
     it("requires every job to declare a name", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -161,6 +173,8 @@ describe("job identity rules", () => {
     });
 
     it("requires every job step to declare a name", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -194,6 +208,8 @@ describe("job identity rules", () => {
     });
 
     it("accepts jobs and steps with non-empty names", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -221,6 +237,8 @@ describe("job identity rules", () => {
     });
 
     it("reports non-mapping jobs as missing names", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -244,6 +262,8 @@ describe("job identity rules", () => {
     });
 
     it("reports blank job names", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -273,6 +293,8 @@ describe("job identity rules", () => {
     });
 
     it("reports null job names and unknown job ids for non-scalar keys", async () => {
+        expect.hasAssertions();
+
         const nullNameResult = await lintWorkflow(
             [
                 "name: CI",
@@ -312,6 +334,8 @@ describe("job identity rules", () => {
     });
 
     it("ignores require-job-name when workflow root or jobs mapping is missing", async () => {
+        expect.hasAssertions();
+
         const nonMappingRootResult = await lintWorkflow("- push", {
             rules: {
                 "github-actions/require-job-name": "error",
@@ -336,6 +360,8 @@ describe("job identity rules", () => {
     });
 
     it("reports blank step names", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -370,6 +396,8 @@ describe("job identity rules", () => {
     });
 
     it("reports null step names", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -397,6 +425,8 @@ describe("job identity rules", () => {
     });
 
     it("offers a uses-based step-name suggestion", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -427,6 +457,8 @@ describe("job identity rules", () => {
     });
 
     it("ignores non-mapping step entries while still validating mapping steps", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -456,6 +488,8 @@ describe("job identity rules", () => {
     });
 
     it("ignores require-job-step-name when workflow root is non-mapping or jobs omit steps", async () => {
+        expect.hasAssertions();
+
         const nonMappingRootResult = await lintWorkflow("- push", {
             rules: {
                 "github-actions/require-job-step-name": "error",
@@ -483,6 +517,8 @@ describe("job identity rules", () => {
     });
 
     it("reports workflows that exceed the configured job limit", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",

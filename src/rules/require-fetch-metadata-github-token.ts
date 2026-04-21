@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { isDefined } from "ts-extras";
+
 import { getDependabotFetchMetadataSteps } from "../_internal/dependabot-automation-workflow.ts";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
@@ -41,7 +43,7 @@ const rule: Rule.RuleModule = {
                         tokenPair?.value ?? null
                     )?.trim();
 
-                    if (tokenValue !== undefined && tokenValue.length > 0) {
+                    if (isDefined(tokenValue) && tokenValue.length > 0) {
                         continue;
                     }
 

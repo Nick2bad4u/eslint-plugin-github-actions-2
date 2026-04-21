@@ -59,6 +59,8 @@ const validScorecardWorkflow = [
 
 describe("code scanning rules", () => {
     it("accepts workflows that satisfy the codeScanning preset", async () => {
+        expect.hasAssertions();
+
         const codeqlResult = await lintWorkflow(validCodeqlWorkflow, {
             configName: "codeScanning",
             filePath: ".github/workflows/codeql.yml",
@@ -73,6 +75,8 @@ describe("code scanning rules", () => {
     });
 
     it("rejects split javascript/typescript CodeQL matrices and unnecessary autobuild", async () => {
+        expect.hasAssertions();
+
         const splitMatrixResult = await lintWorkflow(
             [
                 'name: "CodeQL"',
@@ -126,6 +130,8 @@ describe("code scanning rules", () => {
     });
 
     it("requires CodeQL workflow triggers and permissions", async () => {
+        expect.hasAssertions();
+
         const missingPermissionsResult = await lintWorkflow(
             [
                 'name: "CodeQL"',
@@ -188,6 +194,8 @@ describe("code scanning rules", () => {
     });
 
     it("requires SARIF upload discipline for scorecard workflows", async () => {
+        expect.hasAssertions();
+
         const missingSarifFormatResult = await lintWorkflow(
             [
                 'name: "Scorecard"',

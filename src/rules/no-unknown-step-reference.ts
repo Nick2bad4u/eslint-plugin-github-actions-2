@@ -5,7 +5,7 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
-import { safeCastTo } from "ts-extras";
+import { isDefined, safeCastTo } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
@@ -138,14 +138,14 @@ const rule: Rule.RuleModule = {
                                 const reference = match[0];
                                 const stepId = match.groups?.["stepId"];
 
-                                if (stepId === undefined) {
+                                if (!isDefined(stepId)) {
                                     continue;
                                 }
 
                                 const referencedStepIndex =
                                     stepIndexById.get(stepId);
 
-                                if (referencedStepIndex === undefined) {
+                                if (!isDefined(referencedStepIndex)) {
                                     context.report({
                                         data: {
                                             jobId: job.id,

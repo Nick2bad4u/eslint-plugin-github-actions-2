@@ -24,6 +24,7 @@ const parseRootMapping = (yamlText: string): AST.YAMLMapping => {
 
 describe("dependency review workflow helpers", () => {
     it("detects dependency review action references", () => {
+        expect.hasAssertions();
         expect(
             isDependencyReviewActionReference(
                 "actions/dependency-review-action@v4"
@@ -35,6 +36,8 @@ describe("dependency review workflow helpers", () => {
     });
 
     it("collects workflow steps using the dependency review action", () => {
+        expect.hasAssertions();
+
         const root = parseRootMapping(
             [
                 "name: Dependency Review",

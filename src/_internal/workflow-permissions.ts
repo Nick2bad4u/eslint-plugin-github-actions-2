@@ -5,6 +5,8 @@
 /* eslint-disable @typescript-eslint/prefer-readonly-parameter-types -- YAML AST nodes come from parser-owned mutable types shared across helper boundaries. */
 import type { AST } from "yaml-eslint-parser";
 
+import { isDefined } from "ts-extras";
+
 import {
     getMappingPair,
     getScalarStringValue,
@@ -66,7 +68,7 @@ const getMappingPermissionLevel = (
         getMappingPair(permissionsMapping, permissionName)?.value ?? null
     )?.trim();
 
-    if (permissionValue === undefined || permissionValue.length === 0) {
+    if (!isDefined(permissionValue) || permissionValue.length === 0) {
         return null;
     }
 
@@ -113,7 +115,7 @@ const getPermissionsNodeLevel = (
 ): null | WorkflowPermissionLevel => {
     const scalarValue = getScalarStringValue(permissionsNode)?.trim();
 
-    if (scalarValue !== undefined && scalarValue.length > 0) {
+    if (isDefined(scalarValue) && scalarValue.length > 0) {
         return getScalarPermissionLevel(scalarValue);
     }
 
@@ -137,7 +139,7 @@ const permissionsNodeSatisfies = (
 ): boolean => {
     const scalarValue = getScalarStringValue(permissionsNode)?.trim();
 
-    if (scalarValue !== undefined && scalarValue.length > 0) {
+    if (isDefined(scalarValue) && scalarValue.length > 0) {
         return scalarPermissionSatisfies(scalarValue, requiredLevel);
     }
 

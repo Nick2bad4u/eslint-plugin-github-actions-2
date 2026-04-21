@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { setHas } from "ts-extras";
+
 import {
     getDependencyReviewActionSteps,
     hasDependencyReviewAction,
@@ -30,7 +32,7 @@ const rule: Rule.RuleModule = {
                 const seenJobIds = new Set<string>();
 
                 for (const step of getDependencyReviewActionSteps(root)) {
-                    if (seenJobIds.has(step.job.id)) {
+                    if (setHas(seenJobIds, step.job.id)) {
                         continue;
                     }
 

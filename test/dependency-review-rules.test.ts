@@ -21,6 +21,8 @@ const validDependencyReviewWorkflow = [
 
 describe("dependency review workflow rules", () => {
     it("accepts a dependency review workflow that follows the security conventions", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(validDependencyReviewWorkflow, {
             configName: "security",
             filePath: ".github/workflows/dependency-review.yml",
@@ -39,6 +41,8 @@ describe("dependency review workflow rules", () => {
     });
 
     it("requires dependency-review workflow files to invoke actions/dependency-review-action", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 'name: "Dependency Review"',
@@ -61,6 +65,8 @@ describe("dependency review workflow rules", () => {
     });
 
     it("requires dependency-review workflows to set permissions.contents to read", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 'name: "Dependency Review"',
@@ -86,6 +92,8 @@ describe("dependency review workflow rules", () => {
     });
 
     it("accepts job-level contents: read for dependency review when workflow-level permissions are omitted", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 'name: "Dependency Review"',
@@ -112,6 +120,8 @@ describe("dependency review workflow rules", () => {
     });
 
     it("accepts workflow-level read-all but rejects workflow-level write-all for dependency review permissions", async () => {
+        expect.hasAssertions();
+
         const readAllResult = await lintWorkflow(
             [
                 'name: "Dependency Review"',
@@ -156,6 +166,8 @@ describe("dependency review workflow rules", () => {
     });
 
     it("requires dependency-review action steps to set fail-on-severity", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 'name: "Dependency Review"',
@@ -181,6 +193,8 @@ describe("dependency review workflow rules", () => {
     });
 
     it("requires workflows using dependency-review-action to listen for pull_request", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 'name: "Dependency Review"',

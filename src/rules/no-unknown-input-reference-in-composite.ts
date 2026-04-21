@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { isDefined, setHas } from "ts-extras";
+
 import { isActionMetadataFile } from "../_internal/lint-targets.js";
 import {
     getMappingValueAsMapping,
@@ -69,8 +71,8 @@ const rule: Rule.RuleModule = {
                         const inputId = match.groups?.["inputId"];
 
                         if (
-                            inputId === undefined ||
-                            declaredInputIds.has(inputId)
+                            !isDefined(inputId) ||
+                            setHas(declaredInputIds, inputId)
                         ) {
                             continue;
                         }

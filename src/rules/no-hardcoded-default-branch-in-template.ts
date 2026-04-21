@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { setHas } from "ts-extras";
+
 import { isWorkflowTemplateYamlFile } from "../_internal/lint-targets.js";
 import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 import { visitYamlStringScalars } from "../_internal/yaml-traversal.js";
@@ -27,7 +29,7 @@ const rule: Rule.RuleModule = {
                 }
 
                 visitYamlStringScalars(root, (node, value) => {
-                    if (!hardcodedDefaultBranchNames.has(value.trim())) {
+                    if (!setHas(hardcodedDefaultBranchNames, value.trim())) {
                         return;
                     }
 

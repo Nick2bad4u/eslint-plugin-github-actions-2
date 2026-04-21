@@ -4,7 +4,7 @@
  */
 import type { Rule } from "eslint";
 
-import { arrayJoin, isEmpty  } from "ts-extras";
+import { arrayJoin, isEmpty, setHas } from "ts-extras";
 
 import {
     getGithubExpressionBodies,
@@ -46,7 +46,7 @@ const getDisallowedContexts = (
     allowedContexts: ReadonlySet<string>
 ): readonly string[] =>
     getReferencedContextRoots(value).filter(
-        (contextRoot) => !allowedContexts.has(contextRoot)
+        (contextRoot) => !setHas(allowedContexts, contextRoot)
     );
 
 /** Check a single concurrency scalar for unsupported context usage. */

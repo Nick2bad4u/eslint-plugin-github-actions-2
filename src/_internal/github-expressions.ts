@@ -3,9 +3,11 @@
  * Shared helpers for extracting GitHub Actions `${{ ... }}` expressions.
  */
 
+import { isDefined, setHas } from "ts-extras";
+
 /** Determine whether a character can begin a GitHub expression identifier. */
 const isIdentifierStart = (character: string | undefined): boolean => {
-    if (character === undefined) {
+    if (!isDefined(character)) {
         return false;
     }
 
@@ -14,7 +16,7 @@ const isIdentifierStart = (character: string | undefined): boolean => {
 
 /** Determine whether a character can continue a GitHub expression identifier. */
 const isIdentifierContinue = (character: string | undefined): boolean => {
-    if (character === undefined) {
+    if (!isDefined(character)) {
         return false;
     }
 
@@ -104,7 +106,7 @@ export const getReferencedContextRoots = (value: string): readonly string[] => {
 
             const normalizedToken = token.toLowerCase();
 
-            if (knownContextRoots.has(normalizedToken)) {
+            if (setHas(knownContextRoots, normalizedToken)) {
                 roots.add(normalizedToken);
             }
 

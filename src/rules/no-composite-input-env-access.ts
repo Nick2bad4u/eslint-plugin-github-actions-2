@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { isDefined } from "ts-extras";
+
 import { isActionMetadataFile } from "../_internal/lint-targets.js";
 import {
     getMappingValueAsMapping,
@@ -49,7 +51,7 @@ const rule: Rule.RuleModule = {
                         inputEnvironmentPattern
                     )?.[0];
 
-                    if (firstMatch === undefined) {
+                    if (!isDefined(firstMatch)) {
                         return;
                     }
 

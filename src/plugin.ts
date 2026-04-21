@@ -3,8 +3,15 @@
  * Public plugin entrypoint for eslint-plugin-github-actions-2.
  */
 import type { ESLint, Linter, Rule } from "eslint";
+import type { Except } from "type-fest";
 
-import { arrayFirst, isEmpty, objectEntries, objectHasOwn    } from "ts-extras";
+import {
+    arrayFirst,
+    isDefined,
+    isEmpty,
+    objectEntries,
+    objectHasOwn,
+} from "ts-extras";
 import * as yamlParser from "yaml-eslint-parser";
 
 import type { GithubActionsRuleDocs } from "./_internal/rule-docs.js";
@@ -40,7 +47,7 @@ export type GithubActionsRuleId = `github-actions/${GithubActionsRuleName}`;
 export type GithubActionsRuleName = keyof typeof githubActionsRules;
 
 /** Fully assembled plugin contract used by the runtime default export. */
-type GithubActionsPluginContract = Omit<
+type GithubActionsPluginContract = Except<
     ESLint.Plugin,
     "configs" | "meta" | "rules"
 > & {
@@ -82,7 +89,7 @@ const getRuleConfigReferences = (
     const references = docs?.configs;
     const referenceList = Array.isArray(references) ? references : [references];
 
-    if (isEmpty(referenceList) || arrayFirst(referenceList) === undefined) {
+    if (isEmpty(referenceList) || !isDefined(arrayFirst(referenceList))) {
         return [];
     }
 
@@ -134,7 +141,7 @@ const createPresetRuleNamesByConfig = (): Record<
         for (const reference of getRuleConfigReferences(ruleName, rule)) {
             const configName = githubActionsConfigReferenceToName[reference];
 
-            if (configName === undefined) {
+            if (!isDefined(configName)) {
                 continue;
             }
 

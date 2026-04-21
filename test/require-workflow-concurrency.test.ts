@@ -7,6 +7,8 @@ const githubExpression = (expression: string): string =>
 
 describe("require-workflow-concurrency", () => {
     it("reports pull_request workflows that omit concurrency", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -30,6 +32,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("accepts a workflow-level concurrency group with cancel-in-progress", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -55,6 +59,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("does not require concurrency for events outside the default monitored set", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -76,6 +82,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("reports concurrency mappings that omit group", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -99,6 +107,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("reports blank scalar concurrency values", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -121,6 +131,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("accepts non-empty scalar concurrency values", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -142,6 +154,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("reports non-mapping concurrency structures", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -165,6 +179,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("reports mappings with missing cancel-in-progress when required", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -188,6 +204,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("accepts mappings without cancel-in-progress when disabled by option", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -215,6 +233,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("reports disabled boolean cancel-in-progress values", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -239,6 +259,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("reports non-scalar cancel-in-progress values", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -264,6 +286,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("accepts expression cancel-in-progress values", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -287,6 +311,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("supports custom event scopes through onlyForEvents", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -314,6 +340,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("does not report when onlyForEvents excludes active workflow events", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -339,6 +367,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("reports unsupported contexts in workflow-level concurrency", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -365,6 +395,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("reports unsupported contexts in job-level concurrency", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -391,6 +423,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("accepts valid workflow-level and job-level concurrency contexts", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -434,6 +468,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("reports invalid contexts used in scalar workflow and job concurrency", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -456,6 +492,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("ignores non-expression and empty concurrency scalar fields", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",
@@ -480,6 +518,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("ignores invalid-concurrency checks when workflow root is non-mapping or concurrency values are null/non-mapping", async () => {
+        expect.hasAssertions();
+
         const nonMappingRootResult = await lintWorkflow("- push", {
             rules: {
                 "github-actions/no-invalid-concurrency-context": "error",
@@ -530,6 +570,8 @@ describe("require-workflow-concurrency", () => {
     });
 
     it("handles partial concurrency mappings and jobs without concurrency declarations", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "on:",

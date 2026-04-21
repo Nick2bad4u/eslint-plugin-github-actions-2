@@ -5,7 +5,7 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
-import { safeCastTo } from "ts-extras";
+import { isDefined, safeCastTo, setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
@@ -199,8 +199,8 @@ const rule: Rule.RuleModule = {
                                         match.groups?.["outputName"];
 
                                     if (
-                                        jobId === undefined ||
-                                        outputName === undefined
+                                        !isDefined(jobId) ||
+                                        !isDefined(outputName)
                                     ) {
                                         continue;
                                     }
@@ -208,7 +208,7 @@ const rule: Rule.RuleModule = {
                                     const declaredOutputNames =
                                         declaredOutputsByJobId.get(jobId);
 
-                                    if (declaredOutputNames === undefined) {
+                                    if (!isDefined(declaredOutputNames)) {
                                         context.report({
                                             data: {
                                                 jobId,
@@ -223,7 +223,9 @@ const rule: Rule.RuleModule = {
                                         continue;
                                     }
 
-                                    if (declaredOutputNames.has(outputName)) {
+                                    if (
+                                        setHas(declaredOutputNames, outputName)
+                                    ) {
                                         continue;
                                     }
 
@@ -256,8 +258,8 @@ const rule: Rule.RuleModule = {
                             const outputName = match.groups?.["outputName"];
 
                             if (
-                                neededJobId === undefined ||
-                                outputName === undefined
+                                !isDefined(neededJobId) ||
+                                !isDefined(outputName)
                             ) {
                                 continue;
                             }
@@ -265,7 +267,7 @@ const rule: Rule.RuleModule = {
                             const declaredOutputNames =
                                 declaredOutputsByJobId.get(neededJobId);
 
-                            if (declaredOutputNames === undefined) {
+                            if (!isDefined(declaredOutputNames)) {
                                 context.report({
                                     data: {
                                         currentJobId: job.id,
@@ -279,7 +281,7 @@ const rule: Rule.RuleModule = {
                                 continue;
                             }
 
-                            if (!directNeedsJobIds.has(neededJobId)) {
+                            if (!setHas(directNeedsJobIds, neededJobId)) {
                                 context.report({
                                     data: {
                                         currentJobId: job.id,
@@ -293,7 +295,7 @@ const rule: Rule.RuleModule = {
                                 continue;
                             }
 
-                            if (declaredOutputNames.has(outputName)) {
+                            if (setHas(declaredOutputNames, outputName)) {
                                 continue;
                             }
 

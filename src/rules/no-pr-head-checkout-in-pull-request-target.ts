@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { setHas } from "ts-extras";
+
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
@@ -45,7 +47,7 @@ const rule: Rule.RuleModule = {
 
                 const eventNames = getWorkflowEventNames(root);
 
-                if (!eventNames.has("pull_request_target")) {
+                if (!setHas(eventNames, "pull_request_target")) {
                     return;
                 }
 

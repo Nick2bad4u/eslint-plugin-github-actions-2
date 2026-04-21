@@ -7,6 +7,8 @@ const githubExpression = (expression: string): string =>
 
 describe("workflow reuse rules", () => {
     it("reports local actions used before checkout", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -34,6 +36,8 @@ describe("workflow reuse rules", () => {
     });
 
     it("accepts local actions after checkout", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -60,6 +64,8 @@ describe("workflow reuse rules", () => {
     });
 
     it("still reports when checkout appears after the local action", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -86,6 +92,8 @@ describe("workflow reuse rules", () => {
     });
 
     it("reports reusable workflow jobs that inherit all secrets", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Reuse",
@@ -110,6 +118,8 @@ describe("workflow reuse rules", () => {
     });
 
     it("accepts reusable workflow jobs with explicit secrets", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Reuse",
@@ -132,6 +142,8 @@ describe("workflow reuse rules", () => {
     });
 
     it("ignores no-inherit-secrets for inline jobs and reusable jobs without secrets", async () => {
+        expect.hasAssertions();
+
         const inlineJobResult = await lintWorkflow(
             [
                 "name: Reuse",
@@ -172,6 +184,8 @@ describe("workflow reuse rules", () => {
     });
 
     it("ignores no-inherit-secrets when workflow root is not a mapping", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow("- deploy", {
             rules: {
                 "github-actions/no-inherit-secrets": "error",
@@ -182,6 +196,8 @@ describe("workflow reuse rules", () => {
     });
 
     it("reports unsupported inline-job keys on reusable workflow caller jobs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Reuse",
@@ -209,6 +225,8 @@ describe("workflow reuse rules", () => {
     });
 
     it("accepts supported reusable workflow caller-job keys", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Reuse",
@@ -245,6 +263,8 @@ describe("workflow reuse rules", () => {
     });
 
     it("does not report normal inline jobs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Inline",
@@ -268,6 +288,8 @@ describe("workflow reuse rules", () => {
     });
 
     it("ignores no-invalid-reusable-workflow-job-key when workflow root is not a mapping", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow("- deploy", {
             rules: {
                 "github-actions/no-invalid-reusable-workflow-job-key": "error",

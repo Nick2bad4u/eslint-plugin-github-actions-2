@@ -5,7 +5,7 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
-import { arrayJoin, isEmpty, safeCastTo, setHas    } from "ts-extras";
+import { arrayJoin, isEmpty, safeCastTo, setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
@@ -109,7 +109,10 @@ const rule: Rule.RuleModule = {
 
                     context.report({
                         data: {
-                            events: arrayJoin(triggeringForkPullRequestEvents, ", "),
+                            events: arrayJoin(
+                                triggeringForkPullRequestEvents,
+                                ", "
+                            ),
                             jobId: job.id,
                         },
                         messageId: "selfHostedRunnerOnForkPullRequestEvent",

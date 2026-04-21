@@ -32,6 +32,8 @@ const validDependabotAutomationWorkflow = [
 
 describe("dependabot automation workflow rules", () => {
     it("accepts a Dependabot automation workflow that follows the security conventions", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(validDependabotAutomationWorkflow, {
             configName: "security",
             filePath: ".github/workflows/dependabot-auto-label.yml",
@@ -41,6 +43,8 @@ describe("dependabot automation workflow rules", () => {
     });
 
     it("requires a Dependabot bot actor guard and pull_request trigger", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 'name: "Dependabot Auto Label"',
@@ -71,6 +75,8 @@ describe("dependabot automation workflow rules", () => {
     });
 
     it("requires fetch-metadata github-token and minimum automation permissions", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 'name: "Dependabot Auto Label"',

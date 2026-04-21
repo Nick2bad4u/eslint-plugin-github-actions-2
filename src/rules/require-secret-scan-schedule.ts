@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { setHas } from "ts-extras";
+
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import { hasSecretScanningAction } from "../_internal/secret-scanning-workflow.ts";
 import {
@@ -26,7 +28,7 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                if (getWorkflowEventNames(root).has("schedule")) {
+                if (setHas(getWorkflowEventNames(root), "schedule")) {
                     return;
                 }
 

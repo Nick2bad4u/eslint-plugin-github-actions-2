@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { isDefined } from "ts-extras";
+
 import {
     getDependabotRoot,
     getDependabotUpdateLabel,
@@ -41,7 +43,7 @@ const rule: Rule.RuleModule = {
                 ] of updatesSequence.entries.entries()) {
                     const updateMapping = unwrapYamlValue(entry);
 
-                    if (entry === null || entry === undefined) {
+                    if (entry === null || !isDefined(entry)) {
                         continue;
                     }
 
@@ -63,7 +65,7 @@ const rule: Rule.RuleModule = {
                     )?.trim();
 
                     if (
-                        ecosystemValue !== undefined &&
+                        isDefined(ecosystemValue) &&
                         ecosystemValue !== null &&
                         ecosystemValue.length > 0
                     ) {

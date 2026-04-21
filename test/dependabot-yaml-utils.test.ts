@@ -34,6 +34,8 @@ const parseRootMapping = (yamlText: string): AST.YAMLMapping => {
 
 describe("dependabot YAML helpers", () => {
     it("resolves root mappings only for Dependabot files", () => {
+        expect.hasAssertions();
+
         const dependabotContext = {
             filename: ".github/dependabot.yml",
             sourceCode: {
@@ -52,6 +54,8 @@ describe("dependabot YAML helpers", () => {
     });
 
     it("collects update entries and resolves multi-ecosystem group fallback", () => {
+        expect.hasAssertions();
+
         const root = parseRootMapping(
             [
                 "version: 2",
@@ -91,7 +95,7 @@ describe("dependabot YAML helpers", () => {
         expect(
             getScalarStringValue(scheduleMapping?.pairs[0]?.value)?.trim()
         ).toBe("weekly");
-        expect(getNonEmptyStringSequenceEntries(labelsValue)).toEqual([
+        expect(getNonEmptyStringSequenceEntries(labelsValue)).toStrictEqual([
             {
                 node: expect.anything(),
                 value: "dependencies",
@@ -100,6 +104,8 @@ describe("dependabot YAML helpers", () => {
     });
 
     it("filters empty sequence values when collecting non-empty strings", () => {
+        expect.hasAssertions();
+
         const root = parseRootMapping(
             [
                 "labels:",
@@ -113,6 +119,6 @@ describe("dependabot YAML helpers", () => {
             getNonEmptyStringSequenceEntries(root.pairs[0]?.value).map(
                 (entry) => entry.value
             )
-        ).toEqual(["dependencies", "42"]);
+        ).toStrictEqual(["dependencies", "42"]);
     });
 });

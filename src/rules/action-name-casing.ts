@@ -5,7 +5,7 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
-import { arrayJoin, safeCastTo  } from "ts-extras";
+import { arrayIncludes, arrayJoin, isDefined, safeCastTo } from "ts-extras";
 
 import {
     convertToGithubActionsCasing,
@@ -48,7 +48,7 @@ const normalizeActionNameCasingOptions = (
     allowedCasings: readonly GithubActionsCasingKind[];
     ignoredNames: readonly string[];
 } => {
-    if (option === undefined || typeof option === "string") {
+    if (!isDefined(option) || typeof option === "string") {
         return {
             allowedCasings: [option ?? DEFAULT_ACTION_NAME_CASING],
             ignoredNames: [],
@@ -96,7 +96,7 @@ const rule: Rule.RuleModule = {
                     nameNode?.type !== "YAMLScalar" ||
                     nameValue === null ||
                     nameValue.trim().length === 0 ||
-                    ignoredNames.includes(nameValue)
+                    arrayIncludes(ignoredNames, nameValue)
                 ) {
                     return;
                 }
@@ -114,7 +114,7 @@ const rule: Rule.RuleModule = {
                             name: nameValue,
                         },
                         fix:
-                            firstAllowedCasing !== undefined &&
+                            isDefined(firstAllowedCasing) &&
                             allowedCasings.length === 1
                                 ? (fixer) =>
                                       fixer.replaceTextRange(
@@ -126,7 +126,9 @@ const rule: Rule.RuleModule = {
                                       )
                                 : undefined,
                         messageId: "nameDoesNotMatchCasing",
-                        node: safeCastTo<AST.YAMLNode>(nameNode) as unknown as Rule.Node,
+                        node: safeCastTo<AST.YAMLNode>(
+                            nameNode
+                        ) as unknown as Rule.Node,
                     });
                 }
             },

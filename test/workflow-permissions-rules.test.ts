@@ -4,6 +4,8 @@ import { lintWorkflow } from "./_shared/lint-workflow.js";
 
 describe("workflow permissions hardening rules", () => {
     it("reports top-level write-all permissions", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -28,6 +30,8 @@ describe("workflow permissions hardening rules", () => {
     });
 
     it("reports job-level write-all permissions", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -54,6 +58,8 @@ describe("workflow permissions hardening rules", () => {
     });
 
     it("accepts granular workflow and job permissions maps", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -79,6 +85,8 @@ describe("workflow permissions hardening rules", () => {
     });
 
     it("ignores no-write-all-permissions when workflow root is not a mapping", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow("- write-all", {
             rules: {
                 "github-actions/no-write-all-permissions": "error",

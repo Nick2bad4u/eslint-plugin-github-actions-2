@@ -37,7 +37,10 @@ const rule: Rule.RuleModule = {
                     fix: (fixer) => {
                         if (versionPair === null) {
                             return fixer.insertTextBeforeRange(
-                                [arrayFirst(root.range), arrayFirst(root.range)],
+                                [
+                                    arrayFirst(root.range),
+                                    arrayFirst(root.range),
+                                ],
                                 "version: 2\n"
                             );
                         }

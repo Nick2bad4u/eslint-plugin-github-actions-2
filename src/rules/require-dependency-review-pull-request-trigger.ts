@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { setHas } from "ts-extras";
+
 import { hasDependencyReviewAction } from "../_internal/dependency-review-workflow.ts";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
@@ -26,7 +28,7 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                if (getWorkflowEventNames(root).has("pull_request")) {
+                if (setHas(getWorkflowEventNames(root), "pull_request")) {
                     return;
                 }
 

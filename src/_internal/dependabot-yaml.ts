@@ -6,6 +6,8 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
+import { isDefined, isPresent } from "ts-extras";
+
 import { isDependabotFile } from "./lint-targets.js";
 import {
     getMappingPair,
@@ -46,7 +48,7 @@ export const getDependabotTrimmedStringValue = (
 ): null | string => {
     const stringValue = getScalarStringValue(node ?? null)?.trim();
 
-    return stringValue === undefined || stringValue.length === 0
+    return !isDefined(stringValue) || stringValue.length === 0
         ? null
         : stringValue;
 };
@@ -81,7 +83,7 @@ export const getDependabotUpdateEntries = (
     for (const [index, entry] of updatesSequence.entries.entries()) {
         const updateMapping = unwrapYamlValue(entry);
 
-        if (entry === null || entry === undefined) {
+        if (!isPresent(entry)) {
             continue;
         }
 
@@ -206,11 +208,9 @@ export const getNonEmptyStringSequenceEntries = (
         const stringValue = getScalarStringValue(entry)?.trim();
 
         if (
-            stringValue === undefined ||
-            stringValue === null ||
+            !isPresent(stringValue) ||
             stringValue.length === 0 ||
-            entry === null ||
-            entry === undefined
+            !isPresent(entry)
         ) {
             continue;
         }
@@ -260,10 +260,8 @@ export const getDependabotDirectorySelectorEntries = (
     )?.trim();
 
     if (
-        directoryPair?.value !== null &&
-        directoryPair?.value !== undefined &&
-        directoryValue !== undefined &&
-        directoryValue !== null &&
+        isPresent(directoryPair?.value) &&
+        isPresent(directoryValue) &&
         directoryValue.length > 0
     ) {
         selectors.push({

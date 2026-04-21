@@ -4,11 +4,12 @@ import githubActionsPlugin from "../src/plugin.js";
 
 describe("exported presets", () => {
     it("exports the expected preset names", () => {
+        expect.hasAssertions();
         expect(
             Object.keys(githubActionsPlugin.configs).toSorted((left, right) =>
                 left.localeCompare(right)
             )
-        ).toEqual([
+        ).toStrictEqual([
             "actionMetadata",
             "all",
             "codeScanning",
@@ -22,36 +23,41 @@ describe("exported presets", () => {
     });
 
     it("scopes core workflow presets to workflow YAML files", () => {
-        expect(githubActionsPlugin.configs.recommended.files).toEqual([
+        expect.hasAssertions();
+        expect(githubActionsPlugin.configs.recommended.files).toStrictEqual([
             ".github/workflows/*.{yml,yaml}",
         ]);
     });
 
     it("exports dedicated action metadata and workflow template scopes", () => {
-        expect(githubActionsPlugin.configs.actionMetadata.files).toEqual([
+        expect.hasAssertions();
+        expect(githubActionsPlugin.configs.actionMetadata.files).toStrictEqual([
             "**/action.{yml,yaml}",
         ]);
-        expect(githubActionsPlugin.configs.dependabot.files).toEqual([
+        expect(githubActionsPlugin.configs.dependabot.files).toStrictEqual([
             ".github/dependabot.{yml,yaml}",
         ]);
-        expect(githubActionsPlugin.configs.codeScanning.files).toEqual([
+        expect(githubActionsPlugin.configs.codeScanning.files).toStrictEqual([
             ".github/workflows/*.{yml,yaml}",
         ]);
         expect(
             githubActionsPlugin.configs.workflowTemplateProperties.files
-        ).toEqual(["**/workflow-templates/*.properties.json"]);
-        expect(githubActionsPlugin.configs.workflowTemplates.files).toEqual([
+        ).toStrictEqual(["**/workflow-templates/*.properties.json"]);
+        expect(
+            githubActionsPlugin.configs.workflowTemplates.files
+        ).toStrictEqual([
             "**/workflow-templates/*.{yml,yaml}",
             "**/workflow-templates/*.properties.json",
         ]);
     });
 
     it("wires rule membership by preset", () => {
+        expect.hasAssertions();
         expect(
             Object.keys(githubActionsPlugin.configs.recommended.rules).toSorted(
                 (left, right) => left.localeCompare(right)
             )
-        ).toEqual([
+        ).toStrictEqual([
             "github-actions/no-invalid-concurrency-context",
             "github-actions/no-invalid-key",
             "github-actions/no-invalid-reusable-workflow-job-key",
@@ -100,7 +106,7 @@ describe("exported presets", () => {
             Object.keys(
                 githubActionsPlugin.configs.codeScanning.rules
             ).toSorted((left, right) => left.localeCompare(right))
-        ).toEqual([
+        ).toStrictEqual([
             "github-actions/no-codeql-autobuild-for-javascript-typescript",
             "github-actions/no-codeql-javascript-typescript-split-language-matrix",
             "github-actions/require-codeql-actions-read",
@@ -121,7 +127,7 @@ describe("exported presets", () => {
             Object.keys(githubActionsPlugin.configs.security.rules).toSorted(
                 (left, right) => left.localeCompare(right)
             )
-        ).toEqual([
+        ).toStrictEqual([
             "github-actions/no-inherit-secrets",
             "github-actions/no-pr-head-checkout-in-pull-request-target",
             "github-actions/no-secrets-in-if",
@@ -151,7 +157,7 @@ describe("exported presets", () => {
             Object.keys(githubActionsPlugin.configs.strict.rules).toSorted(
                 (left, right) => left.localeCompare(right)
             )
-        ).toEqual([
+        ).toStrictEqual([
             "github-actions/action-name-casing",
             "github-actions/job-id-casing",
             "github-actions/max-jobs-per-action",
@@ -199,7 +205,7 @@ describe("exported presets", () => {
             Object.keys(
                 githubActionsPlugin.configs.actionMetadata.rules
             ).toSorted((left, right) => left.localeCompare(right))
-        ).toEqual([
+        ).toStrictEqual([
             "github-actions/no-case-insensitive-input-id-collision",
             "github-actions/no-composite-input-env-access",
             "github-actions/no-deprecated-node-runtime",
@@ -217,7 +223,7 @@ describe("exported presets", () => {
             Object.keys(githubActionsPlugin.configs.dependabot.rules).toSorted(
                 (left, right) => left.localeCompare(right)
             )
-        ).toEqual([
+        ).toStrictEqual([
             "github-actions/no-overlapping-dependabot-directories",
             "github-actions/no-unknown-dependabot-multi-ecosystem-group",
             "github-actions/no-unused-dependabot-enable-beta-ecosystems",
@@ -246,7 +252,7 @@ describe("exported presets", () => {
             Object.keys(
                 githubActionsPlugin.configs.workflowTemplateProperties.rules
             ).toSorted((left, right) => left.localeCompare(right))
-        ).toEqual([
+        ).toStrictEqual([
             "github-actions/no-empty-template-file-pattern",
             "github-actions/no-icon-file-extension-in-template-icon-name",
             "github-actions/no-invalid-template-file-pattern-regex",
@@ -264,7 +270,7 @@ describe("exported presets", () => {
             Object.keys(
                 githubActionsPlugin.configs.workflowTemplates.rules
             ).toSorted((left, right) => left.localeCompare(right))
-        ).toEqual([
+        ).toStrictEqual([
             "github-actions/no-empty-template-file-pattern",
             "github-actions/no-hardcoded-default-branch-in-template",
             "github-actions/no-icon-file-extension-in-template-icon-name",

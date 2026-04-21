@@ -24,6 +24,8 @@ const parseYamlRoot = (
 
 describe("yaml traversal helpers", () => {
     it("collects nested string scalars from mappings and sequences", () => {
+        expect.hasAssertions();
+
         const root = parseYamlRoot(
             [
                 "name: Build",
@@ -37,7 +39,7 @@ describe("yaml traversal helpers", () => {
             ].join("\n")
         );
 
-        expect(collectYamlStringScalars(root)).toEqual([
+        expect(collectYamlStringScalars(root)).toStrictEqual([
             "Build",
             "fast",
             "secure",
@@ -46,6 +48,8 @@ describe("yaml traversal helpers", () => {
     });
 
     it("collects scalar string representations while omitting null scalar values", () => {
+        expect.hasAssertions();
+
         const root = parseYamlRoot(
             [
                 "count: 3",
@@ -58,7 +62,7 @@ describe("yaml traversal helpers", () => {
             ].join("\n")
         );
 
-        expect(collectYamlStringScalars(root)).toEqual([
+        expect(collectYamlStringScalars(root)).toStrictEqual([
             "3",
             "true",
             "ready",
@@ -68,6 +72,8 @@ describe("yaml traversal helpers", () => {
     });
 
     it("handles nullish and unsupported node types without visiting anything", () => {
+        expect.hasAssertions();
+
         const visitedValues: string[] = [];
 
         visitYamlStringScalars(undefined, (_node, value) => {
@@ -78,11 +84,13 @@ describe("yaml traversal helpers", () => {
             visitedValues.push(value);
         });
 
-        expect(visitedValues).toEqual([]);
-        expect(collectYamlStringScalars(null)).toEqual([]);
+        expect(visitedValues).toStrictEqual([]);
+        expect(collectYamlStringScalars(null)).toStrictEqual([]);
     });
 
     it("ignores YAML aliases that are not directly traversable string nodes", () => {
+        expect.hasAssertions();
+
         const root = parseYamlRoot(
             [
                 "labels: &labels",
@@ -92,6 +100,9 @@ describe("yaml traversal helpers", () => {
             ].join("\n")
         );
 
-        expect(collectYamlStringScalars(root)).toEqual(["release", "pipeline"]);
+        expect(collectYamlStringScalars(root)).toStrictEqual([
+            "release",
+            "pipeline",
+        ]);
     });
 });

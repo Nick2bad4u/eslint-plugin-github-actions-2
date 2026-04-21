@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { isDefined, setHas } from "ts-extras";
+
 import {
     getDependabotRoot,
     getDependabotUpdateEntries,
@@ -52,9 +54,9 @@ const rule: Rule.RuleModule = {
                     )?.trim();
 
                     if (
-                        intervalValue !== undefined &&
+                        isDefined(intervalValue) &&
                         intervalValue !== null &&
-                        validDependabotIntervals.has(intervalValue)
+                        setHas(validDependabotIntervals, intervalValue)
                     ) {
                         continue;
                     }

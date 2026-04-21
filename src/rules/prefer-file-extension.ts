@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { extname } from "node:path";
+import { isDefined } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 
@@ -37,7 +38,7 @@ const normalizePreferFileExtensionOptions = (
     caseSensitive: boolean;
     extension: WorkflowFileExtension;
 } => {
-    if (option === undefined || typeof option === "string") {
+    if (!isDefined(option) || typeof option === "string") {
         return {
             caseSensitive: true,
             extension: option ?? DEFAULT_WORKFLOW_FILE_EXTENSION,
@@ -71,7 +72,7 @@ const rule: Rule.RuleModule = {
 
                 const actualExtension = actualExtensionWithDot.slice(1);
 
-                if (actualExtension === undefined) {
+                if (!isDefined(actualExtension)) {
                     return;
                 }
 

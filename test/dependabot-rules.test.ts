@@ -40,6 +40,8 @@ const validDependabotConfig = [
 
 describe("dependabot rules", () => {
     it("accepts a grouped Dependabot config that satisfies the dedicated preset", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(validDependabotConfig, {
             configName: "dependabot",
             filePath: ".github/dependabot.yml",
@@ -49,6 +51,8 @@ describe("dependabot rules", () => {
     });
 
     it("does not run workflow-only rules on valid Dependabot files under the all preset", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(validDependabotConfig, {
             configName: "all",
             filePath: ".github/dependabot.yml",
@@ -58,6 +62,8 @@ describe("dependabot rules", () => {
     });
 
     it("reports unused top-level enable-beta-ecosystems settings", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "version: 2",
@@ -78,6 +84,8 @@ describe("dependabot rules", () => {
     });
 
     it("autofixes unused enable-beta-ecosystems settings by removing the key", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "version: 2",
@@ -99,6 +107,8 @@ describe("dependabot rules", () => {
     });
 
     it("requires `version: 2` and a non-empty `updates` sequence", async () => {
+        expect.hasAssertions();
+
         const missingVersionResult = await lintWorkflow("updates: []", {
             configName: "dependabot",
             filePath: ".github/dependabot.yml",
@@ -122,6 +132,8 @@ describe("dependabot rules", () => {
     });
 
     it("autofixes missing or invalid Dependabot versions to version 2", async () => {
+        expect.hasAssertions();
+
         const missingVersionResult = await lintWorkflow("updates: []", {
             configName: "dependabot",
             filePath: ".github/dependabot.yml",
@@ -151,6 +163,8 @@ describe("dependabot rules", () => {
     });
 
     it("requires cooldown and open-pull-requests-limit", async () => {
+        expect.hasAssertions();
+
         const missingCooldownResult = await lintWorkflow(
             [
                 "version: 2",
@@ -199,6 +213,8 @@ describe("dependabot rules", () => {
     });
 
     it("does not require open-pull-requests-limit for updates using multi-ecosystem-group", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "version: 2",
@@ -227,6 +243,8 @@ describe("dependabot rules", () => {
     });
 
     it("reports open-pull-requests-limit set directly on grouped updates", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "version: 2",
@@ -259,6 +277,8 @@ describe("dependabot rules", () => {
     });
 
     it("reports open-pull-requests-limit set on a referenced multi-ecosystem group once", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "version: 2",
@@ -298,6 +318,8 @@ describe("dependabot rules", () => {
     });
 
     it("requires `package-ecosystem` and `directory`/`directories` on every update entry", async () => {
+        expect.hasAssertions();
+
         const missingEcosystemResult = await lintWorkflow(
             [
                 "version: 2",
@@ -341,6 +363,8 @@ describe("dependabot rules", () => {
     });
 
     it("requires effective schedule interval, time, and timezone", async () => {
+        expect.hasAssertions();
+
         const missingIntervalResult = await lintWorkflow(
             [
                 "version: 2",
@@ -402,6 +426,8 @@ describe("dependabot rules", () => {
     });
 
     it("requires valid grouped-update references and patterns", async () => {
+        expect.hasAssertions();
+
         const unknownGroupResult = await lintWorkflow(
             [
                 "version: 2",
@@ -446,6 +472,8 @@ describe("dependabot rules", () => {
     });
 
     it("reports guaranteed overlapping directory selectors for the same ecosystem and target branch", async () => {
+        expect.hasAssertions();
+
         const duplicateDirectoryResult = await lintWorkflow(
             [
                 "version: 2",
@@ -497,6 +525,8 @@ describe("dependabot rules", () => {
     });
 
     it("ignores distinct directories and same-directory selectors split across other ecosystems or branches", async () => {
+        expect.hasAssertions();
+
         const distinctDirectoriesResult = await lintWorkflow(
             [
                 "version: 2",
@@ -572,6 +602,8 @@ describe("dependabot rules", () => {
     });
 
     it("requires cron schedules to declare cronjob and non-cron schedules to omit it", async () => {
+        expect.hasAssertions();
+
         const missingCronjobResult = await lintWorkflow(
             [
                 "version: 2",
@@ -616,6 +648,8 @@ describe("dependabot rules", () => {
     });
 
     it("requires effective assignees, target-branch, commit-message prefix, and labels", async () => {
+        expect.hasAssertions();
+
         const missingAssigneesResult = await lintWorkflow(
             [
                 "version: 2",
@@ -722,6 +756,8 @@ describe("dependabot rules", () => {
     });
 
     it("requires commit-message include scope and prefix-development for supported ecosystems", async () => {
+        expect.hasAssertions();
+
         const missingIncludeScopeResult = await lintWorkflow(
             [
                 "version: 2",
@@ -790,6 +826,8 @@ describe("dependabot rules", () => {
     });
 
     it("requires npm entries to declare versioning-strategy", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "version: 2",
@@ -818,6 +856,8 @@ describe("dependabot rules", () => {
     });
 
     it("requires `github-actions` ecosystems to use `directory: /`", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "version: 2",
@@ -843,6 +883,8 @@ describe("dependabot rules", () => {
     });
 
     it("autofixes github-actions ecosystems to use directory root", async () => {
+        expect.hasAssertions();
+
         const invalidDirectoryResult = await lintWorkflow(
             [
                 "version: 2",
@@ -914,6 +956,8 @@ describe("dependabot rules", () => {
     });
 
     it("ignores workflow files even when Dependabot rules are enabled explicitly", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",

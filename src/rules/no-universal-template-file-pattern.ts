@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { setHas } from "ts-extras";
+
 import { isWorkflowTemplatePropertiesFile } from "../_internal/lint-targets.js";
 import {
     getWorkflowTemplateFilePatternEntries,
@@ -39,7 +41,12 @@ const rule: Rule.RuleModule = {
                 } of getWorkflowTemplateFilePatternEntries(root)) {
                     const normalizedPattern = value.trim();
 
-                    if (!universalTemplateFilePatterns.has(normalizedPattern)) {
+                    if (
+                        !setHas(
+                            universalTemplateFilePatterns,
+                            normalizedPattern
+                        )
+                    ) {
                         continue;
                     }
 

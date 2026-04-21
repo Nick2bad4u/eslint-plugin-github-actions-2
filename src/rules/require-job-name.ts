@@ -78,7 +78,9 @@ const rule: Rule.RuleModule = {
                                                       );
                                                   const childIndentation = `${getLineIndentation(
                                                       context.sourceCode.text,
-                                                      arrayFirst(jobKeyNode.range)
+                                                      arrayFirst(
+                                                          jobKeyNode.range
+                                                      )
                                                   )}  `;
 
                                                   return fixer.insertTextBeforeRange(

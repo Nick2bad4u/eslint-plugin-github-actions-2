@@ -4,7 +4,7 @@
  */
 import type { Rule } from "eslint";
 
-import { isEmpty } from "ts-extras";
+import { isEmpty, setHas } from "ts-extras";
 
 import { getCodeqlInitSteps } from "../_internal/code-scanning-workflow.ts";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
@@ -28,7 +28,7 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                if (getWorkflowEventNames(root).has("schedule")) {
+                if (setHas(getWorkflowEventNames(root), "schedule")) {
                     return;
                 }
 

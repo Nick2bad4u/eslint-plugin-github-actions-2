@@ -4,7 +4,10 @@
  */
 /* eslint-disable @typescript-eslint/prefer-readonly-parameter-types -- YAML AST nodes come from parser-owned mutable types shared across helper boundaries. */
 import type { Rule } from "eslint";
+import type { UnknownRecord } from "type-fest";
 import type { AST } from "yaml-eslint-parser";
+
+import { isPresent, keyIn } from "ts-extras";
 
 /** Default workflow globs used by the exported flat configs. */
 export const WORKFLOW_FILE_GLOBS: readonly string[] = [
@@ -31,7 +34,7 @@ export const isYamlWithMeta = (
 export const unwrapYamlValue = (
     node: null | undefined | WorkflowYamlValueNode
 ): AST.YAMLContent | null => {
-    if (node === null || node === undefined) {
+    if (!isPresent(node)) {
         return null;
     }
 
@@ -82,10 +85,12 @@ export const getScalarStringValue = (
         return unwrappedNode.value;
     }
 
-    return "strValue" in unwrappedNode &&
-        typeof unwrappedNode.strValue === "string"
-        ? unwrappedNode.strValue
+    const scalarNodeRecord = unwrappedNode as unknown as UnknownRecord;
+    const scalarStringValue = keyIn(scalarNodeRecord, "strValue")
+        ? Reflect.get(scalarNodeRecord, "strValue")
         : null;
+
+    return typeof scalarStringValue === "string" ? scalarStringValue : null;
 };
 
 /** Read a scalar node as a number when possible. */
@@ -170,7 +175,7 @@ export const getWorkflowJobs = (
             continue;
         }
 
-        if (pair.key === null || pair.key === undefined) {
+        if (!isPresent(pair.key)) {
             continue;
         }
 

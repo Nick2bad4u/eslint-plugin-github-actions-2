@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { setHas } from "ts-extras";
+
 import {
     getDependabotReferencedGroup,
     getDependabotRoot,
@@ -61,7 +63,10 @@ const rule: Rule.RuleModule = {
 
                         if (
                             groupLimitPair !== null &&
-                            !reportedGroupNames.has(update.multiEcosystemGroup)
+                            !setHas(
+                                reportedGroupNames,
+                                update.multiEcosystemGroup
+                            )
                         ) {
                             reportedGroupNames.add(update.multiEcosystemGroup);
 

@@ -7,6 +7,8 @@ const githubExpression = (expression: string): string =>
 
 describe("workflow shape rules", () => {
     it("reports reusable-workflow jobs when external jobs are disallowed", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Release",
@@ -30,6 +32,8 @@ describe("workflow shape rules", () => {
     });
 
     it("accepts inline jobs when reusable-workflow jobs are disallowed", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Release",
@@ -52,6 +56,8 @@ describe("workflow shape rules", () => {
     });
 
     it("reports each job that uses a reusable workflow", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Release",
@@ -74,6 +80,8 @@ describe("workflow shape rules", () => {
     });
 
     it("ignores no-external-job when workflows define no jobs", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Release",
@@ -91,6 +99,8 @@ describe("workflow shape rules", () => {
     });
 
     it("ignores no-external-job when workflow root is not a mapping", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow("- deploy", {
             rules: {
                 "github-actions/no-external-job": "error",
@@ -101,6 +111,8 @@ describe("workflow shape rules", () => {
     });
 
     it("reports external jobs even when uses has an empty value", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: Release",
@@ -121,6 +133,8 @@ describe("workflow shape rules", () => {
     });
 
     it("reports top-level workflow env", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -143,6 +157,8 @@ describe("workflow shape rules", () => {
     });
 
     it("accepts workflows that scope env values at job level", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -167,6 +183,8 @@ describe("workflow shape rules", () => {
     });
 
     it("ignores top-level env and permissions rules when the workflow root is not a mapping", async () => {
+        expect.hasAssertions();
+
         const noTopLevelEnvResult = await lintWorkflow("- push", {
             rules: {
                 "github-actions/no-top-level-env": "error",
@@ -184,6 +202,8 @@ describe("workflow shape rules", () => {
     });
 
     it("reports invalid workflow mapping keys", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -210,6 +230,8 @@ describe("workflow shape rules", () => {
     });
 
     it("accepts valid workflow mapping keys across jobs, steps, and services", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -248,6 +270,8 @@ describe("workflow shape rules", () => {
     });
 
     it("reports invalid keys across top-level, job, strategy, container, service, and step mappings", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -283,7 +307,7 @@ describe("workflow shape rules", () => {
         const messageIds = result.messages.map((message) => message.messageId);
 
         expect(result.messages).toHaveLength(6);
-        expect(messageIds).toEqual(
+        expect(messageIds).toStrictEqual(
             expect.arrayContaining([
                 "invalidContainerKey",
                 "invalidJobKey",
@@ -296,6 +320,8 @@ describe("workflow shape rules", () => {
     });
 
     it("ignores no-invalid-key checks for non-scalar mapping keys", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -319,6 +345,8 @@ describe("workflow shape rules", () => {
     });
 
     it("ignores no-invalid-key when the workflow root is not a mapping", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow("- push", {
             rules: {
                 "github-actions/no-invalid-key": "error",
@@ -329,6 +357,8 @@ describe("workflow shape rules", () => {
     });
 
     it("ignores non-scalar keys and non-mapping service and step entries", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "? [name]",
@@ -355,6 +385,8 @@ describe("workflow shape rules", () => {
     });
 
     it("accepts jobs without strategy blocks for no-invalid-key", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -377,6 +409,8 @@ describe("workflow shape rules", () => {
     });
 
     it("reports top-level workflow permissions", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -404,6 +438,8 @@ describe("workflow shape rules", () => {
     });
 
     it("accepts workflows that scope permissions at job level", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -428,6 +464,8 @@ describe("workflow shape rules", () => {
     });
 
     it("reports jobs that explicitly disable fail-fast", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -456,6 +494,8 @@ describe("workflow shape rules", () => {
     });
 
     it("accepts jobs that keep fail-fast enabled or expression-driven", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -488,6 +528,8 @@ describe("workflow shape rules", () => {
     });
 
     it("accepts jobs without strategy.fail-fast declarations", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -512,6 +554,8 @@ describe("workflow shape rules", () => {
     });
 
     it("ignores prefer-fail-fast when strategy is not a mapping", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -534,6 +578,8 @@ describe("workflow shape rules", () => {
     });
 
     it("accepts workflows at the default job-count limit", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -561,6 +607,8 @@ describe("workflow shape rules", () => {
     });
 
     it("supports custom max-jobs-per-action thresholds", async () => {
+        expect.hasAssertions();
+
         const workflowText = [
             "name: CI",
             "on:",
@@ -590,6 +638,8 @@ describe("workflow shape rules", () => {
     });
 
     it("reports workflows that exceed max-jobs-per-action default and custom limits", async () => {
+        expect.hasAssertions();
+
         const workflowText = [
             "name: CI",
             "on:",
@@ -621,6 +671,8 @@ describe("workflow shape rules", () => {
     });
 
     it("ignores max-jobs-per-action when workflow has no jobs mapping", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow(
             [
                 "name: CI",
@@ -638,6 +690,8 @@ describe("workflow shape rules", () => {
     });
 
     it("ignores max-jobs-per-action when workflow root is not a mapping", async () => {
+        expect.hasAssertions();
+
         const result = await lintWorkflow("- push", {
             rules: {
                 "github-actions/max-jobs-per-action": "error",

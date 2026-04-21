@@ -7,6 +7,7 @@ import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
 import { dirname, join } from "node:path";
+import { isDefined } from "ts-extras";
 
 import {
     getMappingPair,
@@ -44,7 +45,7 @@ export const getWorkflowTemplateFilePatternEntries = (
     for (const entry of filePatternsSequence.entries) {
         const entryValue = getScalarStringValue(entry);
 
-        if (entryValue === null || entry === null || entry === undefined) {
+        if (entryValue === null || entry === null || !isDefined(entry)) {
             continue;
         }
 

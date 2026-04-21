@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { setHas } from "ts-extras";
+
 import { isActionMetadataFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
@@ -66,7 +68,7 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    if (!firstSeenByStepId.has(stepId)) {
+                    if (!setHas(firstSeenByStepId, stepId)) {
                         firstSeenByStepId.add(stepId);
 
                         continue;

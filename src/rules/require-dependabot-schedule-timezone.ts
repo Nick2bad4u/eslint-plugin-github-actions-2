@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { isDefined } from "ts-extras";
+
 import {
     getDependabotRoot,
     getDependabotUpdateEntries,
@@ -46,7 +48,7 @@ const rule: Rule.RuleModule = {
 
                     if (
                         intervalValue !== "cron" &&
-                        (timeValue === undefined ||
+                        (!isDefined(timeValue) ||
                             timeValue === null ||
                             timeValue.length === 0)
                     ) {
@@ -62,7 +64,7 @@ const rule: Rule.RuleModule = {
                     )?.trim();
 
                     if (
-                        timezoneValue !== undefined &&
+                        isDefined(timezoneValue) &&
                         timezoneValue !== null &&
                         timezoneValue.length > 0
                     ) {

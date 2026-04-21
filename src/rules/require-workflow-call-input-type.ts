@@ -4,7 +4,7 @@
  */
 import type { Rule } from "eslint";
 
-import { arrayJoin } from "ts-extras";
+import { arrayJoin, setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
@@ -94,12 +94,14 @@ const rule: Rule.RuleModule = {
 
                     if (
                         typeValue === null ||
-                        !allowedWorkflowCallInputTypeSet.has(typeValue)
+                        !setHas(allowedWorkflowCallInputTypeSet, typeValue)
                     ) {
                         context.report({
                             data: {
-                                allowedTypes:
-                                    arrayJoin(allowedWorkflowCallInputTypes, ", "),
+                                allowedTypes: arrayJoin(
+                                    allowedWorkflowCallInputTypes,
+                                    ", "
+                                ),
                                 inputId,
                             },
                             messageId: "invalidType",

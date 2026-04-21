@@ -4,7 +4,7 @@
  */
 import type { Rule } from "eslint";
 
-import { arrayJoin } from "ts-extras";
+import { arrayJoin, setHas } from "ts-extras";
 
 import {
     getGithubExpressionBodies,
@@ -103,7 +103,10 @@ const rule: Rule.RuleModule = {
                         value
                     ).filter(
                         (contextRoot) =>
-                            !allowedWorkflowCallOutputContexts.has(contextRoot)
+                            !setHas(
+                                allowedWorkflowCallOutputContexts,
+                                contextRoot
+                            )
                     );
 
                     if (disallowedContexts.length > 0) {

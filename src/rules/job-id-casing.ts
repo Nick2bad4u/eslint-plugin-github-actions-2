@@ -4,7 +4,7 @@
  */
 import type { Rule } from "eslint";
 
-import { arrayJoin } from "ts-extras";
+import { arrayIncludes, arrayJoin, isDefined } from "ts-extras";
 
 import {
     type GithubActionsNonTitleCasingKind,
@@ -41,7 +41,7 @@ const normalizeJobIdCasingOptions = (
     allowedCasings: readonly GithubActionsNonTitleCasingKind[];
     ignoredJobIds: readonly string[];
 } => {
-    if (option === undefined || typeof option === "string") {
+    if (!isDefined(option) || typeof option === "string") {
         return {
             allowedCasings: [option ?? DEFAULT_JOB_ID_CASING],
             ignoredJobIds: [],
@@ -82,7 +82,7 @@ const rule: Rule.RuleModule = {
                 }
 
                 for (const job of getWorkflowJobs(root)) {
-                    if (ignoredJobIds.includes(job.id)) {
+                    if (arrayIncludes(ignoredJobIds, job.id)) {
                         continue;
                     }
 

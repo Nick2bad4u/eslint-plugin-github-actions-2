@@ -5,6 +5,8 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
+import { isDefined } from "ts-extras";
+
 import {
     type DependabotUpdateEntry,
     getDependabotDirectorySelectorEntries,
@@ -55,7 +57,7 @@ const globSelectorToRegExp = (selector: string): RegExp => {
     while (index < selector.length) {
         const character = selector[index];
 
-        if (character === undefined) {
+        if (!isDefined(character)) {
             index += 1;
             continue;
         }
@@ -142,7 +144,7 @@ const rule: Rule.RuleModule = {
                     const packageEcosystem = update.packageEcosystem?.trim();
 
                     if (
-                        packageEcosystem === undefined ||
+                        !isDefined(packageEcosystem) ||
                         packageEcosystem === null ||
                         packageEcosystem.length === 0
                     ) {
@@ -172,7 +174,7 @@ const rule: Rule.RuleModule = {
                                 )
                         );
 
-                        if (overlappingSelector !== undefined) {
+                        if (isDefined(overlappingSelector)) {
                             context.report({
                                 data: {
                                     directorySelector,

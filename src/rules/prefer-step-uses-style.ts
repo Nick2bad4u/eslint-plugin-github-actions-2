@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { arrayIncludes, isDefined } from "ts-extras";
+
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
@@ -47,7 +49,7 @@ const normalizeStepUsesStyleOptions = (
     allowRepository: boolean;
     ignoredReferences: readonly string[];
 } => {
-    if (option === undefined || typeof option === "string") {
+    if (!isDefined(option) || typeof option === "string") {
         return {
             allowDocker: false,
             allowedStyles: [option ?? DEFAULT_STEP_USES_STYLE],
@@ -182,7 +184,7 @@ const rule: Rule.RuleModule = {
                             continue;
                         }
 
-                        if (ignoredReferences.includes(usesReference)) {
+                        if (arrayIncludes(ignoredReferences, usesReference)) {
                             continue;
                         }
 
@@ -213,7 +215,9 @@ const rule: Rule.RuleModule = {
                             continue;
                         }
 
-                        if (!allowedStyles.includes(parsedReference.style)) {
+                        if (
+                            !arrayIncludes(allowedStyles, parsedReference.style)
+                        ) {
                             context.report({
                                 data: {
                                     style: parsedReference.style,

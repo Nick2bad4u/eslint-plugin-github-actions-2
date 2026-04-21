@@ -5,7 +5,7 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
-import { arrayJoin } from "ts-extras";
+import { arrayJoin, setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
@@ -63,14 +63,17 @@ const rule: Rule.RuleModule = {
 
                         if (
                             key === null ||
-                            reusableWorkflowJobKeySet.has(key)
+                            setHas(reusableWorkflowJobKeySet, key)
                         ) {
                             continue;
                         }
 
                         context.report({
                             data: {
-                                allowedKeys: arrayJoin(reusableWorkflowJobKeys, ", "),
+                                allowedKeys: arrayJoin(
+                                    reusableWorkflowJobKeys,
+                                    ", "
+                                ),
                                 jobId: job.id,
                                 key,
                             },

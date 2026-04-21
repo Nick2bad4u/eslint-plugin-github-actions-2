@@ -5,6 +5,8 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
+import { setHas } from "ts-extras";
+
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
@@ -102,7 +104,7 @@ const rule: Rule.RuleModule = {
 
                     if (
                         eventName !== null &&
-                        eventsRequiringTypes.has(eventName)
+                        setHas(eventsRequiringTypes, eventName)
                     ) {
                         reportMissingTypes(onValue, eventName);
                     }
@@ -117,7 +119,7 @@ const rule: Rule.RuleModule = {
                         if (
                             entry !== null &&
                             eventName !== null &&
-                            eventsRequiringTypes.has(eventName)
+                            setHas(eventsRequiringTypes, eventName)
                         ) {
                             reportMissingTypes(entry, eventName);
                         }
@@ -137,7 +139,7 @@ const rule: Rule.RuleModule = {
 
                     if (
                         eventName === null ||
-                        !eventsRequiringTypes.has(eventName)
+                        !setHas(eventsRequiringTypes, eventName)
                     ) {
                         continue;
                     }

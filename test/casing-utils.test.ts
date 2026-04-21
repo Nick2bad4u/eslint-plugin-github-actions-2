@@ -9,6 +9,8 @@ import {
 
 describe("casing helpers", () => {
     it("converts mixed identifiers across all supported casing kinds", () => {
+        expect.hasAssertions();
+
         const source = "HTTPServer_error-code 2FA";
 
         const expectedByKind: Record<GithubActionsCasingKind, string> = {
@@ -29,12 +31,14 @@ describe("casing helpers", () => {
     });
 
     it("retains original values when no alphanumeric words can be extracted", () => {
+        expect.hasAssertions();
         expect(convertToGithubActionsCasing("---___***", "camelCase")).toBe(
             "---___***"
         );
     });
 
     it("handles acronym boundaries and numeric segments predictably", () => {
+        expect.hasAssertions();
         expect(convertToGithubActionsCasing("myXMLParser2", "snake_case")).toBe(
             "my_xml_parser2"
         );
@@ -44,6 +48,7 @@ describe("casing helpers", () => {
     });
 
     it("respects case-police canonical brand and acronym spellings for title styles", () => {
+        expect.hasAssertions();
         expect(
             convertToGithubActionsCasing("git hub actions", "Title Case")
         ).toBe("GitHub Actions");
@@ -53,6 +58,7 @@ describe("casing helpers", () => {
     });
 
     it("checks whether an input already matches a requested casing style", () => {
+        expect.hasAssertions();
         expect(
             matchesGithubActionsCasing("build-release", "kebab-case")
         ).toBeTruthy();
@@ -62,6 +68,7 @@ describe("casing helpers", () => {
     });
 
     it("falls back safely for unknown casing kinds at runtime", () => {
+        expect.hasAssertions();
         expect(
             convertToGithubActionsCasing(
                 "KeepOriginal",

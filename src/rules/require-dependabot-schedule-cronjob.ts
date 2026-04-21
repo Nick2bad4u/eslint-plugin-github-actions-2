@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { isDefined } from "ts-extras";
+
 import {
     getDependabotRoot,
     getDependabotUpdateEntries,
@@ -50,7 +52,7 @@ const rule: Rule.RuleModule = {
 
                     if (intervalValue === "cron") {
                         if (
-                            cronjobValue !== undefined &&
+                            isDefined(cronjobValue) &&
                             cronjobValue !== null &&
                             cronjobValue.length > 0
                         ) {
@@ -71,7 +73,7 @@ const rule: Rule.RuleModule = {
                     }
 
                     if (
-                        cronjobValue === undefined ||
+                        !isDefined(cronjobValue) ||
                         cronjobValue === null ||
                         cronjobValue.length === 0
                     ) {

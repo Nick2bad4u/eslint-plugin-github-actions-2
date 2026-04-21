@@ -4,7 +4,7 @@
  */
 import type { Rule } from "eslint";
 
-import { arrayFirst, stringSplit  } from "ts-extras";
+import { arrayFirst, isDefined, stringSplit } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
@@ -35,7 +35,7 @@ const getSuggestedStepName = (
         getMappingPair(stepMapping, "uses")?.value
     )?.trim();
 
-    if (usesReference !== undefined && usesReference.length > 0) {
+    if (isDefined(usesReference) && usesReference.length > 0) {
         const atSignIndex = usesReference.lastIndexOf("@");
 
         return atSignIndex === -1
@@ -51,11 +51,15 @@ const getSuggestedStepName = (
         return undefined;
     }
 
-    const firstNonEmptyLine = stringSplit(runScript, /\r?\n/u)
+    const normalizedRunScript = runScript
+        .replaceAll("\r\n", "\n")
+        .replaceAll("\r", "\n");
+
+    const firstNonEmptyLine = stringSplit(normalizedRunScript, "\n")
         .map((line) => line.trim())
         .find((line) => line.length > 0);
 
-    return firstNonEmptyLine === undefined ||
+    return !isDefined(firstNonEmptyLine) ||
         firstNonEmptyLine.length > MAX_SUGGESTED_STEP_NAME_LENGTH
         ? undefined
         : firstNonEmptyLine;
@@ -109,9 +113,9 @@ const rule: Rule.RuleModule = {
                                 messageId: "missingStepName",
                                 node: stepMapping as unknown as Rule.Node,
                                 suggest:
-                                    suggestedStepName === undefined ||
+                                    !isDefined(suggestedStepName) ||
                                     firstStepKeyNode === null ||
-                                    firstStepKeyNode === undefined
+                                    !isDefined(firstStepKeyNode)
                                         ? undefined
                                         : [
                                               {
@@ -130,8 +134,9 @@ const rule: Rule.RuleModule = {
                                                       const childIndentation = `${getLineIndentation(
                                                           context.sourceCode
                                                               .text,
-                                                          arrayFirst(firstStepKeyNode
-                                                              .range)
+                                                          arrayFirst(
+                                                              firstStepKeyNode.range
+                                                          )
                                                       )}  `;
 
                                                       return fixer.insertTextBeforeRange(
@@ -167,7 +172,7 @@ const rule: Rule.RuleModule = {
                                 node: (namePair.value ??
                                     namePair) as unknown as Rule.Node,
                                 suggest:
-                                    suggestedStepName === undefined ||
+                                    !isDefined(suggestedStepName) ||
                                     nameValueNode === null
                                         ? undefined
                                         : [
