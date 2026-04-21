@@ -26,6 +26,9 @@
         "*.cjs",
         "*.d.ts",
         "*.d.cts",
+        "*.d.mts",
+        "*.mjs",
+        "*.js",
         "*.mjs",
         "test/_internal/**/*.d.ts"
     ]

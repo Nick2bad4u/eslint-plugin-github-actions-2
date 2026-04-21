@@ -18,7 +18,6 @@ import json from "@eslint/json";
 import markdown from "@eslint/markdown";
 import html from "@html-eslint/eslint-plugin";
 import * as htmlParser from "@html-eslint/parser";
-import pluginMicrosoftSdl from "@microsoft/eslint-plugin-sdl";
 import stylistic from "@stylistic/eslint-plugin";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import tseslintParser from "@typescript-eslint/parser";
@@ -30,12 +29,16 @@ import arrayFunc from "eslint-plugin-array-func";
 import pluginCanonical from "eslint-plugin-canonical";
 import pluginCasePolice from "eslint-plugin-case-police";
 import eslintPluginCommentLength from "eslint-plugin-comment-length";
+import copilot from "eslint-plugin-copilot";
 import * as pluginCssModules from "eslint-plugin-css-modules";
 import deMorgan from "eslint-plugin-de-morgan";
 import depend from "eslint-plugin-depend";
+import docusaurus2 from "eslint-plugin-docusaurus-2";
 import eslintPluginEslintPlugin from "eslint-plugin-eslint-plugin";
 import etcMisc from "eslint-plugin-etc-misc";
 import progress from "eslint-plugin-file-progress-2";
+import githubActions from "eslint-plugin-github-actions-2";
+import immutable from "eslint-plugin-immutable-2";
 import { importX } from "eslint-plugin-import-x";
 import jsdocPlugin from "eslint-plugin-jsdoc";
 import eslintPluginJsonc from "eslint-plugin-jsonc";
@@ -54,23 +57,27 @@ import nounsanitized from "eslint-plugin-no-unsanitized";
 import eslintPluginNoUseExtendNative from "eslint-plugin-no-use-extend-native";
 import nodeDependencies from "eslint-plugin-node-dependencies";
 import packageJson from "eslint-plugin-package-json";
-import pluginPerfectionist from "eslint-plugin-perfectionist";
-import pluginPreferArrow from "eslint-plugin-prefer-arrow";
+import perfectionist from "eslint-plugin-perfectionist";
 import pluginPrettier from "eslint-plugin-prettier";
+import vite from "@typpi/eslint-plugin-vite";
 import pluginPromise from "eslint-plugin-promise";
 import pluginRedos from "eslint-plugin-redos";
 import pluginRegexp from "eslint-plugin-regexp";
 import * as pluginJSDoc from "eslint-plugin-require-jsdoc";
+import sdl from "eslint-plugin-sdl-2";
 import pluginSecurity from "eslint-plugin-security";
 import sonarjs, { configs as sonarjsConfigs } from "eslint-plugin-sonarjs";
+import stylelint2 from "eslint-plugin-stylelint-2";
 import pluginTestingLibrary from "eslint-plugin-testing-library";
 import eslintPluginToml from "eslint-plugin-toml";
 import pluginTsdoc from "eslint-plugin-tsdoc";
 import tsdocRequire from "eslint-plugin-tsdoc-require-2";
+import typedocPlugin from "eslint-plugin-typedoc";
+import typefest from "eslint-plugin-typefest";
 import pluginUndefinedCss from "eslint-plugin-undefined-css-classes";
 import eslintPluginUnicorn from "eslint-plugin-unicorn";
 import pluginUnusedImports from "eslint-plugin-unused-imports";
-import pluginWriteGood from "eslint-plugin-write-good-comments";
+import writeGoodComments from "eslint-plugin-write-good-comments-2";
 import eslintPluginYml from "eslint-plugin-yml";
 import globals from "globals";
 import * as jsoncEslintParser from "jsonc-eslint-parser";
@@ -98,7 +105,7 @@ const enableJsonSchemaValidation =
 
 const jsonSchemaValidatorPackageName = "eslint-plugin-json-schema-validator";
 
-let eslintPluginJsonSchemaValidator = undefined;
+let eslintPluginJsonSchemaValidator = null;
 
 if (enableJsonSchemaValidation) {
     eslintPluginJsonSchemaValidator =
@@ -146,7 +153,6 @@ const HIDE_PROGRESS_FILENAMES = ESLINT_PROGRESS_MODE === "nofile";
 /** @type {import("eslint").Linter.Config} */
 const fileProgressOverridesConfig = {
     name: "CLI: file progress overrides",
-    plugins: { "file-progress": progress },
     rules: {
         // The preset already auto-hides on CI, but we also support explicit
         // local toggles.
@@ -204,6 +210,8 @@ export default defineConfig([
         "**/CHANGELOG.md",
         ".remarkrc.mjs",
         "test/fixtures/**",
+        "docs/docusaurus/site-contract.config.d.mts",
+        "docs/docusaurus/site-contract.config.mjs",
     ]),
     gitignore({
         name: "Global - .gitignore Rules",
@@ -293,7 +301,65 @@ export default defineConfig([
         files: ["**/*.{js,jsx,mjs,cjs,ts,tsx,cts,mts}"],
         name: "Import-X TypeScript (code files only)",
     },
+    {
+        ...docusaurus2.configs.all,
+        rules: {
+            ...docusaurus2.configs.all.rules,
+            ...docusaurus2.configs["strict-mdx-upgrade"].rules,
+            ...docusaurus2.configs.content.rules,
+            "docusaurus-2/local-search-will-not-work-in-dev": "off",
+        },
+    },
     progress.configs["recommended-ci"],
+    copilot.configs.all,
+    sdl.configs.required,
+    githubActions.configs.all,
+    vite.configs.all,
+    stylelint2.configs.all,
+    {
+        ...typedocPlugin.configs.recommended,
+        name: "TypeDoc recommended (repo tuned)",
+        rules: {
+            ...typedocPlugin.configs.recommended.rules,
+
+            "typedoc/no-empty-private-remarks-tag": "off",
+            "typedoc/no-extra-type-param-tags": "off",
+            "typedoc/no-unknown-tags": "warn",
+            "typedoc/require-code-fence-language": "off",
+            "typedoc/require-default-value-tag": "off",
+            "typedoc/require-example-tag": "off",
+            "typedoc/require-package-documentation": "off",
+            "typedoc/require-package-documentation-description": "off",
+            "typedoc/require-param-tag-description": "off",
+            "typedoc/require-param-tags": "off",
+            "typedoc/require-returns-description": "off",
+            "typedoc/require-returns-tag": "off",
+            "typedoc/require-see-tag-link": "off",
+            "typedoc/require-since-tag-description": "off",
+            "typedoc/require-throws-description": "off",
+            "typedoc/require-throws-tag": "off",
+            "typedoc/require-type-param-tag-description": "off",
+            "typedoc/require-type-param-tags": "off",
+        },
+    },
+    {
+        ...immutable.configs.all,
+        files: ["functional/*.{js,jsx,mjs,cjs,ts,tsx,cts,mts}"],
+        name: "Immutable: functional (not used in this repo)",
+    },
+    {
+        ...writeGoodComments.configs.all,
+        files: ["src/*.{js,jsx,mjs,cjs,ts,tsx,cts,mts}"],
+        name: "Write Good Comments: (not used in this repo)",
+        rules: {
+            "write-good-comments/inclusive-language-comments": "off",
+            "write-good-comments/no-profane-comments": "off",
+            "write-good-comments/readability-comments": "off",
+            "write-good-comments/spellcheck-comments": "off",
+            "write-good-comments/task-comment-format": "off",
+            "write-good-comments/write-good-comments": "off",
+        },
+    },
     fileProgressOverridesConfig,
     {
         ...noBarrelFiles.flat,
@@ -327,8 +393,8 @@ export default defineConfig([
     // `eslint-plugin-github` rules are written for JS/TS and assume the ESLint
     // rule context supports scope analysis (e.g. `context.getScope`). When
     // ESLint is linting non-JS languages (YAML via `yaml-eslint-parser`, TOML,
-    // etc.), that API surface is not available and @eslint/compat will crash
-    // while trying to bind missing methods.
+    // etc.), that API surface is not available and those rules can crash while
+    // trying to bind missing methods.
     //
     // Scope GitHub rules to code files only so they never run on `.yml` like
     // `.codecov.yml`.
@@ -438,31 +504,63 @@ export default defineConfig([
         },
         rules: {
             "tsdoc-require-2/require": "warn",
+            "tsdoc-require-2/require-abstract": "off",
             "tsdoc-require-2/require-alpha": "off",
+            "tsdoc-require-2/require-author": "off",
             "tsdoc-require-2/require-beta": "off",
+            "tsdoc-require-2/require-category": "off",
+            "tsdoc-require-2/require-class": "off",
             "tsdoc-require-2/require-decorator": "off",
             "tsdoc-require-2/require-default-value": "off",
             "tsdoc-require-2/require-deprecated": "off",
+            "tsdoc-require-2/require-document": "off",
+            "tsdoc-require-2/require-enum": "off",
+            "tsdoc-require-2/require-event": "off",
             "tsdoc-require-2/require-event-property": "off",
             "tsdoc-require-2/require-example": "off",
+            "tsdoc-require-2/require-expand": "off",
             "tsdoc-require-2/require-experimental": "off",
+            "tsdoc-require-2/require-function": "off",
+            "tsdoc-require-2/require-group": "off",
+            "tsdoc-require-2/require-hidden": "off",
+            "tsdoc-require-2/require-hideconstructor": "off",
+            "tsdoc-require-2/require-ignore": "off",
+            "tsdoc-require-2/require-import": "off",
+            "tsdoc-require-2/require-include": "off",
             "tsdoc-require-2/require-inherit-doc": "off",
+            "tsdoc-require-2/require-inline": "off",
+            "tsdoc-require-2/require-interface": "off",
             "tsdoc-require-2/require-internal": "off",
             "tsdoc-require-2/require-label": "off",
+            "tsdoc-require-2/require-license": "off",
             "tsdoc-require-2/require-link": "off",
+            "tsdoc-require-2/require-merge-module-with": "off",
+            "tsdoc-require-2/require-module": "off",
+            "tsdoc-require-2/require-namespace": "off",
+            "tsdoc-require-2/require-overload": "off",
             "tsdoc-require-2/require-override": "off",
             "tsdoc-require-2/require-package-documentation": "off",
             "tsdoc-require-2/require-param": "off",
+            "tsdoc-require-2/require-primary-export": "off",
+            "tsdoc-require-2/require-private": "off",
             "tsdoc-require-2/require-private-remarks": "off",
+            "tsdoc-require-2/require-property": "off",
+            "tsdoc-require-2/require-protected": "off",
             "tsdoc-require-2/require-public": "off",
             "tsdoc-require-2/require-readonly": "off",
             "tsdoc-require-2/require-remarks": "off",
             "tsdoc-require-2/require-returns": "off",
             "tsdoc-require-2/require-sealed": "off",
             "tsdoc-require-2/require-see": "off",
+            "tsdoc-require-2/require-since": "off",
+            "tsdoc-require-2/require-sort-strategy": "off",
+            "tsdoc-require-2/require-summary": "off",
+            "tsdoc-require-2/require-template": "off",
             "tsdoc-require-2/require-throws": "off",
             "tsdoc-require-2/require-type-param": "off",
+            "tsdoc-require-2/require-use-declared-type": "off",
             "tsdoc-require-2/require-virtual": "off",
+            "tsdoc-require-2/restrict-tags": "off",
         },
     },
     // #endregion
@@ -546,8 +644,12 @@ export default defineConfig([
             "@docusaurus/no-untranslated-text": "off",
             "@docusaurus/prefer-docusaurus-heading": "warn",
             "@docusaurus/string-literal-i18n-messages": "off",
+            // Keep only the @eslint-react rules that are not already covered by
+            // the current strict-type-checked preset and still exist after the
+            // plugin upgrade.
             "@eslint-react/dom-prefer-namespace-import": "warn",
             "@eslint-react/immutability": "warn",
+            "@eslint-react/jsx-no-leaked-dollar": "warn",
             "@eslint-react/no-duplicate-key": "warn",
             "@eslint-react/no-implicit-children": "warn",
             "@eslint-react/no-implicit-key": "warn",
@@ -556,6 +658,63 @@ export default defineConfig([
             "@eslint-react/no-missing-context-display-name": "warn",
             "@eslint-react/prefer-namespace-import": "warn",
             "@eslint-react/refs": "warn",
+            "@eslint-react/x-component-hook-factories": "warn",
+            "@eslint-react/x-error-boundaries": "warn",
+            "@eslint-react/x-exhaustive-deps": "warn",
+            "@eslint-react/x-immutability": "warn",
+            "@eslint-react/x-no-access-state-in-setstate": "warn",
+            "@eslint-react/x-no-array-index-key": "warn",
+            "@eslint-react/x-no-children-count": "warn",
+            "@eslint-react/x-no-children-for-each": "warn",
+            "@eslint-react/x-no-children-map": "warn",
+            "@eslint-react/x-no-children-only": "warn",
+            "@eslint-react/x-no-children-to-array": "warn",
+            "@eslint-react/x-no-class-component": "warn",
+            "@eslint-react/x-no-clone-element": "warn",
+            "@eslint-react/x-no-component-will-mount": "warn",
+            "@eslint-react/x-no-component-will-receive-props": "warn",
+            "@eslint-react/x-no-component-will-update": "warn",
+            "@eslint-react/x-no-context-provider": "warn",
+            "@eslint-react/x-no-create-ref": "warn",
+            "@eslint-react/x-no-direct-mutation-state": "warn",
+            "@eslint-react/x-no-duplicate-key": "warn",
+            "@eslint-react/x-no-forward-ref": "warn",
+            "@eslint-react/x-no-implicit-children": "warn",
+            "@eslint-react/x-no-implicit-key": "warn",
+            "@eslint-react/x-no-implicit-ref": "warn",
+            "@eslint-react/x-no-leaked-conditional-rendering": "warn",
+            "@eslint-react/x-no-missing-component-display-name": "warn",
+            "@eslint-react/x-no-missing-context-display-name": "warn",
+            "@eslint-react/x-no-missing-key": "warn",
+            "@eslint-react/x-no-misused-capture-owner-stack": "warn",
+            "@eslint-react/x-no-nested-component-definitions": "warn",
+            "@eslint-react/x-no-nested-lazy-component-declarations": "warn",
+            "@eslint-react/x-no-redundant-should-component-update": "warn",
+            "@eslint-react/x-no-set-state-in-component-did-mount": "warn",
+            "@eslint-react/x-no-set-state-in-component-did-update": "warn",
+            "@eslint-react/x-no-set-state-in-component-will-update": "warn",
+            "@eslint-react/x-no-unnecessary-use-callback": "warn",
+            "@eslint-react/x-no-unnecessary-use-memo": "warn",
+            "@eslint-react/x-no-unnecessary-use-prefix": "warn",
+            "@eslint-react/x-no-unsafe-component-will-mount": "warn",
+            "@eslint-react/x-no-unsafe-component-will-receive-props": "warn",
+            "@eslint-react/x-no-unsafe-component-will-update": "warn",
+            "@eslint-react/x-no-unstable-context-value": "warn",
+            "@eslint-react/x-no-unstable-default-props": "warn",
+            "@eslint-react/x-no-unused-class-component-members": "warn",
+            "@eslint-react/x-no-unused-props": "warn",
+            "@eslint-react/x-no-unused-state": "warn",
+            "@eslint-react/x-no-use-context": "warn",
+            "@eslint-react/x-prefer-destructuring-assignment": "warn",
+            "@eslint-react/x-prefer-namespace-import": "warn",
+            "@eslint-react/x-purity": "warn",
+            "@eslint-react/x-refs": "warn",
+            "@eslint-react/x-rules-of-hooks": "warn",
+            "@eslint-react/x-set-state-in-effect": "warn",
+            "@eslint-react/x-set-state-in-render": "warn",
+            "@eslint-react/x-unsupported-syntax": "warn",
+            "@eslint-react/x-use-memo": "warn",
+            "@eslint-react/x-use-state": "warn",
             "jsx-a11y/lang": "warn",
             "jsx-a11y/no-aria-hidden-on-focusable": "warn",
             "jsx-a11y/prefer-tag-over-role": "warn",
@@ -569,37 +728,37 @@ export default defineConfig([
     // ═══════════════════════════════════════════════════════════════════════════════
     // SECTION: 🚢 Local Plugin Import
     // ═══════════════════════════════════════════════════════════════════════════════
+    {
+        files: [
+            "src/**/*.{ts,tsx,mts,cts}",
+            //    "test/**/*.{ts,tsx,mts,cts}"
+        ],
+        name: "Typefest Rules for Source",
+        plugins: {
+            typefest: typefest,
+        },
+        rules: {
+            ...typefest.configs.experimental.rules,
+        },
+    },
+    // #endregion
+    // #region ⚡ Local Vite Plugin
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // SECTION: ⚡ Local Vite Plugin (vite/*)
+    // ═══════════════════════════════════════════════════════════════════════════════
     // {
     //     files: [
     //         "src/**/*.{ts,tsx,mts,cts}",
     //         //    "test/**/*.{ts,tsx,mts,cts}"
     //     ],
-    //     name: "Local Plugin Rules from Source",
+    //     name: "Vite Plugin Rules for Source",
     //     plugins: {
-    //         "github-actions": githubActionsPlugin,
+    //         vite: vite,
     //     },
     //     rules: {
-    //         ...githubActionsPlugin.configs.all.rules,
+    //         ...vite.configs.all.rules,
     //     },
     // },
-    // #endregion
-    // #region ⌨️ GitHub Actions plugin
-    // ═══════════════════════════════════════════════════════════════════════════════
-    // SECTION: ⌨️ GitHub Actions plugin (github-actions/*)
-    // ═══════════════════════════════════════════════════════════════════════════════
-    {
-        files: githubActionsPlugin.configs.recommended.files,
-        languageOptions:
-            githubActionsPlugin.configs.recommended.languageOptions,
-        name: "GitHub Actions plugin rules for workflows",
-        plugins: githubActionsPlugin.configs.recommended.plugins,
-        rules: {
-            ...githubActionsPlugin.configs.recommended.rules,
-            ...githubActionsPlugin.configs.security.rules,
-            "github-actions/require-job-timeout-minutes": "off",
-            "github-actions/require-workflow-permissions": "off",
-        },
-    },
     // #endregion
     // #region ⌨ Etc-Misc
     // ═══════════════════════════════════════════════════════════════════════════════
@@ -763,7 +922,7 @@ export default defineConfig([
             "test/**/*.{js,mjs,cjs,ts,mts,cts,tsx}",
             "benchmarks/**/*.{js,mjs,cjs,ts,mts,cts,tsx}",
         ],
-        ignores: [],
+        ignores: ["plugin.mjs"],
         languageOptions: {
             globals: {
                 ...globals.browser,
@@ -787,7 +946,6 @@ export default defineConfig([
         },
         name: "ESLint Plugin Source Files - project/**/*.*",
         plugins: {
-            "@microsoft/sdl": pluginMicrosoftSdl,
             "@typescript-eslint": tseslint,
             canonical: pluginCanonical,
             "comment-length": eslintPluginCommentLength,
@@ -803,7 +961,7 @@ export default defineConfig([
             "no-function-declare-after-return": pluginNFDAR,
             "no-lookahead-lookbehind-regexp": pluginRegexLook,
             "no-use-extend-native": eslintPluginNoUseExtendNative,
-            perfectionist: pluginPerfectionist,
+            perfectionist: perfectionist,
             promise: pluginPromise,
             redos: pluginRedos,
             regexp: pluginRegexp,
@@ -830,38 +988,21 @@ export default defineConfig([
             ...pluginPromise.configs["flat/recommended"].rules,
             ...eslintPluginUnicorn.configs.all.rules,
             ...sonarjsConfigs.recommended.rules,
-            ...pluginPerfectionist.configs["recommended-natural"].rules,
+            ...perfectionist.configs["recommended-natural"].rules,
             ...pluginSecurity.configs.recommended.rules,
             ...nodePlugin.configs["flat/all"].rules,
             ...eslintPluginMath.configs.recommended.rules,
             ...comments.recommended.rules,
             ...pluginCanonical.configs.recommended.rules,
             ...eslintPluginNoUseExtendNative.configs.recommended.rules,
-            ...pluginMicrosoftSdl.configs.required.rules,
             ...listeners.configs.strict?.rules,
             ...moduleInterop.configs.recommended.rules,
+
             "@eslint-community/eslint-comments/no-restricted-disable": "warn",
             // Deprecated rule - turned off
             "@eslint-community/eslint-comments/no-unused-disable": "off",
             "@eslint-community/eslint-comments/no-use": "off",
             "@eslint-community/eslint-comments/require-description": "warn",
-            "@microsoft/sdl/no-angular-bypass-sanitizer": "warn",
-            "@microsoft/sdl/no-angular-sanitization-trusted-urls": "warn",
-            "@microsoft/sdl/no-angularjs-bypass-sce": "warn",
-            "@microsoft/sdl/no-angularjs-enable-svg": "warn",
-            "@microsoft/sdl/no-angularjs-sanitization-whitelist": "warn",
-            "@microsoft/sdl/no-cookies": "warn",
-            "@microsoft/sdl/no-document-domain": "warn",
-            "@microsoft/sdl/no-document-write": "warn",
-            "@microsoft/sdl/no-electron-node-integration": "warn",
-            "@microsoft/sdl/no-html-method": "warn",
-            "@microsoft/sdl/no-inner-html": "warn",
-            "@microsoft/sdl/no-insecure-random": "off",
-            "@microsoft/sdl/no-insecure-url": "warn",
-            "@microsoft/sdl/no-msapp-exec-unsafe": "warn",
-            "@microsoft/sdl/no-postmessage-star-origin": "warn",
-            "@microsoft/sdl/no-unsafe-alloc": "warn",
-            "@microsoft/sdl/no-winjs-html-unsafe": "warn",
             "@typescript-eslint/await-thenable": "error", // Prevent awaiting non-promises
             "@typescript-eslint/ban-ts-comment": "warn",
             "@typescript-eslint/ban-tslint-comment": "warn",
@@ -967,8 +1108,7 @@ export default defineConfig([
             "@typescript-eslint/no-redeclare": "warn",
             "@typescript-eslint/no-redundant-type-constituents": "warn",
             "@typescript-eslint/no-require-imports": "warn",
-            // Note: granular-selectors plugin rules need to be added manually since
-            // Note: The plugin config are not available after fixupPluginRules wrapping (Below)
+            // Granular selector rules still need to be added manually here.
             "@typescript-eslint/no-restricted-imports": "warn",
             "@typescript-eslint/no-restricted-types": [
                 "error",
@@ -1043,7 +1183,6 @@ export default defineConfig([
             ],
             "@typescript-eslint/prefer-optional-chain": "error", // Use optional chaining instead of logical AND
             "@typescript-eslint/prefer-promise-reject-errors": "warn",
-            // "write-good-comments/write-good-comments": "warn",
             // Backend-specific type safety
             "@typescript-eslint/prefer-readonly": "warn", // Prefer readonly for service class properties
             // Keep signal strong on explicitly typed APIs while avoiding noisy
@@ -1420,11 +1559,32 @@ export default defineConfig([
             // ESLint 10 without legacy context helpers.
             "no-lookahead-lookbehind-regexp/no-lookahead-lookbehind-regexp":
                 "off",
+            "perfectionist/sort-arrays": [
+                "off",
+                {
+                    customGroups: [],
+                    fallbackSort: { type: "unsorted" },
+                    groups: ["literal"],
+                    ignoreCase: true,
+                    newlinesBetween: "ignore",
+                    newlinesInside: "ignore",
+                    order: "asc",
+                    partitionByNewLine: false,
+                    specialCharacters: "keep",
+                    type: "natural",
+                    useConfigurationIf: {
+                        matchesAstSelector: "TSAsExpression > ArrayExpression",
+                    },
+                },
+            ],
             "promise/no-multiple-resolved": "warn",
             "promise/prefer-await-to-callbacks": "off",
             "promise/prefer-await-to-then": "warn",
             "promise/prefer-catch": "warn",
             "promise/spec-only": "warn",
+            "sdl/no-nonnull-assertion-on-security-input": "error",
+            "sdl/no-trusted-types-policy-pass-through": "error",
+            "sdl/no-unsafe-cast-to-trusted-types": "error",
             "security/detect-non-literal-fs-filename": "off",
             "security/detect-object-injection": "off",
             "unused-imports/no-unused-imports": "error",
@@ -1819,39 +1979,42 @@ export default defineConfig([
             // Replace toThrow() with its canonical name oThrowError()
             "vitest/no-alias-methods": "off",
             "vitest/no-commented-out-tests": "warn",
-            "vitest/no-conditional-expect": "off",
+            "vitest/no-conditional-expect": "warn",
             "vitest/no-disabled-tests": "warn",
             "vitest/no-focused-tests": "warn",
             "vitest/no-identical-title": "warn",
             "vitest/no-import-node-test": "warn",
             "vitest/no-interpolation-in-snapshots": "warn",
-            "vitest/no-standalone-expect": "off",
+            "vitest/no-standalone-expect": "warn",
             "vitest/no-test-prefixes": "warn",
-            "vitest/prefer-called-exactly-once-with": "off",
-            "vitest/prefer-called-once": "off",
-            "vitest/prefer-called-times": "warn",
-            "vitest/prefer-called-with": "off",
+            "vitest/prefer-called-exactly-once-with": "warn",
+            "vitest/prefer-called-once": "warn",
+            // Conflicts with `prefer-called-once` for `.toHaveBeenCalledTimes(1)`.
+            // Keep the more specific once-only rule enabled.
+            "vitest/prefer-called-times": "off",
+            "vitest/prefer-called-with": "warn",
             "vitest/prefer-comparison-matcher": "warn",
             "vitest/prefer-describe-function-title": "warn",
-            "vitest/prefer-expect-assertions": "off",
+            "vitest/prefer-expect-assertions": "warn",
             "vitest/prefer-expect-resolves": "warn",
             // Vitest's autofix currently rewrites to `expectTypeOf(...).toBeFunction()`
             // which does not typecheck with the current expect-type typings.
             "vitest/prefer-expect-type-of": "off",
             "vitest/prefer-mock-return-shorthand": "warn",
-            "vitest/prefer-spy-on": "off",
+            "vitest/prefer-spy-on": "warn",
             "vitest/prefer-strict-boolean-matchers": "off",
-            "vitest/prefer-strict-equal": "off",
-            "vitest/prefer-to-be": "off",
+            "vitest/prefer-strict-equal": "warn",
+            "vitest/prefer-to-be": "warn",
             "vitest/prefer-to-be-falsy": "warn",
             "vitest/prefer-to-be-object": "warn",
             "vitest/prefer-to-be-truthy": "warn",
             "vitest/prefer-to-contain": "warn",
             "vitest/prefer-to-have-length": "warn",
             "vitest/prefer-todo": "warn",
-            "vitest/prefer-vi-mocked": "off",
+            "vitest/prefer-vi-mocked": "warn",
             "vitest/require-hook": "off",
-            "vitest/require-mock-type-parameters": "off",
+            "vitest/require-mock-type-parameters": "warn",
+            "vitest/require-test-timeout": "off",
             "vitest/valid-expect": "warn",
             "vitest/valid-title": "warn",
             "vitest/warn-todo": "warn",
@@ -2074,8 +2237,8 @@ export default defineConfig([
             markdown: markdown,
         },
         rules: {
-            // Markdown Plugin Eslint Rules (markdown/*)
             "markdown/fenced-code-language": "warn",
+            "markdown/fenced-code-meta": ["warn", "never"],
             "markdown/heading-increment": "warn",
             "markdown/no-bare-urls": "warn",
             "markdown/no-duplicate-definitions": "warn",
@@ -2211,6 +2374,7 @@ export default defineConfig([
             "html/require-attrs": "warn",
             "html/require-button-type": "warn",
             "html/require-closing-tags": "off",
+            "html/require-content": "warn",
             "html/require-details-summary": "warn",
             "html/require-explicit-size": "warn",
             "html/require-form-method": "warn",
@@ -2221,6 +2385,7 @@ export default defineConfig([
             "html/require-meta-viewport": "warn",
             "html/require-open-graph-protocol": "warn",
             "html/sort-attrs": "warn",
+            "html/svg-require-viewbox": "warn",
         },
     },
     // #endregion
@@ -2587,8 +2752,7 @@ export default defineConfig([
             math: eslintPluginMath,
             n: nodePlugin,
             "no-unsanitized": nounsanitized,
-            perfectionist: pluginPerfectionist,
-            "prefer-arrow": pluginPreferArrow,
+            perfectionist: perfectionist,
             prettier: pluginPrettier,
             promise: pluginPromise,
             redos: pluginRedos,
@@ -2597,7 +2761,6 @@ export default defineConfig([
             sonarjs: sonarjs,
             unicorn: eslintPluginUnicorn,
             "unused-imports": pluginUnusedImports,
-            "write-good-comments": pluginWriteGood,
         },
         rules: {
             ...js.configs.all.rules,
@@ -2608,11 +2771,12 @@ export default defineConfig([
             ...pluginPromise.configs["flat/recommended"].rules,
             ...eslintPluginUnicorn.configs.all.rules,
             ...sonarjsConfigs.recommended.rules,
-            ...pluginPerfectionist.configs["recommended-natural"].rules,
+            ...perfectionist.configs["recommended-natural"].rules,
             ...pluginRedos.configs.recommended?.rules,
             ...pluginSecurity.configs.recommended.rules,
             ...nodePlugin.configs["flat/recommended"].rules,
             ...eslintPluginMath.configs.recommended.rules,
+
             camelcase: "off",
             "capitalized-comments": [
                 "error",
@@ -2652,6 +2816,24 @@ export default defineConfig([
             "no-void": "off",
             "object-shorthand": "off",
             "one-var": "off",
+            "perfectionist/sort-arrays": [
+                "off",
+                {
+                    customGroups: [],
+                    fallbackSort: { type: "unsorted" },
+                    groups: ["literal"],
+                    ignoreCase: true,
+                    newlinesBetween: "ignore",
+                    newlinesInside: "ignore",
+                    order: "asc",
+                    partitionByNewLine: false,
+                    specialCharacters: "keep",
+                    type: "natural",
+                    useConfigurationIf: {
+                        matchesAstSelector: "TSAsExpression > ArrayExpression",
+                    },
+                },
+            ],
             "prefer-arrow-callback": [
                 "warn",
                 { allowNamedFunctions: true, allowUnboundThis: true },
@@ -2857,8 +3039,6 @@ export default defineConfig([
             canonical: pluginCanonical,
             "no-secrets": noSecrets,
             "no-unsanitized": nounsanitized,
-            "prefer-arrow": pluginPreferArrow,
-            "write-good-comments": pluginWriteGood,
         },
         rules: {
             "callback-return": "off",
@@ -2879,6 +3059,7 @@ export default defineConfig([
             "class-methods-use-this": "off",
             "depend/ban-dependencies": "off",
             "dot-notation": "off",
+            "github-actions/no-top-level-permissions": "off",
             // Deprecated rules - to be removed in future
             "id-length": "off",
             "max-classes-per-file": "off",
@@ -2928,12 +3109,10 @@ export default defineConfig([
                 "warn",
                 { allowNamedFunctions: true, allowUnboundThis: true },
             ],
-            "prefer-arrow/prefer-arrow-functions": "off", // Too strict
             "prettier/prettier": "off", // Using in Prettier directly for less noise for AI
             "require-await": "off",
             "require-unicode-regexp": "off",
             "sonarjs/different-types-comparison": "off",
-            "write-good-comments/write-good-comments": "off", // Too strict,
         },
     },
     {
@@ -2941,13 +3120,14 @@ export default defineConfig([
             "**/*.test.{ts,tsx}",
             "**/*.spec.{ts,tsx}",
             "src/test/**/*.{ts,tsx}",
-            "tests/**/*.{ts,tsx}",
+            "{tests,test}/**/*.{ts,tsx}",
         ],
         name: "Tests: relax strict void rules",
         rules: {
             // This rule is extremely noisy in tests (especially property-based
             // tests) where callback return values are often incidental.
             "@typescript-eslint/strict-void-return": "off",
+            "typedoc/require-exported-doc-comment": "off", // Tests often have non-exported members where doc comments would be low-value and high-effort.
         },
     },
     {
@@ -2961,6 +3141,7 @@ export default defineConfig([
             // Scripts commonly use void/Promise-returning callbacks where the
             // return value is intentionally ignored.
             "@typescript-eslint/strict-void-return": "off",
+            "typedoc/require-exported-doc-comment": "off", // Benchmarks and scripts often have non-exported members where doc comments would be low-value and high-effort.
         },
     },
     {
