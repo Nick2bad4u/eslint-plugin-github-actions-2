@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { arrayFirst, stringSplit  } from "ts-extras";
+
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
@@ -49,8 +51,7 @@ const getSuggestedStepName = (
         return undefined;
     }
 
-    const firstNonEmptyLine = runScript
-        .split(/\r?\n/u)
+    const firstNonEmptyLine = stringSplit(runScript, /\r?\n/u)
         .map((line) => line.trim())
         .find((line) => line.length > 0);
 
@@ -98,7 +99,7 @@ const rule: Rule.RuleModule = {
                         const namePair = getMappingPair(stepMapping, "name");
 
                         if (namePair === null) {
-                            const firstStepPair = stepMapping.pairs[0];
+                            const firstStepPair = arrayFirst(stepMapping.pairs);
                             const firstStepKeyNode = firstStepPair?.key;
 
                             context.report({
@@ -129,8 +130,8 @@ const rule: Rule.RuleModule = {
                                                       const childIndentation = `${getLineIndentation(
                                                           context.sourceCode
                                                               .text,
-                                                          firstStepKeyNode
-                                                              .range[0]
+                                                          arrayFirst(firstStepKeyNode
+                                                              .range)
                                                       )}  `;
 
                                                       return fixer.insertTextBeforeRange(

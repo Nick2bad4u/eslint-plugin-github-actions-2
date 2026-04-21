@@ -48,7 +48,7 @@ const config: Config = {
                 ],
                 tsdoc: true,
                 useTabs: false,
-            } as Config,
+            },
         },
         {
             files: "tsconfig.*",
@@ -60,7 +60,7 @@ const config: Config = {
                     "prettier-plugin-sort-json",
                 ],
                 useTabs: false,
-            } as Config,
+            },
         },
         {
             files: "*.html",
@@ -73,7 +73,7 @@ const config: Config = {
                 printWidth: 80,
                 singleAttributePerLine: true,
                 useTabs: false,
-            } as Config,
+            },
         },
         {
             files: "*.user.js",
@@ -107,7 +107,7 @@ const config: Config = {
                 ],
                 tabWidth: 1,
                 useTabs: false,
-            } as Config,
+            },
         },
         {
             files: "*.mdx",
@@ -135,7 +135,7 @@ const config: Config = {
                 printWidth: 100,
                 tabWidth: 2,
                 useTabs: false,
-            } as Config,
+            },
         },
         {
             files: "*.toml",
@@ -147,7 +147,7 @@ const config: Config = {
                 printWidth: 120,
                 tabWidth: 4,
                 useTabs: false,
-            } as Config,
+            },
         },
         {
             files: [
@@ -163,7 +163,7 @@ const config: Config = {
                     "prettier-plugin-multiline-arrays",
                 ],
                 useTabs: false,
-            } as Config,
+            },
         },
         {
             files: "*.sql",
@@ -174,7 +174,7 @@ const config: Config = {
                     "prettier-plugin-sql",
                 ],
                 useTabs: false,
-            } as Config,
+            },
         },
         {
             files: "*.sh",
@@ -184,7 +184,7 @@ const config: Config = {
                     "prettier-plugin-sh",
                 ],
                 useTabs: false,
-            } as Config,
+            },
         },
         {
             files: "*.properties",
@@ -195,7 +195,7 @@ const config: Config = {
                     "prettier-plugin-properties",
                 ],
                 useTabs: false,
-            } as Config,
+            },
         },
         {
             files: "*.ini",
@@ -207,7 +207,7 @@ const config: Config = {
                     "prettier-plugin-ini",
                 ],
                 useTabs: false,
-            } as Config,
+            },
         },
         {
             files: "**/package.json, **/package-lock.json",
@@ -218,7 +218,7 @@ const config: Config = {
                 ],
                 tabWidth: 2,
                 useTabs: false,
-            } as Config,
+            },
         },
     ],
     plugins: ["prettier-plugin-multiline-arrays"],

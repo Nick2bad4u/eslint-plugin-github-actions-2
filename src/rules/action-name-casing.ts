@@ -5,6 +5,8 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
+import { arrayJoin, safeCastTo  } from "ts-extras";
+
 import {
     convertToGithubActionsCasing,
     type GithubActionsCasingKind,
@@ -108,7 +110,7 @@ const rule: Rule.RuleModule = {
 
                     context.report({
                         data: {
-                            caseTypes: allowedCasings.join(", "),
+                            caseTypes: arrayJoin(allowedCasings, ", "),
                             name: nameValue,
                         },
                         fix:
@@ -124,7 +126,7 @@ const rule: Rule.RuleModule = {
                                       )
                                 : undefined,
                         messageId: "nameDoesNotMatchCasing",
-                        node: nameNode as AST.YAMLNode as unknown as Rule.Node,
+                        node: safeCastTo<AST.YAMLNode>(nameNode) as unknown as Rule.Node,
                     });
                 }
             },

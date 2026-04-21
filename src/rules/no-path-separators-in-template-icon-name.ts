@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { arrayAt, stringSplit  } from "ts-extras";
+
 import { isWorkflowTemplatePropertiesFile } from "../_internal/lint-targets.js";
 import { getWorkflowTemplatePropertiesRoot } from "../_internal/workflow-template-properties.js";
 import {
@@ -37,7 +39,7 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                const suggestedIconName = iconName.split(/[/\\]/u).at(-1);
+                const suggestedIconName = arrayAt(stringSplit(iconName, /[/\\]/u), -1);
 
                 context.report({
                     data: {

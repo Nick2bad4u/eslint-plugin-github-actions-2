@@ -4,6 +4,7 @@
  */
 import type { ESLint, Linter, Rule } from "eslint";
 
+import { arrayFirst, isEmpty, objectEntries, objectHasOwn    } from "ts-extras";
 import * as yamlParser from "yaml-eslint-parser";
 
 import type { GithubActionsRuleDocs } from "./_internal/rule-docs.js";
@@ -70,7 +71,7 @@ function getPackageVersion(pkg: unknown): string {
 const isGithubActionsConfigReference = (
     value: string
 ): value is GithubActionsConfigReference =>
-    Object.hasOwn(githubActionsConfigReferenceToName, value);
+    objectHasOwn(githubActionsConfigReferenceToName, value);
 
 /** Normalize stored rule docs config references to a validated string array. */
 const getRuleConfigReferences = (
@@ -81,7 +82,7 @@ const getRuleConfigReferences = (
     const references = docs?.configs;
     const referenceList = Array.isArray(references) ? references : [references];
 
-    if (referenceList.length === 0 || referenceList[0] === undefined) {
+    if (isEmpty(referenceList) || arrayFirst(referenceList) === undefined) {
         return [];
     }
 
@@ -101,19 +102,13 @@ const getRuleConfigReferences = (
 
 /** Strongly typed ESLint rule view of the internal registry. */
 const githubActionsEslintRules: NonNullable<ESLint.Plugin["rules"]> &
-    typeof githubActionsRules = githubActionsRules as NonNullable<
-    ESLint.Plugin["rules"]
-> &
-    typeof githubActionsRules;
+    typeof githubActionsRules = githubActionsRules;
 
 /** Stable rule-entry list used by config derivation and docs tests. */
 const githubActionsRuleEntries: readonly (readonly [
     GithubActionsRuleName,
     Rule.RuleModule,
-])[] = Object.entries(githubActionsRules) as readonly (readonly [
-    GithubActionsRuleName,
-    Rule.RuleModule,
-])[];
+])[] = objectEntries(githubActionsRules);
 
 /** Build a config-to-rule-name map from rule docs metadata. */
 const createPresetRuleNamesByConfig = (): Record<

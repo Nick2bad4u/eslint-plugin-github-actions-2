@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { arrayFirst } from "ts-extras";
+
 import {
     getDependabotMappingStringValue,
     getDependabotRoot,
@@ -35,7 +37,7 @@ const rule: Rule.RuleModule = {
                     fix: (fixer) => {
                         if (versionPair === null) {
                             return fixer.insertTextBeforeRange(
-                                [root.range[0], root.range[0]],
+                                [arrayFirst(root.range), arrayFirst(root.range)],
                                 "version: 2\n"
                             );
                         }

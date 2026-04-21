@@ -5,6 +5,8 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
+import { safeCastTo } from "ts-extras";
+
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
@@ -33,7 +35,7 @@ const visitJobStringScalars = (
     currentStepIndex: null | number = null
 ): void => {
     const unwrappedNode = unwrapYamlValue(
-        node as AST.YAMLContent | AST.YAMLWithMeta | null
+        safeCastTo<AST.YAMLContent | AST.YAMLWithMeta | null>(node)
     );
 
     if (unwrappedNode === null) {

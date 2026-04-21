@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { arrayJoin } from "ts-extras";
+
 import {
     type GithubActionsNonTitleCasingKind,
     githubActionsNonTitleCasingKinds,
@@ -92,7 +94,7 @@ const rule: Rule.RuleModule = {
                     if (!matchesAllowedCasing) {
                         context.report({
                             data: {
-                                caseTypes: allowedCasings.join(", "),
+                                caseTypes: arrayJoin(allowedCasings, ", "),
                                 jobId: job.id,
                             },
                             messageId: "jobIdDoesNotMatchCasing",

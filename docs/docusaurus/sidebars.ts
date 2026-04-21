@@ -1,7 +1,7 @@
 import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 
 /** Sidebar for the general docs plugin content. */
-const sidebars: SidebarsConfig = {
+const sidebars = {
     docs: [
         {
             id: "index",
@@ -87,6 +87,6 @@ const sidebars: SidebarsConfig = {
             type: "category",
         },
     ],
-};
+} satisfies SidebarsConfig;
 
 export default sidebars;

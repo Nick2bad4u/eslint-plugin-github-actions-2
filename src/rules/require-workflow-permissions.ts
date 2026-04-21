@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { isEmpty } from "ts-extras";
+
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
@@ -52,7 +54,7 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                if (jobs.length === 0) {
+                if (isEmpty(jobs)) {
                     context.report({
                         messageId: "missingWorkflowPermissions",
                         node: root,

@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { isEmpty } from "ts-extras";
+
 import {
     getSarifUploadSteps,
     getScorecardSteps,
@@ -22,7 +24,7 @@ const rule: Rule.RuleModule = {
 
                 const root = getWorkflowRoot(context);
 
-                if (root === null || getScorecardSteps(root).length === 0) {
+                if (root === null || isEmpty(getScorecardSteps(root))) {
                     return;
                 }
 

@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { safeCastTo } from "ts-extras";
+
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
@@ -68,7 +70,7 @@ const rule: Rule.RuleModule = {
                 messageId: isReusableWorkflowReference(reference)
                     ? "unpinnedReusableWorkflow"
                     : "unpinnedAction",
-                node: node as Rule.Node,
+                node: safeCastTo<Rule.Node>(node),
             });
         };
 

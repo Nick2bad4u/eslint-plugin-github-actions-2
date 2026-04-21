@@ -4,6 +4,8 @@
  */
 
 /** Determine whether a character is horizontal whitespace. */
+import { arrayFirst } from "ts-extras";
+
 const isHorizontalWhitespace = (character: string | undefined): boolean =>
     character === " " || character === "\t";
 
@@ -66,7 +68,7 @@ export const getEnclosingLineRemovalRange = (
 ): [number, number] => {
     const previousLineBreakIndex = sourceText.lastIndexOf(
         "\n",
-        Math.max(0, range[0] - 1)
+        Math.max(0, arrayFirst(range) - 1)
     );
     const start =
         previousLineBreakIndex === -1 ? 0 : previousLineBreakIndex + 1;
@@ -82,7 +84,7 @@ export const getFlowSequenceEntryRemovalRange = (
     sourceText: string,
     range: readonly [number, number]
 ): [number, number] => {
-    let start = range[0];
+    let start = arrayFirst(range);
     let end = range[1];
 
     while (start > 0 && isHorizontalWhitespace(sourceText[start - 1])) {

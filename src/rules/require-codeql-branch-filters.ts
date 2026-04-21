@@ -5,6 +5,8 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
+import { isEmpty } from "ts-extras";
+
 import { getCodeqlInitSteps } from "../_internal/code-scanning-workflow.ts";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
@@ -55,7 +57,7 @@ const rule: Rule.RuleModule = {
 
                 const root = getWorkflowRoot(context);
 
-                if (root === null || getCodeqlInitSteps(root).length === 0) {
+                if (root === null || isEmpty(getCodeqlInitSteps(root))) {
                     return;
                 }
 

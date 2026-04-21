@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { arrayJoin, isEmpty  } from "ts-extras";
+
 import {
     getGithubExpressionBodies,
     getReferencedContextRoots,
@@ -70,13 +72,13 @@ const reportInvalidContexts = (
         options.allowedContexts
     );
 
-    if (disallowedContexts.length === 0) {
+    if (isEmpty(disallowedContexts)) {
         return;
     }
 
     context.report({
         data: {
-            contexts: disallowedContexts.join(", "),
+            contexts: arrayJoin(disallowedContexts, ", "),
             field: options.field,
             jobId: options.jobId,
         },

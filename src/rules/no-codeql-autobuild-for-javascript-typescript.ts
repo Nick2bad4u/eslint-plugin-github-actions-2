@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { isEmpty } from "ts-extras";
+
 import {
     codeqlLanguagesAreOnlyJavaScriptTypeScript,
     getCodeqlAutobuildSteps,
@@ -33,7 +35,7 @@ const rule: Rule.RuleModule = {
                         (step) => step.job.id === autobuildStep.job.id
                     );
 
-                    if (initSteps.length === 0) {
+                    if (isEmpty(initSteps)) {
                         continue;
                     }
 

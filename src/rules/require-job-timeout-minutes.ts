@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { isInteger } from "ts-extras";
+
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
@@ -73,7 +75,7 @@ const rule: Rule.RuleModule = {
 
                     if (
                         timeoutMinutes === null ||
-                        !Number.isInteger(timeoutMinutes) ||
+                        !isInteger(timeoutMinutes) ||
                         timeoutMinutes <= 0
                     ) {
                         context.report({

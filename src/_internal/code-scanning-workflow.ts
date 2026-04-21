@@ -5,6 +5,8 @@
 /* eslint-disable @typescript-eslint/prefer-readonly-parameter-types -- YAML AST nodes come from parser-owned mutable types shared across helper boundaries. */
 import type { AST } from "yaml-eslint-parser";
 
+import { setHas, stringSplit  } from "ts-extras";
+
 import type { WorkflowActionStep } from "./workflow-action-steps.js";
 
 import { getWorkflowActionSteps } from "./workflow-action-steps.js";
@@ -142,8 +144,7 @@ export const getCodeqlLanguageValues = (
             : [singleLanguage];
     }
 
-    return languagesMappingValue
-        .split(",")
+    return stringSplit(languagesMappingValue, ",")
         .map((value) => value.trim())
         .filter((value) => value.length > 0);
 };
@@ -153,6 +154,6 @@ export const codeqlLanguagesAreOnlyJavaScriptTypeScript = (
     languages: readonly string[]
 ): boolean =>
     languages.length > 0 &&
-    languages.every((language) => codeqlLanguageAliases.has(language));
+    languages.every((language) => setHas(codeqlLanguageAliases, language));
 
 /* eslint-enable @typescript-eslint/prefer-readonly-parameter-types -- Re-enable readonly-parameter checks outside parser AST helper signatures. */

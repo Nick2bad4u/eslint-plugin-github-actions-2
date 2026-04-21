@@ -5,6 +5,8 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
+import { arrayFirst, safeCastTo  } from "ts-extras";
+
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getScalarStringValue,
@@ -33,7 +35,7 @@ const visitStringScalars = (
     visitor: (node: Readonly<AST.YAMLScalar>, value: string) => void
 ): void => {
     const unwrappedNode = unwrapYamlValue(
-        node as AST.YAMLContent | AST.YAMLWithMeta | null
+        safeCastTo<AST.YAMLContent | AST.YAMLWithMeta | null>(node)
     );
 
     if (unwrappedNode === null) {
@@ -96,7 +98,7 @@ const rule: Rule.RuleModule = {
                     context.report({
                         fix: (fixer) => {
                             const originalText = context.sourceCode.text.slice(
-                                node.range[0],
+                                arrayFirst(node.range),
                                 node.range[1]
                             );
                             const fixedText =

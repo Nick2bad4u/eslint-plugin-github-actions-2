@@ -3,6 +3,8 @@
  * Shared casing helpers for naming-oriented GitHub Actions rules.
  */
 
+import { arrayFirst, arrayJoin, isEmpty, objectEntries, stringSplit     } from "ts-extras";
+
 import { casePoliceDictionary } from "./case-police-dictionary.js";
 
 /** Supported naming conventions used by workflow naming rules. */
@@ -135,17 +137,17 @@ const buildCasePoliceDictionaryIndex = (): {
     >();
     let maxTokenSpan = 1;
 
-    for (const [dictionaryKey, canonical] of Object.entries(
+    for (const [dictionaryKey, canonical] of objectEntries(
         casePoliceDictionary
     )) {
         const keyWords = splitIntoWords(dictionaryKey);
 
-        if (keyWords.length === 0) {
+        if (isEmpty(keyWords)) {
             continue;
         }
 
         const tokenCount = keyWords.length;
-        const collapsedKey = keyWords.join("");
+        const collapsedKey = arrayJoin(keyWords, "");
         const existingMatches = matchesByCollapsedKey.get(collapsedKey) ?? [];
         const isDuplicateMatch = existingMatches.some(
             (existingMatch) =>
@@ -194,9 +196,8 @@ const resolveCasePoliceTitleSegments = (
         let matched = false;
 
         for (let span = maxSpan; span >= 1; span -= 1) {
-            const collapsedCandidate = words
-                .slice(index, index + span)
-                .join("");
+            const collapsedCandidate = arrayJoin(words
+                .slice(index, index + span), "");
             const candidateMatches =
                 casePoliceDictionaryIndex.matchesByCollapsedKey.get(
                     collapsedCandidate
@@ -209,7 +210,7 @@ const resolveCasePoliceTitleSegments = (
             const exactTokenCountMatch = candidateMatches.find(
                 (candidateMatch) => candidateMatch.tokenCount === span
             );
-            const selectedMatch = exactTokenCountMatch ?? candidateMatches[0];
+            const selectedMatch = exactTokenCountMatch ?? arrayFirst(candidateMatches);
 
             if (selectedMatch === undefined) {
                 continue;
@@ -249,7 +250,7 @@ export const convertToGithubActionsCasing = (
     const words = splitIntoWords(value);
     const titleSegments = resolveCasePoliceTitleSegments(words);
 
-    if (words.length === 0) {
+    if (isEmpty(words)) {
         return value;
     }
 
@@ -257,34 +258,33 @@ export const convertToGithubActionsCasing = (
         case "camelCase": {
             const [firstWord = "", ...remainingWords] = words;
 
-            return `${firstWord}${remainingWords.map((word) => capitalizeWord(word)).join("")}`;
+            return `${firstWord}${arrayJoin(remainingWords.map((word) => capitalizeWord(word)), "")}`;
         }
 
         case "kebab-case": {
-            return words.join("-");
+            return arrayJoin(words, "-");
         }
 
         case "PascalCase": {
-            return words.map((word) => capitalizeWord(word)).join("");
+            return arrayJoin(words.map((word) => capitalizeWord(word)), "");
         }
 
         case "SCREAMING_SNAKE_CASE": {
-            return words.map((word) => word.toUpperCase()).join("_");
+            return arrayJoin(words.map((word) => word.toUpperCase()), "_");
         }
 
         case "snake_case": {
-            return words.join("_");
+            return arrayJoin(words, "_");
         }
 
         case "Title Case": {
-            return titleSegments.join(" ");
+            return arrayJoin(titleSegments, " ");
         }
 
         case "Train-Case": {
-            return titleSegments
-                .flatMap((segment) => segment.split(/\s+/u))
-                .filter((segment) => segment.length > 0)
-                .join("-");
+            return arrayJoin(titleSegments
+                .flatMap((segment) => stringSplit(segment, /\s+/u))
+                .filter((segment) => segment.length > 0), "-");
         }
 
         default: {

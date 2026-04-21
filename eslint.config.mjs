@@ -21,6 +21,7 @@ import * as htmlParser from "@html-eslint/parser";
 import stylistic from "@stylistic/eslint-plugin";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import tseslintParser from "@typescript-eslint/parser";
+import vite from "@typpi/eslint-plugin-vite";
 import vitest from "@vitest/eslint-plugin";
 import gitignore from "eslint-config-flat-gitignore";
 import eslintConfigPrettier from "eslint-config-prettier";
@@ -37,7 +38,6 @@ import docusaurus2 from "eslint-plugin-docusaurus-2";
 import eslintPluginEslintPlugin from "eslint-plugin-eslint-plugin";
 import etcMisc from "eslint-plugin-etc-misc";
 import progress from "eslint-plugin-file-progress-2";
-import githubActions from "eslint-plugin-github-actions-2";
 import immutable from "eslint-plugin-immutable-2";
 import { importX } from "eslint-plugin-import-x";
 import jsdocPlugin from "eslint-plugin-jsdoc";
@@ -59,7 +59,6 @@ import nodeDependencies from "eslint-plugin-node-dependencies";
 import packageJson from "eslint-plugin-package-json";
 import perfectionist from "eslint-plugin-perfectionist";
 import pluginPrettier from "eslint-plugin-prettier";
-import vite from "@typpi/eslint-plugin-vite";
 import pluginPromise from "eslint-plugin-promise";
 import pluginRedos from "eslint-plugin-redos";
 import pluginRegexp from "eslint-plugin-regexp";
@@ -95,7 +94,7 @@ import * as yamlEslintParser from "yaml-eslint-parser";
  * 2. Change the local import below to match your plugin's name and path
  * 3. Setup the `🚢 Local Plugin Import` section below for new plugin
  */
-import githubActionsPlugin from "./plugin.mjs";
+import githubActions from "./plugin.mjs";
 
 // NOTE: eslint-plugin-json-schema-validator may attempt to fetch remote schemas
 // at lint time. That makes linting flaky/offline-hostile.

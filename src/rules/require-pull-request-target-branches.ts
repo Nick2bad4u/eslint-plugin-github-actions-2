@@ -5,6 +5,8 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
+import { safeCastTo } from "ts-extras";
+
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
@@ -116,8 +118,8 @@ const rule: Rule.RuleModule = {
 
                 if (pullRequestTargetValue?.type !== "YAMLMapping") {
                     reportMissingBranchFilter(
-                        (pullRequestTargetPair.value ??
-                            pullRequestTargetPair) as AST.YAMLNode
+                        safeCastTo<AST.YAMLNode>(pullRequestTargetPair.value ??
+                            pullRequestTargetPair)
                     );
 
                     return;

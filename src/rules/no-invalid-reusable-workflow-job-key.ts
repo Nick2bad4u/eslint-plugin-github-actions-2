@@ -5,6 +5,8 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
+import { arrayJoin } from "ts-extras";
+
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
@@ -68,7 +70,7 @@ const rule: Rule.RuleModule = {
 
                         context.report({
                             data: {
-                                allowedKeys: reusableWorkflowJobKeys.join(", "),
+                                allowedKeys: arrayJoin(reusableWorkflowJobKeys, ", "),
                                 jobId: job.id,
                                 key,
                             },

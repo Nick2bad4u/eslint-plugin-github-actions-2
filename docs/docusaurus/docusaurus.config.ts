@@ -15,7 +15,7 @@ const repositoryName = "eslint-plugin-github-actions-2";
 const npmPackageName = "eslint-plugin-github-actions-2";
 
 /** Full Docusaurus site configuration. */
-const config: Config = {
+const config = {
     baseUrl,
     deploymentBranch: "gh-pages",
     favicon: "img/logo.svg",
@@ -330,6 +330,6 @@ const config: Config = {
     ],
     title: npmPackageName,
     url: "https://nick2bad4u.github.io",
-};
+} satisfies Config;
 
 export default config;

@@ -5,6 +5,8 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
+import { arrayFirst } from "ts-extras";
+
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
@@ -76,7 +78,7 @@ const rule: Rule.RuleModule = {
                                                       );
                                                   const childIndentation = `${getLineIndentation(
                                                       context.sourceCode.text,
-                                                      jobKeyNode.range[0]
+                                                      arrayFirst(jobKeyNode.range)
                                                   )}  `;
 
                                                   return fixer.insertTextBeforeRange(

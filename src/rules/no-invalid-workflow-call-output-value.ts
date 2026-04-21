@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { arrayJoin } from "ts-extras";
+
 import {
     getGithubExpressionBodies,
     getReferencedContextRoots,
@@ -107,7 +109,7 @@ const rule: Rule.RuleModule = {
                     if (disallowedContexts.length > 0) {
                         context.report({
                             data: {
-                                contexts: disallowedContexts.join(", "),
+                                contexts: arrayJoin(disallowedContexts, ", "),
                                 outputId,
                             },
                             messageId: "invalidContext",

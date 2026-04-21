@@ -5,6 +5,8 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
+import { arrayJoin, isEmpty, safeCastTo, setHas    } from "ts-extras";
+
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
@@ -38,7 +40,7 @@ const hasSelfHostedRunner = (
     node: null | Readonly<AST.YAMLContent | AST.YAMLWithMeta>
 ): boolean => {
     const unwrappedNode = unwrapYamlValue(
-        node as AST.YAMLContent | AST.YAMLWithMeta | null
+        safeCastTo<AST.YAMLContent | AST.YAMLWithMeta | null>(node)
     );
 
     if (unwrappedNode === null) {
@@ -87,11 +89,11 @@ const rule: Rule.RuleModule = {
                     ...getWorkflowEventNames(root),
                 ]
                     .filter((eventName) =>
-                        forkPullRequestEventNameSet.has(eventName)
+                        setHas(forkPullRequestEventNameSet, eventName)
                     )
                     .toSorted((left, right) => left.localeCompare(right));
 
-                if (triggeringForkPullRequestEvents.length === 0) {
+                if (isEmpty(triggeringForkPullRequestEvents)) {
                     return;
                 }
 
@@ -107,7 +109,7 @@ const rule: Rule.RuleModule = {
 
                     context.report({
                         data: {
-                            events: triggeringForkPullRequestEvents.join(", "),
+                            events: arrayJoin(triggeringForkPullRequestEvents, ", "),
                             jobId: job.id,
                         },
                         messageId: "selfHostedRunnerOnForkPullRequestEvent",

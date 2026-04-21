@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { setHas } from "ts-extras";
+
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
@@ -56,7 +58,7 @@ const rule: Rule.RuleModule = {
                 const eventNames = getWorkflowEventNames(root);
                 const shouldRequireConcurrency = [
                     ...requiredTriggerEvents,
-                ].some((eventName) => eventNames.has(eventName));
+                ].some((eventName) => setHas(eventNames, eventName));
 
                 if (!shouldRequireConcurrency) {
                     return;
