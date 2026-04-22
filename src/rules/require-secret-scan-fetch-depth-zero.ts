@@ -3,6 +3,7 @@
  * Require secret scanning workflows to checkout full history.
  */
 import type { Rule } from "eslint";
+import type { AST } from "yaml-eslint-parser";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import { getSecretScanningActionSteps } from "../_internal/secret-scanning-workflow.ts";
@@ -18,6 +19,58 @@ import {
 
 const isCheckoutReference = (usesReference: string): boolean =>
     usesReference.trim().startsWith("actions/checkout@");
+
+/**
+ * Determine whether a step entry is a compliant `actions/checkout` with
+ * `fetch-depth: 0`.
+ */
+const isCompliantCheckoutStep = (
+    stepMapping: Readonly<AST.YAMLMapping>
+): boolean => {
+    const usesReference = getScalarStringValue(
+        getMappingPair(stepMapping, "uses")?.value ?? null
+    );
+
+    if (usesReference === null || !isCheckoutReference(usesReference)) {
+        return false;
+    }
+
+    const withMapping = getMappingValueAsMapping(stepMapping, "with");
+    const fetchDepthPair =
+        withMapping === null
+            ? null
+            : getMappingPair(withMapping, "fetch-depth");
+    const fetchDepthNumber = getScalarNumberValue(
+        fetchDepthPair?.value ?? null
+    );
+    const fetchDepthString = getScalarStringValue(
+        fetchDepthPair?.value ?? null
+    )?.trim();
+
+    return fetchDepthNumber === 0 || fetchDepthString === "0";
+};
+
+/**
+ * Determine whether a steps sequence contains at least one compliant checkout
+ * step with `fetch-depth: 0`.
+ */
+const hasCompliantCheckoutInSequence = (
+    stepsSequence: Readonly<AST.YAMLSequence>
+): boolean => {
+    for (const entry of stepsSequence.entries) {
+        const stepMapping = unwrapYamlValue(entry);
+
+        if (stepMapping?.type !== "YAMLMapping") {
+            continue;
+        }
+
+        if (isCompliantCheckoutStep(stepMapping)) {
+            return true;
+        }
+    }
+
+    return false;
+};
 
 /** Rule implementation for fetch-depth zero requirements on secret scanners. */
 const rule: Rule.RuleModule = {
@@ -40,55 +93,10 @@ const rule: Rule.RuleModule = {
                         "steps"
                     );
 
-                    if (stepsSequence === null) {
-                        continue;
-                    }
-
-                    let hasCompliantCheckout = false;
-
-                    for (const entry of stepsSequence.entries) {
-                        const stepMapping = unwrapYamlValue(entry);
-
-                        if (stepMapping?.type !== "YAMLMapping") {
-                            continue;
-                        }
-
-                        const usesReference = getScalarStringValue(
-                            getMappingPair(stepMapping, "uses")?.value ?? null
-                        );
-
-                        if (
-                            usesReference === null ||
-                            !isCheckoutReference(usesReference)
-                        ) {
-                            continue;
-                        }
-
-                        const withMapping = getMappingValueAsMapping(
-                            stepMapping,
-                            "with"
-                        );
-                        const fetchDepthPair =
-                            withMapping === null
-                                ? null
-                                : getMappingPair(withMapping, "fetch-depth");
-                        const fetchDepthNumber = getScalarNumberValue(
-                            fetchDepthPair?.value ?? null
-                        );
-                        const fetchDepthString = getScalarStringValue(
-                            fetchDepthPair?.value ?? null
-                        )?.trim();
-
-                        if (
-                            fetchDepthNumber === 0 ||
-                            fetchDepthString === "0"
-                        ) {
-                            hasCompliantCheckout = true;
-                            break;
-                        }
-                    }
-
-                    if (hasCompliantCheckout) {
+                    if (
+                        stepsSequence !== null &&
+                        hasCompliantCheckoutInSequence(stepsSequence)
+                    ) {
                         continue;
                     }
 

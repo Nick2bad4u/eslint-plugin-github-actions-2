@@ -3,6 +3,7 @@
  * Disallow directly interpolating untrusted event inputs inside `run` steps.
  */
 import type { Rule } from "eslint";
+import type { AST } from "yaml-eslint-parser";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
@@ -66,6 +67,46 @@ const getUnsafeRunSource = (runScript: string): null | string => {
     return null;
 };
 
+/**
+ * Check all steps in a job for unsafe `run` interpolation and report
+ * violations.
+ */
+const checkJobStepsForUnsafeRun = (
+    context: Readonly<Rule.RuleContext>,
+    stepsSequence: Readonly<AST.YAMLSequence>,
+    jobId: string
+): void => {
+    for (const entry of stepsSequence.entries) {
+        const stepMapping = unwrapYamlValue(entry);
+
+        if (stepMapping?.type !== "YAMLMapping") {
+            continue;
+        }
+
+        const runPair = getMappingPair(stepMapping, "run");
+        const runScript = getScalarStringValue(runPair?.value ?? null);
+
+        if (runPair === null || runScript === null) {
+            continue;
+        }
+
+        const unsafeSource = getUnsafeRunSource(runScript);
+
+        if (unsafeSource === null) {
+            continue;
+        }
+
+        context.report({
+            data: {
+                jobId,
+                source: unsafeSource,
+            },
+            messageId: "unsafeRunInterpolation",
+            node: (runPair.value ?? runPair) as unknown as Rule.Node,
+        });
+    }
+};
+
 /** Rule implementation for disallowing unsafe direct interpolation in `run`. */
 const rule: Rule.RuleModule = {
     create(context) {
@@ -87,41 +128,12 @@ const rule: Rule.RuleModule = {
                         "steps"
                     );
 
-                    if (stepsSequence === null) {
-                        continue;
-                    }
-
-                    for (const entry of stepsSequence.entries) {
-                        const stepMapping = unwrapYamlValue(entry);
-
-                        if (stepMapping?.type !== "YAMLMapping") {
-                            continue;
-                        }
-
-                        const runPair = getMappingPair(stepMapping, "run");
-                        const runScript = getScalarStringValue(
-                            runPair?.value ?? null
+                    if (stepsSequence !== null) {
+                        checkJobStepsForUnsafeRun(
+                            context,
+                            stepsSequence,
+                            job.id
                         );
-
-                        if (runPair === null || runScript === null) {
-                            continue;
-                        }
-
-                        const unsafeSource = getUnsafeRunSource(runScript);
-
-                        if (unsafeSource === null) {
-                            continue;
-                        }
-
-                        context.report({
-                            data: {
-                                jobId: job.id,
-                                source: unsafeSource,
-                            },
-                            messageId: "unsafeRunInterpolation",
-                            node: (runPair.value ??
-                                runPair) as unknown as Rule.Node,
-                        });
                     }
                 }
             },

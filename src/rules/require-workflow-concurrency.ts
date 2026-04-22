@@ -3,6 +3,7 @@
  * Require top-level workflow concurrency controls for relevant workflow triggers.
  */
 import type { Rule } from "eslint";
+import type { AST } from "yaml-eslint-parser";
 
 import { setHas } from "ts-extras";
 
@@ -32,6 +33,52 @@ type RequireWorkflowConcurrencyOptions = [
         readonly requireCancelInProgress?: boolean;
     }?,
 ];
+
+/**
+ * Validate the `cancel-in-progress` key inside a concurrency mapping and report
+ * any violations.
+ */
+const checkCancelInProgress = (
+    context: Readonly<Rule.RuleContext>,
+    concurrencyMapping: Readonly<AST.YAMLMapping>
+): void => {
+    const cancelInProgressPair = getMappingPair(
+        concurrencyMapping,
+        "cancel-in-progress"
+    );
+
+    if (cancelInProgressPair === null) {
+        context.report({
+            messageId: "missingCancelInProgress",
+            node: concurrencyMapping,
+        });
+
+        return;
+    }
+
+    if (isGithubExpressionScalar(cancelInProgressPair.value)) {
+        return;
+    }
+
+    if (
+        unwrapYamlValue(cancelInProgressPair.value)?.type !== "YAMLScalar" ||
+        cancelInProgressPair.value?.type !== "YAMLScalar"
+    ) {
+        context.report({
+            messageId: "cancelInProgressDisabled",
+            node: cancelInProgressPair.value ?? cancelInProgressPair,
+        });
+
+        return;
+    }
+
+    if (cancelInProgressPair.value.value !== true) {
+        context.report({
+            messageId: "cancelInProgressDisabled",
+            node: cancelInProgressPair.value,
+        });
+    }
+};
 
 /** Rule implementation for requiring workflow-level concurrency controls. */
 const rule: Rule.RuleModule = {
@@ -124,56 +171,8 @@ const rule: Rule.RuleModule = {
                     });
                 }
 
-                if (!requireCancelInProgress) {
-                    return;
-                }
-
-                const cancelInProgressPair = getMappingPair(
-                    concurrencyValue,
-                    "cancel-in-progress"
-                );
-
-                if (cancelInProgressPair === null) {
-                    context.report({
-                        messageId: "missingCancelInProgress",
-                        node: concurrencyValue,
-                    });
-
-                    return;
-                }
-
-                if (isGithubExpressionScalar(cancelInProgressPair.value)) {
-                    return;
-                }
-
-                if (
-                    unwrapYamlValue(cancelInProgressPair.value)?.type !==
-                    "YAMLScalar"
-                ) {
-                    context.report({
-                        messageId: "cancelInProgressDisabled",
-                        node:
-                            cancelInProgressPair.value ?? cancelInProgressPair,
-                    });
-
-                    return;
-                }
-
-                if (cancelInProgressPair.value?.type !== "YAMLScalar") {
-                    context.report({
-                        messageId: "cancelInProgressDisabled",
-                        node:
-                            cancelInProgressPair.value ?? cancelInProgressPair,
-                    });
-
-                    return;
-                }
-
-                if (cancelInProgressPair.value.value !== true) {
-                    context.report({
-                        messageId: "cancelInProgressDisabled",
-                        node: cancelInProgressPair.value,
-                    });
+                if (requireCancelInProgress) {
+                    checkCancelInProgress(context, concurrencyValue);
                 }
             },
         };

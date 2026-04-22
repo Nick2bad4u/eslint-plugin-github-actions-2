@@ -3,6 +3,7 @@
  * Require immutable full-length SHA pins for third-party actions and reusable workflows.
  */
 import type { Rule } from "eslint";
+import type { AST } from "yaml-eslint-parser";
 
 import { safeCastTo } from "ts-extras";
 
@@ -42,38 +43,70 @@ const getReferenceRef = (reference: string): null | string => {
 const shouldValidateUsesReference = (reference: string): boolean =>
     !isLocalActionReference(reference) && !isDockerReference(reference);
 
+/** Report an unpinned uses reference. */
+const reportReference = (
+    context: Readonly<Rule.RuleContext>,
+    node: Readonly<NonNullable<Rule.Node>>,
+    reference: string
+): void => {
+    if (!shouldValidateUsesReference(reference)) {
+        return;
+    }
+
+    const ref = getReferenceRef(reference);
+
+    if (ref !== null && FULL_SHA_PATTERN.test(ref)) {
+        return;
+    }
+
+    context.report({
+        data: {
+            ref: ref ?? "<missing ref>",
+            reference,
+        },
+        messageId: isReusableWorkflowReference(reference)
+            ? "unpinnedReusableWorkflow"
+            : "unpinnedAction",
+        node: safeCastTo<Rule.Node>(node),
+    });
+};
+
+/**
+ * Check all steps in a job for unpinned `uses` references and report
+ * violations.
+ */
+const checkJobStepsForUnpinnedUses = (
+    context: Readonly<Rule.RuleContext>,
+    stepsSequence: Readonly<AST.YAMLSequence>
+): void => {
+    for (const entry of stepsSequence.entries) {
+        const stepMapping = unwrapYamlValue(entry);
+
+        if (stepMapping?.type !== "YAMLMapping") {
+            continue;
+        }
+
+        const usesPair = getMappingPair(stepMapping, "uses");
+        const usesReference = getScalarStringValue(usesPair?.value ?? null);
+
+        if (usesPair === null || usesReference === null) {
+            continue;
+        }
+
+        reportReference(
+            context,
+            (usesPair.value ?? usesPair) as unknown as Rule.Node,
+            usesReference
+        );
+    }
+};
+
 /**
  * Rule implementation for requiring immutable SHA pins on external uses
  * references.
  */
 const rule: Rule.RuleModule = {
     create(context) {
-        const reportReference = (
-            node: Readonly<NonNullable<Rule.Node>>,
-            reference: string
-        ): void => {
-            if (!shouldValidateUsesReference(reference)) {
-                return;
-            }
-
-            const ref = getReferenceRef(reference);
-
-            if (ref !== null && FULL_SHA_PATTERN.test(ref)) {
-                return;
-            }
-
-            context.report({
-                data: {
-                    ref: ref ?? "<missing ref>",
-                    reference,
-                },
-                messageId: isReusableWorkflowReference(reference)
-                    ? "unpinnedReusableWorkflow"
-                    : "unpinnedAction",
-                node: safeCastTo<Rule.Node>(node),
-            });
-        };
-
         return {
             Program() {
                 if (!isWorkflowFile(context.filename)) {
@@ -100,6 +133,7 @@ const rule: Rule.RuleModule = {
                         reusableWorkflowReference !== null
                     ) {
                         reportReference(
+                            context,
                             (reusableWorkflowPair.value ??
                                 reusableWorkflowPair) as unknown as Rule.Node,
                             reusableWorkflowReference
@@ -111,31 +145,8 @@ const rule: Rule.RuleModule = {
                         "steps"
                     );
 
-                    if (stepsSequence === null) {
-                        continue;
-                    }
-
-                    for (const entry of stepsSequence.entries) {
-                        const stepMapping = unwrapYamlValue(entry);
-
-                        if (stepMapping?.type !== "YAMLMapping") {
-                            continue;
-                        }
-
-                        const usesPair = getMappingPair(stepMapping, "uses");
-                        const usesReference = getScalarStringValue(
-                            usesPair?.value ?? null
-                        );
-
-                        if (usesPair === null || usesReference === null) {
-                            continue;
-                        }
-
-                        reportReference(
-                            (usesPair.value ??
-                                usesPair) as unknown as Rule.Node,
-                            usesReference
-                        );
+                    if (stepsSequence !== null) {
+                        checkJobStepsForUnpinnedUses(context, stepsSequence);
                     }
                 }
             },

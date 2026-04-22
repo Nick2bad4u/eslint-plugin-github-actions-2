@@ -3,10 +3,12 @@
  * Require Dependabot update entries to define open pull request limits.
  */
 import type { Rule } from "eslint";
+import type { AST } from "yaml-eslint-parser";
 
 import { setHas } from "ts-extras";
 
 import {
+    type DependabotUpdateEntry,
     getDependabotReferencedGroup,
     getDependabotRoot,
     getDependabotUpdateEntries,
@@ -16,6 +18,71 @@ import {
     getMappingPair,
     getScalarNumberValue,
 } from "../_internal/workflow-yaml.js";
+
+/**
+ * Process a single Dependabot update entry and report any
+ * open-pull-requests-limit violations.
+ */
+const checkUpdateEntry = (
+    context: Readonly<Rule.RuleContext>,
+    root: Readonly<AST.YAMLMapping>,
+    update: Readonly<DependabotUpdateEntry>,
+    reportedGroupNames: Set<string>
+): void => {
+    const limitPair = getMappingPair(
+        update.mapping,
+        "open-pull-requests-limit"
+    );
+
+    if (update.multiEcosystemGroup !== null) {
+        if (limitPair !== null) {
+            context.report({
+                data: {
+                    updateLabel: getDependabotUpdateLabel(update),
+                },
+                messageId: "unsupportedOpenPullRequestsLimitOnGroupedUpdate",
+                node: limitPair.key as unknown as Rule.Node,
+            });
+        }
+
+        const groupMapping = getDependabotReferencedGroup(root, update);
+        const groupLimitPair =
+            groupMapping === null
+                ? null
+                : getMappingPair(groupMapping, "open-pull-requests-limit");
+
+        if (
+            groupLimitPair !== null &&
+            !setHas(reportedGroupNames, update.multiEcosystemGroup)
+        ) {
+            reportedGroupNames.add(update.multiEcosystemGroup);
+
+            context.report({
+                data: {
+                    groupName: update.multiEcosystemGroup,
+                },
+                messageId: "unsupportedOpenPullRequestsLimitOnGroup",
+                node: groupLimitPair.key as unknown as Rule.Node,
+            });
+        }
+
+        return;
+    }
+
+    const limitValue = getScalarNumberValue(limitPair?.value ?? null);
+
+    if (limitValue === null) {
+        context.report({
+            data: {
+                updateLabel: getDependabotUpdateLabel(update),
+            },
+            messageId: "missingOpenPullRequestsLimit",
+            node: (limitPair?.value ??
+                limitPair ??
+                update.node) as unknown as Rule.Node,
+        });
+    }
+};
 
 /** Rule implementation for requiring open-pull-requests-limit. */
 const rule: Rule.RuleModule = {
@@ -31,75 +98,7 @@ const rule: Rule.RuleModule = {
                 }
 
                 for (const update of getDependabotUpdateEntries(root)) {
-                    const limitPair = getMappingPair(
-                        update.mapping,
-                        "open-pull-requests-limit"
-                    );
-
-                    if (update.multiEcosystemGroup !== null) {
-                        if (limitPair !== null) {
-                            context.report({
-                                data: {
-                                    updateLabel:
-                                        getDependabotUpdateLabel(update),
-                                },
-                                messageId:
-                                    "unsupportedOpenPullRequestsLimitOnGroupedUpdate",
-                                node: limitPair.key as unknown as Rule.Node,
-                            });
-                        }
-
-                        const groupMapping = getDependabotReferencedGroup(
-                            root,
-                            update
-                        );
-                        const groupLimitPair =
-                            groupMapping === null
-                                ? null
-                                : getMappingPair(
-                                      groupMapping,
-                                      "open-pull-requests-limit"
-                                  );
-
-                        if (
-                            groupLimitPair !== null &&
-                            !setHas(
-                                reportedGroupNames,
-                                update.multiEcosystemGroup
-                            )
-                        ) {
-                            reportedGroupNames.add(update.multiEcosystemGroup);
-
-                            context.report({
-                                data: {
-                                    groupName: update.multiEcosystemGroup,
-                                },
-                                messageId:
-                                    "unsupportedOpenPullRequestsLimitOnGroup",
-                                node: groupLimitPair.key as unknown as Rule.Node,
-                            });
-                        }
-
-                        continue;
-                    }
-
-                    const limitValue = getScalarNumberValue(
-                        limitPair?.value ?? null
-                    );
-
-                    if (limitValue !== null) {
-                        continue;
-                    }
-
-                    context.report({
-                        data: {
-                            updateLabel: getDependabotUpdateLabel(update),
-                        },
-                        messageId: "missingOpenPullRequestsLimit",
-                        node: (limitPair?.value ??
-                            limitPair ??
-                            update.node) as unknown as Rule.Node,
-                    });
+                    checkUpdateEntry(context, root, update, reportedGroupNames);
                 }
             },
         };

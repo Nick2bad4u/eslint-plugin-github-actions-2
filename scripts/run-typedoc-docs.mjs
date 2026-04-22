@@ -116,6 +116,7 @@ const typedocRelativeIndexMarkdownLinkPattern =
     /\]\(((?:\.\.\/|\.\/)[^)#\s]*?)\/index\.md((?:#[^)]+)?)\)/gu;
 const typedocRelativeMarkdownLinkPattern =
     /\]\(((?:\.\.\/|\.\/)[^)#\s]+?)\.md((?:#[^)]+)?)\)/gu;
+const typedocRelativeRouteLinkPattern = /\]\(((?:\.\.\/|\.\/)[^)\s]+)\)/gu;
 const typedocSidebarIdPrefixPattern = /id:"\.\.\/site-docs\//gu;
 
 /**
@@ -203,19 +204,35 @@ function sanitizeMarkdownForMdx(markdownText) {
  * routes.
  *
  * @param {string} markdownText - Generated markdown file contents.
+ * @param {string} markdownFilePath - Absolute path to the markdown file.
  *
  * @returns {string} Markdown with relative `.md` links normalized.
  */
-function normalizeTypedocMarkdownLinks(markdownText) {
-    return markdownText
-        .replace(
+function normalizeTypedocMarkdownLinks(markdownText, markdownFilePath) {
+    const normalizedMarkdown = markdownText
+        .replaceAll(
             typedocRelativeIndexMarkdownLinkPattern,
             (_, targetPath, hashSuffix = "") => `](${targetPath}/${hashSuffix})`
         )
-        .replace(
+        .replaceAll(
             typedocRelativeMarkdownLinkPattern,
             (_, targetPath, hashSuffix = "") => `](${targetPath}${hashSuffix})`
         );
+
+    if (
+        !markdownFilePath.endsWith("/index.md") &&
+        !markdownFilePath.endsWith("\\index.md")
+    ) {
+        return normalizedMarkdown.replaceAll(
+            typedocRelativeRouteLinkPattern,
+            (_, targetPath) =>
+                targetPath.startsWith("./")
+                    ? `](../${targetPath.slice(2)})`
+                    : `](../${targetPath})`
+        );
+    }
+
+    return normalizedMarkdown;
 }
 
 /**
@@ -258,7 +275,7 @@ function sanitizeTypedocMarkdownOutput(outputDirectoryPath) {
     for (const markdownFilePath of getMarkdownFilePaths(outputDirectoryPath)) {
         const previousContent = readFileSync(markdownFilePath, "utf8");
         const nextContent = sanitizeMarkdownForMdx(
-            normalizeTypedocMarkdownLinks(previousContent)
+            normalizeTypedocMarkdownLinks(previousContent, markdownFilePath)
         );
 
         if (nextContent === previousContent) {

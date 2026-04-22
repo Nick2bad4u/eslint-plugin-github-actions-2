@@ -246,7 +246,7 @@ export const getEffectiveDependabotTargetBranch = (
         "target-branch"
     );
 
-    return targetBranch === null ? "<default-branch>" : targetBranch;
+    return targetBranch ?? "<default-branch>";
 };
 
 /** Collect normalized directory selectors declared by a Dependabot update block. */

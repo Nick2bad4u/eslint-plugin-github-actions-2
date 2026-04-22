@@ -20,6 +20,94 @@ import {
     getLineIndentation,
 } from "../_internal/yaml-fixes.js";
 
+/** Build the insert-name suggest fix for a missing job name. */
+const buildInsertJobNameSuggest = (
+    context: Readonly<Rule.RuleContext>,
+    jobId: string,
+    jobKeyNode: Readonly<AST.YAMLNode>
+): Rule.SuggestionReportDescriptor[] => [
+    {
+        data: { jobId },
+        fix: (fixer) => {
+            const insertionIndex = getIndexAfterLine(
+                context.sourceCode.text,
+                jobKeyNode.range[1]
+            );
+            const childIndentation = `${getLineIndentation(
+                context.sourceCode.text,
+                arrayFirst(jobKeyNode.range)
+            )}  `;
+
+            return fixer.insertTextBeforeRange(
+                [insertionIndex, insertionIndex],
+                `${childIndentation}name: ${JSON.stringify(jobId)}\n`
+            );
+        },
+        messageId: "insertJobNameSuggestion",
+    },
+];
+
+/** Check a single job mapping pair for a valid name and report any violations. */
+const checkJobPair = (
+    context: Readonly<Rule.RuleContext>,
+    pair: Readonly<AST.YAMLPair>
+): void => {
+    const jobKeyNode = pair.key;
+    const jobId = getScalarStringValue(pair.key) ?? "<unknown>";
+    const jobValue = unwrapYamlValue(pair.value);
+
+    if (jobValue?.type !== "YAMLMapping") {
+        context.report({
+            data: { jobId },
+            messageId: "missingJobName",
+            node: (pair.value ?? pair) as unknown as Rule.Node,
+        });
+
+        return;
+    }
+
+    const namePair = getMappingPair(jobValue, "name");
+
+    if (namePair === null) {
+        context.report({
+            data: { jobId },
+            messageId: "missingJobName",
+            node: pair.key as AST.YAMLNode as unknown as Rule.Node,
+            suggest:
+                jobId === "<unknown>" || jobKeyNode === null
+                    ? undefined
+                    : buildInsertJobNameSuggest(context, jobId, jobKeyNode),
+        });
+
+        return;
+    }
+
+    const nameValue = getScalarStringValue(namePair.value);
+    const nameValueNode = namePair.value;
+
+    if (nameValue === null || nameValue.trim().length === 0) {
+        context.report({
+            data: { jobId },
+            messageId: "invalidJobName",
+            node: (namePair.value ?? namePair) as unknown as Rule.Node,
+            suggest:
+                jobId === "<unknown>" || nameValueNode === null
+                    ? undefined
+                    : [
+                          {
+                              data: { jobId },
+                              fix: (fixer) =>
+                                  fixer.replaceTextRange(
+                                      nameValueNode.range,
+                                      JSON.stringify(jobId)
+                                  ),
+                              messageId: "replaceJobNameSuggestion",
+                          },
+                      ],
+        });
+    }
+};
+
 /** Rule implementation for requiring explicit job names. */
 const rule: Rule.RuleModule = {
     create(context) {
@@ -42,90 +130,7 @@ const rule: Rule.RuleModule = {
                 }
 
                 for (const pair of jobsMapping.pairs) {
-                    const jobKeyNode = pair.key;
-                    const jobId = getScalarStringValue(pair.key) ?? "<unknown>";
-                    const jobValue = unwrapYamlValue(pair.value);
-
-                    if (jobValue?.type !== "YAMLMapping") {
-                        context.report({
-                            data: { jobId },
-                            messageId: "missingJobName",
-                            node: (pair.value ?? pair) as unknown as Rule.Node,
-                        });
-
-                        continue;
-                    }
-
-                    const namePair = getMappingPair(jobValue, "name");
-
-                    if (namePair === null) {
-                        context.report({
-                            data: { jobId },
-                            messageId: "missingJobName",
-                            node: pair.key as AST.YAMLNode as unknown as Rule.Node,
-                            suggest:
-                                jobId === "<unknown>" || jobKeyNode === null
-                                    ? undefined
-                                    : [
-                                          {
-                                              data: { jobId },
-                                              fix: (fixer) => {
-                                                  const insertionIndex =
-                                                      getIndexAfterLine(
-                                                          context.sourceCode
-                                                              .text,
-                                                          jobKeyNode.range[1]
-                                                      );
-                                                  const childIndentation = `${getLineIndentation(
-                                                      context.sourceCode.text,
-                                                      arrayFirst(
-                                                          jobKeyNode.range
-                                                      )
-                                                  )}  `;
-
-                                                  return fixer.insertTextBeforeRange(
-                                                      [
-                                                          insertionIndex,
-                                                          insertionIndex,
-                                                      ],
-                                                      `${childIndentation}name: ${JSON.stringify(jobId)}\n`
-                                                  );
-                                              },
-                                              messageId:
-                                                  "insertJobNameSuggestion",
-                                          },
-                                      ],
-                        });
-
-                        continue;
-                    }
-
-                    const nameValue = getScalarStringValue(namePair.value);
-                    const nameValueNode = namePair.value;
-
-                    if (nameValue === null || nameValue.trim().length === 0) {
-                        context.report({
-                            data: { jobId },
-                            messageId: "invalidJobName",
-                            node: (namePair.value ??
-                                namePair) as unknown as Rule.Node,
-                            suggest:
-                                jobId === "<unknown>" || nameValueNode === null
-                                    ? undefined
-                                    : [
-                                          {
-                                              data: { jobId },
-                                              fix: (fixer) =>
-                                                  fixer.replaceTextRange(
-                                                      nameValueNode.range,
-                                                      JSON.stringify(jobId)
-                                                  ),
-                                              messageId:
-                                                  "replaceJobNameSuggestion",
-                                          },
-                                      ],
-                        });
-                    }
+                    checkJobPair(context, pair);
                 }
             },
         };

@@ -4,7 +4,7 @@
 
 New to the plugin? Start with [Getting started](./getting-started.md). Need
 config guidance? See the [preset reference](./presets/index.md). Looking for a
-specific check? Jump to [Current rules](#current-rules).
+specific check? See the **Current rules** section below.
 
 ## Included rule categories
 

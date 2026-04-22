@@ -63,7 +63,10 @@ const toWindowsLineEndings = (text) =>
  * @returns {string}
  */
 export const getPresetDocsSlug = (presetName) =>
-    presetName.replace(/[A-Z]/g, (character) => `-${character.toLowerCase()}`);
+    presetName.replaceAll(
+        /[A-Z]/g,
+        (character) => `-${character.toLowerCase()}`
+    );
 
 /**
  * @param {unknown} value

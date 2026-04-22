@@ -43,6 +43,43 @@ const reportDirectSecretsConditional = (
     });
 };
 
+/**
+ * Check all steps in a job's steps sequence for direct secret references in
+ * `if` conditionals and report violations.
+ */
+const checkJobStepsForSecretsInIf = (
+    context: Readonly<Rule.RuleContext>,
+    stepsSequence: Readonly<AST.YAMLSequence>,
+    jobId: string
+): void => {
+    for (const entry of stepsSequence.entries) {
+        const stepMapping = unwrapYamlValue(entry);
+
+        if (stepMapping?.type !== "YAMLMapping") {
+            continue;
+        }
+
+        const stepIfPair = getMappingPair(stepMapping, "if");
+        const stepIfExpression = getScalarStringValue(
+            stepIfPair?.value ?? null
+        );
+
+        if (
+            stepIfPair === null ||
+            stepIfExpression === null ||
+            !hasDirectSecretsReference(stepIfExpression)
+        ) {
+            continue;
+        }
+
+        reportDirectSecretsConditional(
+            context,
+            stepIfPair,
+            `a step in job '${jobId}'`
+        );
+    }
+};
+
 /** Rule implementation for disallowing direct secret usage in `if` conditionals. */
 const rule: Rule.RuleModule = {
     create(context) {
@@ -81,34 +118,11 @@ const rule: Rule.RuleModule = {
                         "steps"
                     );
 
-                    if (stepsSequence === null) {
-                        continue;
-                    }
-
-                    for (const entry of stepsSequence.entries) {
-                        const stepMapping = unwrapYamlValue(entry);
-
-                        if (stepMapping?.type !== "YAMLMapping") {
-                            continue;
-                        }
-
-                        const stepIfPair = getMappingPair(stepMapping, "if");
-                        const stepIfExpression = getScalarStringValue(
-                            stepIfPair?.value ?? null
-                        );
-
-                        if (
-                            stepIfPair === null ||
-                            stepIfExpression === null ||
-                            !hasDirectSecretsReference(stepIfExpression)
-                        ) {
-                            continue;
-                        }
-
-                        reportDirectSecretsConditional(
+                    if (stepsSequence !== null) {
+                        checkJobStepsForSecretsInIf(
                             context,
-                            stepIfPair,
-                            `a step in job '${job.id}'`
+                            stepsSequence,
+                            job.id
                         );
                     }
                 }

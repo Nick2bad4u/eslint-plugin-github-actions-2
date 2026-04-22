@@ -3,6 +3,7 @@
  * Require every workflow step to declare a string name.
  */
 import type { Rule } from "eslint";
+import type { AST } from "yaml-eslint-parser";
 
 import { arrayFirst, isDefined, stringSplit } from "ts-extras";
 
@@ -65,6 +66,111 @@ const getSuggestedStepName = (
         : firstNonEmptyLine;
 };
 
+/** Build the insert-name suggest fix for a missing step name. */
+const buildInsertStepNameSuggest = (
+    context: Readonly<Rule.RuleContext>,
+    jobId: string,
+    suggestedStepName: string,
+    firstStepKeyNode: Readonly<AST.YAMLNode>
+): Rule.SuggestionReportDescriptor[] => [
+    {
+        data: { jobId, suggestedStepName },
+        fix: (fixer) => {
+            const insertionIndex = getIndexAfterLine(
+                context.sourceCode.text,
+                firstStepKeyNode.range[1]
+            );
+            const childIndentation = `${getLineIndentation(
+                context.sourceCode.text,
+                arrayFirst(firstStepKeyNode.range)
+            )}  `;
+
+            return fixer.insertTextBeforeRange(
+                [insertionIndex, insertionIndex],
+                `${childIndentation}name: ${JSON.stringify(suggestedStepName)}\n`
+            );
+        },
+        messageId: "insertStepNameSuggestion",
+    },
+];
+
+/** Check a single step mapping and report any name violations. */
+const checkStepEntry = (
+    context: Readonly<Rule.RuleContext>,
+    stepMapping: Readonly<AST.YAMLMapping>,
+    jobId: string
+): void => {
+    const suggestedStepName = getSuggestedStepName(stepMapping);
+    const namePair = getMappingPair(stepMapping, "name");
+
+    if (namePair === null) {
+        const firstStepPair = arrayFirst(stepMapping.pairs);
+        const firstStepKeyNode = firstStepPair?.key;
+
+        context.report({
+            data: { jobId },
+            messageId: "missingStepName",
+            node: stepMapping as unknown as Rule.Node,
+            suggest:
+                !isDefined(suggestedStepName) ||
+                firstStepKeyNode === null ||
+                !isDefined(firstStepKeyNode)
+                    ? undefined
+                    : buildInsertStepNameSuggest(
+                          context,
+                          jobId,
+                          suggestedStepName,
+                          firstStepKeyNode
+                      ),
+        });
+
+        return;
+    }
+
+    const nameValue = getScalarStringValue(namePair.value);
+
+    if (nameValue === null || nameValue.trim().length === 0) {
+        const nameValueNode = namePair.value;
+
+        context.report({
+            data: { jobId },
+            messageId: "invalidStepName",
+            node: (namePair.value ?? namePair) as unknown as Rule.Node,
+            suggest:
+                !isDefined(suggestedStepName) || nameValueNode === null
+                    ? undefined
+                    : [
+                          {
+                              data: { jobId, suggestedStepName },
+                              fix: (fixer) =>
+                                  fixer.replaceTextRange(
+                                      nameValueNode.range,
+                                      JSON.stringify(suggestedStepName)
+                                  ),
+                              messageId: "replaceStepNameSuggestion",
+                          },
+                      ],
+        });
+    }
+};
+
+/** Check all steps in a job's steps sequence for name violations. */
+const checkJobSteps = (
+    context: Readonly<Rule.RuleContext>,
+    stepsSequence: Readonly<AST.YAMLSequence>,
+    jobId: string
+): void => {
+    for (const entry of stepsSequence.entries) {
+        const stepMapping = unwrapYamlValue(entry);
+
+        if (stepMapping?.type !== "YAMLMapping") {
+            continue;
+        }
+
+        checkStepEntry(context, stepMapping, jobId);
+    }
+};
+
 /** Rule implementation for requiring explicit job step names. */
 const rule: Rule.RuleModule = {
     create(context) {
@@ -86,114 +192,8 @@ const rule: Rule.RuleModule = {
                         "steps"
                     );
 
-                    if (stepsSequence === null) {
-                        continue;
-                    }
-
-                    for (const entry of stepsSequence.entries) {
-                        const stepMapping = unwrapYamlValue(entry);
-
-                        if (stepMapping?.type !== "YAMLMapping") {
-                            continue;
-                        }
-
-                        const suggestedStepName =
-                            getSuggestedStepName(stepMapping);
-
-                        const namePair = getMappingPair(stepMapping, "name");
-
-                        if (namePair === null) {
-                            const firstStepPair = arrayFirst(stepMapping.pairs);
-                            const firstStepKeyNode = firstStepPair?.key;
-
-                            context.report({
-                                data: {
-                                    jobId: job.id,
-                                },
-                                messageId: "missingStepName",
-                                node: stepMapping as unknown as Rule.Node,
-                                suggest:
-                                    !isDefined(suggestedStepName) ||
-                                    firstStepKeyNode === null ||
-                                    !isDefined(firstStepKeyNode)
-                                        ? undefined
-                                        : [
-                                              {
-                                                  data: {
-                                                      jobId: job.id,
-                                                      suggestedStepName,
-                                                  },
-                                                  fix: (fixer) => {
-                                                      const insertionIndex =
-                                                          getIndexAfterLine(
-                                                              context.sourceCode
-                                                                  .text,
-                                                              firstStepKeyNode
-                                                                  .range[1]
-                                                          );
-                                                      const childIndentation = `${getLineIndentation(
-                                                          context.sourceCode
-                                                              .text,
-                                                          arrayFirst(
-                                                              firstStepKeyNode.range
-                                                          )
-                                                      )}  `;
-
-                                                      return fixer.insertTextBeforeRange(
-                                                          [
-                                                              insertionIndex,
-                                                              insertionIndex,
-                                                          ],
-                                                          `${childIndentation}name: ${JSON.stringify(suggestedStepName)}\n`
-                                                      );
-                                                  },
-                                                  messageId:
-                                                      "insertStepNameSuggestion",
-                                              },
-                                          ],
-                            });
-
-                            continue;
-                        }
-
-                        const nameValue = getScalarStringValue(namePair.value);
-
-                        if (
-                            nameValue === null ||
-                            nameValue.trim().length === 0
-                        ) {
-                            const nameValueNode = namePair.value;
-
-                            context.report({
-                                data: {
-                                    jobId: job.id,
-                                },
-                                messageId: "invalidStepName",
-                                node: (namePair.value ??
-                                    namePair) as unknown as Rule.Node,
-                                suggest:
-                                    !isDefined(suggestedStepName) ||
-                                    nameValueNode === null
-                                        ? undefined
-                                        : [
-                                              {
-                                                  data: {
-                                                      jobId: job.id,
-                                                      suggestedStepName,
-                                                  },
-                                                  fix: (fixer) =>
-                                                      fixer.replaceTextRange(
-                                                          nameValueNode.range,
-                                                          JSON.stringify(
-                                                              suggestedStepName
-                                                          )
-                                                      ),
-                                                  messageId:
-                                                      "replaceStepNameSuggestion",
-                                              },
-                                          ],
-                            });
-                        }
+                    if (stepsSequence !== null) {
+                        checkJobSteps(context, stepsSequence, job.id);
                     }
                 }
             },
