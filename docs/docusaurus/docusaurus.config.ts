@@ -1,55 +1,133 @@
 import { themes as prismThemes } from "prism-react-renderer";
 
 import type { Config } from "@docusaurus/types";
+import type { Options as DocsPluginOptions } from "@docusaurus/plugin-content-docs";
 import type * as Preset from "@docusaurus/preset-classic";
+import { fileURLToPath } from "node:url";
 
-/** GitHub Pages base URL for the docs site. */
+import { suppressKnownWebpackWarningsPlugin } from "./src/plugins/suppressKnownWebpackWarningsPlugin";
+
 const baseUrl =
     process.env["DOCUSAURUS_BASE_URL"] ?? "/eslint-plugin-github-actions-2/";
+const enableExperimentalFaster =
+    process.env["DOCUSAURUS_ENABLE_EXPERIMENTAL"] === "true";
 
-/** Repository owner used for edit links. */
 const organizationName = "Nick2bad4u";
-/** Repository name used for edit links and project metadata. */
-const repositoryName = "eslint-plugin-github-actions-2";
-/** Published npm package name. */
-const npmPackageName = "eslint-plugin-github-actions-2";
+const projectName = "eslint-plugin-github-actions-2";
+const siteOrigin = "https://nick2bad4u.github.io";
+const siteUrl = `${siteOrigin}${baseUrl}`;
+const siteDescription =
+    "ESLint rules for GitHub Actions workflows, reusable workflows, and workflow templates.";
+const socialCardImagePath = "img/logo.png";
+const socialCardImageUrl = new URL(socialCardImagePath, siteUrl).toString();
+const modernEnhancementsClientModule = fileURLToPath(
+    new URL("src/js/modernEnhancements.ts", import.meta.url)
+);
 
-/** Full Docusaurus site configuration. */
+const pwaThemeColor = "#101010";
+const footerCopyright =
+    `© ${new Date().getFullYear()} ` +
+    '<a href="https://github.com/Nick2bad4u/" target="_blank" rel="noopener noreferrer">Nick2bad4u</a> 💻 Built with ' +
+    '<a href="https://docusaurus.io/" target="_blank" rel="noopener noreferrer">🦖 Docusaurus</a>.';
+
+const removeHeadAttrFlagKey = [
+    "remove",
+    "Le",
+    "gacyPostBuildHeadAttribute",
+].join("");
+
+const futureConfig = {
+    ...(enableExperimentalFaster
+        ? {
+              faster: {
+                  mdxCrossCompilerCache: true,
+                  rspackBundler: true,
+                  rspackPersistentCache: true,
+                  ssgWorkerThreads: true,
+              },
+          }
+        : {}),
+    v4: {
+        [removeHeadAttrFlagKey]: true,
+        fasterByDefault: true,
+        mdx1CompatDisabledByDefault: true,
+        removeLegacyPostBuildHeadAttribute: true,
+        siteStorageNamespacing: true,
+        // Keep disabled for now; enabling this has produced CSS minification
+        // regressions in similar repos and needs dedicated validation.
+        useCssCascadeLayers: false,
+    },
+} satisfies Config["future"];
+
 const config = {
     baseUrl,
-    deploymentBranch: "gh-pages",
-    favicon: "img/logo.svg",
     baseUrlIssueBanner: true,
-    onDuplicateRoutes: "throw",
-    trailingSlash: false,
+    clientModules: [modernEnhancementsClientModule],
+    deploymentBranch: "gh-pages",
+    favicon: "img/favicon.ico",
+    future: futureConfig,
+    headTags: [
+        {
+            attributes: {
+                href: siteOrigin,
+                rel: "preconnect",
+            },
+            tagName: "link",
+        },
+        {
+            attributes: {
+                href: "https://github.com",
+                rel: "preconnect",
+            },
+            tagName: "link",
+        },
+        {
+            attributes: {
+                type: "application/ld+json",
+            },
+            innerHTML: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                description: siteDescription,
+                image: socialCardImageUrl,
+                name: projectName,
+                publisher: {
+                    "@type": "Person",
+                    name: "Nick2bad4u",
+                    url: "https://github.com/Nick2bad4u",
+                },
+                url: siteUrl,
+            }),
+            tagName: "script",
+        },
+    ],
     i18n: {
         defaultLocale: "en",
         locales: ["en"],
     },
     markdown: {
+        anchors: {
+            maintainCase: true,
+        },
+        emoji: true,
+        format: "detect",
         hooks: {
+            onBrokenMarkdownImages: "warn",
             onBrokenMarkdownLinks: "warn",
         },
         mermaid: true,
     },
     onBrokenAnchors: "warn",
     onBrokenLinks: "warn",
+    onDuplicateRoutes: "warn",
     organizationName,
     plugins: [
-        [
-            "@docusaurus/plugin-content-docs",
-            {
-                editUrl: `https://github.com/${organizationName}/${repositoryName}/blob/main/docs/`,
-                id: "rules",
-                path: "../rules",
-                routeBasePath: "docs/rules",
-                sidebarPath: "./sidebars.rules.ts",
-            },
-        ],
+        suppressKnownWebpackWarningsPlugin,
+        "docusaurus-plugin-image-zoom",
         [
             "@docusaurus/plugin-pwa",
             {
-                debug: true,
+                debug: process.env["DOCUSAURUS_PWA_DEBUG"] === "true",
                 offlineModeActivationStrategies: [
                     "appInstalled",
                     "standalone",
@@ -57,22 +135,29 @@ const config = {
                 ],
                 pwaHead: [
                     {
-                        tagName: "link",
-                        rel: "icon",
-                        href: "/eslint-plugin-github-actions-2/img/logo.svg",
-                    },
-                    {
-                        tagName: "link",
+                        href: `${baseUrl}manifest.json`,
                         rel: "manifest",
-                        href: "/eslint-plugin-github-actions-2/manifest.json",
+                        tagName: "link",
                     },
                     {
-                        tagName: "meta",
+                        content: pwaThemeColor,
                         name: "theme-color",
-                        content: "rgb(37, 194, 160)",
+                        tagName: "meta",
                     },
                 ],
             },
+        ],
+        [
+            "@docusaurus/plugin-content-docs",
+            {
+                editUrl: `https://github.com/${organizationName}/${projectName}/blob/main/docs/`,
+                id: "rules",
+                path: "../rules",
+                routeBasePath: "docs/rules",
+                showLastUpdateAuthor: true,
+                showLastUpdateTime: true,
+                sidebarPath: "./sidebars.rules.ts",
+            } satisfies DocsPluginOptions,
         ],
     ],
     presets: [
@@ -80,14 +165,30 @@ const config = {
             "classic",
             {
                 blog: {
-                    editUrl: `https://github.com/${organizationName}/${repositoryName}/blob/main/docs/docusaurus/`,
+                    blogDescription:
+                        "Updates, architecture notes, and practical guidance for eslint-plugin-github-actions-2 users.",
+                    blogSidebarCount: "ALL",
+                    blogSidebarTitle: "All posts",
+                    blogTitle: "eslint-plugin-github-actions-2 Blog",
+                    editUrl: `https://github.com/${organizationName}/${projectName}/blob/main/docs/docusaurus/`,
+                    onInlineAuthors: "warn",
+                    onInlineTags: "warn",
+                    onUntruncatedBlogPosts: "warn",
+                    path: "blog",
                     routeBasePath: "blog",
                     showReadingTime: true,
                 },
                 docs: {
-                    editUrl: `https://github.com/${organizationName}/${repositoryName}/blob/main/docs/docusaurus/`,
+                    breadcrumbs: true,
+                    editUrl: `https://github.com/${organizationName}/${projectName}/blob/main/docs/docusaurus/`,
+                    includeCurrentVersion: true,
+                    onInlineTags: "ignore",
                     path: "site-docs",
                     routeBasePath: "docs",
+                    showLastUpdateAuthor: true,
+                    showLastUpdateTime: true,
+                    sidebarCollapsed: true,
+                    sidebarCollapsible: true,
                     sidebarPath: "./sidebars.ts",
                 },
                 googleTagManager: {
@@ -96,43 +197,53 @@ const config = {
                 gtag: {
                     trackingID: "G-18DR1S6R1T",
                 },
+                pages: {
+                    editUrl: `https://github.com/${organizationName}/${projectName}/blob/main/docs/docusaurus/`,
+                    exclude: [
+                        "**/*.d.ts",
+                        "**/*.d.tsx",
+                        "**/__tests__/**",
+                        "**/*.test.{js,jsx,ts,tsx}",
+                        "**/*.spec.{js,jsx,ts,tsx}",
+                    ],
+                    include: ["**/*.{js,jsx,ts,tsx,md,mdx}"],
+                    mdxPageComponent: "@theme/MDXPage",
+                    path: "src/pages",
+                    routeBasePath: "/",
+                    showLastUpdateAuthor: true,
+                    showLastUpdateTime: true,
+                },
+                sitemap: {
+                    filename: "sitemap.xml",
+                    ignorePatterns: ["/tests/**"],
+                    lastmod: "datetime",
+                },
                 theme: {
                     customCss: "./src/css/custom.css",
                 },
             } satisfies Preset.Options,
         ],
     ],
-    projectName: repositoryName,
+    projectName,
     tagline:
         "ESLint rules for GitHub Actions workflows, action metadata, and workflow templates.",
     themeConfig: {
         colorMode: {
-            defaultMode: "light",
+            defaultMode: "dark",
+            disableSwitch: false,
             respectPrefersColorScheme: true,
         },
-        metadata: [
-            {
-                content:
-                    "eslint, github actions, workflows, action metadata, workflow templates",
-                name: "keywords",
-            },
-        ],
-        image: "img/logo.png",
         footer: {
-            copyright:
-                `© ${new Date().getFullYear()} ` +
-                '<a href="https://github.com/Nick2bad4u" target="_blank" rel="noopener noreferrer">Nick2bad4u</a> 💻 Built with ' +
-                '<a href="https://docusaurus.io/" target="_blank" rel="noopener noreferrer">🦖 Docusaurus</a>.',
+            copyright: footerCopyright,
             links: [
                 {
-                    title: "📚 Explore",
                     items: [
                         {
                             label: "🏁 Overview",
                             to: "/docs/rules/overview",
                         },
                         {
-                            label: "🚀 Getting started",
+                            label: "📖 Getting Started",
                             to: "/docs/rules/getting-started",
                         },
                         {
@@ -140,64 +251,70 @@ const config = {
                             to: "/docs/rules/guides",
                         },
                         {
-                            label: "🧭 Presets",
-                            to: "/docs/rules/presets",
-                        },
-                        {
                             label: "📏 Rule reference",
                             to: "/docs/rules",
                         },
                     ],
+                    title: "📚 Explore",
                 },
                 {
-                    title: "👨‍💻 Developer",
                     items: [
                         {
-                            label: "🏠 Developer home",
-                            to: "/docs/developer",
+                            href: `https://github.com/${organizationName}/${projectName}/releases`,
+                            label: "📦 Releases",
                         },
                         {
-                            label: "🚀 Maintainer quickstart",
-                            to: "/docs/developer/getting-started",
+                            href: `${siteUrl}eslint-inspector/`,
+                            label: "🕵️‍♂️ ESLint Inspector",
                         },
                         {
-                            href: `https://nick2bad4u.github.io/eslint-plugin-github-actions-2/eslint-inspector/`,
-                            label: "\ue7d2 ESLint Inspector",
+                            href: `${siteUrl}stylelint-inspector/`,
+                            label: "🎨 Stylelint Inspector",
                         },
                         {
-                            href: `https://nick2bad4u.github.io/eslint-plugin-github-actions-2/stylelint-inspector/`,
-                            label: "\ue7d2 Stylelint Inspector",
+                            href: `https://www.npmjs.com/package/${projectName}`,
+                            label: "📦 NPM",
                         },
                     ],
+                    title: "📦 Project",
                 },
                 {
-                    title: "📁 Project",
                     items: [
                         {
-                            href: `https://github.com/${organizationName}/${repositoryName}`,
-                            label: "🐙 GitHub repository",
+                            href: `https://github.com/${organizationName}/${projectName}`,
+                            label: "🐙 GitHub Repository",
                         },
                         {
-                            href: `https://github.com/${organizationName}/${repositoryName}/issues`,
-                            label: "🐛 Report issues",
+                            href: `https://github.com/${organizationName}/${projectName}/issues`,
+                            label: "🐛 Report Issues",
                         },
                         {
-                            href: `https://github.com/${organizationName}/${repositoryName}/releases`,
-                            label: "🧾 Releases",
+                            href: `https://github.com/${organizationName}/${projectName}/actions`,
+                            label: "🎬 GitHub Actions",
                         },
                         {
-                            href: `https://www.npmjs.com/package/${npmPackageName}`,
-                            label: "📦 NPM package",
+                            href: `https://github.com/Nick2bad4u`,
+                            label: "👤 Nick2bad4u on GitHub",
                         },
                     ],
+                    title: "⚙️ Support",
                 },
             ],
             logo: {
-                alt: "eslint-plugin-github-actions-2 logo",
-                href: `https://github.com/${organizationName}/${repositoryName}`,
+                alt: "eslint-plugin-github-actions logo",
+                href: `https://github.com/${organizationName}/${projectName}`,
                 src: "img/logo.svg",
+                width: 120,
+                height: 120,
             },
             style: "dark",
+        },
+        image: socialCardImagePath,
+        mermaid: {
+            theme: {
+                dark: "dark",
+                light: "neutral",
+            },
         },
         navbar: {
             hideOnScroll: true,
@@ -297,12 +414,11 @@ const config = {
                 },
                 {
                     label: "👨‍💻 Developer",
-                    to: "/docs/developer",
                     position: "right",
                     type: "dropdown",
                     items: [
                         {
-                            label: "🏠 Developer home",
+                            label: "Developer guide",
                             to: "/docs/developer",
                         },
                         {
@@ -329,16 +445,17 @@ const config = {
                     position: "right",
                 },
                 {
-                    href: `https://github.com/${organizationName}/${repositoryName}`,
-                    label: "🐙 GitHub",
+                    href: `https://github.com/${organizationName}/${projectName}`,
+                    label: "GitHub",
                     position: "right",
                 },
             ],
             logo: {
                 alt: "eslint-plugin-github-actions-2 logo",
+                href: baseUrl,
                 src: "img/logo.svg",
             },
-            title: npmPackageName,
+            title: "eslint-plugin-github-actions-2",
         },
         prism: {
             additionalLanguages: [
@@ -348,20 +465,42 @@ const config = {
                 "typescript",
             ],
             darkTheme: prismThemes.dracula,
+            defaultLanguage: "typescript",
             theme: prismThemes.github,
         },
-    },
+        tableOfContents: {
+            maxHeadingLevel: 4,
+            minHeadingLevel: 2,
+        },
+        zoom: {
+            background: {
+                dark: "rgb(50, 50, 50)",
+                light: "rgb(255, 255, 255)",
+            },
+            config: {},
+            selector: ".markdown > img",
+        },
+    } satisfies Preset.ThemeConfig,
     themes: [
         "@docusaurus/theme-mermaid",
         [
             "@easyops-cn/docusaurus-search-local",
             {
+                docsRouteBasePath: ["docs", "docs/rules"],
+                explicitSearchResultPath: true,
                 hashed: true,
+                indexBlog: true,
+                indexDocs: true,
+                indexPages: true,
+                searchBarPosition: "right",
+                searchBarShortcut: true,
+                searchBarShortcutHint: true,
             },
         ],
     ],
-    title: npmPackageName,
-    url: "https://nick2bad4u.github.io",
+    title: "eslint-plugin-github-actions-2",
+    trailingSlash: true,
+    url: siteOrigin,
 } satisfies Config;
 
 export default config;

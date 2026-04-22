@@ -9,8 +9,8 @@
         "documentation",
         "eslint",
         "eslint-plugin",
-        "github-actions",
-        "workflow"
+        "type-fest",
+        "typescript"
     ],
     "homepage": "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/",
     "bugs": {
@@ -40,7 +40,7 @@
         "build:local": "npm run docs:api:local && npm --prefix ../.. run build:eslint-inspector:local && npm --prefix ../.. run build:stylelint-inspector:local && cross-env NODE_OPTIONS=--no-deprecation docusaurus build",
         "clear": "docusaurus clear",
         "deploy": "docusaurus deploy",
-        "docs:api": "node ../../scripts/run-typedoc-docs.mjs --config typedoc.config.json",
+        "docs:api": "node -e \"const { execSync } = require('node:child_process'); const isCi = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true'; const command = isCi ? 'typedoc --options typedoc.config.json' : 'node ../../scripts/run-typedoc-docs.mjs --config typedoc.config.json'; execSync(command, { stdio: 'inherit' });\"",
         "docs:api:default": "typedoc --options typedoc.config.json",
         "docs:api:local": "node ../../scripts/run-typedoc-docs.mjs --config typedoc.local.config.mjs",
         "docusaurus": "docusaurus",
@@ -48,7 +48,7 @@
         "start": "docusaurus start --host localhost",
         "start:devtools": "cross-env DOCUSAURUS_BASE_URL=/ docusaurus start --host localhost",
         "type:css": "npx typed-css-modules .\\src",
-        "typecheck": "tsc --project tsconfig.json --noEmit --ignoreDeprecations 6.0 && tsc --project tsconfig.typedoc.json --noEmit --ignoreDeprecations 6.0",
+        "typecheck": "tsc --project tsconfig.json --noEmit && tsc --project tsconfig.typedoc.json --noEmit",
         "write-heading-ids": "docusaurus write-heading-ids",
         "write-translations": "docusaurus write-translations"
     },
@@ -63,12 +63,6 @@
             "not dead",
             "not op_mini all"
         ]
-    },
-    "overrides": {
-        "lodash": "4.18.1",
-        "lodash-es": "4.18.1",
-        "path-to-regexp": "0.1.13",
-        "serialize-javascript": "7.0.5"
     },
     "dependencies": {
         "@docusaurus/core": "^3.10.0",
