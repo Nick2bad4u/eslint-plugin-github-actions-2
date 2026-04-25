@@ -108,6 +108,7 @@ describe("plugin entry", () => {
             "require-merge-group-trigger",
             "require-pull-request-target-branches",
             "require-run-step-shell",
+            "require-run-step-timeout",
             "require-sarif-upload-security-events-write",
             "require-scorecard-results-format-sarif",
             "require-scorecard-upload-sarif-step",

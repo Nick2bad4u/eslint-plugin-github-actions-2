@@ -71,6 +71,7 @@ describe("exported presets", () => {
             "github-actions/require-action-name",
             "github-actions/require-checkout-before-local-action",
             "github-actions/require-job-timeout-minutes",
+            "github-actions/require-run-step-timeout",
             "github-actions/require-workflow-call-input-type",
             "github-actions/require-workflow-call-output-value",
             "github-actions/require-workflow-dispatch-input-type",

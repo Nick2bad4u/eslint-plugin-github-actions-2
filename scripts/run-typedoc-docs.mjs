@@ -220,8 +220,8 @@ function normalizeTypedocMarkdownLinks(markdownText, markdownFilePath) {
         );
 
     if (
-        !markdownFilePath.endsWith("/index.md") &&
-        !markdownFilePath.endsWith("\\index.md")
+        !markdownFilePath.endsWith(String.raw`/index.md`) &&
+        !markdownFilePath.endsWith(String.raw`\index.md`)
     ) {
         return normalizedMarkdown.replaceAll(
             typedocRelativeRouteLinkPattern,

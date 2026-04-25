@@ -94,6 +94,7 @@ import requireJobTimeoutMinutes from "../rules/require-job-timeout-minutes.js";
 import requireMergeGroupTrigger from "../rules/require-merge-group-trigger.js";
 import requirePullRequestTargetBranches from "../rules/require-pull-request-target-branches.js";
 import requireRunStepShell from "../rules/require-run-step-shell.js";
+import requireRunStepTimeout from "../rules/require-run-step-timeout.js";
 import requireSarifUploadSecurityEventsWrite from "../rules/require-sarif-upload-security-events-write.js";
 import requireScorecardResultsFormatSarif from "../rules/require-scorecard-results-format-sarif.js";
 import requireScorecardUploadSarifStep from "../rules/require-scorecard-upload-sarif-step.js";
@@ -211,6 +212,7 @@ const githubActionsRulesDefinition: {
     readonly "require-merge-group-trigger": typeof requireMergeGroupTrigger;
     readonly "require-pull-request-target-branches": typeof requirePullRequestTargetBranches;
     readonly "require-run-step-shell": typeof requireRunStepShell;
+    readonly "require-run-step-timeout": typeof requireRunStepTimeout;
     readonly "require-sarif-upload-security-events-write": typeof requireSarifUploadSecurityEventsWrite;
     readonly "require-scorecard-results-format-sarif": typeof requireScorecardResultsFormatSarif;
     readonly "require-scorecard-upload-sarif-step": typeof requireScorecardUploadSarifStep;
@@ -349,6 +351,7 @@ const githubActionsRulesDefinition: {
     "require-merge-group-trigger": requireMergeGroupTrigger,
     "require-pull-request-target-branches": requirePullRequestTargetBranches,
     "require-run-step-shell": requireRunStepShell,
+    "require-run-step-timeout": requireRunStepTimeout,
     "require-sarif-upload-security-events-write":
         requireSarifUploadSecurityEventsWrite,
     "require-scorecard-results-format-sarif":
