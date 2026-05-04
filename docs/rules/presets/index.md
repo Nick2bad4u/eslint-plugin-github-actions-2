@@ -141,6 +141,7 @@ Preset key legend:
 | <span class="sb-inline-rule-number">R035</span> [`require-merge-group-trigger`](../require-merge-group-trigger.md) | — | [🟣](./all.md) [🔴](./strict.md) |
 | <span class="sb-inline-rule-number">R032</span> [`require-pull-request-target-branches`](../require-pull-request-target-branches.md) | — | [🟣](./all.md) [🛡️](./security.md) [🔴](./strict.md) |
 | <span class="sb-inline-rule-number">R021</span> [`require-run-step-shell`](../require-run-step-shell.md) | — | [🟣](./all.md) [🔴](./strict.md) |
+| <span class="sb-inline-rule-number">R115</span> [`require-run-step-timeout`](../require-run-step-timeout.md) | — | [🟣](./all.md) [🟡](./recommended.md) |
 | <span class="sb-inline-rule-number">R102</span> [`require-sarif-upload-security-events-write`](../require-sarif-upload-security-events-write.md) | — | [🟣](./all.md) [🔎](./code-scanning.md) [🛡️](./security.md) |
 | <span class="sb-inline-rule-number">R103</span> [`require-scorecard-results-format-sarif`](../require-scorecard-results-format-sarif.md) | — | [🟣](./all.md) [🔎](./code-scanning.md) |
 | <span class="sb-inline-rule-number">R104</span> [`require-scorecard-upload-sarif-step`](../require-scorecard-upload-sarif-step.md) | — | [🟣](./all.md) [🔎](./code-scanning.md) |

@@ -105,6 +105,7 @@ Fix legend:
 | <span class="sb-inline-rule-number">R035</span> [`require-merge-group-trigger`](../require-merge-group-trigger.md) | — |
 | <span class="sb-inline-rule-number">R032</span> [`require-pull-request-target-branches`](../require-pull-request-target-branches.md) | — |
 | <span class="sb-inline-rule-number">R021</span> [`require-run-step-shell`](../require-run-step-shell.md) | — |
+| <span class="sb-inline-rule-number">R115</span> [`require-run-step-timeout`](../require-run-step-timeout.md) | — |
 | <span class="sb-inline-rule-number">R102</span> [`require-sarif-upload-security-events-write`](../require-sarif-upload-security-events-write.md) | — |
 | <span class="sb-inline-rule-number">R103</span> [`require-scorecard-results-format-sarif`](../require-scorecard-results-format-sarif.md) | — |
 | <span class="sb-inline-rule-number">R104</span> [`require-scorecard-upload-sarif-step`](../require-scorecard-upload-sarif-step.md) | — |

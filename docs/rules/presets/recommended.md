@@ -29,6 +29,7 @@ Fix legend:
 | <span class="sb-inline-rule-number">R005</span> [`require-action-name`](../require-action-name.md) | — |
 | <span class="sb-inline-rule-number">R025</span> [`require-checkout-before-local-action`](../require-checkout-before-local-action.md) | — |
 | <span class="sb-inline-rule-number">R002</span> [`require-job-timeout-minutes`](../require-job-timeout-minutes.md) | — |
+| <span class="sb-inline-rule-number">R115</span> [`require-run-step-timeout`](../require-run-step-timeout.md) | — |
 | <span class="sb-inline-rule-number">R034</span> [`require-workflow-call-input-type`](../require-workflow-call-input-type.md) | — |
 | <span class="sb-inline-rule-number">R039</span> [`require-workflow-call-output-value`](../require-workflow-call-output-value.md) | — |
 | <span class="sb-inline-rule-number">R022</span> [`require-workflow-dispatch-input-type`](../require-workflow-dispatch-input-type.md) | — |

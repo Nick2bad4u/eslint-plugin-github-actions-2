@@ -15,7 +15,6 @@ const config = [
             "github-actions": githubActions,
         },
         rules: {
-            // @ts-expect-error -- plugin.mjs is typed as generic ESLint.Plugin.
             ...githubActions.configs.all.rules,
         },
     },
