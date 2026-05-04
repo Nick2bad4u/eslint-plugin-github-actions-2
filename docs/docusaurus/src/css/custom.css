@@ -85,7 +85,7 @@
     --sb-preset-type-guards: #fb923c;
 }
 
-footer .footer__logo {
+.footer .footer__logo {
     max-inline-size: 100px;
     block-size: auto;
 }
