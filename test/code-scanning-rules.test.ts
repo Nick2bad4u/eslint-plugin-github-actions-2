@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { lintWorkflow } from "./_shared/lint-workflow.js";
 
 const matrixLanguageExpression = `\${{ matrix.language }}`;
+const matrixCategoryExpression = `\${{ matrix.category }}`;
 
 const validCodeqlWorkflow = [
     'name: "CodeQL"',
@@ -191,6 +192,44 @@ describe("code scanning rules", () => {
         expect(missingPermissionsResult.messages).toHaveLength(2);
         expect(missingPullRequestResult.messages).toHaveLength(1);
         expect(missingScheduleResult.messages).toHaveLength(1);
+    });
+
+    it("requires matrix.language-aware CodeQL category for include-based language matrices", async () => {
+        expect.hasAssertions();
+
+        const result = await lintWorkflow(
+            [
+                'name: "CodeQL"',
+                "on: [pull_request]",
+                "jobs:",
+                "  analyze:",
+                "    runs-on: ubuntu-latest",
+                "    strategy:",
+                "      matrix:",
+                "        include:",
+                "          - language: javascript-typescript",
+                '            category: "/language:javascript"',
+                "    steps:",
+                "      - uses: github/codeql-action/init@v4",
+                "        with:",
+                `          languages: ${matrixLanguageExpression}`,
+                "      - uses: github/codeql-action/analyze@v4",
+                "        with:",
+                `          category: ${matrixCategoryExpression}`,
+            ].join("\n"),
+            {
+                filePath: ".github/workflows/codeql.yml",
+                rules: {
+                    "github-actions/require-codeql-category-when-language-matrix":
+                        "error",
+                },
+            }
+        );
+
+        expect(result.messages).toHaveLength(1);
+        expect(result.messages[0]?.ruleId).toBe(
+            "github-actions/require-codeql-category-when-language-matrix"
+        );
     });
 
     it("requires SARIF upload discipline for scorecard workflows", async () => {

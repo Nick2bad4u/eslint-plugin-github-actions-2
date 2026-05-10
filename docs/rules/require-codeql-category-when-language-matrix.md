@@ -4,7 +4,7 @@
 
 ## Targeted pattern scope
 
-CodeQL analyze steps inside jobs that use `strategy.matrix.language`.
+CodeQL analyze steps inside jobs that use a CodeQL language matrix (`strategy.matrix.language` or `strategy.matrix.include[*].language`).
 
 ## What this rule reports
 
@@ -30,7 +30,7 @@ When CodeQL runs in a language matrix, the SARIF category is the easiest way to 
 
 ## Additional examples
 
-This rule only applies when the job uses a `language` matrix. Single-language CodeQL jobs are ignored.
+This rule only applies when the job uses a `language` matrix dimension. Single-language CodeQL jobs are ignored.
 
 ## ESLint flat config example
 

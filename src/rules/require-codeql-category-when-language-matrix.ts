@@ -3,15 +3,44 @@
  * Require CodeQL analyze steps to set a category that includes the matrix language when a language matrix is used.
  */
 import type { Rule } from "eslint";
+import type { AST } from "yaml-eslint-parser";
 
 import { getCodeqlAnalyzeSteps } from "../_internal/code-scanning-workflow.ts";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
+    getMappingValueAsSequence,
     getScalarStringValue,
     getWorkflowRoot,
 } from "../_internal/workflow-yaml.js";
+
+/* eslint-disable @typescript-eslint/prefer-readonly-parameter-types -- YAML AST nodes are parser-owned mutable structures. */
+/** Determine whether a matrix defines a `language` dimension. */
+const matrixUsesLanguage = (matrixMapping: AST.YAMLMapping): boolean => {
+    if (getMappingPair(matrixMapping, "language") !== null) {
+        return true;
+    }
+
+    const includeSequence = getMappingValueAsSequence(matrixMapping, "include");
+
+    if (includeSequence === null) {
+        return false;
+    }
+
+    for (const includeEntry of includeSequence.entries) {
+        if (includeEntry?.type !== "YAMLMapping") {
+            continue;
+        }
+
+        if (getMappingPair(includeEntry, "language") !== null) {
+            return true;
+        }
+    }
+
+    return false;
+};
+/* eslint-enable @typescript-eslint/prefer-readonly-parameter-types -- Re-enable readonly-parameter checks outside YAML AST helper signatures. */
 
 /**
  * Rule implementation for requiring CodeQL category when matrix.language is
@@ -46,7 +75,7 @@ const rule: Rule.RuleModule = {
 
                     if (
                         matrixMapping === null ||
-                        getMappingPair(matrixMapping, "language") === null
+                        !matrixUsesLanguage(matrixMapping)
                     ) {
                         continue;
                     }
