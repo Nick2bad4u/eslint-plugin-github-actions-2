@@ -121,6 +121,11 @@ describe("lint target helpers", () => {
                 ".github/workflow-templates/ci.yaml"
             )
         ).toBeFalsy();
+        expect(
+            isWorkflowTemplatePropertiesFile(
+                String.raw`C:\Repos\workflow-templates\.github\workflows\ci.properties.json`
+            )
+        ).toBeFalsy();
     });
 
     it("detects workflow template YAML files", () => {
@@ -140,6 +145,16 @@ describe("lint target helpers", () => {
         ).toBeFalsy();
         expect(
             isWorkflowTemplateYamlFile(".github/workflows/ci.yml")
+        ).toBeFalsy();
+        expect(
+            isWorkflowTemplateYamlFile(
+                String.raw`C:\Repos\workflow-templates\.github\workflows\dependency-review.yml`
+            )
+        ).toBeFalsy();
+        expect(
+            isWorkflowTemplateYamlFile(
+                ".github/workflow-templates/nested/ci.yml"
+            )
         ).toBeFalsy();
     });
 

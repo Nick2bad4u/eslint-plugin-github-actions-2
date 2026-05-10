@@ -44,6 +44,39 @@ export const WORKFLOW_TEMPLATE_FILE_GLOBS: readonly string[] = [
 const normalizePathForMatching = (filePath: string): string =>
     filePath.replaceAll("\\", "/").toLowerCase();
 
+/**
+ * Determine whether a file is a direct child of any `workflow-templates`
+ * directory and ends with one of the allowed suffixes.
+ */
+const isDirectWorkflowTemplatesChildWithSuffix = (
+    filePath: string,
+    allowedSuffixes: readonly string[]
+): boolean => {
+    const normalizedFilePath = normalizePathForMatching(filePath);
+    const workflowTemplatesSegmentIndex = normalizedFilePath.lastIndexOf(
+        "/workflow-templates/"
+    );
+
+    if (workflowTemplatesSegmentIndex === -1) {
+        return false;
+    }
+
+    const fileNameAfterWorkflowTemplates = normalizedFilePath.slice(
+        workflowTemplatesSegmentIndex + "/workflow-templates/".length
+    );
+
+    if (
+        fileNameAfterWorkflowTemplates.length === 0 ||
+        fileNameAfterWorkflowTemplates.includes("/")
+    ) {
+        return false;
+    }
+
+    return allowedSuffixes.some((suffix) =>
+        fileNameAfterWorkflowTemplates.endsWith(suffix)
+    );
+};
+
 /** Determine whether a filename is an action metadata file. */
 export const isActionMetadataFile = (filePath: string): boolean => {
     const normalizedFilePath = normalizePathForMatching(filePath);
@@ -97,19 +130,11 @@ export const isWorkflowFile = (filePath: string): boolean => {
 
 /** Determine whether a filename is a workflow template metadata file. */
 export const isWorkflowTemplatePropertiesFile = (filePath: string): boolean =>
-    normalizePathForMatching(filePath).includes("/workflow-templates/") &&
-    normalizePathForMatching(filePath).endsWith(".properties.json");
+    isDirectWorkflowTemplatesChildWithSuffix(filePath, [".properties.json"]);
 
 /** Determine whether a filename is a workflow template YAML file. */
-export const isWorkflowTemplateYamlFile = (filePath: string): boolean => {
-    const normalizedFilePath = normalizePathForMatching(filePath);
-
-    return (
-        normalizedFilePath.includes("/workflow-templates/") &&
-        (normalizedFilePath.endsWith(".yml") ||
-            normalizedFilePath.endsWith(".yaml"))
-    );
-};
+export const isWorkflowTemplateYamlFile = (filePath: string): boolean =>
+    isDirectWorkflowTemplatesChildWithSuffix(filePath, [".yml", ".yaml"]);
 
 /** Determine whether a filename belongs to any workflow template surface. */
 export const isWorkflowTemplateFile = (filePath: string): boolean =>
