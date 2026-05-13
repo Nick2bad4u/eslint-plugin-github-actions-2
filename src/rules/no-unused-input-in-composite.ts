@@ -7,6 +7,7 @@ import type { Rule } from "eslint";
 import { isDefined, setHas } from "ts-extras";
 
 import { isActionMetadataFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -16,7 +17,7 @@ import {
 import { collectYamlStringScalars } from "../_internal/yaml-traversal.js";
 
 /** Matches `inputs.<id>` references in composite-step string values. */
-const INPUT_REFERENCE_PATTERN = /inputs\.(?<inputId>[\w-]+)/gu;
+const INPUT_REFERENCE_PATTERN = /inputs\.(?<inputId>(?:\w|-)+)/gv;
 
 /** Rule implementation for unused composite input checks. */
 const rule: Rule.RuleModule = {
@@ -76,12 +77,12 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             inputId,
                         },
                         messageId: "unusedCompositeInput",
-                        node: inputPair.key as unknown as Rule.Node,
+                        node: inputPair.key,
                     });
                 }
             },

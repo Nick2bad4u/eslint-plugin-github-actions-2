@@ -11,6 +11,7 @@ import {
     getReferencedContextRoots,
 } from "../_internal/github-expressions.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -76,14 +77,14 @@ const reportInvalidContexts = (
         return;
     }
 
-    context.report({
+    reportYamlNode(context, {
         data: {
             contexts: arrayJoin(disallowedContexts, ", "),
             field: options.field,
             jobId: options.jobId,
         },
         messageId: options.messageId,
-        node: options.node as Rule.Node,
+        node: options.node,
     });
 };
 
@@ -128,7 +129,7 @@ const inspectConcurrencyValue = (
         return;
     }
 
-    for (const fieldName of ["group", "cancel-in-progress"] as const) {
+    for (const fieldName of ["cancel-in-progress", "group"] as const) {
         const fieldPair = getMappingPair(concurrencyValue, fieldName);
 
         if (fieldPair === null) {

@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { isWorkflowTemplatePropertiesFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getWorkflowTemplatePropertiesRoot,
     getWorkflowTemplateStringProperty,
@@ -42,12 +43,12 @@ const rule: Rule.RuleModule = {
                     getWorkflowTemplateStringProperty(root, "name") ??
                     "<unnamed-template>";
 
-                context.report({
+                reportYamlNode(context, {
                     data: {
                         templateName,
                     },
                     messageId: "missingCategories",
-                    node: node as unknown as Rule.Node,
+                    node: node,
                 });
             },
         };

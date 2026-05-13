@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { isWorkflowTemplatePropertiesFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getWorkflowTemplatePropertiesRoot } from "../_internal/workflow-template-properties.js";
 import {
     getMappingPair,
@@ -38,7 +39,7 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     data: {
                         iconName,
                     },
@@ -52,7 +53,7 @@ const rule: Rule.RuleModule = {
                                   )
                               ),
                     messageId: "iconNameIncludesExtension",
-                    node: (iconNameNode ?? node) as unknown as Rule.Node,
+                    node: iconNameNode ?? node,
                 });
             },
         };

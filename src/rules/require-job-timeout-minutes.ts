@@ -3,10 +3,12 @@
  * Require bounded job timeouts for GitHub Actions jobs.
  */
 import type { Rule } from "eslint";
+import type { UnknownArray } from "type-fest";
 
-import { isInteger } from "ts-extras";
+import { arrayFirst, isDefined, isInteger, safeCastTo } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarNumberValue,
@@ -15,12 +17,22 @@ import {
     isGithubExpressionScalar,
 } from "../_internal/workflow-yaml.js";
 
-/** Rule options for `require-job-timeout-minutes`. */
-type RequireJobTimeoutMinutesOptions = [
-    {
-        readonly maxMinutes?: number;
-    }?,
-];
+interface RequireJobTimeoutMinutesOption {
+    readonly maxMinutes?: number;
+}
+
+/** Determine whether an unknown value is a valid rule option object. */
+const isRequireJobTimeoutMinutesOption = (
+    value: unknown
+): value is RequireJobTimeoutMinutesOption => {
+    if (typeof value !== "object" || value === null) {
+        return false;
+    }
+
+    const maxMinutes: unknown = Reflect.get(value, "maxMinutes");
+
+    return !isDefined(maxMinutes) || typeof maxMinutes === "number";
+};
 
 /** Default upper bound used when validating workflow job timeouts. */
 const DEFAULT_MAX_MINUTES = 60;
@@ -28,7 +40,12 @@ const DEFAULT_MAX_MINUTES = 60;
 /** Rule implementation for requiring bounded timeout-minutes on workflow jobs. */
 const rule: Rule.RuleModule = {
     create(context) {
-        const [options] = context.options as RequireJobTimeoutMinutesOptions;
+        const rawOption = arrayFirst(
+            safeCastTo<Readonly<UnknownArray>>(context.options)
+        );
+        const options = isRequireJobTimeoutMinutesOption(rawOption)
+            ? rawOption
+            : undefined;
         const maxMinutes = options?.maxMinutes ?? DEFAULT_MAX_MINUTES;
 
         return {
@@ -54,7 +71,7 @@ const rule: Rule.RuleModule = {
                     );
 
                     if (timeoutPair === null) {
-                        context.report({
+                        reportYamlNode(context, {
                             data: {
                                 jobId: job.id,
                             },
@@ -78,7 +95,7 @@ const rule: Rule.RuleModule = {
                         !isInteger(timeoutMinutes) ||
                         timeoutMinutes <= 0
                     ) {
-                        context.report({
+                        reportYamlNode(context, {
                             data: {
                                 jobId: job.id,
                             },
@@ -90,7 +107,7 @@ const rule: Rule.RuleModule = {
                     }
 
                     if (timeoutMinutes > maxMinutes) {
-                        context.report({
+                        reportYamlNode(context, {
                             data: {
                                 actualMinutes: String(timeoutMinutes),
                                 jobId: job.id,

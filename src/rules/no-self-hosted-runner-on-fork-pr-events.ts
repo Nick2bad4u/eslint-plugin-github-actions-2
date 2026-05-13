@@ -8,6 +8,7 @@ import type { AST } from "yaml-eslint-parser";
 import { arrayJoin, isEmpty, safeCastTo, setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -107,7 +108,7 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             events: arrayJoin(
                                 triggeringForkPullRequestEvents,
@@ -116,8 +117,7 @@ const rule: Rule.RuleModule = {
                             jobId: job.id,
                         },
                         messageId: "selfHostedRunnerOnForkPullRequestEvent",
-                        node: (runsOnPair.value ??
-                            runsOnPair) as unknown as Rule.Node,
+                        node: runsOnPair.value ?? runsOnPair,
                     });
                 }
             },

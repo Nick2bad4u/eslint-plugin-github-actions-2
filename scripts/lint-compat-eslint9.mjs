@@ -2,8 +2,8 @@
 // @ts-nocheck
 
 /**
- * @packageDocumentation
- * ESLint 9 compatibility smoke checks for eslint-plugin-github-actions-2 presets.
+ * ESLint 9 compatibility smoke checks for eslint-plugin-github-actions-2
+ * presets.
  */
 
 import { ESLint } from "eslint";
@@ -13,7 +13,11 @@ import { fileURLToPath } from "node:url";
 const builtPluginModuleUrl = new URL("../dist/plugin.js", import.meta.url);
 const builtPluginPath = fileURLToPath(builtPluginModuleUrl);
 
-/** Parse and validate a CLI-provided ESLint major version. */
+/**
+ * Parse and validate a CLI-provided ESLint major version.
+ *
+ * @throws {TypeError} When the provided value is not a positive integer.
+ */
 const parseMajorVersionArgument = (rawValue, flagName) => {
     if (!/^\d+$/u.test(rawValue)) {
         throw new TypeError(`Invalid ${flagName} value '${rawValue}'`);
@@ -28,7 +32,11 @@ const parseMajorVersionArgument = (rawValue, flagName) => {
     return parsedValue;
 };
 
-/** Parse `--expect-eslint-major=&lt;n>` (or split form) from CLI args. */
+/**
+ * Parse `--expect-eslint-major=&lt;n>` (or split form) from CLI args.
+ *
+ * @throws {TypeError} When `--expect-eslint-major` is provided without a value.
+ */
 const parseExpectedEslintMajor = () => {
     const cliArgs = process.argv.slice(2);
 
@@ -63,7 +71,11 @@ const parseExpectedEslintMajor = () => {
     return undefined;
 };
 
-/** Read major version number from current ESLint runtime. */
+/**
+ * Read major version number from current ESLint runtime.
+ *
+ * @throws {TypeError} When ESLint exposes an unparseable version string.
+ */
 const getEslintMajorVersion = () => {
     const [majorToken] = ESLint.version.split(".");
 

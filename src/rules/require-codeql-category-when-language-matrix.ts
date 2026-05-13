@@ -5,8 +5,9 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
-import { getCodeqlAnalyzeSteps } from "../_internal/code-scanning-workflow.ts";
+import { getCodeqlAnalyzeSteps } from "../_internal/code-scanning-workflow.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -96,13 +97,14 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: { jobId: step.job.id },
                         messageId: "missingCategoryForLanguageMatrix",
-                        node: (categoryPair?.value ??
+                        node:
+                            categoryPair?.value ??
                             categoryPair ??
                             withMapping ??
-                            step.usesPair) as unknown as Rule.Node,
+                            step.usesPair,
                     });
                 }
             },

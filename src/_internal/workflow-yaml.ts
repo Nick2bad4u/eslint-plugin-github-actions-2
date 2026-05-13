@@ -15,15 +15,44 @@ export const WORKFLOW_FILE_GLOBS: readonly string[] = [
 ];
 
 /** Workflow job mapping paired with its stable identifier key. */
-export type WorkflowJobEntry = {
+export interface WorkflowJobEntry {
     readonly id: string;
     readonly idNode: WorkflowYamlValueNode;
     readonly mapping: AST.YAMLMapping;
     readonly pair: AST.YAMLPair;
-};
+}
 
 /** YAML value node type used by workflow helper APIs. */
 type WorkflowYamlValueNode = AST.YAMLContent | AST.YAMLWithMeta;
+
+/** Narrow an unknown value to a non-null object record. */
+const isUnknownRecord = (value: unknown): value is UnknownRecord =>
+    typeof value === "object" && value !== null;
+
+/** Determine whether an unknown node is a workflow YAML value node. */
+const isWorkflowYamlValueNode = (
+    value: unknown
+): value is WorkflowYamlValueNode => {
+    if (!isUnknownRecord(value) || !keyIn(value, "type")) {
+        return false;
+    }
+
+    const nodeType = Reflect.get(value, "type");
+
+    return (
+        nodeType === "YAMLAlias" ||
+        nodeType === "YAMLMapping" ||
+        nodeType === "YAMLScalar" ||
+        nodeType === "YAMLSequence" ||
+        nodeType === "YAMLWithMeta"
+    );
+};
+
+/** Narrow an unknown parser AST node to a YAML program. */
+const isYamlProgram = (node: unknown): node is AST.YAMLProgram =>
+    isUnknownRecord(node) &&
+    Reflect.get(node, "type") === "Program" &&
+    Array.isArray(Reflect.get(node, "body"));
 
 /** Narrow a YAML node to `YAMLWithMeta`. */
 export const isYamlWithMeta = (
@@ -64,9 +93,25 @@ export const isYamlScalar = (
 export const getWorkflowRoot = (
     context: Rule.RuleContext
 ): AST.YAMLMapping | null => {
-    const program = context.sourceCode.ast as unknown as AST.YAMLProgram;
+    const programNode = context.sourceCode.ast;
+
+    if (!isYamlProgram(programNode)) {
+        return null;
+    }
+
+    const program = programNode;
     const [document] = program.body;
-    const rootNode = unwrapYamlValue(document?.content ?? null);
+    let documentContent: null | WorkflowYamlValueNode = null;
+
+    if (isPresent(document)) {
+        const contentCandidate: unknown = Reflect.get(document, "content");
+
+        if (isWorkflowYamlValueNode(contentCandidate)) {
+            documentContent = contentCandidate;
+        }
+    }
+
+    const rootNode = unwrapYamlValue(documentContent);
 
     return rootNode?.type === "YAMLMapping" ? rootNode : null;
 };
@@ -85,10 +130,10 @@ export const getScalarStringValue = (
         return unwrappedNode.value;
     }
 
-    const scalarNodeRecord = unwrappedNode as unknown as UnknownRecord;
-    const scalarStringValue = keyIn(scalarNodeRecord, "strValue")
-        ? Reflect.get(scalarNodeRecord, "strValue")
-        : null;
+    const scalarStringValue: unknown =
+        isUnknownRecord(unwrappedNode) && keyIn(unwrappedNode, "strValue")
+            ? Reflect.get(unwrappedNode, "strValue")
+            : null;
 
     return typeof scalarStringValue === "string" ? scalarStringValue : null;
 };

@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { isActionMetadataFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -37,7 +38,7 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     fix: (fixer) =>
                         fixer.removeRange(
                             getEnclosingLineRemovalRange(
@@ -46,8 +47,7 @@ const rule: Rule.RuleModule = {
                             )
                         ),
                     messageId: "preIfWithoutPre",
-                    node: (preIfPair.value ??
-                        preIfPair) as unknown as Rule.Node,
+                    node: preIfPair.value ?? preIfPair,
                 });
             },
         };

@@ -9,8 +9,9 @@ import { setHas } from "ts-extras";
 import {
     getCodeqlInitSteps,
     getCodeqlLanguageValues,
-} from "../_internal/code-scanning-workflow.ts";
+} from "../_internal/code-scanning-workflow.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for disallowing split JS/TS CodeQL language matrices. */
@@ -37,10 +38,9 @@ const rule: Rule.RuleModule = {
                         setHas(languageValues, "javascript") &&
                         setHas(languageValues, "typescript")
                     ) {
-                        context.report({
+                        reportYamlNode(context, {
                             messageId: "splitJavaScriptTypeScriptMatrix",
-                            node: (step.usesPair.value ??
-                                step.usesPair) as unknown as Rule.Node,
+                            node: step.usesPair.value ?? step.usesPair,
                         });
                     }
                 }

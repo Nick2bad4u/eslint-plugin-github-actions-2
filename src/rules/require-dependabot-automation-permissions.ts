@@ -4,9 +4,10 @@
  */
 import type { Rule } from "eslint";
 
-import { getDependabotAutomationRunSteps } from "../_internal/dependabot-automation-workflow.ts";
+import { getDependabotAutomationRunSteps } from "../_internal/dependabot-automation-workflow.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
-import { hasRequiredWorkflowPermission } from "../_internal/workflow-permissions.ts";
+import { reportYamlNode } from "../_internal/report.js";
+import { hasRequiredWorkflowPermission } from "../_internal/workflow-permissions.js";
 import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for Dependabot automation permission requirements. */
@@ -33,10 +34,10 @@ const rule: Rule.RuleModule = {
                             "write"
                         )
                     ) {
-                        context.report({
+                        reportYamlNode(context, {
                             data: { jobId: step.job.id },
                             messageId: "missingPullRequestsWrite",
-                            node: step.job.idNode as unknown as Rule.Node,
+                            node: step.job.idNode,
                         });
                     }
 
@@ -50,10 +51,10 @@ const rule: Rule.RuleModule = {
                             "write"
                         )
                     ) {
-                        context.report({
+                        reportYamlNode(context, {
                             data: { jobId: step.job.id },
                             messageId: "missingIssuesWrite",
-                            node: step.job.idNode as unknown as Rule.Node,
+                            node: step.job.idNode,
                         });
                     }
 
@@ -66,10 +67,10 @@ const rule: Rule.RuleModule = {
                             "write"
                         )
                     ) {
-                        context.report({
+                        reportYamlNode(context, {
                             data: { jobId: step.job.id },
                             messageId: "missingContentsWrite",
-                            node: step.job.idNode as unknown as Rule.Node,
+                            node: step.job.idNode,
                         });
                     }
                 }

@@ -8,6 +8,7 @@ import type { AST } from "yaml-eslint-parser";
 import { arrayFirst } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -57,10 +58,10 @@ const checkJobPair = (
     const jobValue = unwrapYamlValue(pair.value);
 
     if (jobValue?.type !== "YAMLMapping") {
-        context.report({
+        reportYamlNode(context, {
             data: { jobId },
             messageId: "missingJobName",
-            node: (pair.value ?? pair) as unknown as Rule.Node,
+            node: pair.value ?? pair,
         });
 
         return;
@@ -69,10 +70,10 @@ const checkJobPair = (
     const namePair = getMappingPair(jobValue, "name");
 
     if (namePair === null) {
-        context.report({
+        reportYamlNode(context, {
             data: { jobId },
             messageId: "missingJobName",
-            node: pair.key as AST.YAMLNode as unknown as Rule.Node,
+            node: pair.key,
             suggest:
                 jobId === "<unknown>" || jobKeyNode === null
                     ? undefined
@@ -86,10 +87,10 @@ const checkJobPair = (
     const nameValueNode = namePair.value;
 
     if (nameValue === null || nameValue.trim().length === 0) {
-        context.report({
+        reportYamlNode(context, {
             data: { jobId },
             messageId: "invalidJobName",
-            node: (namePair.value ?? namePair) as unknown as Rule.Node,
+            node: namePair.value ?? namePair,
             suggest:
                 jobId === "<unknown>" || nameValueNode === null
                     ? undefined

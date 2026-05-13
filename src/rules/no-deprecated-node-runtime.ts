@@ -7,6 +7,7 @@ import type { Rule } from "eslint";
 import { setHas } from "ts-extras";
 
 import { isActionMetadataFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingValueAsMapping,
     getScalarStringValue,
@@ -49,13 +50,12 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     data: {
                         runtime: usingRuntime,
                     },
                     messageId: "deprecatedNodeRuntime",
-                    node: (usingPair?.value ??
-                        usingPair) as unknown as Rule.Node,
+                    node: usingPair?.value ?? usingPair,
                 });
             },
         };

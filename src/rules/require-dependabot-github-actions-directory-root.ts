@@ -10,6 +10,7 @@ import {
     getDependabotUpdateEntries,
     getDependabotUpdateLabel,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getMappingPair } from "../_internal/workflow-yaml.js";
 import { getEnclosingLineRemovalRange } from "../_internal/yaml-fixes.js";
 
@@ -46,12 +47,12 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             updateLabel: getDependabotUpdateLabel(update),
                         },
                         fix: (fixer) => {
-                            const fixes = [];
+                            const fixes: Rule.Fix[] = [];
 
                             if (directoryPair !== null) {
                                 fixes.push(
@@ -76,21 +77,24 @@ const rule: Rule.RuleModule = {
                                         )
                                     );
                                 }
-                            } else if (directoriesPair !== null) {
+                                return fixes;
+                            }
+
+                            if (directoriesPair !== null) {
                                 fixes.push(
                                     fixer.replaceTextRange(
                                         directoriesPair.range,
                                         'directory: "/"'
                                     )
                                 );
+
+                                return fixes;
                             }
 
                             return fixes;
                         },
                         messageId: "githubActionsDirectoryMustBeRoot",
-                        node: (directoriesPair ??
-                            directoryPair ??
-                            update.node) as unknown as Rule.Node,
+                        node: directoriesPair ?? directoryPair ?? update.node,
                     });
                 }
             },

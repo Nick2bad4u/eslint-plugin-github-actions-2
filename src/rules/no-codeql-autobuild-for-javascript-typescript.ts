@@ -11,8 +11,9 @@ import {
     getCodeqlAutobuildSteps,
     getCodeqlInitSteps,
     getCodeqlLanguageValues,
-} from "../_internal/code-scanning-workflow.ts";
+} from "../_internal/code-scanning-workflow.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for disallowing CodeQL autobuild on JS/TS-only workflows. */
@@ -51,10 +52,11 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         messageId: "unnecessaryCodeqlAutobuild",
-                        node: (autobuildStep.usesPair.value ??
-                            autobuildStep.usesPair) as unknown as Rule.Node,
+                        node:
+                            autobuildStep.usesPair.value ??
+                            autobuildStep.usesPair,
                     });
                 }
             },

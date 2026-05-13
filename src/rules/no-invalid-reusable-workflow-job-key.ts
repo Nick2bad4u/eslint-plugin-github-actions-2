@@ -8,6 +8,7 @@ import type { AST } from "yaml-eslint-parser";
 import { arrayJoin, setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -17,15 +18,15 @@ import {
 
 /** Supported keywords for jobs that call reusable workflows via `uses`. */
 const reusableWorkflowJobKeys = [
+    "concurrency",
+    "if",
     "name",
-    "uses",
-    "with",
+    "needs",
+    "permissions",
     "secrets",
     "strategy",
-    "needs",
-    "if",
-    "concurrency",
-    "permissions",
+    "uses",
+    "with",
 ] as const;
 
 /** Constant-time lookup for supported reusable-workflow caller job keys. */
@@ -68,7 +69,7 @@ const rule: Rule.RuleModule = {
                             continue;
                         }
 
-                        context.report({
+                        reportYamlNode(context, {
                             data: {
                                 allowedKeys: arrayJoin(
                                     reusableWorkflowJobKeys,
@@ -78,7 +79,7 @@ const rule: Rule.RuleModule = {
                                 key,
                             },
                             messageId: "invalidReusableWorkflowJobKey",
-                            node: pair.key as unknown as Rule.Node,
+                            node: pair.key,
                         });
                     }
                 }

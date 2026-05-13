@@ -6,6 +6,7 @@ import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -58,12 +59,12 @@ const rule: Rule.RuleModule = {
             shellPair: Readonly<AST.YAMLPair>,
             scope: string
         ): void => {
-            context.report({
+            reportYamlNode(context, {
                 data: {
                     scope,
                 },
                 messageId: "invalidShell",
-                node: (shellPair.value ?? shellPair) as unknown as Rule.Node,
+                node: shellPair.value ?? shellPair,
             });
         };
 
@@ -154,13 +155,12 @@ const rule: Rule.RuleModule = {
                             continue;
                         }
 
-                        context.report({
+                        reportYamlNode(context, {
                             data: {
                                 jobId: job.id,
                             },
                             messageId: "missingShell",
-                            node: (runPair.value ??
-                                stepMapping) as unknown as Rule.Node,
+                            node: runPair.value ?? stepMapping,
                         });
                     }
                 }

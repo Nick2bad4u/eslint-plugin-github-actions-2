@@ -9,6 +9,7 @@ import {
     getDependabotUpdateEntries,
     getDependabotUpdateLabel,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for requiring cooldown settings. */
@@ -32,12 +33,12 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             updateLabel: getDependabotUpdateLabel(update),
                         },
                         messageId: "missingCooldown",
-                        node: update.node as unknown as Rule.Node,
+                        node: update.node,
                     });
                 }
             },

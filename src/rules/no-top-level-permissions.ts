@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getMappingPair, getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for disallowing top-level workflow permissions. */
@@ -25,9 +26,9 @@ const rule: Rule.RuleModule = {
                 const permissionsPair = getMappingPair(root, "permissions");
 
                 if (permissionsPair !== null) {
-                    context.report({
+                    reportYamlNode(context, {
                         messageId: "topLevelPermissions",
-                        node: permissionsPair.key as unknown as Rule.Node,
+                        node: permissionsPair.key,
                     });
                 }
             },

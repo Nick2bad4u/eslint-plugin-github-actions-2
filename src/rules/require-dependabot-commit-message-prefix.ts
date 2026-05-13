@@ -11,6 +11,7 @@ import {
     getDependabotUpdateLabel,
     getEffectiveDependabotUpdateMapping,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for requiring effective commit-message prefixes. */
@@ -47,14 +48,12 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             updateLabel: getDependabotUpdateLabel(update),
                         },
                         messageId: "missingCommitMessagePrefix",
-                        node: (prefixPair?.value ??
-                            prefixPair ??
-                            update.node) as unknown as Rule.Node,
+                        node: prefixPair?.value ?? prefixPair ?? update.node,
                     });
                 }
             },

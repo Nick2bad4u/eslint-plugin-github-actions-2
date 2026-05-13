@@ -26,15 +26,15 @@ export const isDependabotFetchMetadataReference = (
 
 /** Determine whether a run step edits a pull request via `gh pr edit`. */
 export const isGhPrEditRunScript = (runScript: string): boolean =>
-    /\bgh\s+pr\s+edit\b/u.test(runScript);
+    /\bgh\s+pr\s+edit\b/v.test(runScript);
 
 /** Determine whether a run step reviews a pull request via `gh pr review`. */
 export const isGhPrReviewRunScript = (runScript: string): boolean =>
-    /\bgh\s+pr\s+review\b/u.test(runScript);
+    /\bgh\s+pr\s+review\b/v.test(runScript);
 
 /** Determine whether a run step merges a pull request via `gh pr merge`. */
 export const isGhPrMergeRunScript = (runScript: string): boolean =>
-    /\bgh\s+pr\s+merge\b/u.test(runScript);
+    /\bgh\s+pr\s+merge\b/v.test(runScript);
 
 /** Determine whether a run step automates a pull request via GitHub CLI. */
 export const isDependabotAutomationRunScript = (runScript: string): boolean =>

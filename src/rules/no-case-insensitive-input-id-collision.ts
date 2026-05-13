@@ -7,6 +7,7 @@ import type { Rule } from "eslint";
 import { isDefined } from "ts-extras";
 
 import { isActionMetadataFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingValueAsMapping,
     getScalarStringValue,
@@ -55,13 +56,13 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             firstInputId: firstSeenInputId,
                             inputId,
                         },
                         messageId: "collidingInputId",
-                        node: pair.key as unknown as Rule.Node,
+                        node: pair.key,
                     });
                 }
             },

@@ -8,6 +8,7 @@ import {
     isWorkflowTemplateYamlFile,
     usesYamlExtension,
 } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 
 /** Rule implementation for template YAML extension preference checks. */
 const rule: Rule.RuleModule = {
@@ -22,9 +23,9 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     messageId: "preferTemplateYml",
-                    node: node as unknown as Rule.Node,
+                    node: node,
                 });
             },
         };

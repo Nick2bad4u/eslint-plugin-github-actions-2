@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { isWorkflowTemplatePropertiesFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getWorkflowTemplatePropertiesRoot,
     getWorkflowTemplateStringProperty,
@@ -34,9 +35,9 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     messageId: "missingIconName",
-                    node: node as unknown as Rule.Node,
+                    node: node,
                 });
             },
         };

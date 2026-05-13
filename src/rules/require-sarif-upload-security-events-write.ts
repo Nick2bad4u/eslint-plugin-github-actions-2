@@ -4,9 +4,10 @@
  */
 import type { Rule } from "eslint";
 
-import { getSarifUploadSteps } from "../_internal/code-scanning-workflow.ts";
+import { getSarifUploadSteps } from "../_internal/code-scanning-workflow.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
-import { hasRequiredWorkflowPermission } from "../_internal/workflow-permissions.ts";
+import { reportYamlNode } from "../_internal/report.js";
+import { hasRequiredWorkflowPermission } from "../_internal/workflow-permissions.js";
 import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for SARIF upload permission requirements. */
@@ -36,10 +37,10 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: { jobId: step.job.id },
                         messageId: "missingSecurityEventsWrite",
-                        node: step.job.idNode as unknown as Rule.Node,
+                        node: step.job.idNode,
                     });
                 }
             },

@@ -3,11 +3,13 @@
  * Enforce a consistent file extension for workflow files.
  */
 import type { Rule } from "eslint";
+import type { UnknownArray } from "type-fest";
 
-import { extname } from "node:path";
-import { isDefined } from "ts-extras";
+import path from "node:path";
+import { arrayFirst, isDefined, safeCastTo, setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 
 /** Supported workflow filename extensions. */
 const workflowFileExtensions = ["yaml", "yml"] as const;
@@ -16,18 +18,47 @@ const workflowFileExtensions = ["yaml", "yml"] as const;
 type WorkflowFileExtension = (typeof workflowFileExtensions)[number];
 
 /** Object-style options for `prefer-file-extension`. */
-type WorkflowFileExtensionOptionObject = {
+interface WorkflowFileExtensionOptionObject {
     readonly caseSensitive?: boolean;
     readonly extension?: WorkflowFileExtension;
-};
-
-/** Rule options for `prefer-file-extension`. */
-type WorkflowFileExtensionOptions = [
-    (WorkflowFileExtension | WorkflowFileExtensionOptionObject)?,
-];
+}
 
 /** Default workflow file extension. */
 const DEFAULT_WORKFLOW_FILE_EXTENSION: WorkflowFileExtension = "yml";
+const workflowFileExtensionSet: ReadonlySet<string> = new Set(
+    workflowFileExtensions
+);
+
+/** Determine whether an unknown value is a valid option object. */
+const isWorkflowFileExtensionOptionObject = (
+    option: unknown
+): option is WorkflowFileExtensionOptionObject => {
+    if (typeof option !== "object" || option === null) {
+        return false;
+    }
+
+    const extension: unknown = Reflect.get(option, "extension");
+
+    if (
+        isDefined(extension) &&
+        (typeof extension !== "string" ||
+            !setHas(workflowFileExtensionSet, extension))
+    ) {
+        return false;
+    }
+
+    const caseSensitive: unknown = Reflect.get(option, "caseSensitive");
+
+    return !isDefined(caseSensitive) || typeof caseSensitive === "boolean";
+};
+
+/** Determine whether an unknown value is a valid option value. */
+const isWorkflowFileExtensionOption = (
+    option: unknown
+): option is WorkflowFileExtension | WorkflowFileExtensionOptionObject =>
+    typeof option === "string"
+        ? setHas(workflowFileExtensionSet, option)
+        : isWorkflowFileExtensionOptionObject(option);
 
 /** Normalize file extension options into a consistent runtime shape. */
 const normalizePreferFileExtensionOptions = (
@@ -54,7 +85,12 @@ const normalizePreferFileExtensionOptions = (
 /** Rule implementation for enforcing workflow file extensions. */
 const rule: Rule.RuleModule = {
     create(context) {
-        const [option] = context.options as WorkflowFileExtensionOptions;
+        const rawOption = arrayFirst(
+            safeCastTo<Readonly<UnknownArray>>(context.options)
+        );
+        const option = isWorkflowFileExtensionOption(rawOption)
+            ? rawOption
+            : undefined;
         const { caseSensitive, extension } =
             normalizePreferFileExtensionOptions(option ?? undefined);
 
@@ -64,7 +100,7 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                const actualExtensionWithDot = extname(context.filename);
+                const actualExtensionWithDot = path.extname(context.filename);
 
                 if (actualExtensionWithDot.length === 0) {
                     return;
@@ -87,13 +123,13 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     data: {
                         actual: `.${actualExtension}`,
                         expected: `.${extension}`,
                     },
                     messageId: "unexpectedExtension",
-                    node: node as unknown as Rule.Node,
+                    node: node,
                 });
             },
         };

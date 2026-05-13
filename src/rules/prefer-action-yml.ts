@@ -4,6 +4,8 @@
  */
 import type { Rule } from "eslint";
 
+import { reportYamlNode } from "../_internal/report.js";
+
 /** Rule implementation for preferring `action.yml`. */
 const rule: Rule.RuleModule = {
     create(context) {
@@ -13,9 +15,9 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     messageId: "preferActionYml",
-                    node: node as unknown as Rule.Node,
+                    node: node,
                 });
             },
         };

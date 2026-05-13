@@ -8,6 +8,7 @@ import type { AST } from "yaml-eslint-parser";
 import { setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -71,12 +72,12 @@ const rule: Rule.RuleModule = {
             node: Readonly<AST.YAMLNode>,
             eventName: string
         ): void => {
-            context.report({
+            reportYamlNode(context, {
                 data: {
                     event: eventName,
                 },
                 messageId: "missingTypes",
-                node: node as unknown as Rule.Node,
+                node: node,
             });
         };
 
@@ -114,10 +115,13 @@ const rule: Rule.RuleModule = {
 
                 if (onValue.type === "YAMLSequence") {
                     for (const entry of onValue.entries) {
+                        if (entry === null) {
+                            continue;
+                        }
+
                         const eventName = getScalarStringValue(entry);
 
                         if (
-                            entry !== null &&
                             eventName !== null &&
                             setHas(eventsRequiringTypes, eventName)
                         ) {
@@ -147,10 +151,13 @@ const rule: Rule.RuleModule = {
                     const eventValue = unwrapYamlValue(pair.value);
 
                     if (eventValue?.type !== "YAMLMapping") {
-                        reportMissingTypes(
-                            (pair.value ?? pair.key) as AST.YAMLNode,
-                            eventName
-                        );
+                        const reportNode = pair.value ?? pair.key;
+
+                        if (reportNode === null) {
+                            continue;
+                        }
+
+                        reportMissingTypes(reportNode, eventName);
 
                         continue;
                     }

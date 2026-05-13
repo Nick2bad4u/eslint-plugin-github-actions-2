@@ -7,7 +7,8 @@ import type { Rule } from "eslint";
 import { setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
-import { hasSecretScanningAction } from "../_internal/secret-scanning-workflow.ts";
+import { reportYamlNode } from "../_internal/report.js";
+import { hasSecretScanningAction } from "../_internal/secret-scanning-workflow.js";
 import {
     getWorkflowEventNames,
     getWorkflowRoot,
@@ -32,9 +33,9 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     messageId: "missingScheduleTrigger",
-                    node: node as unknown as Rule.Node,
+                    node: node,
                 });
             },
         };

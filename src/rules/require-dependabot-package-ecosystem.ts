@@ -10,6 +10,7 @@ import {
     getDependabotRoot,
     getDependabotUpdateLabel,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsSequence,
@@ -48,9 +49,9 @@ const rule: Rule.RuleModule = {
                     }
 
                     if (updateMapping?.type !== "YAMLMapping") {
-                        context.report({
+                        reportYamlNode(context, {
                             messageId: "invalidDependabotUpdateEntry",
-                            node: entry as unknown as Rule.Node,
+                            node: entry,
                         });
 
                         continue;
@@ -66,13 +67,12 @@ const rule: Rule.RuleModule = {
 
                     if (
                         isDefined(ecosystemValue) &&
-                        ecosystemValue !== null &&
                         ecosystemValue.length > 0
                     ) {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             updateLabel: getDependabotUpdateLabel({
                                 index: index + 1,
@@ -83,9 +83,7 @@ const rule: Rule.RuleModule = {
                             }),
                         },
                         messageId: "missingPackageEcosystem",
-                        node: (ecosystemPair?.value ??
-                            ecosystemPair ??
-                            entry) as unknown as Rule.Node,
+                        node: ecosystemPair?.value ?? ecosystemPair ?? entry,
                     });
                 }
             },

@@ -3,27 +3,50 @@
  * Require explicit GitHub token permissions at workflow or job scope.
  */
 import type { Rule } from "eslint";
+import type { UnknownArray } from "type-fest";
 
-import { isEmpty } from "ts-extras";
+import { arrayFirst, isDefined, isEmpty, safeCastTo } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getWorkflowJobs,
     getWorkflowRoot,
 } from "../_internal/workflow-yaml.js";
 
-/** Rule options for `require-workflow-permissions`. */
-type RequireWorkflowPermissionsOptions = [
-    {
-        readonly allowJobLevelPermissions?: boolean;
-    }?,
-];
+interface RequireWorkflowPermissionsOption {
+    readonly allowJobLevelPermissions?: boolean;
+}
+
+/** Determine whether an unknown value is a valid rule option object. */
+const isRequireWorkflowPermissionsOption = (
+    value: unknown
+): value is RequireWorkflowPermissionsOption => {
+    if (typeof value !== "object" || value === null) {
+        return false;
+    }
+
+    const allowJobLevelPermissions: unknown = Reflect.get(
+        value,
+        "allowJobLevelPermissions"
+    );
+
+    return (
+        !isDefined(allowJobLevelPermissions) ||
+        typeof allowJobLevelPermissions === "boolean"
+    );
+};
 
 /** Rule implementation for requiring explicit workflow or job token permissions. */
 const rule: Rule.RuleModule = {
     create(context) {
-        const [options] = context.options as RequireWorkflowPermissionsOptions;
+        const rawOption = arrayFirst(
+            safeCastTo<Readonly<UnknownArray>>(context.options)
+        );
+        const options = isRequireWorkflowPermissionsOption(rawOption)
+            ? rawOption
+            : undefined;
         const allowJobLevelPermissions =
             options?.allowJobLevelPermissions ?? true;
 
@@ -46,7 +69,7 @@ const rule: Rule.RuleModule = {
                 const jobs = getWorkflowJobs(root);
 
                 if (!allowJobLevelPermissions) {
-                    context.report({
+                    reportYamlNode(context, {
                         messageId: "missingWorkflowPermissions",
                         node: root,
                     });
@@ -55,7 +78,7 @@ const rule: Rule.RuleModule = {
                 }
 
                 if (isEmpty(jobs)) {
-                    context.report({
+                    reportYamlNode(context, {
                         messageId: "missingWorkflowPermissions",
                         node: root,
                     });
@@ -68,7 +91,7 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             jobId: job.id,
                         },

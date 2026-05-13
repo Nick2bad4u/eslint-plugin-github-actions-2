@@ -11,6 +11,7 @@ import {
     getEffectiveDependabotStringValue,
     getEffectiveDependabotUpdateValue,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 
 /** Rule implementation for requiring effective target branches. */
 const rule: Rule.RuleModule = {
@@ -39,13 +40,12 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             updateLabel: getDependabotUpdateLabel(update),
                         },
                         messageId: "missingTargetBranch",
-                        node: (targetBranchValue ??
-                            update.node) as unknown as Rule.Node,
+                        node: targetBranchValue ?? update.node,
                     });
                 }
             },

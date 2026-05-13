@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { getDependabotRoot } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getMappingPair } from "../_internal/workflow-yaml.js";
 import { getEnclosingLineRemovalRange } from "../_internal/yaml-fixes.js";
 
@@ -28,7 +29,7 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     fix: (fixer) =>
                         fixer.removeRange(
                             getEnclosingLineRemovalRange(
@@ -37,8 +38,9 @@ const rule: Rule.RuleModule = {
                             )
                         ),
                     messageId: "unusedEnableBetaEcosystems",
-                    node: (enableBetaEcosystemsPair.value ??
-                        enableBetaEcosystemsPair) as unknown as Rule.Node,
+                    node:
+                        enableBetaEcosystemsPair.value ??
+                        enableBetaEcosystemsPair,
                 });
             },
         };

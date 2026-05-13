@@ -13,14 +13,14 @@ import { WORKFLOW_FILE_GLOBS } from "./workflow-yaml.js";
 /** Ordered preset names exposed through `plugin.configs`. */
 export const githubActionsConfigNames = [
     "actionMetadata",
+    "all",
     "codeScanning",
     "dependabot",
-    "workflowTemplateProperties",
-    "workflowTemplates",
     "recommended",
     "security",
     "strict",
-    "all",
+    "workflowTemplateProperties",
+    "workflowTemplates",
 ] as const;
 
 /** Supported flat-config preset names exported by the plugin. */

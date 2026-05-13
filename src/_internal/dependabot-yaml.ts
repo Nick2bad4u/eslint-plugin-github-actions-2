@@ -19,25 +19,25 @@ import {
 } from "./workflow-yaml.js";
 
 /** Directory selector entry declared by a Dependabot update block. */
-export type DependabotDirectorySelectorEntry = {
+export interface DependabotDirectorySelectorEntry {
     readonly node: AST.YAMLNode;
     readonly value: string;
-};
+}
 
 /** String scalar entry contained in a YAML sequence. */
-export type DependabotStringSequenceEntry = {
+export interface DependabotStringSequenceEntry {
     readonly node: AST.YAMLNode;
     readonly value: string;
-};
+}
 
 /** Dependabot update block paired with derived metadata useful for reporting. */
-export type DependabotUpdateEntry = {
+export interface DependabotUpdateEntry {
     readonly index: number;
     readonly mapping: AST.YAMLMapping;
     readonly multiEcosystemGroup: null | string;
     readonly node: AST.YAMLContent | AST.YAMLWithMeta;
     readonly packageEcosystem: null | string;
-};
+}
 
 /**
  * Normalize a scalar-like Dependabot string value into a trimmed non-empty

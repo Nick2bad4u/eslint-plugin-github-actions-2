@@ -7,6 +7,7 @@ import type { Rule } from "eslint";
 import { setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -24,8 +25,8 @@ const isCheckoutActionReference = (reference: string): boolean =>
 
 /** Detect risky PR-head references in checkout parameters. */
 const hasPullRequestHeadReference = (value: string): boolean =>
-    /\bgithub\.head_ref\b/u.test(value) ||
-    /\bgithub\.event\.pull_request\.head\./u.test(value);
+    /\bgithub\.head_ref\b/v.test(value) ||
+    /\bgithub\.event\.pull_request\.head\./v.test(value);
 
 /**
  * Rule implementation for disallowing pull-request head checkouts in
@@ -104,14 +105,13 @@ const rule: Rule.RuleModule = {
                                 continue;
                             }
 
-                            context.report({
+                            reportYamlNode(context, {
                                 data: {
                                     jobId: job.id,
                                     key,
                                 },
                                 messageId: "pullRequestHeadCheckout",
-                                node: (optionPair.value ??
-                                    optionPair) as unknown as Rule.Node,
+                                node: optionPair.value ?? optionPair,
                             });
                         }
                     }

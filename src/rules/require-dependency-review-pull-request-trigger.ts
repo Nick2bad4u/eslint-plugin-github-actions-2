@@ -6,8 +6,9 @@ import type { Rule } from "eslint";
 
 import { setHas } from "ts-extras";
 
-import { hasDependencyReviewAction } from "../_internal/dependency-review-workflow.ts";
+import { hasDependencyReviewAction } from "../_internal/dependency-review-workflow.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getWorkflowEventNames,
     getWorkflowRoot,
@@ -32,9 +33,9 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     messageId: "missingPullRequestTrigger",
-                    node: root as unknown as Rule.Node,
+                    node: root,
                 });
             },
         };

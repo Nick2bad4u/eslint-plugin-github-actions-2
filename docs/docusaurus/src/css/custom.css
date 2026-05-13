@@ -22,30 +22,6 @@
 
 /* You can override the default Infima variables here. */
 
-@font-face {
-    font-family: "NerdFontSymbols Nerd Font Symbols";
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src:
-        local("NerdFontSymbols Nerd Font Symbols"),
-        local("Symbols Nerd Font"),
-        url("https://cdn.jsdelivr.net/gh/ryanoasis/nerd-fonts@3.4.0/patched-fonts/NerdFontsSymbolsOnly/SymbolsNerdFont-Regular.ttf")
-            format("truetype");
-}
-
-@font-face {
-    font-family: "Symbols Nerd Font Mono";
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src:
-        local("Symbols Nerd Font Mono"),
-        local("Symbols Nerd Font"),
-        url("https://cdn.jsdelivr.net/gh/ryanoasis/nerd-fonts@3.4.0/patched-fonts/NerdFontsSymbolsOnly/SymbolsNerdFont-Regular.ttf")
-            format("truetype");
-}
-
 :root {
     --ifm-color-primary: #0969da;
     --ifm-color-primary-dark: #0550ae;
@@ -56,8 +32,7 @@
     --ifm-color-primary-lightest: #80ccff;
     --ifm-code-font-size: 95%;
     --ifm-font-family-base:
-        "Inter var", "Inter", "Segoe UI", "NerdFontSymbols Nerd Font Symbols",
-        system-ui, -apple-system, sans-serif;
+        "Inter var", "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
     --sb-accent-overview: #1a7f37;
     --sb-accent-started: #0969da;
     --sb-accent-developer: #8b5cf6;

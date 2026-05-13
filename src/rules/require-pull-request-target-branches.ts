@@ -8,6 +8,7 @@ import type { AST } from "yaml-eslint-parser";
 import { safeCastTo } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -49,9 +50,9 @@ const rule: Rule.RuleModule = {
         const reportMissingBranchFilter = (
             node: Readonly<AST.YAMLNode>
         ): void => {
-            context.report({
+            reportYamlNode(context, {
                 messageId: "missingBranchFilter",
-                node: node as unknown as Rule.Node,
+                node: node,
             });
         };
 

@@ -8,6 +8,7 @@ import type { AST } from "yaml-eslint-parser";
 import { setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingValueAsMapping,
     getMappingValueAsSequence,
@@ -104,12 +105,12 @@ const reportInvalidKeys = (
             continue;
         }
 
-        context.report({
+        reportYamlNode(context, {
             data: {
                 key: keyValue,
             },
             messageId,
-            node: (pair.key ?? pair) as unknown as Rule.Node,
+            node: pair.key ?? pair,
         });
     }
 };

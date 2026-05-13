@@ -10,8 +10,9 @@ import {
     getDependabotAutomationRunSteps,
     getDependabotFetchMetadataSteps,
     hasDependabotAutomation,
-} from "../_internal/dependabot-automation-workflow.ts";
+} from "../_internal/dependabot-automation-workflow.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -67,10 +68,10 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: { jobId: step.job.id },
                         messageId: "missingDependabotBotGuard",
-                        node: step.job.idNode as unknown as Rule.Node,
+                        node: step.job.idNode,
                     });
                 }
             },

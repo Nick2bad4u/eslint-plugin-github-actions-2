@@ -10,6 +10,7 @@ import {
     getDependabotMappingStringValue,
     getDependabotRoot,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for requiring `version: 2` in Dependabot config. */
@@ -33,7 +34,7 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     fix: (fixer) => {
                         if (versionPair === null) {
                             return fixer.insertTextBeforeRange(
@@ -59,9 +60,7 @@ const rule: Rule.RuleModule = {
                         versionPair === null
                             ? "missingDependabotVersion"
                             : "invalidDependabotVersion",
-                    node: (versionPair?.value ??
-                        versionPair ??
-                        node) as unknown as Rule.Node,
+                    node: versionPair?.value ?? versionPair ?? node,
                 });
             },
         };

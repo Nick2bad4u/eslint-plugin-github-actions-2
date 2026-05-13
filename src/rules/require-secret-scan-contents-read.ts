@@ -5,8 +5,9 @@
 import type { Rule } from "eslint";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
-import { getSecretScanningActionSteps } from "../_internal/secret-scanning-workflow.ts";
-import { hasExactWorkflowPermission } from "../_internal/workflow-permissions.ts";
+import { reportYamlNode } from "../_internal/report.js";
+import { getSecretScanningActionSteps } from "../_internal/secret-scanning-workflow.js";
+import { hasExactWorkflowPermission } from "../_internal/workflow-permissions.js";
 import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /**
@@ -39,10 +40,10 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: { jobId: step.job.id },
                         messageId: "missingContentsRead",
-                        node: step.job.idNode as unknown as Rule.Node,
+                        node: step.job.idNode,
                     });
                 }
             },

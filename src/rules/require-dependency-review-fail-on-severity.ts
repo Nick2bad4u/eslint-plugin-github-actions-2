@@ -6,8 +6,9 @@ import type { Rule } from "eslint";
 
 import { isDefined } from "ts-extras";
 
-import { getDependencyReviewActionSteps } from "../_internal/dependency-review-workflow.ts";
+import { getDependencyReviewActionSteps } from "../_internal/dependency-review-workflow.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -45,21 +46,21 @@ const rule: Rule.RuleModule = {
 
                     if (
                         isDefined(failOnSeverityValue) &&
-                        failOnSeverityValue !== null &&
                         failOnSeverityValue.length > 0
                     ) {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             jobId: step.job.id,
                         },
                         messageId: "missingFailOnSeverity",
-                        node: (failOnSeverityPair?.value ??
+                        node:
+                            failOnSeverityPair?.value ??
                             failOnSeverityPair ??
                             withMapping ??
-                            step.usesPair) as unknown as Rule.Node,
+                            step.usesPair,
                     });
                 }
             },

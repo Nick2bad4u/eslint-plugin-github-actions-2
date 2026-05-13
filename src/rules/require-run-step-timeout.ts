@@ -6,6 +6,7 @@ import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsSequence,
@@ -67,7 +68,7 @@ const rule: Rule.RuleModule = {
 
                     // Only flag if the job has run steps
                     if (jobHasRunSteps(job.mapping)) {
-                        context.report({
+                        reportYamlNode(context, {
                             data: {
                                 jobId: job.id,
                             },

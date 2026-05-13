@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getMappingPair, getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for disallowing top-level workflow env. */
@@ -25,9 +26,9 @@ const rule: Rule.RuleModule = {
                 const envPair = getMappingPair(root, "env");
 
                 if (envPair !== null) {
-                    context.report({
+                    reportYamlNode(context, {
                         messageId: "topLevelEnv",
-                        node: envPair.key as unknown as Rule.Node,
+                        node: envPair.key,
                     });
                 }
             },

@@ -5,9 +5,10 @@
 import type { Rule } from "eslint";
 
 import { existsSync } from "node:fs";
-import { dirname, join } from "node:path";
+import path from "node:path";
 
 import { isWorkflowTemplatePropertiesFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getWorkflowTemplatePropertiesRoot,
     getWorkflowTemplateStringProperty,
@@ -41,22 +42,23 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                const iconFilePath = join(
-                    dirname(context.filename),
+                const iconFilePath = path.join(
+                    path.dirname(context.filename),
                     `${iconName}.svg`
                 );
 
+                // eslint-disable-next-line n/no-sync, security/detect-non-literal-fs-filename -- iconFilePath is derived from repository-local workflow-template metadata and resolved helper paths.
                 if (existsSync(iconFilePath)) {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     data: {
                         iconFilePath,
                         iconName,
                     },
                     messageId: "missingTemplateIconFile",
-                    node: node as unknown as Rule.Node,
+                    node: node,
                 });
             },
         };

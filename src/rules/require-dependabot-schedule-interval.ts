@@ -12,6 +12,7 @@ import {
     getDependabotUpdateLabel,
     getEffectiveDependabotUpdateMapping,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -55,13 +56,12 @@ const rule: Rule.RuleModule = {
 
                     if (
                         isDefined(intervalValue) &&
-                        intervalValue !== null &&
                         setHas(validDependabotIntervals, intervalValue)
                     ) {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             updateLabel: getDependabotUpdateLabel(update),
                         },
@@ -69,9 +69,8 @@ const rule: Rule.RuleModule = {
                             intervalPair === null
                                 ? "missingScheduleInterval"
                                 : "invalidScheduleInterval",
-                        node: (intervalPair?.value ??
-                            intervalPair ??
-                            update.node) as unknown as Rule.Node,
+                        node:
+                            intervalPair?.value ?? intervalPair ?? update.node,
                     });
                 }
             },

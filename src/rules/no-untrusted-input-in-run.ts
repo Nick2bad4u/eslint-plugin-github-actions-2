@@ -6,6 +6,7 @@ import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsSequence,
@@ -21,23 +22,12 @@ import {
  */
 const untrustedRunExpressionSources = [
     {
-        fragments: [
-            "github.event.pull_request.body",
-            "github.event.pull_request.title",
-        ],
-        source: "pull request title/body",
-    },
-    {
-        fragments: ["github.event.issue.body", "github.event.issue.title"],
-        source: "issue title/body",
+        fragments: ["github.event.client_payload."],
+        source: "repository_dispatch client payload",
     },
     {
         fragments: ["github.event.comment.body"],
         source: "comment body",
-    },
-    {
-        fragments: ["github.event.review.body"],
-        source: "review body",
     },
     {
         fragments: [
@@ -51,8 +41,19 @@ const untrustedRunExpressionSources = [
         source: "discussion comment body",
     },
     {
-        fragments: ["github.event.client_payload."],
-        source: "repository_dispatch client payload",
+        fragments: ["github.event.issue.body", "github.event.issue.title"],
+        source: "issue title/body",
+    },
+    {
+        fragments: [
+            "github.event.pull_request.body",
+            "github.event.pull_request.title",
+        ],
+        source: "pull request title/body",
+    },
+    {
+        fragments: ["github.event.review.body"],
+        source: "review body",
     },
 ] as const;
 
@@ -96,13 +97,13 @@ const checkJobStepsForUnsafeRun = (
             continue;
         }
 
-        context.report({
+        reportYamlNode(context, {
             data: {
                 jobId,
                 source: unsafeSource,
             },
             messageId: "unsafeRunInterpolation",
-            node: (runPair.value ?? runPair) as unknown as Rule.Node,
+            node: runPair.value ?? runPair,
         });
     }
 };

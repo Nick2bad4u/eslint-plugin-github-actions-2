@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -65,12 +66,12 @@ const rule: Rule.RuleModule = {
                     const valuePair = getMappingPair(outputMapping, "value");
 
                     if (valuePair === null) {
-                        context.report({
+                        reportYamlNode(context, {
                             data: {
                                 outputId,
                             },
                             messageId: "missingValue",
-                            node: pair.key as unknown as Rule.Node,
+                            node: pair.key,
                         });
 
                         continue;
@@ -79,13 +80,12 @@ const rule: Rule.RuleModule = {
                     const value = getScalarStringValue(valuePair.value);
 
                     if (value === null || value.trim().length === 0) {
-                        context.report({
+                        reportYamlNode(context, {
                             data: {
                                 outputId,
                             },
                             messageId: "invalidValue",
-                            node: (valuePair.value ??
-                                valuePair) as unknown as Rule.Node,
+                            node: valuePair.value ?? valuePair,
                         });
                     }
                 }

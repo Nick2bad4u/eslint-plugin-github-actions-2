@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { isActionMetadataFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -68,12 +69,12 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             index: String(index + 1),
                         },
                         messageId: "missingCompositeStepName",
-                        node: stepMapping as unknown as Rule.Node,
+                        node: stepMapping,
                     });
                 }
             },

@@ -11,6 +11,7 @@ import {
     getEffectiveDependabotUpdateValue,
     getNonEmptyStringSequenceEntries,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 
 /** Rule implementation for requiring effective assignees. */
 const rule: Rule.RuleModule = {
@@ -37,13 +38,12 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             updateLabel: getDependabotUpdateLabel(update),
                         },
                         messageId: "missingAssignees",
-                        node: (assigneesValue ??
-                            update.node) as unknown as Rule.Node,
+                        node: assigneesValue ?? update.node,
                     });
                 }
             },

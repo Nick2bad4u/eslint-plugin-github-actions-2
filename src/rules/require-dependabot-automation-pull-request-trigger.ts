@@ -6,8 +6,9 @@ import type { Rule } from "eslint";
 
 import { setHas } from "ts-extras";
 
-import { hasDependabotAutomation } from "../_internal/dependabot-automation-workflow.ts";
+import { hasDependabotAutomation } from "../_internal/dependabot-automation-workflow.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getWorkflowEventNames,
     getWorkflowRoot,
@@ -35,9 +36,9 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     messageId: "missingPullRequestTrigger",
-                    node: node as unknown as Rule.Node,
+                    node: node,
                 });
             },
         };

@@ -102,7 +102,7 @@ const mappingPermissionSatisfies = (
     }
 
     if (requiredLevel === "read") {
-        return permissionLevel === "read" || permissionLevel === "write";
+        return true;
     }
 
     return permissionLevel === "write";

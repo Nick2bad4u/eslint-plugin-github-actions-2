@@ -3,10 +3,18 @@
  * Enforce a consistent style for step-level `uses:` references.
  */
 import type { Rule } from "eslint";
+import type { UnknownArray } from "type-fest";
 
-import { arrayIncludes, isDefined } from "ts-extras";
+import {
+    arrayFirst,
+    arrayIncludes,
+    isDefined,
+    safeCastTo,
+    setHas,
+} from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsSequence,
@@ -37,6 +45,21 @@ type StepUsesStyle = (typeof usesStyles)[number];
 
 /** Default `uses:` style enforced by the rule. */
 const DEFAULT_STEP_USES_STYLE: StepUsesStyle = "commit";
+const stepUsesStyleSet: ReadonlySet<string> = new Set(usesStyles);
+
+/** Determine whether an unknown value is a valid object option. */
+const isPreferStepUsesStyleObjectOption = (
+    value: unknown
+): value is PreferStepUsesStyleObjectOption =>
+    typeof value === "object" && value !== null;
+
+/** Determine whether an unknown value is a valid rule option. */
+const isPreferStepUsesStyleOption = (
+    value: unknown
+): value is PreferStepUsesStyleObjectOption | StepUsesStyle =>
+    typeof value === "string"
+        ? setHas(stepUsesStyleSet, value)
+        : isPreferStepUsesStyleObjectOption(value);
 
 /** Normalize prefer-step-uses-style options into a consistent runtime shape. */
 const normalizeStepUsesStyleOptions = (
@@ -110,7 +133,7 @@ const parseStepUsesReference = (
         }
     }
 
-    if (/^[0-9a-f]{40}$/u.test(ref)) {
+    if (/^[0-9a-f]{40}$/v.test(ref)) {
         return {
             isDocker: false,
             isRepository: false,
@@ -136,9 +159,12 @@ const parseStepUsesReference = (
 /** Rule implementation for enforcing step-level `uses:` reference style. */
 const rule: Rule.RuleModule = {
     create(context) {
-        const [option] = context.options as [
-            (PreferStepUsesStyleObjectOption | StepUsesStyle)?,
-        ];
+        const rawOption = arrayFirst(
+            safeCastTo<Readonly<UnknownArray>>(context.options)
+        );
+        const option = isPreferStepUsesStyleOption(rawOption)
+            ? rawOption
+            : undefined;
         const {
             allowDocker,
             allowedStyles,
@@ -193,10 +219,9 @@ const rule: Rule.RuleModule = {
 
                         if (parsedReference.isRepository) {
                             if (!allowRepository) {
-                                context.report({
+                                reportYamlNode(context, {
                                     messageId: "repositoryActionDisallowed",
-                                    node: (usesPair.value ??
-                                        usesPair) as unknown as Rule.Node,
+                                    node: usesPair.value ?? usesPair,
                                 });
                             }
 
@@ -205,10 +230,9 @@ const rule: Rule.RuleModule = {
 
                         if (parsedReference.isDocker) {
                             if (!allowDocker) {
-                                context.report({
+                                reportYamlNode(context, {
                                     messageId: "dockerActionDisallowed",
-                                    node: (usesPair.value ??
-                                        usesPair) as unknown as Rule.Node,
+                                    node: usesPair.value ?? usesPair,
                                 });
                             }
 
@@ -218,13 +242,12 @@ const rule: Rule.RuleModule = {
                         if (
                             !arrayIncludes(allowedStyles, parsedReference.style)
                         ) {
-                            context.report({
+                            reportYamlNode(context, {
                                 data: {
                                     style: parsedReference.style,
                                 },
                                 messageId: "styleDisallowed",
-                                node: (usesPair.value ??
-                                    usesPair) as unknown as Rule.Node,
+                                node: usesPair.value ?? usesPair,
                             });
                         }
                     }

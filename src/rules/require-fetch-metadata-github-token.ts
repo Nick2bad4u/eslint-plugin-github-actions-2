@@ -6,8 +6,9 @@ import type { Rule } from "eslint";
 
 import { isDefined } from "ts-extras";
 
-import { getDependabotFetchMetadataSteps } from "../_internal/dependabot-automation-workflow.ts";
+import { getDependabotFetchMetadataSteps } from "../_internal/dependabot-automation-workflow.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -47,13 +48,14 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: { jobId: step.job.id },
                         messageId: "missingGithubToken",
-                        node: (tokenPair?.value ??
+                        node:
+                            tokenPair?.value ??
                             tokenPair ??
                             withMapping ??
-                            step.usesPair) as unknown as Rule.Node,
+                            step.usesPair,
                     });
                 }
             },

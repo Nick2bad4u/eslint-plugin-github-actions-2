@@ -11,6 +11,7 @@ import {
     getReferencedContextRoots,
 } from "../_internal/github-expressions.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -21,7 +22,7 @@ import {
 
 /** Match reusable workflow output mappings to job outputs. */
 const jobsOutputReferencePattern =
-    /jobs\.[A-Z_a-z][\w-]*\.outputs\.[A-Z_a-z][\w-]*/;
+    /jobs\.[A-Z_a-z](?:\w|-)*\.outputs\.[A-Z_a-z](?:\w|-)*/v;
 
 /** Allowed expression contexts for `on.workflow_call.outputs.*.value`. */
 const allowedWorkflowCallOutputContexts: ReadonlySet<string> = new Set([
@@ -110,27 +111,25 @@ const rule: Rule.RuleModule = {
                     );
 
                     if (disallowedContexts.length > 0) {
-                        context.report({
+                        reportYamlNode(context, {
                             data: {
                                 contexts: arrayJoin(disallowedContexts, ", "),
                                 outputId,
                             },
                             messageId: "invalidContext",
-                            node: (valuePair.value ??
-                                valuePair) as unknown as Rule.Node,
+                            node: valuePair.value ?? valuePair,
                         });
 
                         continue;
                     }
 
                     if (!hasJobsOutputReference(value)) {
-                        context.report({
+                        reportYamlNode(context, {
                             data: {
                                 outputId,
                             },
                             messageId: "missingJobOutputReference",
-                            node: (valuePair.value ??
-                                valuePair) as unknown as Rule.Node,
+                            node: valuePair.value ?? valuePair,
                         });
                     }
                 }

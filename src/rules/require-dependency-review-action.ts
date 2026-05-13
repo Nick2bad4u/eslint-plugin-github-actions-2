@@ -4,8 +4,9 @@
  */
 import type { Rule } from "eslint";
 
-import { getDependencyReviewActionSteps } from "../_internal/dependency-review-workflow.ts";
+import { getDependencyReviewActionSteps } from "../_internal/dependency-review-workflow.js";
 import { isDependencyReviewWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for requiring dependency review action usage. */
@@ -27,9 +28,9 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     messageId: "missingDependencyReviewAction",
-                    node: node as unknown as Rule.Node,
+                    node: node,
                 });
             },
         };

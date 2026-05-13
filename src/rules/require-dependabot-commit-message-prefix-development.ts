@@ -13,6 +13,7 @@ import {
     getDependabotUpdateLabel,
     getEffectiveDependabotUpdateMapping,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 const ecosystemsSupportingPrefixDevelopment = new Set([
@@ -41,7 +42,6 @@ const rule: Rule.RuleModule = {
 
                     if (
                         !isDefined(packageEcosystem) ||
-                        packageEcosystem === null ||
                         !setHas(
                             ecosystemsSupportingPrefixDevelopment,
                             packageEcosystem
@@ -75,14 +75,15 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             updateLabel: getDependabotUpdateLabel(update),
                         },
                         messageId: "missingPrefixDevelopment",
-                        node: (prefixDevelopmentPair?.value ??
+                        node:
+                            prefixDevelopmentPair?.value ??
                             prefixDevelopmentPair ??
-                            update.node) as unknown as Rule.Node,
+                            update.node,
                     });
                 }
             },

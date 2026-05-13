@@ -7,6 +7,7 @@ import type { Rule } from "eslint";
 import { arrayJoin, setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -79,12 +80,12 @@ const rule: Rule.RuleModule = {
                     const typePair = getMappingPair(inputMapping, "type");
 
                     if (typePair === null) {
-                        context.report({
+                        reportYamlNode(context, {
                             data: {
                                 inputId,
                             },
                             messageId: "missingType",
-                            node: pair.key as unknown as Rule.Node,
+                            node: pair.key,
                         });
 
                         continue;
@@ -96,7 +97,7 @@ const rule: Rule.RuleModule = {
                         typeValue === null ||
                         !setHas(allowedWorkflowCallInputTypeSet, typeValue)
                     ) {
-                        context.report({
+                        reportYamlNode(context, {
                             data: {
                                 allowedTypes: arrayJoin(
                                     allowedWorkflowCallInputTypes,
@@ -105,8 +106,7 @@ const rule: Rule.RuleModule = {
                                 inputId,
                             },
                             messageId: "invalidType",
-                            node: (typePair.value ??
-                                typePair) as unknown as Rule.Node,
+                            node: typePair.value ?? typePair,
                         });
                     }
                 }

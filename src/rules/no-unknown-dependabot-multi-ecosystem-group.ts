@@ -10,6 +10,7 @@ import {
     getDependabotUpdateEntries,
     getDependabotUpdateLabel,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for unknown multi-ecosystem-group references. */
@@ -37,15 +38,13 @@ const rule: Rule.RuleModule = {
                         "multi-ecosystem-group"
                     );
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             groupName: update.multiEcosystemGroup,
                             updateLabel: getDependabotUpdateLabel(update),
                         },
                         messageId: "unknownMultiEcosystemGroup",
-                        node: (groupPair?.value ??
-                            groupPair ??
-                            update.node) as unknown as Rule.Node,
+                        node: groupPair?.value ?? groupPair ?? update.node,
                     });
                 }
             },

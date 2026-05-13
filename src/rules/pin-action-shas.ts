@@ -5,9 +5,8 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
-import { safeCastTo } from "ts-extras";
-
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsSequence,
@@ -18,7 +17,7 @@ import {
 } from "../_internal/workflow-yaml.js";
 
 /** Full commit SHA pattern recommended by GitHub for pinning action refs. */
-const FULL_SHA_PATTERN = /^[0-9a-f]{40}$/u;
+const FULL_SHA_PATTERN = /^[0-9a-f]{40}$/v;
 
 /** Determine whether a `uses` reference is a local action path. */
 const isLocalActionReference = (reference: string): boolean =>
@@ -46,7 +45,7 @@ const shouldValidateUsesReference = (reference: string): boolean =>
 /** Report an unpinned uses reference. */
 const reportReference = (
     context: Readonly<Rule.RuleContext>,
-    node: Readonly<NonNullable<Rule.Node>>,
+    node: Readonly<AST.YAMLNode>,
     reference: string
 ): void => {
     if (!shouldValidateUsesReference(reference)) {
@@ -59,7 +58,7 @@ const reportReference = (
         return;
     }
 
-    context.report({
+    reportYamlNode(context, {
         data: {
             ref: ref ?? "<missing ref>",
             reference,
@@ -67,7 +66,7 @@ const reportReference = (
         messageId: isReusableWorkflowReference(reference)
             ? "unpinnedReusableWorkflow"
             : "unpinnedAction",
-        node: safeCastTo<Rule.Node>(node),
+        node: node,
     });
 };
 
@@ -93,11 +92,7 @@ const checkJobStepsForUnpinnedUses = (
             continue;
         }
 
-        reportReference(
-            context,
-            (usesPair.value ?? usesPair) as unknown as Rule.Node,
-            usesReference
-        );
+        reportReference(context, usesPair.value ?? usesPair, usesReference);
     }
 };
 
@@ -134,8 +129,7 @@ const rule: Rule.RuleModule = {
                     ) {
                         reportReference(
                             context,
-                            (reusableWorkflowPair.value ??
-                                reusableWorkflowPair) as unknown as Rule.Node,
+                            reusableWorkflowPair.value ?? reusableWorkflowPair,
                             reusableWorkflowReference
                         );
                     }

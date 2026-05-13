@@ -9,6 +9,7 @@ import { setHas } from "ts-extras";
 
 import { githubActionsTriggerEventSet } from "../_internal/github-actions-trigger-events.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -23,12 +24,12 @@ const rule: Rule.RuleModule = {
             node: Readonly<AST.YAMLNode>,
             eventName: string
         ): void => {
-            context.report({
+            reportYamlNode(context, {
                 data: {
                     event: eventName,
                 },
                 messageId: "invalidEvent",
-                node: node as unknown as Rule.Node,
+                node: node,
             });
         };
 
@@ -69,23 +70,25 @@ const rule: Rule.RuleModule = {
                         const unwrappedEntry = unwrapYamlValue(entry);
                         const eventName = getScalarStringValue(unwrappedEntry);
 
-                        if (
-                            unwrappedEntry !== null &&
-                            (eventName === null ||
-                                !setHas(
-                                    githubActionsTriggerEventSet,
-                                    eventName
-                                ))
-                        ) {
-                            context.report({
+                        if (eventName === null) {
+                            reportYamlNode(context, {
                                 data: {
-                                    event: eventName ?? "<unknown>",
+                                    event: "<unknown>",
                                 },
-                                messageId:
-                                    eventName === null
-                                        ? "invalidEventEntry"
-                                        : "invalidEvent",
-                                node: unwrappedEntry as unknown as Rule.Node,
+                                messageId: "invalidEventEntry",
+                                node: unwrappedEntry ?? entry ?? onValue,
+                            });
+
+                            continue;
+                        }
+
+                        if (!setHas(githubActionsTriggerEventSet, eventName)) {
+                            reportYamlNode(context, {
+                                data: {
+                                    event: eventName,
+                                },
+                                messageId: "invalidEvent",
+                                node: unwrappedEntry ?? entry ?? onValue,
                             });
                         }
                     }
@@ -94,9 +97,9 @@ const rule: Rule.RuleModule = {
                 }
 
                 if (onValue.type !== "YAMLMapping") {
-                    context.report({
+                    reportYamlNode(context, {
                         messageId: "invalidEventEntry",
-                        node: onValue as unknown as Rule.Node,
+                        node: onValue,
                     });
 
                     return;
@@ -106,16 +109,22 @@ const rule: Rule.RuleModule = {
                     const eventName = getScalarStringValue(pair.key);
 
                     if (eventName === null) {
-                        context.report({
+                        reportYamlNode(context, {
                             messageId: "invalidEventEntry",
-                            node: pair as unknown as Rule.Node,
+                            node: pair,
                         });
 
                         continue;
                     }
 
                     if (!setHas(githubActionsTriggerEventSet, eventName)) {
-                        reportInvalidEvent(pair.key as AST.YAMLNode, eventName);
+                        const eventNode = pair.key;
+
+                        if (eventNode === null) {
+                            continue;
+                        }
+
+                        reportInvalidEvent(eventNode, eventName);
                     }
                 }
             },

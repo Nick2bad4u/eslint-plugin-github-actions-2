@@ -7,7 +7,8 @@ import type { Rule } from "eslint";
 import { isDefined } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
-import { getTrufflehogActionSteps } from "../_internal/secret-scanning-workflow.ts";
+import { reportYamlNode } from "../_internal/report.js";
+import { getTrufflehogActionSteps } from "../_internal/secret-scanning-workflow.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -15,7 +16,7 @@ import {
     getWorkflowRoot,
 } from "../_internal/workflow-yaml.js";
 
-const verifiedResultsPattern = /--results(?:=|\s+)verified\b/u;
+const verifiedResultsPattern = /--results(?:=|\s+)verified\b/v;
 
 /** Rule implementation for TruffleHog verified-results mode requirements. */
 const rule: Rule.RuleModule = {
@@ -52,13 +53,14 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: { jobId: step.job.id },
                         messageId: "missingVerifiedResultsMode",
-                        node: (extraArgsPair?.value ??
+                        node:
+                            extraArgsPair?.value ??
                             extraArgsPair ??
                             withMapping ??
-                            step.usesPair) as unknown as Rule.Node,
+                            step.usesPair,
                     });
                 }
             },

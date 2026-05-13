@@ -3,7 +3,7 @@
  * Public plugin entrypoint for eslint-plugin-github-actions-2.
  */
 import type { ESLint, Linter, Rule } from "eslint";
-import type { Except } from "type-fest";
+import type { Except, UnknownArray } from "type-fest";
 
 import {
     arrayFirst,
@@ -16,11 +16,9 @@ import * as yamlParser from "yaml-eslint-parser";
 
 import type { GithubActionsRuleDocs } from "./_internal/rule-docs.js";
 
-import packageJson from "../package.json" with { type: "json" };
 import {
     githubActionsConfigMetadataByName,
     type GithubActionsConfigName,
-    githubActionsConfigNames,
     type GithubActionsConfigReference,
     githubActionsConfigReferenceToName,
 } from "./_internal/github-actions-config-references.js";
@@ -28,6 +26,7 @@ import { githubActionsRules } from "./_internal/rules-registry.js";
 
 /** ESLint severity used by generated preset rule maps. */
 const ERROR_SEVERITY = "error" as const;
+const PLUGIN_VERSION = "1.1.3";
 
 /** Runtime type for the plugin's generated config presets. */
 export type GithubActionsConfigs = Record<
@@ -63,16 +62,11 @@ type GithubActionsPluginContract = Except<
 /** Rule-map type used when expanding preset memberships. */
 type RulesConfig = GithubActionsPresetConfig["rules"];
 
-/** Resolve package version from package.json data. */
-function getPackageVersion(pkg: unknown): string {
-    if (typeof pkg !== "object" || pkg === null) {
-        return "0.0.0";
-    }
-
-    const version = Reflect.get(pkg, "version");
-
-    return typeof version === "string" ? version : "0.0.0";
-}
+/** Narrow unknown docs payloads to this plugin's docs metadata shape. */
+const isGithubActionsRuleDocs = (
+    value: unknown
+): value is GithubActionsRuleDocs =>
+    typeof value === "object" && value !== null;
 
 /** Determine whether a string is a valid config-reference token. */
 const isGithubActionsConfigReference = (
@@ -85,15 +79,26 @@ const getRuleConfigReferences = (
     ruleName: GithubActionsRuleName,
     rule: Readonly<Rule.RuleModule>
 ): readonly GithubActionsConfigReference[] => {
-    const docs = rule.meta?.docs as GithubActionsRuleDocs | undefined;
+    const docs = isGithubActionsRuleDocs(rule.meta?.docs)
+        ? rule.meta.docs
+        : undefined;
     const references = docs?.configs;
-    const referenceList = Array.isArray(references) ? references : [references];
 
-    if (isEmpty(referenceList) || !isDefined(arrayFirst(referenceList))) {
+    if (!isDefined(references)) {
         return [];
     }
 
-    for (const reference of referenceList) {
+    const rawReferenceList: Readonly<UnknownArray> = Array.isArray(references)
+        ? references
+        : [references];
+
+    if (isEmpty(rawReferenceList) || !isDefined(arrayFirst(rawReferenceList))) {
+        return [];
+    }
+
+    const validatedReferences: GithubActionsConfigReference[] = [];
+
+    for (const reference of rawReferenceList) {
         if (
             typeof reference !== "string" ||
             !isGithubActionsConfigReference(reference)
@@ -102,9 +107,11 @@ const getRuleConfigReferences = (
                 `Rule '${ruleName}' has an invalid config reference '${String(reference)}'.`
             );
         }
+
+        validatedReferences.push(reference);
     }
 
-    return referenceList;
+    return validatedReferences;
 };
 
 /** Strongly typed ESLint rule view of the internal registry. */
@@ -202,25 +209,36 @@ const pluginForConfigs: ESLint.Plugin = {
     rules: githubActionsEslintRules,
 };
 
-/** Create every exported flat-config preset from static metadata. */
-const createGithubActionsConfigsDefinition = (): GithubActionsConfigs => {
-    const configs = {} as GithubActionsConfigs;
+/** Create one exported preset config from static preset metadata. */
+const createGithubActionsPresetConfig = (
+    configName: GithubActionsConfigName
+): GithubActionsPresetConfig => {
+    const metadata = githubActionsConfigMetadataByName[configName];
 
-    for (const configName of githubActionsConfigNames) {
-        const metadata = githubActionsConfigMetadataByName[configName];
-
-        configs[configName] = withGithubActionsPlugin(
-            {
-                files: [...metadata.files],
-                name: metadata.presetName,
-                rules: errorRulesFor(presetRuleNamesByConfig[configName]),
-            },
-            pluginForConfigs
-        );
-    }
-
-    return configs;
+    return withGithubActionsPlugin(
+        {
+            files: [...metadata.files],
+            name: metadata.presetName,
+            rules: errorRulesFor(presetRuleNamesByConfig[configName]),
+        },
+        pluginForConfigs
+    );
 };
+
+/** Create every exported flat-config preset from static metadata. */
+const createGithubActionsConfigsDefinition = (): GithubActionsConfigs => ({
+    actionMetadata: createGithubActionsPresetConfig("actionMetadata"),
+    all: createGithubActionsPresetConfig("all"),
+    codeScanning: createGithubActionsPresetConfig("codeScanning"),
+    dependabot: createGithubActionsPresetConfig("dependabot"),
+    recommended: createGithubActionsPresetConfig("recommended"),
+    security: createGithubActionsPresetConfig("security"),
+    strict: createGithubActionsPresetConfig("strict"),
+    workflowTemplateProperties: createGithubActionsPresetConfig(
+        "workflowTemplateProperties"
+    ),
+    workflowTemplates: createGithubActionsPresetConfig("workflowTemplates"),
+});
 
 /** Finalized typed view of all exported flat-config presets. */
 const githubActionsConfigs: GithubActionsConfigs =
@@ -232,7 +250,7 @@ const githubActionsPlugin: GithubActionsPluginContract = {
     meta: {
         name: "eslint-plugin-github-actions-2",
         namespace: "github-actions",
-        version: getPackageVersion(packageJson),
+        version: PLUGIN_VERSION,
     },
     processors: {},
     rules: githubActionsEslintRules,

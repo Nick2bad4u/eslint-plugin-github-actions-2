@@ -12,6 +12,7 @@ import {
     getDependabotUpdateLabel,
     getEffectiveDependabotUpdateMapping,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -48,9 +49,7 @@ const rule: Rule.RuleModule = {
 
                     if (
                         intervalValue !== "cron" &&
-                        (!isDefined(timeValue) ||
-                            timeValue === null ||
-                            timeValue.length === 0)
+                        (!isDefined(timeValue) || timeValue.length === 0)
                     ) {
                         continue;
                     }
@@ -63,22 +62,17 @@ const rule: Rule.RuleModule = {
                         timezonePair?.value
                     )?.trim();
 
-                    if (
-                        isDefined(timezoneValue) &&
-                        timezoneValue !== null &&
-                        timezoneValue.length > 0
-                    ) {
+                    if (isDefined(timezoneValue) && timezoneValue.length > 0) {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             updateLabel: getDependabotUpdateLabel(update),
                         },
                         messageId: "missingScheduleTimezone",
-                        node: (timezonePair?.value ??
-                            timezonePair ??
-                            update.node) as unknown as Rule.Node,
+                        node:
+                            timezonePair?.value ?? timezonePair ?? update.node,
                     });
                 }
             },

@@ -14,6 +14,7 @@ import {
     getDependabotUpdateEntries,
     getDependabotUpdateLabel,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarNumberValue,
@@ -36,12 +37,12 @@ const checkUpdateEntry = (
 
     if (update.multiEcosystemGroup !== null) {
         if (limitPair !== null) {
-            context.report({
+            reportYamlNode(context, {
                 data: {
                     updateLabel: getDependabotUpdateLabel(update),
                 },
                 messageId: "unsupportedOpenPullRequestsLimitOnGroupedUpdate",
-                node: limitPair.key as unknown as Rule.Node,
+                node: limitPair.key,
             });
         }
 
@@ -57,12 +58,12 @@ const checkUpdateEntry = (
         ) {
             reportedGroupNames.add(update.multiEcosystemGroup);
 
-            context.report({
+            reportYamlNode(context, {
                 data: {
                     groupName: update.multiEcosystemGroup,
                 },
                 messageId: "unsupportedOpenPullRequestsLimitOnGroup",
-                node: groupLimitPair.key as unknown as Rule.Node,
+                node: groupLimitPair.key,
             });
         }
 
@@ -72,14 +73,12 @@ const checkUpdateEntry = (
     const limitValue = getScalarNumberValue(limitPair?.value ?? null);
 
     if (limitValue === null) {
-        context.report({
+        reportYamlNode(context, {
             data: {
                 updateLabel: getDependabotUpdateLabel(update),
             },
             messageId: "missingOpenPullRequestsLimit",
-            node: (limitPair?.value ??
-                limitPair ??
-                update.node) as unknown as Rule.Node,
+            node: limitPair?.value ?? limitPair ?? update.node,
         });
     }
 };

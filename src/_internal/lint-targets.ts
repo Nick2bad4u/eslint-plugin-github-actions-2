@@ -2,7 +2,7 @@
  * @packageDocumentation
  * Shared filename target helpers for action metadata and workflow templates.
  */
-import { basename, extname } from "node:path";
+import path from "node:path";
 
 /** Action metadata file globs. */
 export const ACTION_METADATA_FILE_GLOBS: readonly string[] = [
@@ -143,11 +143,11 @@ export const isWorkflowTemplateFile = (filePath: string): boolean =>
 
 /** Determine whether the path uses `.yaml` (rather than `.yml`). */
 export const usesYamlExtension = (filePath: string): boolean =>
-    extname(filePath).toLowerCase() === ".yaml";
+    path.extname(filePath).toLowerCase() === ".yaml";
 
 /** Return the template basename without extension suffixes. */
 export const getTemplateStem = (filePath: string): string => {
-    const fileName = basename(filePath);
+    const fileName = path.basename(filePath);
 
     if (fileName.endsWith(".properties.json")) {
         return fileName.slice(0, -".properties.json".length);

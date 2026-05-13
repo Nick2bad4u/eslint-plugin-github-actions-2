@@ -6,7 +6,8 @@ import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
-import { getSecretScanningActionSteps } from "../_internal/secret-scanning-workflow.ts";
+import { reportYamlNode } from "../_internal/report.js";
+import { getSecretScanningActionSteps } from "../_internal/secret-scanning-workflow.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -100,10 +101,10 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: { jobId: scanStep.job.id },
                         messageId: "missingFetchDepthZero",
-                        node: scanStep.job.idNode as unknown as Rule.Node,
+                        node: scanStep.job.idNode,
                     });
                 }
             },

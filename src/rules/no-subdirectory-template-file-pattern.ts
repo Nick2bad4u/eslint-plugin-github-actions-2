@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { isWorkflowTemplatePropertiesFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getWorkflowTemplateFilePatternEntries,
     getWorkflowTemplatePropertiesRoot,
@@ -33,12 +34,12 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             pattern: value,
                         },
                         messageId: "subdirectoryTemplateFilePattern",
-                        node: node as unknown as Rule.Node,
+                        node: node,
                     });
                 }
             },

@@ -9,8 +9,9 @@ import { isEmpty } from "ts-extras";
 import {
     getSarifUploadSteps,
     getScorecardSteps,
-} from "../_internal/code-scanning-workflow.ts";
+} from "../_internal/code-scanning-workflow.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for requiring SARIF upload in Scorecard workflows. */
@@ -32,9 +33,9 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     messageId: "missingSarifUpload",
-                    node: node as unknown as Rule.Node,
+                    node: node,
                 });
             },
         };

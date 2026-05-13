@@ -7,6 +7,7 @@ import type { Rule } from "eslint";
 import { setHas } from "ts-extras";
 
 import { isActionMetadataFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -74,13 +75,12 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             stepId,
                         },
                         messageId: "duplicateCompositeStepId",
-                        node: (stepIdPair?.value ??
-                            stepIdPair) as unknown as Rule.Node,
+                        node: stepIdPair?.value ?? stepIdPair,
                     });
                 }
             },

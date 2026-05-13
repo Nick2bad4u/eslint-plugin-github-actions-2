@@ -2,8 +2,8 @@
 // @ts-nocheck
 
 /**
- * @packageDocumentation
- * Synchronize or validate matrix sections in README and docs from plugin metadata.
+ * Synchronize or validate matrix sections in README and docs from plugin
+ * metadata.
  */
 
 import { readFile, writeFile } from "node:fs/promises";

@@ -6,6 +6,7 @@ import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -78,10 +79,9 @@ const rule: Rule.RuleModule = {
                 }
 
                 if (workflowRunMapping?.type !== "YAMLMapping") {
-                    context.report({
+                    reportYamlNode(context, {
                         messageId: "missingBranchFilter",
-                        node: (workflowRunPair.value ??
-                            workflowRunPair) as unknown as Rule.Node,
+                        node: workflowRunPair.value ?? workflowRunPair,
                     });
 
                     return;
@@ -103,9 +103,9 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     messageId: "missingBranchFilter",
-                    node: workflowRunMapping as unknown as Rule.Node,
+                    node: workflowRunMapping,
                 });
             },
         };

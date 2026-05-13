@@ -4,3 +4,6 @@ declare module "remark-lint-directive-unique-attribute-name";
 declare module "remark-lint-heading-whitespace";
 declare module "remark-lint-no-empty-sections";
 declare module "remark-lint-write-good";
+
+// eslint-disable-next-line unicorn/require-module-specifiers -- declaration files need an explicit module marker.
+export {};

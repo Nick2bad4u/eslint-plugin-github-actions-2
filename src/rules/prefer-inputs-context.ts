@@ -8,6 +8,7 @@ import type { AST } from "yaml-eslint-parser";
 import { arrayFirst, safeCastTo, setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getScalarStringValue,
     getWorkflowEventNames,
@@ -95,7 +96,7 @@ const rule: Rule.RuleModule = {
                         return;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         fix: (fixer) => {
                             const originalText = context.sourceCode.text.slice(
                                 arrayFirst(node.range),
@@ -111,7 +112,7 @@ const rule: Rule.RuleModule = {
                                 : fixer.replaceTextRange(node.range, fixedText);
                         },
                         messageId: "preferInputsContext",
-                        node: node as unknown as Rule.Node,
+                        node: node,
                     });
                 });
             },

@@ -3,11 +3,13 @@
  * Require top-level workflow concurrency controls for relevant workflow triggers.
  */
 import type { Rule } from "eslint";
+import type { UnknownArray } from "type-fest";
 import type { AST } from "yaml-eslint-parser";
 
-import { setHas } from "ts-extras";
+import { arrayFirst, isDefined, safeCastTo, setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -26,13 +28,39 @@ const DEFAULT_TRIGGER_EVENTS = [
     "workflow_dispatch",
 ] as const;
 
-/** Rule options for `require-workflow-concurrency`. */
-type RequireWorkflowConcurrencyOptions = [
-    {
-        readonly onlyForEvents?: readonly string[];
-        readonly requireCancelInProgress?: boolean;
-    }?,
-];
+interface RequireWorkflowConcurrencyOption {
+    readonly onlyForEvents?: readonly string[];
+    readonly requireCancelInProgress?: boolean;
+}
+
+/** Determine whether an unknown value is a valid rule option object. */
+const isRequireWorkflowConcurrencyOption = (
+    value: unknown
+): value is RequireWorkflowConcurrencyOption => {
+    if (typeof value !== "object" || value === null) {
+        return false;
+    }
+
+    const onlyForEvents: unknown = Reflect.get(value, "onlyForEvents");
+
+    if (
+        isDefined(onlyForEvents) &&
+        (!Array.isArray(onlyForEvents) ||
+            !onlyForEvents.every((eventName) => typeof eventName === "string"))
+    ) {
+        return false;
+    }
+
+    const requireCancelInProgress: unknown = Reflect.get(
+        value,
+        "requireCancelInProgress"
+    );
+
+    return (
+        !isDefined(requireCancelInProgress) ||
+        typeof requireCancelInProgress === "boolean"
+    );
+};
 
 /**
  * Validate the `cancel-in-progress` key inside a concurrency mapping and report
@@ -48,7 +76,7 @@ const checkCancelInProgress = (
     );
 
     if (cancelInProgressPair === null) {
-        context.report({
+        reportYamlNode(context, {
             messageId: "missingCancelInProgress",
             node: concurrencyMapping,
         });
@@ -64,7 +92,7 @@ const checkCancelInProgress = (
         unwrapYamlValue(cancelInProgressPair.value)?.type !== "YAMLScalar" ||
         cancelInProgressPair.value?.type !== "YAMLScalar"
     ) {
-        context.report({
+        reportYamlNode(context, {
             messageId: "cancelInProgressDisabled",
             node: cancelInProgressPair.value ?? cancelInProgressPair,
         });
@@ -73,7 +101,7 @@ const checkCancelInProgress = (
     }
 
     if (cancelInProgressPair.value.value !== true) {
-        context.report({
+        reportYamlNode(context, {
             messageId: "cancelInProgressDisabled",
             node: cancelInProgressPair.value,
         });
@@ -83,7 +111,12 @@ const checkCancelInProgress = (
 /** Rule implementation for requiring workflow-level concurrency controls. */
 const rule: Rule.RuleModule = {
     create(context) {
-        const [options] = context.options as RequireWorkflowConcurrencyOptions;
+        const rawOption = arrayFirst(
+            safeCastTo<Readonly<UnknownArray>>(context.options)
+        );
+        const options = isRequireWorkflowConcurrencyOption(rawOption)
+            ? rawOption
+            : undefined;
         const requiredTriggerEvents = new Set<string>(
             options?.onlyForEvents ?? DEFAULT_TRIGGER_EVENTS
         );
@@ -114,7 +147,7 @@ const rule: Rule.RuleModule = {
                 const concurrencyPair = getMappingPair(root, "concurrency");
 
                 if (concurrencyPair === null) {
-                    context.report({
+                    reportYamlNode(context, {
                         messageId: "missingConcurrency",
                         node: root,
                     });
@@ -125,7 +158,7 @@ const rule: Rule.RuleModule = {
                 const concurrencyValue = unwrapYamlValue(concurrencyPair.value);
 
                 if (concurrencyValue === null) {
-                    context.report({
+                    reportYamlNode(context, {
                         messageId: "invalidConcurrency",
                         node: concurrencyPair,
                     });
@@ -137,7 +170,7 @@ const rule: Rule.RuleModule = {
                     const groupValue = getScalarStringValue(concurrencyValue);
 
                     if (groupValue === null || groupValue.trim().length === 0) {
-                        context.report({
+                        reportYamlNode(context, {
                             messageId: "invalidConcurrency",
                             node: concurrencyValue,
                         });
@@ -147,7 +180,7 @@ const rule: Rule.RuleModule = {
                 }
 
                 if (concurrencyValue.type !== "YAMLMapping") {
-                    context.report({
+                    reportYamlNode(context, {
                         messageId: "invalidConcurrency",
                         node: concurrencyValue,
                     });
@@ -165,7 +198,7 @@ const rule: Rule.RuleModule = {
                     groupValue === null ||
                     groupValue.trim() === ""
                 ) {
-                    context.report({
+                    reportYamlNode(context, {
                         messageId: "missingGroup",
                         node: groupPair?.key ?? concurrencyValue,
                     });

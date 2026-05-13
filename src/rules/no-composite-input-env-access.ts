@@ -7,6 +7,7 @@ import type { Rule } from "eslint";
 import { isDefined } from "ts-extras";
 
 import { isActionMetadataFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingValueAsMapping,
     getScalarStringValue,
@@ -15,7 +16,7 @@ import {
 import { visitYamlStringScalars } from "../_internal/yaml-traversal.js";
 
 /** Composite-action INPUT_* environment variable reference detector. */
-const inputEnvironmentPattern = /\bINPUT_[\dA-Z_]+\b/g;
+const inputEnvironmentPattern = /\bINPUT_[\dA-Z_]+\b/gv;
 
 /** Rule implementation for composite input access style checks. */
 const rule: Rule.RuleModule = {
@@ -55,12 +56,12 @@ const rule: Rule.RuleModule = {
                         return;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             inputEnvironmentReference: firstMatch,
                         },
                         messageId: "compositeInputEnvAccess",
-                        node: node as unknown as Rule.Node,
+                        node: node,
                     });
                 });
             },

@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -64,13 +65,12 @@ const rule: Rule.RuleModule = {
                         (failFastValue.value === false ||
                             failFastText === "false")
                     ) {
-                        context.report({
+                        reportYamlNode(context, {
                             data: {
                                 jobId: job.id,
                             },
                             messageId: "failFastDisabled",
-                            node: (failFastPair.value ??
-                                failFastPair) as unknown as Rule.Node,
+                            node: failFastPair.value ?? failFastPair,
                         });
                     }
                 }

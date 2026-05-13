@@ -6,6 +6,7 @@ import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsSequence,
@@ -17,8 +18,8 @@ import {
 
 /** Direct secret-access patterns that GitHub discourages in `if` conditionals. */
 const directSecretsPatterns = [
-    /\bsecrets\.\w+\b/u,
-    /\bsecrets\[["'][^"'\]]+["']\]/u,
+    /\bsecrets\.\w+\b/v,
+    /\bsecrets\[["'][^"'\]]+["']\]/v,
 ] as const;
 
 /**
@@ -34,12 +35,12 @@ const reportDirectSecretsConditional = (
     ifPair: Readonly<AST.YAMLPair>,
     scope: string
 ): void => {
-    context.report({
+    reportYamlNode(context, {
         data: {
             scope,
         },
         messageId: "directSecretsInIf",
-        node: ifPair.value as unknown as Rule.Node,
+        node: ifPair.value,
     });
 };
 

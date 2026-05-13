@@ -7,6 +7,7 @@ import type { Rule } from "eslint";
 import { existsSync } from "node:fs";
 
 import { isWorkflowTemplatePropertiesFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getPairedTemplateYamlPaths } from "../_internal/workflow-template-properties.js";
 
 /** Rule implementation for template metadata pair checks. */
@@ -21,17 +22,18 @@ const rule: Rule.RuleModule = {
                 const [pairedYmlPath, pairedYamlPath] =
                     getPairedTemplateYamlPaths(context.filename);
 
+                // eslint-disable-next-line n/no-sync, security/detect-non-literal-fs-filename -- paired template paths are deterministic sibling files derived from the current file path.
                 if (existsSync(pairedYmlPath) || existsSync(pairedYamlPath)) {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     data: {
                         pairedYamlPath,
                         pairedYmlPath,
                     },
                     messageId: "missingTemplateYamlPair",
-                    node: node as unknown as Rule.Node,
+                    node: node,
                 });
             },
         };

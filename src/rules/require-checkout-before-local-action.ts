@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsSequence,
@@ -74,14 +75,13 @@ const rule: Rule.RuleModule = {
                             isLocalActionReference(usesReference) &&
                             !hasSeenCheckout
                         ) {
-                            context.report({
+                            reportYamlNode(context, {
                                 data: {
                                     jobId: job.id,
                                     reference: usesReference,
                                 },
                                 messageId: "missingCheckoutBeforeLocalAction",
-                                node: (usesPair.value ??
-                                    usesPair) as unknown as Rule.Node,
+                                node: usesPair.value ?? usesPair,
                             });
                         }
                     }

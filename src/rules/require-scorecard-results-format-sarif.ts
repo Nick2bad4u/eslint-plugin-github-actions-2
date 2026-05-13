@@ -4,8 +4,9 @@
  */
 import type { Rule } from "eslint";
 
-import { getScorecardSteps } from "../_internal/code-scanning-workflow.ts";
+import { getScorecardSteps } from "../_internal/code-scanning-workflow.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -45,13 +46,14 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: { jobId: step.job.id },
                         messageId: "missingSarifResultsFormat",
-                        node: (formatPair?.value ??
+                        node:
+                            formatPair?.value ??
                             formatPair ??
                             withMapping ??
-                            step.usesPair) as unknown as Rule.Node,
+                            step.usesPair,
                     });
                 }
             },

@@ -7,6 +7,7 @@ import type { Rule } from "eslint";
 import { arrayAt, isDefined, stringSplit } from "ts-extras";
 
 import { isWorkflowTemplatePropertiesFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getWorkflowTemplatePropertiesRoot } from "../_internal/workflow-template-properties.js";
 import {
     getMappingPair,
@@ -44,12 +45,12 @@ const rule: Rule.RuleModule = {
                     -1
                 );
 
-                context.report({
+                reportYamlNode(context, {
                     data: {
                         iconName,
                     },
                     messageId: "iconNameContainsPathSeparator",
-                    node: (iconNameNode ?? node) as unknown as Rule.Node,
+                    node: iconNameNode ?? node,
                     suggest:
                         !isDefined(suggestedIconName) ||
                         suggestedIconName.length === 0 ||

@@ -5,4 +5,4 @@
  * for future test-wide helpers without changing the Vitest config path.
  */
 
-void 0;
+export const __vitestSetupModule = true;

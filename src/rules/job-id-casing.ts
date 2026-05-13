@@ -3,8 +3,16 @@
  * Enforce a consistent naming convention for workflow job identifiers.
  */
 import type { Rule } from "eslint";
+import type { UnknownArray } from "type-fest";
 
-import { arrayIncludes, arrayJoin, isDefined } from "ts-extras";
+import {
+    arrayFirst,
+    arrayIncludes,
+    arrayJoin,
+    isDefined,
+    safeCastTo,
+    setHas,
+} from "ts-extras";
 
 import {
     type GithubActionsNonTitleCasingKind,
@@ -12,6 +20,7 @@ import {
     matchesGithubActionsCasing,
 } from "../_internal/casing.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getWorkflowJobs,
     getWorkflowRoot,
@@ -24,13 +33,25 @@ type JobIdCasingObjectOption = Partial<
     readonly ignores?: readonly string[];
 };
 
-/** Rule options for `job-id-casing`. */
-type JobIdCasingOptions = [
-    (GithubActionsNonTitleCasingKind | JobIdCasingObjectOption)?,
-];
-
 /** Default casing enforced for workflow job ids. */
 const DEFAULT_JOB_ID_CASING: GithubActionsNonTitleCasingKind = "kebab-case";
+const jobIdCasingSet: ReadonlySet<string> = new Set(
+    githubActionsNonTitleCasingKinds
+);
+
+/** Determine whether an unknown value is a valid object option. */
+const isJobIdCasingObjectOption = (
+    value: unknown
+): value is JobIdCasingObjectOption =>
+    typeof value === "object" && value !== null;
+
+/** Determine whether an unknown value is a valid rule option. */
+const isJobIdCasingOption = (
+    value: unknown
+): value is GithubActionsNonTitleCasingKind | JobIdCasingObjectOption =>
+    typeof value === "string"
+        ? setHas(jobIdCasingSet, value)
+        : isJobIdCasingObjectOption(value);
 
 /** Normalize job-id-casing options into allowed casings and ignore patterns. */
 const normalizeJobIdCasingOptions = (
@@ -64,7 +85,10 @@ const normalizeJobIdCasingOptions = (
 /** Rule implementation for enforcing job-id casing. */
 const rule: Rule.RuleModule = {
     create(context) {
-        const [option] = context.options as JobIdCasingOptions;
+        const rawOption = arrayFirst(
+            safeCastTo<Readonly<UnknownArray>>(context.options)
+        );
+        const option = isJobIdCasingOption(rawOption) ? rawOption : undefined;
         const { allowedCasings, ignoredJobIds } = normalizeJobIdCasingOptions(
             option ?? undefined
         );
@@ -92,13 +116,13 @@ const rule: Rule.RuleModule = {
                     );
 
                     if (!matchesAllowedCasing) {
-                        context.report({
+                        reportYamlNode(context, {
                             data: {
                                 caseTypes: arrayJoin(allowedCasings, ", "),
                                 jobId: job.id,
                             },
                             messageId: "jobIdDoesNotMatchCasing",
-                            node: job.idNode as unknown as Rule.Node,
+                            node: job.idNode,
                         });
                     }
                 }

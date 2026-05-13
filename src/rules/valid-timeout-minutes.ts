@@ -3,12 +3,13 @@
  * Validate literal job and step timeout-minutes values.
  */
 import type { Rule } from "eslint";
-import type { UnknownRecord } from "type-fest";
+import type { UnknownArray, UnknownRecord } from "type-fest";
 import type { AST } from "yaml-eslint-parser";
 
-import { isDefined, isInteger, keyIn } from "ts-extras";
+import { arrayFirst, isDefined, isInteger, keyIn, safeCastTo } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -20,21 +21,87 @@ import {
 } from "../_internal/workflow-yaml.js";
 
 /** Timeout range accepted by a timeout validator. */
-type TimeoutRange = {
+interface TimeoutRange {
     readonly max?: number;
     readonly min?: number;
-};
+}
 
 /** Split timeout configuration for jobs and steps. */
-type TimeoutScopeOptions = {
+interface TimeoutScopeOptions {
     readonly job?: number | TimeoutRange;
     readonly step?: number | TimeoutRange;
+}
+
+/** Determine whether an unknown value is a non-null object record. */
+const isUnknownRecord = (value: unknown): value is UnknownRecord =>
+    typeof value === "object" && value !== null;
+
+/** Determine whether an unknown value represents a timeout range. */
+const hasTimeoutRangeKeys = (
+    value: Readonly<UnknownRecord>
+): value is { max?: unknown; min?: unknown } =>
+    keyIn(value, "min") || keyIn(value, "max");
+
+/** Determine whether an unknown value represents timeout scope options. */
+const hasTimeoutScopeKeys = (
+    value: Readonly<UnknownRecord>
+): value is { job?: unknown; step?: unknown } =>
+    keyIn(value, "job") || keyIn(value, "step");
+
+/** Determine whether an unknown value is a valid timeout range object. */
+const hasValidTimeoutRangeFields = (
+    value: Readonly<UnknownRecord>
+): boolean => {
+    if (!hasTimeoutRangeKeys(value)) {
+        return false;
+    }
+
+    const minValue: unknown = Reflect.get(value, "min");
+    const maxValue: unknown = Reflect.get(value, "max");
+
+    return (
+        (!isDefined(minValue) || typeof minValue === "number") &&
+        (!isDefined(maxValue) || typeof maxValue === "number")
+    );
 };
 
-/** Rule options for `valid-timeout-minutes`. */
-type ValidTimeoutMinutesOptions = [
-    (number | TimeoutRange | TimeoutScopeOptions)?,
-];
+/** Determine whether a scoped timeout override candidate is valid. */
+const isValidScopedValue = (candidate: unknown): boolean =>
+    !isDefined(candidate) ||
+    typeof candidate === "number" ||
+    (isUnknownRecord(candidate) && hasValidTimeoutRangeFields(candidate));
+
+/** Determine whether an unknown value is a valid timeout scope option object. */
+const hasValidTimeoutScopeFields = (
+    value: Readonly<UnknownRecord>
+): boolean => {
+    if (!hasTimeoutScopeKeys(value)) {
+        return false;
+    }
+
+    const jobValue: unknown = Reflect.get(value, "job");
+    const stepValue: unknown = Reflect.get(value, "step");
+
+    return isValidScopedValue(jobValue) && isValidScopedValue(stepValue);
+};
+
+/** Determine whether an unknown value is a valid rule option. */
+const isValidTimeoutMinutesOption = (
+    value: unknown
+): value is number | TimeoutRange | TimeoutScopeOptions => {
+    if (typeof value === "number") {
+        return true;
+    }
+
+    if (typeof value !== "object" || value === null) {
+        return false;
+    }
+
+    return (
+        isUnknownRecord(value) &&
+        (hasValidTimeoutRangeFields(value) || hasValidTimeoutScopeFields(value))
+    );
+};
 
 /** Default lower bound for literal timeout-minutes values. */
 const MIN_TIMEOUT_MINUTES = 1;
@@ -72,22 +139,25 @@ const normalizeTimeoutRange = (
 
 /** Determine whether an options value represents a shared timeout range. */
 const isTimeoutRange = (value: unknown): value is TimeoutRange =>
-    typeof value === "object" &&
-    value !== null &&
-    (keyIn(value as UnknownRecord, "min") ||
-        keyIn(value as UnknownRecord, "max"));
+    isUnknownRecord(value) &&
+    hasTimeoutRangeKeys(value) &&
+    hasValidTimeoutRangeFields(value);
 
 /** Determine whether an options value represents split job/step timeout config. */
 const isTimeoutScopeOptions = (value: unknown): value is TimeoutScopeOptions =>
-    typeof value === "object" &&
-    value !== null &&
-    (keyIn(value as UnknownRecord, "job") ||
-        keyIn(value as UnknownRecord, "step"));
+    isUnknownRecord(value) &&
+    hasTimeoutScopeKeys(value) &&
+    hasValidTimeoutScopeFields(value);
 
 /** Rule implementation for validating timeout-minutes ranges. */
 const rule: Rule.RuleModule = {
     create(context) {
-        const [options] = context.options as ValidTimeoutMinutesOptions;
+        const rawOption = arrayFirst(
+            safeCastTo<Readonly<UnknownArray>>(context.options)
+        );
+        const options = isValidTimeoutMinutesOption(rawOption)
+            ? rawOption
+            : undefined;
         const defaultRange = {
             max: DEFAULT_MAX_TIMEOUT_MINUTES,
             min: MIN_TIMEOUT_MINUTES,
@@ -188,14 +258,13 @@ const rule: Rule.RuleModule = {
                         );
 
                         if (validationResult !== null) {
-                            context.report({
+                            reportYamlNode(context, {
                                 data: {
                                     max: String(jobRange.max),
                                     min: String(jobRange.min),
                                 },
                                 messageId: validationResult,
-                                node: (jobTimeoutPair.value ??
-                                    jobTimeoutPair) as unknown as Rule.Node,
+                                node: jobTimeoutPair.value ?? jobTimeoutPair,
                             });
                         }
                     }
@@ -231,14 +300,13 @@ const rule: Rule.RuleModule = {
                         );
 
                         if (validationResult !== null) {
-                            context.report({
+                            reportYamlNode(context, {
                                 data: {
                                     max: String(stepRange.max),
                                     min: String(stepRange.min),
                                 },
                                 messageId: validationResult,
-                                node: (stepTimeoutPair.value ??
-                                    stepTimeoutPair) as unknown as Rule.Node,
+                                node: stepTimeoutPair.value ?? stepTimeoutPair,
                             });
                         }
                     }

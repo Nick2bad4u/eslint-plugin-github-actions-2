@@ -8,6 +8,7 @@ import type { AST } from "yaml-eslint-parser";
 import { isDefined, safeCastTo, setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -22,14 +23,14 @@ import {
  * expressions.
  */
 const needsOutputReferencePattern =
-    /needs\.(?<neededJobId>[A-Z_a-z][\w-]*)\.outputs\.(?<outputName>[A-Z_a-z][\w-]*)/g;
+    /needs\.(?<neededJobId>[A-Z_a-z](?:\w|-)*)\.outputs\.(?<outputName>[A-Z_a-z](?:\w|-)*)/gv;
 
 /**
  * `jobs.<job_id>.outputs.<output_name>` references inside reusable workflow
  * outputs.
  */
 const jobsOutputReferencePattern =
-    /jobs\.(?<jobId>[A-Z_a-z][\w-]*)\.outputs\.(?<outputName>[A-Z_a-z][\w-]*)/g;
+    /jobs\.(?<jobId>[A-Z_a-z](?:\w|-)*)\.outputs\.(?<outputName>[A-Z_a-z](?:\w|-)*)/gv;
 
 /** Visit every string scalar reachable from a YAML value node. */
 const visitStringScalars = (
@@ -209,7 +210,7 @@ const rule: Rule.RuleModule = {
                                         declaredOutputsByJobId.get(jobId);
 
                                     if (!isDefined(declaredOutputNames)) {
-                                        context.report({
+                                        reportYamlNode(context, {
                                             data: {
                                                 jobId,
                                                 reference,
@@ -217,7 +218,7 @@ const rule: Rule.RuleModule = {
                                             },
                                             messageId:
                                                 "unknownReusableWorkflowJob",
-                                            node: node as unknown as Rule.Node,
+                                            node: node,
                                         });
 
                                         continue;
@@ -229,7 +230,7 @@ const rule: Rule.RuleModule = {
                                         continue;
                                     }
 
-                                    context.report({
+                                    reportYamlNode(context, {
                                         data: {
                                             jobId,
                                             outputName,
@@ -238,7 +239,7 @@ const rule: Rule.RuleModule = {
                                         },
                                         messageId:
                                             "unknownReusableWorkflowJobOutput",
-                                        node: node as unknown as Rule.Node,
+                                        node: node,
                                     });
                                 }
                             }
@@ -268,28 +269,28 @@ const rule: Rule.RuleModule = {
                                 declaredOutputsByJobId.get(neededJobId);
 
                             if (!isDefined(declaredOutputNames)) {
-                                context.report({
+                                reportYamlNode(context, {
                                     data: {
                                         currentJobId: job.id,
                                         neededJobId,
                                         reference,
                                     },
                                     messageId: "unknownNeedsJob",
-                                    node: node as unknown as Rule.Node,
+                                    node: node,
                                 });
 
                                 continue;
                             }
 
                             if (!setHas(directNeedsJobIds, neededJobId)) {
-                                context.report({
+                                reportYamlNode(context, {
                                     data: {
                                         currentJobId: job.id,
                                         neededJobId,
                                         reference,
                                     },
                                     messageId: "missingNeedsDependency",
-                                    node: node as unknown as Rule.Node,
+                                    node: node,
                                 });
 
                                 continue;
@@ -299,7 +300,7 @@ const rule: Rule.RuleModule = {
                                 continue;
                             }
 
-                            context.report({
+                            reportYamlNode(context, {
                                 data: {
                                     currentJobId: job.id,
                                     neededJobId,
@@ -307,7 +308,7 @@ const rule: Rule.RuleModule = {
                                     reference,
                                 },
                                 messageId: "unknownNeedsOutput",
-                                node: node as unknown as Rule.Node,
+                                node: node,
                             });
                         }
                     });

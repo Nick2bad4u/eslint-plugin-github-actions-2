@@ -12,6 +12,7 @@ import {
     getDependabotUpdateLabel,
     getEffectiveDependabotUpdateMapping,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -56,22 +57,16 @@ const rule: Rule.RuleModule = {
                         timePair?.value
                     )?.trim();
 
-                    if (
-                        isDefined(timeValue) &&
-                        timeValue !== null &&
-                        timeValue.length > 0
-                    ) {
+                    if (isDefined(timeValue) && timeValue.length > 0) {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             updateLabel: getDependabotUpdateLabel(update),
                         },
                         messageId: "missingScheduleTime",
-                        node: (timePair?.value ??
-                            timePair ??
-                            update.node) as unknown as Rule.Node,
+                        node: timePair?.value ?? timePair ?? update.node,
                     });
                 }
             },

@@ -7,6 +7,7 @@ import type { Rule } from "eslint";
 import { existsSync } from "node:fs";
 
 import { isWorkflowTemplateYamlFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getPairedTemplatePropertiesPath } from "../_internal/workflow-template-properties.js";
 
 /** Rule implementation for workflow-template YAML pair checks. */
@@ -22,16 +23,17 @@ const rule: Rule.RuleModule = {
                     context.filename
                 );
 
+                // eslint-disable-next-line n/no-sync, security/detect-non-literal-fs-filename -- pairedPropertiesPath is derived from repository-local workflow template naming conventions.
                 if (existsSync(pairedPropertiesPath)) {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     data: {
                         pairedPropertiesPath,
                     },
                     messageId: "missingTemplatePropertiesPair",
-                    node: node as unknown as Rule.Node,
+                    node: node,
                 });
             },
         };

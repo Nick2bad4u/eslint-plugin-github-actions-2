@@ -7,8 +7,9 @@ import type { AST } from "yaml-eslint-parser";
 
 import { isEmpty } from "ts-extras";
 
-import { getCodeqlInitSteps } from "../_internal/code-scanning-workflow.ts";
+import { getCodeqlInitSteps } from "../_internal/code-scanning-workflow.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -94,10 +95,10 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: { triggerName },
                         messageId: "missingBranchFilter",
-                        node: triggerMapping as unknown as Rule.Node,
+                        node: triggerMapping,
                     });
                 }
             },

@@ -1,9 +1,6 @@
 #!/usr/bin/env node
 
-/**
- * @packageDocumentation
- * Generate and sync the canonical rules matrix used by README and docs.
- */
+/** Generate and sync the canonical rules matrix used by README and docs. */
 
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -23,19 +20,9 @@ import {
  * }} MatrixRuleDocsMetadata
  */
 
-/**
- * @typedef {{
- *     docs?: unknown;
- *     fixable?: unknown;
- *     hasSuggestions?: unknown;
- * }} MatrixRuleMeta
- */
+/** @typedef {Record<string, unknown>} MatrixRuleMeta */
 
-/**
- * @typedef {{
- *     meta?: unknown;
- * }} MatrixRuleModule
- */
+/** @typedef {Record<string, unknown>} MatrixRuleModule */
 
 /**
  * @typedef {{
@@ -448,7 +435,7 @@ export const generatePresetRulesMatrixFromPlugin = (
 ) => generatePresetRulesMatrixFromRules(plugin.rules, options);
 
 /**
- * @param {{ check?: boolean }} [options]
+ * @param {Record<string, boolean | undefined>} [options]
  *
  * @returns {Promise<void>}
  */

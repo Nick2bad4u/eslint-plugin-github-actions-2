@@ -10,6 +10,7 @@ import {
     getDependabotUpdateLabel,
     getNonEmptyStringSequenceEntries,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for grouped-update pattern requirements. */
@@ -40,14 +41,13 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             updateLabel: getDependabotUpdateLabel(update),
                         },
                         messageId: "missingPatternsForGroupedUpdate",
-                        node: (patternsPair?.value ??
-                            patternsPair ??
-                            update.node) as unknown as Rule.Node,
+                        node:
+                            patternsPair?.value ?? patternsPair ?? update.node,
                     });
                 }
             },

@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { getDependabotRoot } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsSequence,
@@ -34,14 +35,12 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     messageId:
                         updatesPair === null
                             ? "missingDependabotUpdates"
                             : "emptyDependabotUpdates",
-                    node: (updatesPair?.value ??
-                        updatesPair ??
-                        node) as unknown as Rule.Node,
+                    node: updatesPair?.value ?? updatesPair ?? node,
                 });
             },
         };

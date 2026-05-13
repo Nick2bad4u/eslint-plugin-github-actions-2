@@ -5,7 +5,7 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
-import { isDefined } from "ts-extras";
+import { isDefined, setHas } from "ts-extras";
 
 import {
     type DependabotUpdateEntry,
@@ -15,14 +15,15 @@ import {
     getDependabotUpdateLabel,
     getEffectiveDependabotTargetBranch,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 
-type SeenSelectorEntry = {
+interface SeenSelectorEntry {
     readonly directoryNode: AST.YAMLNode;
     readonly directorySelector: string;
     readonly packageEcosystem: string;
     readonly targetBranch: string;
     readonly update: DependabotUpdateEntry;
-};
+}
 
 /** Normalize a directory selector string for stable overlap comparison. */
 const normalizeDirectorySelector = (selector: string): string => {
@@ -39,11 +40,43 @@ const normalizeDirectorySelector = (selector: string): string => {
 
 /** Determine whether a selector contains glob syntax. */
 const hasGlobSyntax = (selector: string): boolean =>
-    /[*?[\]{}]/u.test(selector);
+    selector.includes("*") ||
+    selector.includes("?") ||
+    selector.includes("[") ||
+    selector.includes("]") ||
+    selector.includes("{") ||
+    selector.includes("}");
+
+/** Characters that must be escaped for literal RegExp matching. */
+const regexSpecialCharacters: ReadonlySet<string> = new Set([
+    "$",
+    "(",
+    ")",
+    "*",
+    "+",
+    ".",
+    "?",
+    "[",
+    "\\",
+    "]",
+    "^",
+    "{",
+    "|",
+    "}",
+]);
 
 /** Escape regex-significant characters except glob tokens handled separately. */
-const escapeRegexLiteral = (value: string): string =>
-    value.replaceAll(/[$()+.?[\\\]^{|}]/gu, String.raw`\$&`);
+const escapeRegexLiteral = (value: string): string => {
+    let escapedValue = "";
+
+    for (const character of value) {
+        escapedValue += setHas(regexSpecialCharacters, character)
+            ? `\\${character}`
+            : character;
+    }
+
+    return escapedValue;
+};
 
 /**
  * Convert a conservative subset of glob syntax into a regex for exact-path
@@ -145,7 +178,6 @@ const rule: Rule.RuleModule = {
 
                     if (
                         !isDefined(packageEcosystem) ||
-                        packageEcosystem === null ||
                         packageEcosystem.length === 0
                     ) {
                         continue;
@@ -175,7 +207,7 @@ const rule: Rule.RuleModule = {
                         );
 
                         if (isDefined(overlappingSelector)) {
-                            context.report({
+                            reportYamlNode(context, {
                                 data: {
                                     directorySelector,
                                     otherDirectorySelector:
@@ -188,7 +220,7 @@ const rule: Rule.RuleModule = {
                                         getDependabotUpdateLabel(update),
                                 },
                                 messageId: "overlappingDependabotDirectories",
-                                node: selectorEntry.node as unknown as Rule.Node,
+                                node: selectorEntry.node,
                             });
 
                             continue;

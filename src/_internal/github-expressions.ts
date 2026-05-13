@@ -11,7 +11,7 @@ const isIdentifierStart = (character: string | undefined): boolean => {
         return false;
     }
 
-    return /[A-Z_a-z]/u.test(character);
+    return /[A-Z_a-z]/v.test(character);
 };
 
 /** Determine whether a character can continue a GitHub expression identifier. */
@@ -20,7 +20,7 @@ const isIdentifierContinue = (character: string | undefined): boolean => {
         return false;
     }
 
-    return /[\w-]/u.test(character);
+    return /\w|-/v.test(character);
 };
 
 /** Known root context names available in GitHub Actions expressions. */

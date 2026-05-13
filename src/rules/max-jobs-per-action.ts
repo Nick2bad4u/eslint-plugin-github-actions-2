@@ -3,15 +3,16 @@
  * Enforce an upper bound on the number of jobs declared in one workflow file.
  */
 import type { Rule } from "eslint";
+import type { UnknownArray } from "type-fest";
+
+import { arrayFirst, isFinite, safeCastTo } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingValueAsMapping,
     getWorkflowRoot,
 } from "../_internal/workflow-yaml.js";
-
-/** Rule options for `max-jobs-per-action`. */
-type MaxJobsPerActionOptions = [number?];
 
 /** Default maximum number of jobs allowed in a single workflow file. */
 const DEFAULT_MAX_JOBS = 3;
@@ -19,8 +20,13 @@ const DEFAULT_MAX_JOBS = 3;
 /** Rule implementation for limiting workflow job counts. */
 const rule: Rule.RuleModule = {
     create(context) {
-        const [configuredMaxJobs = DEFAULT_MAX_JOBS] =
-            context.options as MaxJobsPerActionOptions;
+        const rawOption = arrayFirst(
+            safeCastTo<Readonly<UnknownArray>>(context.options)
+        );
+        const configuredMaxJobs =
+            typeof rawOption === "number" && isFinite(rawOption)
+                ? rawOption
+                : DEFAULT_MAX_JOBS;
         const maxJobs =
             configuredMaxJobs >= 1 ? configuredMaxJobs : DEFAULT_MAX_JOBS;
 
@@ -45,13 +51,13 @@ const rule: Rule.RuleModule = {
                 const jobCount = jobsMapping.pairs.length;
 
                 if (jobCount > maxJobs) {
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             count: String(jobCount),
                             limit: String(maxJobs),
                         },
                         messageId: "tooManyJobs",
-                        node: jobsMapping as unknown as Rule.Node,
+                        node: jobsMapping,
                     });
                 }
             },

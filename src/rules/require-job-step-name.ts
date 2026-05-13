@@ -8,6 +8,7 @@ import type { AST } from "yaml-eslint-parser";
 import { arrayFirst, isDefined, stringSplit } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsSequence,
@@ -107,10 +108,10 @@ const checkStepEntry = (
         const firstStepPair = arrayFirst(stepMapping.pairs);
         const firstStepKeyNode = firstStepPair?.key;
 
-        context.report({
+        reportYamlNode(context, {
             data: { jobId },
             messageId: "missingStepName",
-            node: stepMapping as unknown as Rule.Node,
+            node: stepMapping,
             suggest:
                 !isDefined(suggestedStepName) ||
                 firstStepKeyNode === null ||
@@ -132,10 +133,10 @@ const checkStepEntry = (
     if (nameValue === null || nameValue.trim().length === 0) {
         const nameValueNode = namePair.value;
 
-        context.report({
+        reportYamlNode(context, {
             data: { jobId },
             messageId: "invalidStepName",
-            node: (namePair.value ?? namePair) as unknown as Rule.Node,
+            node: namePair.value ?? namePair,
             suggest:
                 !isDefined(suggestedStepName) || nameValueNode === null
                     ? undefined

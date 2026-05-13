@@ -23,7 +23,8 @@ const codeqlLanguageAliases = new Set([
     "typescript",
 ]);
 
-const matrixLanguageExpression = `\${{ matrix.language }}`;
+const dollarSign = String.fromCodePoint(36);
+const matrixLanguageExpression = `${dollarSign}{{ matrix.language }}`;
 
 /** Determine whether a `uses` reference points to a specific CodeQL action step. */
 const isCodeqlActionReference = (

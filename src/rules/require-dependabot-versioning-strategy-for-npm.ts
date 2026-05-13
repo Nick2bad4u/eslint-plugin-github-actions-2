@@ -10,6 +10,7 @@ import {
     getDependabotUpdateEntries,
     getDependabotUpdateLabel,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for npm versioning strategy requirements. */
@@ -41,14 +42,13 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             updateLabel: getDependabotUpdateLabel(update),
                         },
                         messageId: "missingVersioningStrategy",
-                        node: (strategyPair?.value ??
-                            strategyPair ??
-                            update.node) as unknown as Rule.Node,
+                        node:
+                            strategyPair?.value ?? strategyPair ?? update.node,
                     });
                 }
             },

@@ -8,6 +8,7 @@ import {
     isWorkflowTemplatePropertiesFile,
     isWorkflowTemplateYamlFile,
 } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 import { visitYamlStringScalars } from "../_internal/yaml-traversal.js";
 
@@ -38,9 +39,9 @@ const rule: Rule.RuleModule = {
                         return;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         messageId: "templatePlaceholderOutsideTemplate",
-                        node: node as unknown as Rule.Node,
+                        node: node,
                     });
                 });
             },

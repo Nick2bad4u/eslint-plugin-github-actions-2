@@ -6,8 +6,9 @@ import type { Rule } from "eslint";
 
 import { isEmpty, setHas } from "ts-extras";
 
-import { getCodeqlInitSteps } from "../_internal/code-scanning-workflow.ts";
+import { getCodeqlInitSteps } from "../_internal/code-scanning-workflow.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getWorkflowEventNames,
     getWorkflowRoot,
@@ -32,9 +33,9 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     messageId: "missingScheduleTrigger",
-                    node: node as unknown as Rule.Node,
+                    node: node,
                 });
             },
         };

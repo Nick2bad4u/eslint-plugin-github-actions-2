@@ -6,6 +6,7 @@ import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -52,12 +53,12 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             jobId: job.id,
                         },
                         messageId: "inheritedSecrets",
-                        node: secretsPair.value as unknown as Rule.Node,
+                        node: secretsPair.value,
                     });
                 }
             },

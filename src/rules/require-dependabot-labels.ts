@@ -11,6 +11,7 @@ import {
     getEffectiveDependabotUpdateValue,
     getNonEmptyStringSequenceEntries,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 
 /** Rule implementation for requiring effective labels. */
 const rule: Rule.RuleModule = {
@@ -36,13 +37,12 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             updateLabel: getDependabotUpdateLabel(update),
                         },
                         messageId: "missingLabels",
-                        node: (labelsValue ??
-                            update.node) as unknown as Rule.Node,
+                        node: labelsValue ?? update.node,
                     });
                 }
             },

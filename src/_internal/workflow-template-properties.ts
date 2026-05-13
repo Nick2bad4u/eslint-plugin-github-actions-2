@@ -6,7 +6,7 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
-import { dirname, join } from "node:path";
+import path from "node:path";
 import { isDefined } from "ts-extras";
 
 import {
@@ -72,12 +72,12 @@ export const getPairedTemplatePropertiesPath = (filePath: string): string => {
 export const getPairedTemplateYamlPaths = (
     filePath: string
 ): readonly [string, string] => {
-    const fileDirectory = dirname(filePath);
+    const fileDirectory = path.dirname(filePath);
     const fileName = filePath.slice(fileDirectory.length + 1);
     const stem = fileName.slice(0, -".properties.json".length);
 
     return [
-        join(fileDirectory, `${stem}.yml`),
-        join(fileDirectory, `${stem}.yaml`),
+        path.join(fileDirectory, `${stem}.yml`),
+        path.join(fileDirectory, `${stem}.yaml`),
     ];
 };

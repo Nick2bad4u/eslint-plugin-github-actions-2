@@ -8,6 +8,7 @@ import type { AST } from "yaml-eslint-parser";
 import { isDefined, safeCastTo } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsSequence,
@@ -19,7 +20,7 @@ import {
 
 /** Step context references using property dereference syntax. */
 const stepReferencePattern =
-    /steps\.(?<stepId>[A-Z_a-z][\w-]*)\.(?:outputs\.[A-Z_a-z][\w-]*|conclusion|outcome)/g;
+    /steps\.(?<stepId>[A-Z_a-z](?:\w|-)*)\.(?:outputs\.[A-Z_a-z](?:\w|-)*|conclusion|outcome)/gv;
 
 /**
  * Visit every string scalar in a job, tracking the current step index when
@@ -146,14 +147,14 @@ const rule: Rule.RuleModule = {
                                     stepIndexById.get(stepId);
 
                                 if (!isDefined(referencedStepIndex)) {
-                                    context.report({
+                                    reportYamlNode(context, {
                                         data: {
                                             jobId: job.id,
                                             reference,
                                             stepId,
                                         },
                                         messageId: "unknownStepReference",
-                                        node: node as unknown as Rule.Node,
+                                        node: node,
                                     });
 
                                     continue;
@@ -166,7 +167,7 @@ const rule: Rule.RuleModule = {
                                     continue;
                                 }
 
-                                context.report({
+                                reportYamlNode(context, {
                                     data: {
                                         jobId: job.id,
                                         reference,
@@ -174,7 +175,7 @@ const rule: Rule.RuleModule = {
                                     },
                                     messageId:
                                         "stepReferenceBeforeAvailability",
-                                    node: node as unknown as Rule.Node,
+                                    node: node,
                                 });
                             }
                         }

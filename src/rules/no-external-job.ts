@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getWorkflowJobs,
@@ -33,13 +34,12 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             jobId: job.id,
                         },
                         messageId: "externalJob",
-                        node: (usesPair.value ??
-                            usesPair) as unknown as Rule.Node,
+                        node: usesPair.value ?? usesPair,
                     });
                 }
             },

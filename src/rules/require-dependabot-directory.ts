@@ -13,6 +13,7 @@ import {
     getDependabotUpdateLabel,
     getNonEmptyStringSequenceEntries,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -24,11 +25,7 @@ const hasNonEmptyDirectory = (
 ): boolean => {
     const directoryValue = getScalarStringValue(value)?.trim();
 
-    return (
-        isDefined(directoryValue) &&
-        directoryValue !== null &&
-        directoryValue.length > 0
-    );
+    return isDefined(directoryValue) && directoryValue.length > 0;
 };
 
 /** Rule implementation for requiring `directory` or `directories`. */
@@ -63,7 +60,7 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             updateLabel: getDependabotUpdateLabel(update),
                         },
@@ -71,9 +68,7 @@ const rule: Rule.RuleModule = {
                             hasDirectory && hasDirectories
                                 ? "conflictingDirectorySettings"
                                 : "missingDirectorySetting",
-                        node: (directoriesPair ??
-                            directoryPair ??
-                            update.node) as unknown as Rule.Node,
+                        node: directoriesPair ?? directoryPair ?? update.node,
                     });
                 }
             },

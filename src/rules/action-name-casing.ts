@@ -3,9 +3,16 @@
  * Enforce a consistent naming convention for workflow names.
  */
 import type { Rule } from "eslint";
-import type { AST } from "yaml-eslint-parser";
+import type { UnknownArray } from "type-fest";
 
-import { arrayIncludes, arrayJoin, isDefined, safeCastTo } from "ts-extras";
+import {
+    arrayFirst,
+    arrayIncludes,
+    arrayJoin,
+    isDefined,
+    safeCastTo,
+    setHas,
+} from "ts-extras";
 
 import {
     convertToGithubActionsCasing,
@@ -14,6 +21,7 @@ import {
     matchesGithubActionsCasing,
 } from "../_internal/casing.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -28,13 +36,25 @@ type ActionNameCasingObjectOption = Partial<
     readonly ignores?: readonly string[];
 };
 
-/** Rule options for `action-name-casing`. */
-type ActionNameCasingOptions = [
-    (ActionNameCasingObjectOption | GithubActionsCasingKind)?,
-];
-
 /** Default casing enforced for workflow names. */
 const DEFAULT_ACTION_NAME_CASING: GithubActionsCasingKind = "Title Case";
+const actionNameCasingSet: ReadonlySet<string> = new Set(
+    githubActionsCasingKinds
+);
+
+/** Determine whether an unknown value is a valid object option. */
+const isActionNameCasingObjectOption = (
+    value: unknown
+): value is ActionNameCasingObjectOption =>
+    typeof value === "object" && value !== null;
+
+/** Determine whether an unknown value is a valid rule option. */
+const isActionNameCasingOption = (
+    value: unknown
+): value is ActionNameCasingObjectOption | GithubActionsCasingKind =>
+    typeof value === "string"
+        ? setHas(actionNameCasingSet, value)
+        : isActionNameCasingObjectOption(value);
 
 /**
  * Normalize action-name-casing options into allowed casings and ignore
@@ -71,7 +91,12 @@ const normalizeActionNameCasingOptions = (
 /** Rule implementation for enforcing workflow-name casing. */
 const rule: Rule.RuleModule = {
     create(context) {
-        const [option] = context.options as ActionNameCasingOptions;
+        const rawOption = arrayFirst(
+            safeCastTo<Readonly<UnknownArray>>(context.options)
+        );
+        const option = isActionNameCasingOption(rawOption)
+            ? rawOption
+            : undefined;
         const { allowedCasings, ignoredNames } =
             normalizeActionNameCasingOptions(option ?? undefined);
 
@@ -108,7 +133,7 @@ const rule: Rule.RuleModule = {
                 if (!matchesAllowedCasing) {
                     const [firstAllowedCasing] = allowedCasings;
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             caseTypes: arrayJoin(allowedCasings, ", "),
                             name: nameValue,
@@ -126,9 +151,7 @@ const rule: Rule.RuleModule = {
                                       )
                                 : undefined,
                         messageId: "nameDoesNotMatchCasing",
-                        node: safeCastTo<AST.YAMLNode>(
-                            nameNode
-                        ) as unknown as Rule.Node,
+                        node: nameNode,
                     });
                 }
             },

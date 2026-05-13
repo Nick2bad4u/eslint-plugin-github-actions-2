@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { isWorkflowTemplateYamlFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -33,9 +34,9 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                context.report({
+                reportYamlNode(context, {
                     messageId: "missingTemplateWorkflowName",
-                    node: (namePair ?? node) as unknown as Rule.Node,
+                    node: namePair ?? node,
                 });
             },
         };

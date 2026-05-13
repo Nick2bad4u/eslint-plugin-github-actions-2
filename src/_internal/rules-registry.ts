@@ -4,121 +4,329 @@
  */
 import type { Rule } from "eslint";
 
-import actionNameCasing from "../rules/action-name-casing.js";
-import jobIdCasing from "../rules/job-id-casing.js";
-import maxJobsPerAction from "../rules/max-jobs-per-action.js";
-import noCaseInsensitiveInputIdCollision from "../rules/no-case-insensitive-input-id-collision.js";
-import noCodeqlAutobuildForJavaScriptTypeScript from "../rules/no-codeql-autobuild-for-javascript-typescript.js";
-import noCodeqlJavascriptTypeScriptSplitLanguageMatrix from "../rules/no-codeql-javascript-typescript-split-language-matrix.js";
-import noCompositeInputEnvAccess from "../rules/no-composite-input-env-access.js";
-import noDeprecatedNodeRuntime from "../rules/no-deprecated-node-runtime.js";
-import noDuplicateCompositeStepId from "../rules/no-duplicate-composite-step-id.js";
-import noEmptyTemplateFilePattern from "../rules/no-empty-template-file-pattern.js";
-import noExternalJob from "../rules/no-external-job.js";
-import noHardcodedDefaultBranchInTemplate from "../rules/no-hardcoded-default-branch-in-template.js";
-import noIconFileExtensionInTemplateIconName from "../rules/no-icon-file-extension-in-template-icon-name.js";
-import noInheritSecrets from "../rules/no-inherit-secrets.js";
-import noInvalidConcurrencyContext from "../rules/no-invalid-concurrency-context.js";
-import noInvalidKey from "../rules/no-invalid-key.js";
-import noInvalidReusableWorkflowJobKey from "../rules/no-invalid-reusable-workflow-job-key.js";
-import noInvalidTemplateFilePatternRegex from "../rules/no-invalid-template-file-pattern-regex.js";
-import noInvalidWorkflowCallOutputValue from "../rules/no-invalid-workflow-call-output-value.js";
-import noOverlappingDependabotDirectories from "../rules/no-overlapping-dependabot-directories.js";
-import noPathSeparatorsInTemplateIconName from "../rules/no-path-separators-in-template-icon-name.js";
-import noPostIfWithoutPost from "../rules/no-post-if-without-post.js";
-import noPrHeadCheckoutInPullRequestTarget from "../rules/no-pr-head-checkout-in-pull-request-target.js";
-import noPreIfWithoutPre from "../rules/no-pre-if-without-pre.js";
-import noRequiredInputWithDefault from "../rules/no-required-input-with-default.js";
-import noSecretsInIf from "../rules/no-secrets-in-if.js";
-import noSelfHostedRunnerOnForkPrEvents from "../rules/no-self-hosted-runner-on-fork-pr-events.js";
-import noSubdirectoryTemplateFilePattern from "../rules/no-subdirectory-template-file-pattern.js";
-import noTemplatePlaceholderInNonTemplateWorkflow from "../rules/no-template-placeholder-in-non-template-workflow.js";
-import noTopLevelEnv from "../rules/no-top-level-env.js";
-import noTopLevelPermissions from "../rules/no-top-level-permissions.js";
-import noUniversalTemplateFilePattern from "../rules/no-universal-template-file-pattern.js";
-import noUnknownDependabotMultiEcosystemGroup from "../rules/no-unknown-dependabot-multi-ecosystem-group.js";
-import noUnknownInputReferenceInComposite from "../rules/no-unknown-input-reference-in-composite.js";
-import noUnknownJobOutputReference from "../rules/no-unknown-job-output-reference.js";
-import noUnknownStepReference from "../rules/no-unknown-step-reference.js";
-import noUntrustedInputInRun from "../rules/no-untrusted-input-in-run.js";
-import noUnusedDependabotEnableBetaEcosystems from "../rules/no-unused-dependabot-enable-beta-ecosystems.js";
-import noUnusedInputInComposite from "../rules/no-unused-input-in-composite.js";
-import noWriteAllPermissions from "../rules/no-write-all-permissions.js";
-import pinActionShas from "../rules/pin-action-shas.js";
-import preferActionYml from "../rules/prefer-action-yml.js";
-import preferFailFast from "../rules/prefer-fail-fast.js";
-import preferFileExtension from "../rules/prefer-file-extension.js";
-import preferInputsContext from "../rules/prefer-inputs-context.js";
-import preferStepUsesStyle from "../rules/prefer-step-uses-style.js";
-import preferTemplateYmlExtension from "../rules/prefer-template-yml-extension.js";
-import requireActionName from "../rules/require-action-name.js";
-import requireActionRunName from "../rules/require-action-run-name.js";
-import requireCheckoutBeforeLocalAction from "../rules/require-checkout-before-local-action.js";
-import requireCodeqlActionsRead from "../rules/require-codeql-actions-read.js";
-import requireCodeqlBranchFilters from "../rules/require-codeql-branch-filters.js";
-import requireCodeqlCategoryWhenLanguageMatrix from "../rules/require-codeql-category-when-language-matrix.js";
-import requireCodeqlPullRequestTrigger from "../rules/require-codeql-pull-request-trigger.js";
-import requireCodeqlSchedule from "../rules/require-codeql-schedule.js";
-import requireCodeqlSecurityEventsWrite from "../rules/require-codeql-security-events-write.js";
-import requireCompositeStepName from "../rules/require-composite-step-name.js";
-import requireDependabotAssignees from "../rules/require-dependabot-assignees.js";
-import requireDependabotAutomationPermissions from "../rules/require-dependabot-automation-permissions.js";
-import requireDependabotAutomationPullRequestTrigger from "../rules/require-dependabot-automation-pull-request-trigger.js";
-import requireDependabotBotActorGuard from "../rules/require-dependabot-bot-actor-guard.js";
-import requireDependabotCommitMessageIncludeScope from "../rules/require-dependabot-commit-message-include-scope.js";
-import requireDependabotCommitMessagePrefixDevelopment from "../rules/require-dependabot-commit-message-prefix-development.js";
-import requireDependabotCommitMessagePrefix from "../rules/require-dependabot-commit-message-prefix.js";
-import requireDependabotCooldown from "../rules/require-dependabot-cooldown.js";
-import requireDependabotDirectory from "../rules/require-dependabot-directory.js";
-import requireDependabotGithubActionsDirectoryRoot from "../rules/require-dependabot-github-actions-directory-root.js";
-import requireDependabotLabels from "../rules/require-dependabot-labels.js";
-import requireDependabotOpenPullRequestsLimit from "../rules/require-dependabot-open-pull-requests-limit.js";
-import requireDependabotPackageEcosystem from "../rules/require-dependabot-package-ecosystem.js";
-import requireDependabotPatternsForMultiEcosystemGroup from "../rules/require-dependabot-patterns-for-multi-ecosystem-group.js";
-import requireDependabotScheduleCronjob from "../rules/require-dependabot-schedule-cronjob.js";
-import requireDependabotScheduleInterval from "../rules/require-dependabot-schedule-interval.js";
-import requireDependabotScheduleTime from "../rules/require-dependabot-schedule-time.js";
-import requireDependabotScheduleTimezone from "../rules/require-dependabot-schedule-timezone.js";
-import requireDependabotTargetBranch from "../rules/require-dependabot-target-branch.js";
-import requireDependabotUpdates from "../rules/require-dependabot-updates.js";
-import requireDependabotVersion from "../rules/require-dependabot-version.js";
-import requireDependabotVersioningStrategyForNpm from "../rules/require-dependabot-versioning-strategy-for-npm.js";
-import requireDependencyReviewAction from "../rules/require-dependency-review-action.js";
-import requireDependencyReviewFailOnSeverity from "../rules/require-dependency-review-fail-on-severity.js";
-import requireDependencyReviewPermissionsContentsRead from "../rules/require-dependency-review-permissions-contents-read.js";
-import requireDependencyReviewPullRequestTrigger from "../rules/require-dependency-review-pull-request-trigger.js";
-import requireFetchMetadataGithubToken from "../rules/require-fetch-metadata-github-token.js";
-import requireJobName from "../rules/require-job-name.js";
-import requireJobStepName from "../rules/require-job-step-name.js";
-import requireJobTimeoutMinutes from "../rules/require-job-timeout-minutes.js";
-import requireMergeGroupTrigger from "../rules/require-merge-group-trigger.js";
-import requirePullRequestTargetBranches from "../rules/require-pull-request-target-branches.js";
-import requireRunStepShell from "../rules/require-run-step-shell.js";
-import requireRunStepTimeout from "../rules/require-run-step-timeout.js";
-import requireSarifUploadSecurityEventsWrite from "../rules/require-sarif-upload-security-events-write.js";
-import requireScorecardResultsFormatSarif from "../rules/require-scorecard-results-format-sarif.js";
-import requireScorecardUploadSarifStep from "../rules/require-scorecard-upload-sarif-step.js";
-import requireSecretScanContentsRead from "../rules/require-secret-scan-contents-read.js";
-import requireSecretScanFetchDepthZero from "../rules/require-secret-scan-fetch-depth-zero.js";
-import requireSecretScanSchedule from "../rules/require-secret-scan-schedule.js";
-import requireTemplateCategories from "../rules/require-template-categories.js";
-import requireTemplateFilePatterns from "../rules/require-template-file-patterns.js";
-import requireTemplateIconFileExists from "../rules/require-template-icon-file-exists.js";
-import requireTemplateIconName from "../rules/require-template-icon-name.js";
-import requireTemplateWorkflowName from "../rules/require-template-workflow-name.js";
-import requireTriggerTypes from "../rules/require-trigger-types.js";
-import requireTrufflehogVerifiedResultsMode from "../rules/require-trufflehog-verified-results-mode.js";
-import requireWorkflowCallInputType from "../rules/require-workflow-call-input-type.js";
-import requireWorkflowCallOutputValue from "../rules/require-workflow-call-output-value.js";
-import requireWorkflowConcurrency from "../rules/require-workflow-concurrency.js";
-import requireWorkflowDispatchInputType from "../rules/require-workflow-dispatch-input-type.js";
-import requireWorkflowInterfaceDescription from "../rules/require-workflow-interface-description.js";
-import requireWorkflowPermissions from "../rules/require-workflow-permissions.js";
-import requireWorkflowRunBranches from "../rules/require-workflow-run-branches.js";
-import requireWorkflowTemplatePair from "../rules/require-workflow-template-pair.js";
-import requireWorkflowTemplatePropertiesPair from "../rules/require-workflow-template-properties-pair.js";
-import validTimeoutMinutes from "../rules/valid-timeout-minutes.js";
-import validTriggerEvents from "../rules/valid-trigger-events.js";
+import * as actionNameCasingModule from "../rules/action-name-casing.js";
+import * as jobIdCasingModule from "../rules/job-id-casing.js";
+import * as maxJobsPerActionModule from "../rules/max-jobs-per-action.js";
+import * as noCaseInsensitiveInputIdCollisionModule from "../rules/no-case-insensitive-input-id-collision.js";
+import * as noCodeqlAutobuildForJavaScriptTypeScriptModule from "../rules/no-codeql-autobuild-for-javascript-typescript.js";
+import * as noCodeqlJavascriptTypeScriptSplitLanguageMatrixModule from "../rules/no-codeql-javascript-typescript-split-language-matrix.js";
+import * as noCompositeInputEnvAccessModule from "../rules/no-composite-input-env-access.js";
+import * as noDeprecatedNodeRuntimeModule from "../rules/no-deprecated-node-runtime.js";
+import * as noDuplicateCompositeStepIdModule from "../rules/no-duplicate-composite-step-id.js";
+import * as noEmptyTemplateFilePatternModule from "../rules/no-empty-template-file-pattern.js";
+import * as noExternalJobModule from "../rules/no-external-job.js";
+import * as noHardcodedDefaultBranchInTemplateModule from "../rules/no-hardcoded-default-branch-in-template.js";
+import * as noIconFileExtensionInTemplateIconNameModule from "../rules/no-icon-file-extension-in-template-icon-name.js";
+import * as noInheritSecretsModule from "../rules/no-inherit-secrets.js";
+import * as noInvalidConcurrencyContextModule from "../rules/no-invalid-concurrency-context.js";
+import * as noInvalidKeyModule from "../rules/no-invalid-key.js";
+import * as noInvalidReusableWorkflowJobKeyModule from "../rules/no-invalid-reusable-workflow-job-key.js";
+import * as noInvalidTemplateFilePatternRegexModule from "../rules/no-invalid-template-file-pattern-regex.js";
+import * as noInvalidWorkflowCallOutputValueModule from "../rules/no-invalid-workflow-call-output-value.js";
+import * as noOverlappingDependabotDirectoriesModule from "../rules/no-overlapping-dependabot-directories.js";
+import * as noPathSeparatorsInTemplateIconNameModule from "../rules/no-path-separators-in-template-icon-name.js";
+import * as noPostIfWithoutPostModule from "../rules/no-post-if-without-post.js";
+import * as noPrHeadCheckoutInPullRequestTargetModule from "../rules/no-pr-head-checkout-in-pull-request-target.js";
+import * as noPreIfWithoutPreModule from "../rules/no-pre-if-without-pre.js";
+import * as noRequiredInputWithDefaultModule from "../rules/no-required-input-with-default.js";
+import * as noSecretsInIfModule from "../rules/no-secrets-in-if.js";
+import * as noSelfHostedRunnerOnForkPrEventsModule from "../rules/no-self-hosted-runner-on-fork-pr-events.js";
+import * as noSubdirectoryTemplateFilePatternModule from "../rules/no-subdirectory-template-file-pattern.js";
+import * as noTemplatePlaceholderInNonTemplateWorkflowModule from "../rules/no-template-placeholder-in-non-template-workflow.js";
+import * as noTopLevelEnvModule from "../rules/no-top-level-env.js";
+import * as noTopLevelPermissionsModule from "../rules/no-top-level-permissions.js";
+import * as noUniversalTemplateFilePatternModule from "../rules/no-universal-template-file-pattern.js";
+import * as noUnknownDependabotMultiEcosystemGroupModule from "../rules/no-unknown-dependabot-multi-ecosystem-group.js";
+import * as noUnknownInputReferenceInCompositeModule from "../rules/no-unknown-input-reference-in-composite.js";
+import * as noUnknownJobOutputReferenceModule from "../rules/no-unknown-job-output-reference.js";
+import * as noUnknownStepReferenceModule from "../rules/no-unknown-step-reference.js";
+import * as noUntrustedInputInRunModule from "../rules/no-untrusted-input-in-run.js";
+import * as noUnusedDependabotEnableBetaEcosystemsModule from "../rules/no-unused-dependabot-enable-beta-ecosystems.js";
+import * as noUnusedInputInCompositeModule from "../rules/no-unused-input-in-composite.js";
+import * as noWriteAllPermissionsModule from "../rules/no-write-all-permissions.js";
+import * as pinActionShasModule from "../rules/pin-action-shas.js";
+import * as preferActionYmlModule from "../rules/prefer-action-yml.js";
+import * as preferFailFastModule from "../rules/prefer-fail-fast.js";
+import * as preferFileExtensionModule from "../rules/prefer-file-extension.js";
+import * as preferInputsContextModule from "../rules/prefer-inputs-context.js";
+import * as preferStepUsesStyleModule from "../rules/prefer-step-uses-style.js";
+import * as preferTemplateYmlExtensionModule from "../rules/prefer-template-yml-extension.js";
+import * as requireActionNameModule from "../rules/require-action-name.js";
+import * as requireActionRunNameModule from "../rules/require-action-run-name.js";
+import * as requireCheckoutBeforeLocalActionModule from "../rules/require-checkout-before-local-action.js";
+import * as requireCodeqlActionsReadModule from "../rules/require-codeql-actions-read.js";
+import * as requireCodeqlBranchFiltersModule from "../rules/require-codeql-branch-filters.js";
+import * as requireCodeqlCategoryWhenLanguageMatrixModule from "../rules/require-codeql-category-when-language-matrix.js";
+import * as requireCodeqlPullRequestTriggerModule from "../rules/require-codeql-pull-request-trigger.js";
+import * as requireCodeqlScheduleModule from "../rules/require-codeql-schedule.js";
+import * as requireCodeqlSecurityEventsWriteModule from "../rules/require-codeql-security-events-write.js";
+import * as requireCompositeStepNameModule from "../rules/require-composite-step-name.js";
+import * as requireDependabotAssigneesModule from "../rules/require-dependabot-assignees.js";
+import * as requireDependabotAutomationPermissionsModule from "../rules/require-dependabot-automation-permissions.js";
+import * as requireDependabotAutomationPullRequestTriggerModule from "../rules/require-dependabot-automation-pull-request-trigger.js";
+import * as requireDependabotBotActorGuardModule from "../rules/require-dependabot-bot-actor-guard.js";
+import * as requireDependabotCommitMessageIncludeScopeModule from "../rules/require-dependabot-commit-message-include-scope.js";
+import * as requireDependabotCommitMessagePrefixDevelopmentModule from "../rules/require-dependabot-commit-message-prefix-development.js";
+import * as requireDependabotCommitMessagePrefixModule from "../rules/require-dependabot-commit-message-prefix.js";
+import * as requireDependabotCooldownModule from "../rules/require-dependabot-cooldown.js";
+import * as requireDependabotDirectoryModule from "../rules/require-dependabot-directory.js";
+import * as requireDependabotGithubActionsDirectoryRootModule from "../rules/require-dependabot-github-actions-directory-root.js";
+import * as requireDependabotLabelsModule from "../rules/require-dependabot-labels.js";
+import * as requireDependabotOpenPullRequestsLimitModule from "../rules/require-dependabot-open-pull-requests-limit.js";
+import * as requireDependabotPackageEcosystemModule from "../rules/require-dependabot-package-ecosystem.js";
+import * as requireDependabotPatternsForMultiEcosystemGroupModule from "../rules/require-dependabot-patterns-for-multi-ecosystem-group.js";
+import * as requireDependabotScheduleCronjobModule from "../rules/require-dependabot-schedule-cronjob.js";
+import * as requireDependabotScheduleIntervalModule from "../rules/require-dependabot-schedule-interval.js";
+import * as requireDependabotScheduleTimeModule from "../rules/require-dependabot-schedule-time.js";
+import * as requireDependabotScheduleTimezoneModule from "../rules/require-dependabot-schedule-timezone.js";
+import * as requireDependabotTargetBranchModule from "../rules/require-dependabot-target-branch.js";
+import * as requireDependabotUpdatesModule from "../rules/require-dependabot-updates.js";
+import * as requireDependabotVersionModule from "../rules/require-dependabot-version.js";
+import * as requireDependabotVersioningStrategyForNpmModule from "../rules/require-dependabot-versioning-strategy-for-npm.js";
+import * as requireDependencyReviewActionModule from "../rules/require-dependency-review-action.js";
+import * as requireDependencyReviewFailOnSeverityModule from "../rules/require-dependency-review-fail-on-severity.js";
+import * as requireDependencyReviewPermissionsContentsReadModule from "../rules/require-dependency-review-permissions-contents-read.js";
+import * as requireDependencyReviewPullRequestTriggerModule from "../rules/require-dependency-review-pull-request-trigger.js";
+import * as requireFetchMetadataGithubTokenModule from "../rules/require-fetch-metadata-github-token.js";
+import * as requireJobNameModule from "../rules/require-job-name.js";
+import * as requireJobStepNameModule from "../rules/require-job-step-name.js";
+import * as requireJobTimeoutMinutesModule from "../rules/require-job-timeout-minutes.js";
+import * as requireMergeGroupTriggerModule from "../rules/require-merge-group-trigger.js";
+import * as requirePullRequestTargetBranchesModule from "../rules/require-pull-request-target-branches.js";
+import * as requireRunStepShellModule from "../rules/require-run-step-shell.js";
+import * as requireRunStepTimeoutModule from "../rules/require-run-step-timeout.js";
+import * as requireSarifUploadSecurityEventsWriteModule from "../rules/require-sarif-upload-security-events-write.js";
+import * as requireScorecardResultsFormatSarifModule from "../rules/require-scorecard-results-format-sarif.js";
+import * as requireScorecardUploadSarifStepModule from "../rules/require-scorecard-upload-sarif-step.js";
+import * as requireSecretScanContentsReadModule from "../rules/require-secret-scan-contents-read.js";
+import * as requireSecretScanFetchDepthZeroModule from "../rules/require-secret-scan-fetch-depth-zero.js";
+import * as requireSecretScanScheduleModule from "../rules/require-secret-scan-schedule.js";
+import * as requireTemplateCategoriesModule from "../rules/require-template-categories.js";
+import * as requireTemplateFilePatternsModule from "../rules/require-template-file-patterns.js";
+import * as requireTemplateIconFileExistsModule from "../rules/require-template-icon-file-exists.js";
+import * as requireTemplateIconNameModule from "../rules/require-template-icon-name.js";
+import * as requireTemplateWorkflowNameModule from "../rules/require-template-workflow-name.js";
+import * as requireTriggerTypesModule from "../rules/require-trigger-types.js";
+import * as requireTrufflehogVerifiedResultsModeModule from "../rules/require-trufflehog-verified-results-mode.js";
+import * as requireWorkflowCallInputTypeModule from "../rules/require-workflow-call-input-type.js";
+import * as requireWorkflowCallOutputValueModule from "../rules/require-workflow-call-output-value.js";
+import * as requireWorkflowConcurrencyModule from "../rules/require-workflow-concurrency.js";
+import * as requireWorkflowDispatchInputTypeModule from "../rules/require-workflow-dispatch-input-type.js";
+import * as requireWorkflowInterfaceDescriptionModule from "../rules/require-workflow-interface-description.js";
+import * as requireWorkflowPermissionsModule from "../rules/require-workflow-permissions.js";
+import * as requireWorkflowRunBranchesModule from "../rules/require-workflow-run-branches.js";
+import * as requireWorkflowTemplatePairModule from "../rules/require-workflow-template-pair.js";
+import * as requireWorkflowTemplatePropertiesPairModule from "../rules/require-workflow-template-properties-pair.js";
+import * as validTimeoutMinutesModule from "../rules/valid-timeout-minutes.js";
+import * as validTriggerEventsModule from "../rules/valid-trigger-events.js";
+
+const actionNameCasing: Rule.RuleModule = actionNameCasingModule.default;
+const jobIdCasing: Rule.RuleModule = jobIdCasingModule.default;
+const maxJobsPerAction: Rule.RuleModule = maxJobsPerActionModule.default;
+const noCaseInsensitiveInputIdCollision: Rule.RuleModule =
+    noCaseInsensitiveInputIdCollisionModule.default;
+const noCodeqlAutobuildForJavaScriptTypeScript: Rule.RuleModule =
+    noCodeqlAutobuildForJavaScriptTypeScriptModule.default;
+const noCodeqlJavascriptTypeScriptSplitLanguageMatrix: Rule.RuleModule =
+    noCodeqlJavascriptTypeScriptSplitLanguageMatrixModule.default;
+const noCompositeInputEnvAccess: Rule.RuleModule =
+    noCompositeInputEnvAccessModule.default;
+const noDeprecatedNodeRuntime: Rule.RuleModule =
+    noDeprecatedNodeRuntimeModule.default;
+const noDuplicateCompositeStepId: Rule.RuleModule =
+    noDuplicateCompositeStepIdModule.default;
+const noEmptyTemplateFilePattern: Rule.RuleModule =
+    noEmptyTemplateFilePatternModule.default;
+const noExternalJob: Rule.RuleModule = noExternalJobModule.default;
+const noHardcodedDefaultBranchInTemplate: Rule.RuleModule =
+    noHardcodedDefaultBranchInTemplateModule.default;
+const noIconFileExtensionInTemplateIconName: Rule.RuleModule =
+    noIconFileExtensionInTemplateIconNameModule.default;
+const noInheritSecrets: Rule.RuleModule = noInheritSecretsModule.default;
+const noInvalidConcurrencyContext: Rule.RuleModule =
+    noInvalidConcurrencyContextModule.default;
+const noInvalidKey: Rule.RuleModule = noInvalidKeyModule.default;
+const noInvalidReusableWorkflowJobKey: Rule.RuleModule =
+    noInvalidReusableWorkflowJobKeyModule.default;
+const noInvalidTemplateFilePatternRegex: Rule.RuleModule =
+    noInvalidTemplateFilePatternRegexModule.default;
+const noInvalidWorkflowCallOutputValue: Rule.RuleModule =
+    noInvalidWorkflowCallOutputValueModule.default;
+const noOverlappingDependabotDirectories: Rule.RuleModule =
+    noOverlappingDependabotDirectoriesModule.default;
+const noPathSeparatorsInTemplateIconName: Rule.RuleModule =
+    noPathSeparatorsInTemplateIconNameModule.default;
+const noPostIfWithoutPost: Rule.RuleModule = noPostIfWithoutPostModule.default;
+const noPrHeadCheckoutInPullRequestTarget: Rule.RuleModule =
+    noPrHeadCheckoutInPullRequestTargetModule.default;
+const noPreIfWithoutPre: Rule.RuleModule = noPreIfWithoutPreModule.default;
+const noRequiredInputWithDefault: Rule.RuleModule =
+    noRequiredInputWithDefaultModule.default;
+const noSecretsInIf: Rule.RuleModule = noSecretsInIfModule.default;
+const noSelfHostedRunnerOnForkPrEvents: Rule.RuleModule =
+    noSelfHostedRunnerOnForkPrEventsModule.default;
+const noSubdirectoryTemplateFilePattern: Rule.RuleModule =
+    noSubdirectoryTemplateFilePatternModule.default;
+const noTemplatePlaceholderInNonTemplateWorkflow: Rule.RuleModule =
+    noTemplatePlaceholderInNonTemplateWorkflowModule.default;
+const noTopLevelEnv: Rule.RuleModule = noTopLevelEnvModule.default;
+const noTopLevelPermissions: Rule.RuleModule =
+    noTopLevelPermissionsModule.default;
+const noUniversalTemplateFilePattern: Rule.RuleModule =
+    noUniversalTemplateFilePatternModule.default;
+const noUnknownDependabotMultiEcosystemGroup: Rule.RuleModule =
+    noUnknownDependabotMultiEcosystemGroupModule.default;
+const noUnknownInputReferenceInComposite: Rule.RuleModule =
+    noUnknownInputReferenceInCompositeModule.default;
+const noUnknownJobOutputReference: Rule.RuleModule =
+    noUnknownJobOutputReferenceModule.default;
+const noUnknownStepReference: Rule.RuleModule =
+    noUnknownStepReferenceModule.default;
+const noUntrustedInputInRun: Rule.RuleModule =
+    noUntrustedInputInRunModule.default;
+const noUnusedDependabotEnableBetaEcosystems: Rule.RuleModule =
+    noUnusedDependabotEnableBetaEcosystemsModule.default;
+const noUnusedInputInComposite: Rule.RuleModule =
+    noUnusedInputInCompositeModule.default;
+const noWriteAllPermissions: Rule.RuleModule =
+    noWriteAllPermissionsModule.default;
+const pinActionShas: Rule.RuleModule = pinActionShasModule.default;
+const preferActionYml: Rule.RuleModule = preferActionYmlModule.default;
+const preferFailFast: Rule.RuleModule = preferFailFastModule.default;
+const preferFileExtension: Rule.RuleModule = preferFileExtensionModule.default;
+const preferInputsContext: Rule.RuleModule = preferInputsContextModule.default;
+const preferStepUsesStyle: Rule.RuleModule = preferStepUsesStyleModule.default;
+const preferTemplateYmlExtension: Rule.RuleModule =
+    preferTemplateYmlExtensionModule.default;
+const requireActionName: Rule.RuleModule = requireActionNameModule.default;
+const requireActionRunName: Rule.RuleModule =
+    requireActionRunNameModule.default;
+const requireCheckoutBeforeLocalAction: Rule.RuleModule =
+    requireCheckoutBeforeLocalActionModule.default;
+const requireCodeqlActionsRead: Rule.RuleModule =
+    requireCodeqlActionsReadModule.default;
+const requireCodeqlBranchFilters: Rule.RuleModule =
+    requireCodeqlBranchFiltersModule.default;
+const requireCodeqlCategoryWhenLanguageMatrix: Rule.RuleModule =
+    requireCodeqlCategoryWhenLanguageMatrixModule.default;
+const requireCodeqlPullRequestTrigger: Rule.RuleModule =
+    requireCodeqlPullRequestTriggerModule.default;
+const requireCodeqlSchedule: Rule.RuleModule =
+    requireCodeqlScheduleModule.default;
+const requireCodeqlSecurityEventsWrite: Rule.RuleModule =
+    requireCodeqlSecurityEventsWriteModule.default;
+const requireCompositeStepName: Rule.RuleModule =
+    requireCompositeStepNameModule.default;
+const requireDependabotAssignees: Rule.RuleModule =
+    requireDependabotAssigneesModule.default;
+const requireDependabotAutomationPermissions: Rule.RuleModule =
+    requireDependabotAutomationPermissionsModule.default;
+const requireDependabotAutomationPullRequestTrigger: Rule.RuleModule =
+    requireDependabotAutomationPullRequestTriggerModule.default;
+const requireDependabotBotActorGuard: Rule.RuleModule =
+    requireDependabotBotActorGuardModule.default;
+const requireDependabotCommitMessageIncludeScope: Rule.RuleModule =
+    requireDependabotCommitMessageIncludeScopeModule.default;
+const requireDependabotCommitMessagePrefixDevelopment: Rule.RuleModule =
+    requireDependabotCommitMessagePrefixDevelopmentModule.default;
+const requireDependabotCommitMessagePrefix: Rule.RuleModule =
+    requireDependabotCommitMessagePrefixModule.default;
+const requireDependabotCooldown: Rule.RuleModule =
+    requireDependabotCooldownModule.default;
+const requireDependabotDirectory: Rule.RuleModule =
+    requireDependabotDirectoryModule.default;
+const requireDependabotGithubActionsDirectoryRoot: Rule.RuleModule =
+    requireDependabotGithubActionsDirectoryRootModule.default;
+const requireDependabotLabels: Rule.RuleModule =
+    requireDependabotLabelsModule.default;
+const requireDependabotOpenPullRequestsLimit: Rule.RuleModule =
+    requireDependabotOpenPullRequestsLimitModule.default;
+const requireDependabotPackageEcosystem: Rule.RuleModule =
+    requireDependabotPackageEcosystemModule.default;
+const requireDependabotPatternsForMultiEcosystemGroup: Rule.RuleModule =
+    requireDependabotPatternsForMultiEcosystemGroupModule.default;
+const requireDependabotScheduleCronjob: Rule.RuleModule =
+    requireDependabotScheduleCronjobModule.default;
+const requireDependabotScheduleInterval: Rule.RuleModule =
+    requireDependabotScheduleIntervalModule.default;
+const requireDependabotScheduleTime: Rule.RuleModule =
+    requireDependabotScheduleTimeModule.default;
+const requireDependabotScheduleTimezone: Rule.RuleModule =
+    requireDependabotScheduleTimezoneModule.default;
+const requireDependabotTargetBranch: Rule.RuleModule =
+    requireDependabotTargetBranchModule.default;
+const requireDependabotUpdates: Rule.RuleModule =
+    requireDependabotUpdatesModule.default;
+const requireDependabotVersion: Rule.RuleModule =
+    requireDependabotVersionModule.default;
+const requireDependabotVersioningStrategyForNpm: Rule.RuleModule =
+    requireDependabotVersioningStrategyForNpmModule.default;
+const requireDependencyReviewAction: Rule.RuleModule =
+    requireDependencyReviewActionModule.default;
+const requireDependencyReviewFailOnSeverity: Rule.RuleModule =
+    requireDependencyReviewFailOnSeverityModule.default;
+const requireDependencyReviewPermissionsContentsRead: Rule.RuleModule =
+    requireDependencyReviewPermissionsContentsReadModule.default;
+const requireDependencyReviewPullRequestTrigger: Rule.RuleModule =
+    requireDependencyReviewPullRequestTriggerModule.default;
+const requireFetchMetadataGithubToken: Rule.RuleModule =
+    requireFetchMetadataGithubTokenModule.default;
+const requireJobName: Rule.RuleModule = requireJobNameModule.default;
+const requireJobStepName: Rule.RuleModule = requireJobStepNameModule.default;
+const requireJobTimeoutMinutes: Rule.RuleModule =
+    requireJobTimeoutMinutesModule.default;
+const requireMergeGroupTrigger: Rule.RuleModule =
+    requireMergeGroupTriggerModule.default;
+const requirePullRequestTargetBranches: Rule.RuleModule =
+    requirePullRequestTargetBranchesModule.default;
+const requireRunStepShell: Rule.RuleModule = requireRunStepShellModule.default;
+const requireRunStepTimeout: Rule.RuleModule =
+    requireRunStepTimeoutModule.default;
+const requireSarifUploadSecurityEventsWrite: Rule.RuleModule =
+    requireSarifUploadSecurityEventsWriteModule.default;
+const requireScorecardResultsFormatSarif: Rule.RuleModule =
+    requireScorecardResultsFormatSarifModule.default;
+const requireScorecardUploadSarifStep: Rule.RuleModule =
+    requireScorecardUploadSarifStepModule.default;
+const requireSecretScanContentsRead: Rule.RuleModule =
+    requireSecretScanContentsReadModule.default;
+const requireSecretScanFetchDepthZero: Rule.RuleModule =
+    requireSecretScanFetchDepthZeroModule.default;
+const requireSecretScanSchedule: Rule.RuleModule =
+    requireSecretScanScheduleModule.default;
+const requireTemplateCategories: Rule.RuleModule =
+    requireTemplateCategoriesModule.default;
+const requireTemplateFilePatterns: Rule.RuleModule =
+    requireTemplateFilePatternsModule.default;
+const requireTemplateIconFileExists: Rule.RuleModule =
+    requireTemplateIconFileExistsModule.default;
+const requireTemplateIconName: Rule.RuleModule =
+    requireTemplateIconNameModule.default;
+const requireTemplateWorkflowName: Rule.RuleModule =
+    requireTemplateWorkflowNameModule.default;
+const requireTriggerTypes: Rule.RuleModule = requireTriggerTypesModule.default;
+const requireTrufflehogVerifiedResultsMode: Rule.RuleModule =
+    requireTrufflehogVerifiedResultsModeModule.default;
+const requireWorkflowCallInputType: Rule.RuleModule =
+    requireWorkflowCallInputTypeModule.default;
+const requireWorkflowCallOutputValue: Rule.RuleModule =
+    requireWorkflowCallOutputValueModule.default;
+const requireWorkflowConcurrency: Rule.RuleModule =
+    requireWorkflowConcurrencyModule.default;
+const requireWorkflowDispatchInputType: Rule.RuleModule =
+    requireWorkflowDispatchInputTypeModule.default;
+const requireWorkflowInterfaceDescription: Rule.RuleModule =
+    requireWorkflowInterfaceDescriptionModule.default;
+const requireWorkflowPermissions: Rule.RuleModule =
+    requireWorkflowPermissionsModule.default;
+const requireWorkflowRunBranches: Rule.RuleModule =
+    requireWorkflowRunBranchesModule.default;
+const requireWorkflowTemplatePair: Rule.RuleModule =
+    requireWorkflowTemplatePairModule.default;
+const requireWorkflowTemplatePropertiesPair: Rule.RuleModule =
+    requireWorkflowTemplatePropertiesPairModule.default;
+const validTimeoutMinutes: Rule.RuleModule = validTimeoutMinutesModule.default;
+const validTriggerEvents: Rule.RuleModule = validTriggerEventsModule.default;
 
 /** Strongly typed plugin rule registry keyed by unqualified rule name. */
 const githubActionsRulesDefinition: {

@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -23,9 +24,9 @@ const rule: Rule.RuleModule = {
                 const root = getWorkflowRoot(context);
 
                 if (root === null) {
-                    context.report({
+                    reportYamlNode(context, {
                         messageId: "missingName",
-                        node: node as unknown as Rule.Node,
+                        node: node,
                     });
 
                     return;
@@ -34,9 +35,9 @@ const rule: Rule.RuleModule = {
                 const namePair = getMappingPair(root, "name");
 
                 if (namePair === null) {
-                    context.report({
+                    reportYamlNode(context, {
                         messageId: "missingName",
-                        node: root as unknown as Rule.Node,
+                        node: root,
                     });
 
                     return;
@@ -45,10 +46,9 @@ const rule: Rule.RuleModule = {
                 const nameValue = getScalarStringValue(namePair.value);
 
                 if (nameValue === null || nameValue.trim().length === 0) {
-                    context.report({
+                    reportYamlNode(context, {
                         messageId: "invalidName",
-                        node: (namePair.value ??
-                            namePair) as unknown as Rule.Node,
+                        node: namePair.value ?? namePair,
                     });
                 }
             },

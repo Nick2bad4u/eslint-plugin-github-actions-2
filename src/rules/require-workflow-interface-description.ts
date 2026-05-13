@@ -6,6 +6,7 @@ import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getMappingValueAsMapping,
@@ -31,13 +32,13 @@ const checkInterfaceDescriptions = (
         const descriptionPair = getMappingPair(entryMapping, "description");
 
         if (descriptionPair === null) {
-            context.report({
+            reportYamlNode(context, {
                 data: {
                     kind,
                     name,
                 },
                 messageId: "missingDescription",
-                node: pair.key as unknown as Rule.Node,
+                node: pair.key,
             });
 
             continue;
@@ -46,14 +47,13 @@ const checkInterfaceDescriptions = (
         const descriptionValue = getScalarStringValue(descriptionPair.value);
 
         if (descriptionValue === null || descriptionValue.trim().length === 0) {
-            context.report({
+            reportYamlNode(context, {
                 data: {
                     kind,
                     name,
                 },
                 messageId: "invalidDescription",
-                node: (descriptionPair.value ??
-                    descriptionPair) as unknown as Rule.Node,
+                node: descriptionPair.value ?? descriptionPair,
             });
         }
     }

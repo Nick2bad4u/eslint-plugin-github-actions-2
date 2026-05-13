@@ -10,12 +10,12 @@ import type { WorkflowJobEntry } from "./workflow-yaml.js";
 import { getWorkflowActionSteps } from "./workflow-action-steps.js";
 
 /** Workflow step using the dependency review action. */
-export type DependencyReviewActionStep = {
+export interface DependencyReviewActionStep {
     readonly job: WorkflowJobEntry;
     readonly stepMapping: AST.YAMLMapping;
     readonly usesPair: AST.YAMLPair;
     readonly usesReference: string;
-};
+}
 
 /** Determine whether a `uses` reference points to the dependency review action. */
 export const isDependencyReviewActionReference = (

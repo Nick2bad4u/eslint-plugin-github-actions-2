@@ -7,6 +7,7 @@ import type { Rule } from "eslint";
 import { isDefined, setHas } from "ts-extras";
 
 import { isActionMetadataFile } from "../_internal/lint-targets.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingValueAsMapping,
     getScalarStringValue,
@@ -18,7 +19,7 @@ import { visitYamlStringScalars } from "../_internal/yaml-traversal.js";
  * Pattern for extracting `inputs.<input_id>` references from expression-like
  * strings.
  */
-const inputReferencePattern = /inputs\.(?<inputId>[^\s.\]}]+)/g;
+const inputReferencePattern = /inputs\.(?<inputId>(?:\w|-)+)/gv;
 
 /** Rule implementation for unknown composite input references. */
 const rule: Rule.RuleModule = {
@@ -43,9 +44,7 @@ const rule: Rule.RuleModule = {
 
                 const usingRuntime = getScalarStringValue(
                     runsMapping.pairs.find(
-                        (pair) =>
-                            pair !== null &&
-                            getScalarStringValue(pair.key) === "using"
+                        (pair) => getScalarStringValue(pair.key) === "using"
                     )?.value
                 );
 
@@ -77,12 +76,12 @@ const rule: Rule.RuleModule = {
                             continue;
                         }
 
-                        context.report({
+                        reportYamlNode(context, {
                             data: {
                                 inputId,
                             },
                             messageId: "unknownInputReference",
-                            node: node as unknown as Rule.Node,
+                            node: node,
                         });
                     }
                 });

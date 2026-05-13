@@ -15,20 +15,20 @@ import {
 } from "./workflow-yaml.js";
 
 /** Workflow step using an external action via `uses`. */
-export type WorkflowActionStep = {
+export interface WorkflowActionStep {
     readonly job: WorkflowJobEntry;
     readonly stepMapping: AST.YAMLMapping;
     readonly usesPair: AST.YAMLPair;
     readonly usesReference: string;
-};
+}
 
 /** Workflow step running a shell script via `run`. */
-export type WorkflowRunStep = {
+export interface WorkflowRunStep {
     readonly job: WorkflowJobEntry;
     readonly runPair: AST.YAMLPair;
     readonly runScript: string;
     readonly stepMapping: AST.YAMLMapping;
-};
+}
 
 /**
  * Collect workflow steps using actions whose `uses` reference matches a

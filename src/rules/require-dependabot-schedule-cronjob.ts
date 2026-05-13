@@ -12,6 +12,7 @@ import {
     getDependabotUpdateLabel,
     getEffectiveDependabotUpdateMapping,
 } from "../_internal/dependabot-yaml.js";
+import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -53,42 +54,34 @@ const rule: Rule.RuleModule = {
                     if (intervalValue === "cron") {
                         if (
                             isDefined(cronjobValue) &&
-                            cronjobValue !== null &&
                             cronjobValue.length > 0
                         ) {
                             continue;
                         }
 
-                        context.report({
+                        reportYamlNode(context, {
                             data: {
                                 updateLabel: getDependabotUpdateLabel(update),
                             },
                             messageId: "missingCronjob",
-                            node: (cronjobValueNode ??
-                                cronjobPair ??
-                                update.node) as unknown as Rule.Node,
+                            node:
+                                cronjobValueNode ?? cronjobPair ?? update.node,
                         });
 
                         continue;
                     }
 
-                    if (
-                        !isDefined(cronjobValue) ||
-                        cronjobValue === null ||
-                        cronjobValue.length === 0
-                    ) {
+                    if (!isDefined(cronjobValue) || cronjobValue.length === 0) {
                         continue;
                     }
 
-                    context.report({
+                    reportYamlNode(context, {
                         data: {
                             intervalValue: intervalValue ?? "(missing)",
                             updateLabel: getDependabotUpdateLabel(update),
                         },
                         messageId: "unexpectedCronjob",
-                        node: (cronjobValueNode ??
-                            cronjobPair ??
-                            update.node) as unknown as Rule.Node,
+                        node: cronjobValueNode ?? cronjobPair ?? update.node,
                     });
                 }
             },

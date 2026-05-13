@@ -18,10 +18,10 @@ export const githubActionsCasingKinds = [
     "camelCase",
     "kebab-case",
     "PascalCase",
+    "SCREAMING_SNAKE_CASE",
     "snake_case",
     "Title Case",
     "Train-Case",
-    "SCREAMING_SNAKE_CASE",
 ] as const;
 
 /** String literal union of supported naming conventions. */
@@ -32,9 +32,9 @@ export const githubActionsNonTitleCasingKinds = [
     "camelCase",
     "kebab-case",
     "PascalCase",
+    "SCREAMING_SNAKE_CASE",
     "snake_case",
     "Train-Case",
-    "SCREAMING_SNAKE_CASE",
 ] as const;
 
 /** String literal union of supported non-title casing conventions. */
@@ -124,10 +124,10 @@ const capitalizeWord = (word: string): string =>
         : `${word[0]?.toUpperCase() ?? ""}${word.slice(1)}`;
 
 /** Case-police dictionary match shape keyed by collapsed word tokens. */
-type CasePoliceDictionaryMatch = {
+interface CasePoliceDictionaryMatch {
     readonly canonical: string;
     readonly tokenCount: number;
-};
+}
 
 /** Index case-police entries by collapsed key and track longest token span. */
 const buildCasePoliceDictionaryIndex = (): {
@@ -302,7 +302,7 @@ export const convertToGithubActionsCasing = (
         case "Train-Case": {
             return arrayJoin(
                 titleSegments
-                    .flatMap((segment) => segment.match(/\S+/gu) ?? [])
+                    .flatMap((segment) => segment.match(/\S+/gv) ?? [])
                     .filter((segment) => segment.length > 0),
                 "-"
             );
