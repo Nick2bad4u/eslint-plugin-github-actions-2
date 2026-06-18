@@ -8,5 +8,6 @@ description = "Ignore generated TypeDoc JSON output"
 paths = [
     '''^docs/docusaurus/build/''',
     '''^docs/docusaurus/docs/typedoc\.json$''',
+    '''^docs/docusaurus/site-docs/developer/api/''',
     '''^docs/typedoc\.json$''',
 ]

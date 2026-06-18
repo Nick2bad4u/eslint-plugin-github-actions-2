@@ -119,7 +119,7 @@
         "madge:circular": "madge --circular --no-spinner --ts-config tsconfig.json --extensions ts,tsx,js,jsx,mjs,cjs,cts,mts ./src --exclude \"(^|[\\/])(test|dist|node_modules|cache|.cache|coverage|build|eslint-inspector|temp|.docusaurus)($|[\\/])|\\.css$\"",
         "prepublishOnly": "npm run release:verify",
         "release:check": "npm run release:verify",
-        "release:verify": "npm run build && npm run lint:all && npm run lint:package-check && npm run typecheck && npm run test && npm run docs:build && npm pack --dry-run",
+        "release:verify": "npm run build && npm run docs:api && npm run lint:all && npm run lint:package-check && npm run typecheck && npm run test && npm run docs:build && npm pack --dry-run",
         "remark:fix": "remark --rc-path .remarkrc.mjs --silently-ignore --ignore-path .remarkignore --frail --quiet --output -- \"*.{md,mdx}\" \"docs/**/*.{md,mdx}\"",
         "sync:node-version-files": "node scripts/sync-node-version-files.mjs",
         "sync:peer-eslint-range": "node scripts/sync-peer-eslint-range.mjs",
