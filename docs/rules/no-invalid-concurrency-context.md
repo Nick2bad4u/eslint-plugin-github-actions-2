@@ -21,53 +21,52 @@ Concurrency is evaluated before steps run, so step-only and runner-time contexts
 
 ```yaml
 concurrency:
-  group: deploy-${{ secrets.ENVIRONMENT }}
-  cancel-in-progress: true
+ group: deploy-${{ secrets.ENVIRONMENT }}
+ cancel-in-progress: true
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    concurrency:
-      group: deploy-${{ steps.meta.outputs.lock }}
-    steps:
-      - id: meta
-        run: echo "lock=prod" >> "$GITHUB_OUTPUT"
+ deploy:
+  runs-on: ubuntu-latest
+  concurrency:
+   group: deploy-${{ steps.meta.outputs.lock }}
+  steps:
+   - id: meta
+     run: echo "lock=prod" >> "$GITHUB_OUTPUT"
 ```
 
 ## ✅ Correct
 
 ```yaml
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: Deployment target
-        required: true
-        type: string
+ workflow_dispatch:
+  inputs:
+   environment:
+    description: Deployment target
+    required: true
+    type: string
 
 concurrency:
-  group: deploy-${{ github.workflow }}-${{ inputs.environment }}
-  cancel-in-progress: true
+ group: deploy-${{ github.workflow }}-${{ inputs.environment }}
+ cancel-in-progress: true
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    outputs:
-      lock: ${{ steps.meta.outputs.lock }}
-    steps:
-      - id: meta
-        run: echo "lock=prod" >> "$GITHUB_OUTPUT"
+ build:
+  runs-on: ubuntu-latest
+  outputs:
+   lock: ${{ steps.meta.outputs.lock }}
+  steps:
+   - id: meta
+     run: echo "lock=prod" >> "$GITHUB_OUTPUT"
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    concurrency:
-      group: deploy-${{ needs.build.outputs.lock }}
-      cancel-in-progress: ${{ inputs.environment == 'prod' }}
-    steps:
-      - run: echo "Deploying"
+ deploy:
+  needs: build
+  runs-on: ubuntu-latest
+  concurrency:
+   group: deploy-${{ needs.build.outputs.lock }}
+   cancel-in-progress: ${{ inputs.environment == 'prod' }}
+  steps:
+   - run: echo "Deploying"
 ```
-
 
 ## Additional examples
 
@@ -79,21 +78,22 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/no-invalid-concurrency-context": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/no-invalid-concurrency-context": "error",
+  },
+ },
 ];
 ```
 
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
 - [https://docs.github.com/actions/reference/workflows-and-actions/workflow-syntax#concurrency](https://docs.github.com/actions/reference/workflows-and-actions/workflow-syntax#concurrency)

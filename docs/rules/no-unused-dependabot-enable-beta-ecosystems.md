@@ -20,10 +20,10 @@ GitHub currently documents `enable-beta-ecosystems` as "not currently in use." K
 version: 2
 enable-beta-ecosystems: true
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
 ```
 
 ## ✅ Correct
@@ -31,10 +31,10 @@ updates:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
 ```
 
 ## Behavior and migration notes

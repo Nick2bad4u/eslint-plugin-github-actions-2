@@ -2,11 +2,11 @@
 slug: maintainer-workflow-baseline
 title: Maintainer workflow baseline
 authors:
-  - nick2bad4u
+ - nick2bad4u
 tags:
-  - maintainers
-  - workflow
-  - quality
+ - maintainers
+ - workflow
+ - quality
 ---
 
 To keep contributions predictable and high-signal, our baseline maintainer loop is:

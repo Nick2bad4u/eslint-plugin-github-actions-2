@@ -18,22 +18,22 @@ Scheduled CodeQL runs catch newly added queries, engine improvements, and baseli
 
 ```yaml
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+ push:
+  branches: [main]
+ pull_request:
+  branches: [main]
 ```
 
 ## ✅ Correct
 
 ```yaml
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  schedule:
-    - cron: "0 0 * * 1"
+ push:
+  branches: [main]
+ pull_request:
+  branches: [main]
+ schedule:
+  - cron: "0 0 * * 1"
 ```
 
 ## Additional examples

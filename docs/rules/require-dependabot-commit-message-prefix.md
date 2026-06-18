@@ -19,12 +19,12 @@ Dependabot commit messages also shape pull request titles. Requiring a prefix ke
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      time: "05:30"
-      timezone: "UTC"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
+    time: "05:30"
+    timezone: "UTC"
 ```
 
 ## ✅ Correct
@@ -32,14 +32,14 @@ updates:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      time: "05:30"
-      timezone: "UTC"
-    commit-message:
-      prefix: "deps"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
+    time: "05:30"
+    timezone: "UTC"
+   commit-message:
+    prefix: "deps"
 ```
 
 ## Additional examples

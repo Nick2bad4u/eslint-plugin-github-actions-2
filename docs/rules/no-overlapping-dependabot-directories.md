@@ -24,30 +24,30 @@ GitHub recommends avoiding overlapping directory definitions when you split one 
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
 
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
 ```
 
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directories:
-      - "/packages/*"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directories:
+    - "/packages/*"
+   schedule:
+    interval: "weekly"
 
-  - package-ecosystem: "npm"
-    directory: "/packages/app"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/packages/app"
+   schedule:
+    interval: "weekly"
 ```
 
 ## ✅ Correct
@@ -55,15 +55,15 @@ updates:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
 
-  - package-ecosystem: "npm"
-    directory: "/docs/docusaurus"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/docs/docusaurus"
+   schedule:
+    interval: "weekly"
 ```
 
 ## Additional examples

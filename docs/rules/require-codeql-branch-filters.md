@@ -18,18 +18,18 @@ Code scanning on every branch may be intentional, but for most repositories Code
 
 ```yaml
 on:
-  push: {}
-  pull_request: {}
+ push: {}
+ pull_request: {}
 ```
 
 ## ✅ Correct
 
 ```yaml
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+ push:
+  branches: [main]
+ pull_request:
+  branches: [main]
 ```
 
 ## Additional examples

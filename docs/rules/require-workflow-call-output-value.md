@@ -18,23 +18,22 @@ Reusable workflow outputs are part of the public interface exposed to callers. G
 
 ```yaml
 on:
-  workflow_call:
-    outputs:
-      deployment-url:
-        description: Published deployment URL
+ workflow_call:
+  outputs:
+   deployment-url:
+    description: Published deployment URL
 ```
 
 ## ✅ Correct
 
 ```yaml
 on:
-  workflow_call:
-    outputs:
-      deployment-url:
-        description: Published deployment URL
-        value: ${{ jobs.deploy.outputs.url }}
+ workflow_call:
+  outputs:
+   deployment-url:
+    description: Published deployment URL
+    value: ${{ jobs.deploy.outputs.url }}
 ```
-
 
 ## Additional examples
 
@@ -46,21 +45,22 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/require-workflow-call-output-value": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/require-workflow-call-output-value": "error",
+  },
+ },
 ];
 ```
 
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
 - [https://docs.github.com/actions/using-workflows/reusing-workflows](https://docs.github.com/actions/using-workflows/reusing-workflows)

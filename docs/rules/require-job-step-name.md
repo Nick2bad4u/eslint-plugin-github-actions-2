@@ -18,23 +18,23 @@ Step names make job logs readable and help reviewers understand the intent of a 
 
 ```yaml
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - run: npm test
+ build:
+  name: Build
+  runs-on: ubuntu-latest
+  steps:
+   - run: npm test
 ```
 
 ## ✅ Correct
 
 ```yaml
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Run tests
-        run: npm test
+ build:
+  name: Build
+  runs-on: ubuntu-latest
+  steps:
+   - name: Run tests
+     run: npm test
 ```
 
 ## Behavior and migration notes
@@ -56,15 +56,15 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/require-job-step-name": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/require-job-step-name": "error",
+  },
+ },
 ];
 ```
 

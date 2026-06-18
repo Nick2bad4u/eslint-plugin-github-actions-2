@@ -18,18 +18,17 @@ Deprecated runtimes age out of security support and eventually break action exec
 
 ```yaml
 runs:
-  using: node16
-  main: dist/index.js
+ using: node16
+ main: dist/index.js
 ```
 
 ## ✅ Correct
 
 ```yaml
 runs:
-  using: node20
-  main: dist/index.js
+ using: node20
+ main: dist/index.js
 ```
-
 
 ## Additional examples
 
@@ -41,21 +40,22 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/no-deprecated-node-runtime": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/no-deprecated-node-runtime": "error",
+  },
+ },
 ];
 ```
 
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
 - [https://docs.github.com/actions/reference/workflows-and-actions/metadata-syntax#runs-for-javascript-actions](https://docs.github.com/actions/reference/workflows-and-actions/metadata-syntax#runs-for-javascript-actions)

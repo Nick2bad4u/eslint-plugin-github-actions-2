@@ -25,7 +25,7 @@ This rule reports fetch-metadata steps that do not configure `with.github-token`
 ```yaml
 - uses: dependabot/fetch-metadata@v2
   with:
-    github-token: ${{ secrets.GITHUB_TOKEN }}
+   github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Additional examples

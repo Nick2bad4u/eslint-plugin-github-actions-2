@@ -19,10 +19,10 @@ Cooldown settings reduce noisy pull request churn by delaying fresh version upda
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
 ```
 
 ## ✅ Correct
@@ -30,12 +30,12 @@ updates:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    cooldown:
-      default-days: 3
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/"
+   cooldown:
+    default-days: 3
+   schedule:
+    interval: "weekly"
 ```
 
 ## Additional examples

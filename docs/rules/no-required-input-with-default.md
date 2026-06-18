@@ -18,19 +18,19 @@ A default value means callers can omit the input, which conflicts with `required
 
 ```yaml
 inputs:
-  token:
-    description: Token
-    required: true
-    default: abc123
+ token:
+  description: Token
+  required: true
+  default: abc123
 ```
 
 ## ✅ Correct
 
 ```yaml
 inputs:
-  token:
-    description: Token
-    required: true
+ token:
+  description: Token
+  required: true
 ```
 
 ## Behavior and migration notes
@@ -52,15 +52,15 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/no-required-input-with-default": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/no-required-input-with-default": "error",
+  },
+ },
 ];
 ```
 

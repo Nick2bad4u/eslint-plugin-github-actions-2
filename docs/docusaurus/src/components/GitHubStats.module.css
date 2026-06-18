@@ -48,3 +48,15 @@
     block-size: 20px;
     inline-size: auto;
 }
+
+@media (prefers-reduced-motion: reduce) {
+    .liveBadgeAnchor {
+        transition: none;
+
+        &:hover,
+        &:focus {
+            filter: none;
+            transform: none;
+        }
+    }
+}

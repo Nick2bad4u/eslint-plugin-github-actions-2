@@ -18,23 +18,22 @@ GitHub documents that repositories using required GitHub Actions checks with mer
 
 ```yaml
 on:
-  pull_request:
-    branches:
-      - main
+ pull_request:
+  branches:
+   - main
 ```
 
 ## ✅ Correct
 
 ```yaml
 on:
-  pull_request:
-    branches:
-      - main
-  merge_group:
-    types:
-      - checks_requested
+ pull_request:
+  branches:
+   - main
+ merge_group:
+  types:
+   - checks_requested
 ```
-
 
 ## Additional examples
 
@@ -46,21 +45,22 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/require-merge-group-trigger": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/require-merge-group-trigger": "error",
+  },
+ },
 ];
 ```
 
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
 - [https://docs.github.com/actions/reference/workflows-and-actions/events-that-trigger-workflows#merge_group](https://docs.github.com/actions/reference/workflows-and-actions/events-that-trigger-workflows#merge_group)

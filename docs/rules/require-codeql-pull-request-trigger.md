@@ -18,18 +18,18 @@ Code scanning is most actionable when it runs against pull requests before merge
 
 ```yaml
 on:
-  push:
-    branches: [main]
+ push:
+  branches: [main]
 ```
 
 ## ✅ Correct
 
 ```yaml
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+ push:
+  branches: [main]
+ pull_request:
+  branches: [main]
 ```
 
 ## Additional examples

@@ -18,15 +18,15 @@ CodeQL jobs commonly need `actions: read` for workflow metadata and action acces
 
 ```yaml
 permissions:
-  contents: read
+ contents: read
 ```
 
 ## ✅ Correct
 
 ```yaml
 permissions:
-  actions: read
-  contents: read
+ actions: read
+ contents: read
 ```
 
 ## Additional examples

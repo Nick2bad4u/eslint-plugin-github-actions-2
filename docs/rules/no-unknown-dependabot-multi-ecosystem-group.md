@@ -19,9 +19,9 @@ A missing group definition is a configuration bug, not just a style preference. 
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    multi-ecosystem-group: "app"
+ - package-ecosystem: "npm"
+   directory: "/"
+   multi-ecosystem-group: "app"
 ```
 
 ## ✅ Correct
@@ -29,15 +29,15 @@ updates:
 ```yaml
 version: 2
 multi-ecosystem-groups:
-  app:
-    schedule:
-      interval: "weekly"
+ app:
+  schedule:
+   interval: "weekly"
 
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    multi-ecosystem-group: "app"
-    patterns: ["*"]
+ - package-ecosystem: "npm"
+   directory: "/"
+   multi-ecosystem-group: "app"
+   patterns: ["*"]
 ```
 
 ## Additional examples

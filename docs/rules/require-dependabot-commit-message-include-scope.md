@@ -19,10 +19,10 @@ Including scope in Dependabot commit messages makes pull request titles more inf
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    commit-message:
-      prefix: "deps"
+ - package-ecosystem: "npm"
+   directory: "/"
+   commit-message:
+    prefix: "deps"
 ```
 
 ## ✅ Correct
@@ -30,11 +30,11 @@ updates:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    commit-message:
-      prefix: "deps"
-      include: "scope"
+ - package-ecosystem: "npm"
+   directory: "/"
+   commit-message:
+    prefix: "deps"
+    include: "scope"
 ```
 
 ## Additional examples

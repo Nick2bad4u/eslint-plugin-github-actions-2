@@ -18,38 +18,38 @@ GitHub Actions uses different implicit shells depending on the runner and execut
 
 ```yaml
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install
-        run: npm ci
+ test:
+  runs-on: ubuntu-latest
+  steps:
+   - name: Install
+     run: npm ci
 ```
 
 ## ✅ Correct
 
 ```yaml
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install
-        shell: bash
-        run: npm ci
+ test:
+  runs-on: ubuntu-latest
+  steps:
+   - name: Install
+     shell: bash
+     run: npm ci
 ```
 
 ## Additional examples
 
 ```yaml
 defaults:
-  run:
-    shell: bash
+ run:
+  shell: bash
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install
-        run: npm ci
+ test:
+  runs-on: ubuntu-latest
+  steps:
+   - name: Install
+     run: npm ci
 ```
 
 For larger repositories, this rule is often enabled together with one of the
@@ -62,15 +62,15 @@ changes are merged.
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/require-run-step-shell": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/require-run-step-shell": "error",
+  },
+ },
 ];
 ```
 

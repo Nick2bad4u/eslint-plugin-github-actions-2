@@ -19,12 +19,12 @@ Labels are a high-leverage way to route Dependabot pull requests into automation
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      time: "05:30"
-      timezone: "UTC"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
+    time: "05:30"
+    timezone: "UTC"
 ```
 
 ## ✅ Correct
@@ -32,15 +32,15 @@ updates:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      time: "05:30"
-      timezone: "UTC"
-    labels:
-      - "dependabot"
-      - "dependencies"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
+    time: "05:30"
+    timezone: "UTC"
+   labels:
+    - "dependabot"
+    - "dependencies"
 ```
 
 ## Additional examples

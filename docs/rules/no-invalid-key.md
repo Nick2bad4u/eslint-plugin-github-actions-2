@@ -21,16 +21,16 @@ This rule focuses on common GitHub Actions workflow structures, including top-le
 ```yaml
 name: CI
 on:
-  push:
+ push:
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    strategy:
-      retry: 2
-    steps:
-      - name: Test
-        runs: npm test
+ build:
+  name: Build
+  runs-on: ubuntu-latest
+  strategy:
+   retry: 2
+  steps:
+   - name: Test
+     runs: npm test
 ```
 
 ## ✅ Correct
@@ -38,22 +38,21 @@ jobs:
 ```yaml
 name: CI
 on:
-  push:
+ push:
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-    steps:
-      - name: Test
-        run: npm test
+ build:
+  name: Build
+  runs-on: ubuntu-latest
+  strategy:
+   fail-fast: true
+  steps:
+   - name: Test
+     run: npm test
 ```
 
 ## Behavior and migration notes
 
 This rule validates keys in the most common workflow mappings where misspellings usually become hard-to-debug failures. It does not try to validate free-form maps such as `env`, `with`, `outputs`, or `secrets`, where user-defined keys are expected.
-
 
 ## Additional examples
 
@@ -65,21 +64,22 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/no-invalid-key": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/no-invalid-key": "error",
+  },
+ },
 ];
 ```
 
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
 - [https://docs.github.com/actions/reference/workflows-and-actions/workflow-syntax](https://docs.github.com/actions/reference/workflows-and-actions/workflow-syntax)

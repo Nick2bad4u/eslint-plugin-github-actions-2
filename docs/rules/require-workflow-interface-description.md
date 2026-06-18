@@ -23,43 +23,43 @@ Manual workflow forms and reusable workflows behave like public interfaces for y
 
 ```yaml
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        required: true
-        type: environment
+ workflow_dispatch:
+  inputs:
+   environment:
+    required: true
+    type: environment
 ```
 
 ## ✅ Correct
 
 ```yaml
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: Deployment target environment
-        required: true
-        type: environment
+ workflow_dispatch:
+  inputs:
+   environment:
+    description: Deployment target environment
+    required: true
+    type: environment
 ```
 
 ## Additional examples
 
 ```yaml
 on:
-  workflow_call:
-    inputs:
-      config-path:
-        description: Path to the deployment config
-        required: true
-        type: string
-    secrets:
-      token:
-        description: Token used to publish deployment state
-        required: true
-    outputs:
-      deployment-url:
-        description: Final deployment URL
-        value: ${{ jobs.deploy.outputs.url }}
+ workflow_call:
+  inputs:
+   config-path:
+    description: Path to the deployment config
+    required: true
+    type: string
+  secrets:
+   token:
+    description: Token used to publish deployment state
+    required: true
+  outputs:
+   deployment-url:
+    description: Final deployment URL
+    value: ${{ jobs.deploy.outputs.url }}
 ```
 
 For larger repositories, this rule is often enabled together with one of the
@@ -72,15 +72,15 @@ changes are merged.
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/require-workflow-interface-description": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/require-workflow-interface-description": "error",
+  },
+ },
 ];
 ```
 

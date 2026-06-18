@@ -19,10 +19,10 @@ GitHub assigns a random execution time when `time` is omitted. Requiring an expl
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
 ```
 
 ## ✅ Correct
@@ -30,12 +30,12 @@ updates:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      time: "05:30"
-      timezone: "UTC"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
+    time: "05:30"
+    timezone: "UTC"
 ```
 
 ## Additional examples

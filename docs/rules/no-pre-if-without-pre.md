@@ -18,19 +18,19 @@ Reports `runs.pre-if` when `runs.pre` is missing.
 
 ```yaml
 runs:
-  using: node20
-  main: dist/index.js
-  pre-if: runner.os == 'Linux'
+ using: node20
+ main: dist/index.js
+ pre-if: runner.os == 'Linux'
 ```
 
 ## ✅ Correct
 
 ```yaml
 runs:
-  using: node20
-  pre: dist/setup.js
-  pre-if: runner.os == 'Linux'
-  main: dist/index.js
+ using: node20
+ pre: dist/setup.js
+ pre-if: runner.os == 'Linux'
+ main: dist/index.js
 ```
 
 ## Behavior and migration notes
@@ -47,15 +47,15 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/no-pre-if-without-pre": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/no-pre-if-without-pre": "error",
+  },
+ },
 ];
 ```
 

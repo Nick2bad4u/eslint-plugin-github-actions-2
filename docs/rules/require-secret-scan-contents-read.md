@@ -18,21 +18,21 @@ Secret-scanning workflows generally only need read access to repository contents
 
 ```yaml
 permissions:
-  contents: write
+ contents: write
 ```
 
 ## ✅ Correct
 
 ```yaml
 permissions:
-  contents: read
+ contents: read
 ```
 
 ```yaml
 jobs:
-  scan:
-    permissions:
-      contents: read
+ scan:
+  permissions:
+   contents: read
 ```
 
 ## Additional examples

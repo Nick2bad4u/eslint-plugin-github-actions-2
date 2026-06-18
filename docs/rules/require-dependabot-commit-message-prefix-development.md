@@ -19,11 +19,11 @@ Development dependency updates often deserve different review and merge treatmen
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    commit-message:
-      prefix: "deps"
-      include: "scope"
+ - package-ecosystem: "npm"
+   directory: "/"
+   commit-message:
+    prefix: "deps"
+    include: "scope"
 ```
 
 ## ✅ Correct
@@ -31,12 +31,12 @@ updates:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    commit-message:
-      prefix: "deps"
-      prefix-development: "deps-dev"
-      include: "scope"
+ - package-ecosystem: "npm"
+   directory: "/"
+   commit-message:
+    prefix: "deps"
+    prefix-development: "deps-dev"
+    include: "scope"
 ```
 
 ## Additional examples

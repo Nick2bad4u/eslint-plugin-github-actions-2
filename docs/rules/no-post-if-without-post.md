@@ -18,19 +18,19 @@ Reports `runs.post-if` when `runs.post` is missing.
 
 ```yaml
 runs:
-  using: node20
-  main: dist/index.js
-  post-if: runner.os == 'Linux'
+ using: node20
+ main: dist/index.js
+ post-if: runner.os == 'Linux'
 ```
 
 ## ✅ Correct
 
 ```yaml
 runs:
-  using: node20
-  main: dist/index.js
-  post: dist/cleanup.js
-  post-if: runner.os == 'Linux'
+ using: node20
+ main: dist/index.js
+ post: dist/cleanup.js
+ post-if: runner.os == 'Linux'
 ```
 
 ## Behavior and migration notes
@@ -47,15 +47,15 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/no-post-if-without-post": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/no-post-if-without-post": "error",
+  },
+ },
 ];
 ```
 

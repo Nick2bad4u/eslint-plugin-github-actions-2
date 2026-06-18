@@ -19,10 +19,10 @@ Dependency review is designed to evaluate dependency changes introduced by pull 
 ```yaml
 on: [workflow_dispatch]
 jobs:
-  dependency-review:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/dependency-review-action@v4
+ dependency-review:
+  runs-on: ubuntu-latest
+  steps:
+   - uses: actions/dependency-review-action@v4
 ```
 
 ## ✅ Correct
@@ -30,10 +30,10 @@ jobs:
 ```yaml
 on: [pull_request]
 jobs:
-  dependency-review:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/dependency-review-action@v4
+ dependency-review:
+  runs-on: ubuntu-latest
+  steps:
+   - uses: actions/dependency-review-action@v4
 ```
 
 ## Additional examples

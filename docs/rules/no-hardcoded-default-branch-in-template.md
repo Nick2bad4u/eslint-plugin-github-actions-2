@@ -18,20 +18,19 @@ Template workflows should use `$default-branch` so generated workflows match the
 
 ```yaml
 on:
-  push:
-    branches:
-      - main
+ push:
+  branches:
+   - main
 ```
 
 ## ✅ Correct
 
 ```yaml
 on:
-  push:
-    branches:
-      - $default-branch
+ push:
+  branches:
+   - $default-branch
 ```
-
 
 ## Additional examples
 
@@ -43,21 +42,22 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/no-hardcoded-default-branch-in-template": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/no-hardcoded-default-branch-in-template": "error",
+  },
+ },
 ];
 ```
 
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
 - [https://docs.github.com/actions/reference/workflows-and-actions/reusing-workflow-configurations](https://docs.github.com/actions/reference/workflows-and-actions/reusing-workflow-configurations)

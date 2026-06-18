@@ -19,18 +19,18 @@ This rule reports update entries that do not resolve to a valid `schedule.interv
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule: {}
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule: {}
 ```
 
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "sometimes"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "sometimes"
 ```
 
 ## ✅ Correct
@@ -38,10 +38,10 @@ updates:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
 ```
 
 ## Additional examples

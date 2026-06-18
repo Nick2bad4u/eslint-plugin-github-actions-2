@@ -18,38 +18,38 @@ GitHub documents that `inputs` and `github.event.inputs` expose the same manual-
 
 ```yaml
 on:
-  workflow_dispatch:
-    inputs:
-      dry_run:
-        description: Run validation only
-        required: true
-        type: boolean
+ workflow_dispatch:
+  inputs:
+   dry_run:
+    description: Run validation only
+    required: true
+    type: boolean
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.dry_run }}
-    steps:
-      - run: echo release
+ release:
+  runs-on: ubuntu-latest
+  if: ${{ github.event.inputs.dry_run }}
+  steps:
+   - run: echo release
 ```
 
 ## ✅ Correct
 
 ```yaml
 on:
-  workflow_dispatch:
-    inputs:
-      dry_run:
-        description: Run validation only
-        required: true
-        type: boolean
+ workflow_dispatch:
+  inputs:
+   dry_run:
+    description: Run validation only
+    required: true
+    type: boolean
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
-    if: ${{ inputs.dry_run }}
-    steps:
-      - run: echo release
+ release:
+  runs-on: ubuntu-latest
+  if: ${{ inputs.dry_run }}
+  steps:
+   - run: echo release
 ```
 
 ## Behavior and migration notes
@@ -66,15 +66,15 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/prefer-inputs-context": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/prefer-inputs-context": "error",
+  },
+ },
 ];
 ```
 

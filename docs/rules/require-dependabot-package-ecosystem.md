@@ -19,9 +19,9 @@ Dependabot cannot resolve package-manager-specific behavior without knowing the 
 ```yaml
 version: 2
 updates:
-  - directory: "/"
-    schedule:
-      interval: "weekly"
+ - directory: "/"
+   schedule:
+    interval: "weekly"
 ```
 
 ## ✅ Correct
@@ -29,10 +29,10 @@ updates:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
 ```
 
 ## Additional examples

@@ -19,10 +19,10 @@ GitHub documents `directory: "/"` as the correct location for the `github-action
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
-    directory: "/.github/workflows"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "github-actions"
+   directory: "/.github/workflows"
+   schedule:
+    interval: "weekly"
 ```
 
 ## ✅ Correct
@@ -30,10 +30,10 @@ updates:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "github-actions"
+   directory: "/"
+   schedule:
+    interval: "weekly"
 ```
 
 ## Behavior and migration notes

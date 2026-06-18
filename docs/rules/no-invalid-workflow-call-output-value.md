@@ -21,32 +21,31 @@ GitHub only allows the `github`, `jobs`, `vars`, and `inputs` contexts when comp
 
 ```yaml
 on:
-  workflow_call:
-    outputs:
-      deployment-url:
-        description: Published deployment URL
-        value: ${{ steps.publish.outputs.url }}
+ workflow_call:
+  outputs:
+   deployment-url:
+    description: Published deployment URL
+    value: ${{ steps.publish.outputs.url }}
 ```
 
 ## ✅ Correct
 
 ```yaml
 on:
-  workflow_call:
-    outputs:
-      deployment-url:
-        description: Published deployment URL
-        value: ${{ jobs.deploy.outputs.deployment-url }}
+ workflow_call:
+  outputs:
+   deployment-url:
+    description: Published deployment URL
+    value: ${{ jobs.deploy.outputs.deployment-url }}
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    outputs:
-      deployment-url: ${{ steps.publish.outputs.url }}
-    steps:
-      - id: publish
-        run: echo "url=https://example.com" >> "$GITHUB_OUTPUT"
+ deploy:
+  runs-on: ubuntu-latest
+  outputs:
+   deployment-url: ${{ steps.publish.outputs.url }}
+  steps:
+   - id: publish
+     run: echo "url=https://example.com" >> "$GITHUB_OUTPUT"
 ```
-
 
 ## Additional examples
 
@@ -58,21 +57,22 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/no-invalid-workflow-call-output-value": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/no-invalid-workflow-call-output-value": "error",
+  },
+ },
 ];
 ```
 
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
 - [https://docs.github.com/actions/using-workflows/reusing-workflows](https://docs.github.com/actions/using-workflows/reusing-workflows)

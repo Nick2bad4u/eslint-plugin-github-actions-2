@@ -154,7 +154,11 @@
 .sb-cat-guides > .menu__list-item-collapsible .menu__link,
 .sb-cat-presets > .menu__list-item-collapsible .menu__link,
 .sb-cat-developer-adr > .menu__list-item-collapsible .menu__link,
-.sb-cat-api-types > .menu__list-item-collapsible .menu__link,
+.sb-cat-api-types > .menu__list-item-collapsible .menu__link {
+    border-inline-start: 4px solid transparent;
+    padding-inline-start: calc(var(--ifm-menu-link-padding-horizontal) - 4px);
+}
+
 .sb-cat-api-runtime > .menu__list-item-collapsible .menu__link,
 .sb-cat-dev-charts > .menu__list-item-collapsible .menu__link,
 .sb-cat-dev-links > .menu__list-item-collapsible .menu__link,
@@ -162,7 +166,11 @@
 .sb-cat-rules-workflows > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules-action-metadata > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules-workflow-templates > .menu__list-item-collapsible .menu__link,
-.sb-cat-rules-type-fest > .menu__list-item-collapsible .menu__link,
+.sb-cat-rules-type-fest > .menu__list-item-collapsible .menu__link {
+    border-inline-start: 4px solid transparent;
+    padding-inline-start: calc(var(--ifm-menu-link-padding-horizontal) - 4px);
+}
+
 .sb-cat-rules > .menu__list-item-collapsible .menu__link {
     border-inline-start: 4px solid transparent;
     padding-inline-start: calc(var(--ifm-menu-link-padding-horizontal) - 4px);
@@ -221,13 +229,23 @@
 .sb-cat-api-types > .menu__list-item-collapsible .menu__link,
 .sb-cat-api-runtime > .menu__list-item-collapsible .menu__link,
 .sb-cat-dev-charts > .menu__list-item-collapsible .menu__link,
-.sb-cat-api-overview > .menu__list-item-collapsible .menu__link,
+.sb-cat-api-overview > .menu__list-item-collapsible .menu__link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
 .sb-cat-dev-links > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules-dependabot > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules-workflows > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules-action-metadata > .menu__list-item-collapsible .menu__link,
 .sb-cat-rules-workflow-templates > .menu__list-item-collapsible .menu__link,
-.sb-cat-rules-type-fest > .menu__list-item-collapsible .menu__link,
+.sb-cat-rules-type-fest > .menu__list-item-collapsible .menu__link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
 .sb-cat-rules > .menu__list-item-collapsible .menu__link {
     display: flex;
     align-items: center;
@@ -241,7 +259,10 @@
 .sb-cat-api-runtime > .menu__list-item-collapsible .menu__link::before,
 .sb-cat-dev-charts > .menu__list-item-collapsible .menu__link::before,
 .sb-cat-api-overview > .menu__list-item-collapsible .menu__link::before,
-.sb-cat-dev-links > .menu__list-item-collapsible .menu__link::before,
+.sb-cat-dev-links > .menu__list-item-collapsible .menu__link::before {
+    margin-inline-start: auto;
+}
+
 .sb-cat-rules-dependabot > .menu__list-item-collapsible .menu__link::before,
 .sb-cat-rules-workflows > .menu__list-item-collapsible .menu__link::before,
 .sb-cat-rules-action-metadata
@@ -705,15 +726,42 @@
 .sb-cat-presets .theme-doc-sidebar-item-link-level-2 > .menu__link,
 .sb-cat-presets .menu__list .menu__link,
 .sb-cat-api-types .theme-doc-sidebar-item-link-level-2 > .menu__link,
-.sb-cat-api-types .theme-doc-sidebar-item-link-level-3 > .menu__link,
+.sb-cat-api-types .theme-doc-sidebar-item-link-level-3 > .menu__link {
+    border-inline-start: 3px solid transparent;
+    border-radius: 0.42rem;
+    line-height: 1.375;
+    margin-block: 0.08rem;
+    padding-block: 0.28rem;
+    padding-inline-start: calc(var(--ifm-menu-link-padding-horizontal) - 3px);
+    text-wrap: pretty;
+}
+
 .sb-cat-api-types .theme-doc-sidebar-item-link-level-4 > .menu__link,
-.sb-cat-api-runtime .theme-doc-sidebar-item-link-level-2 > .menu__link,
+.sb-cat-api-runtime .theme-doc-sidebar-item-link-level-2 > .menu__link {
+    border-inline-start: 3px solid transparent;
+    border-radius: 0.42rem;
+    line-height: 1.375;
+    margin-block: 0.08rem;
+    padding-block: 0.28rem;
+    padding-inline-start: calc(var(--ifm-menu-link-padding-horizontal) - 3px);
+    text-wrap: pretty;
+}
+
 .sb-cat-api-runtime .theme-doc-sidebar-item-link-level-3 > .menu__link,
 .sb-cat-api-runtime .theme-doc-sidebar-item-link-level-4 > .menu__link,
 .sb-cat-api-runtime .theme-doc-sidebar-item-link-level-5 > .menu__link,
 .sb-cat-api-runtime .theme-doc-sidebar-item-link-level-6 > .menu__link,
 .sb-cat-dev-charts .theme-doc-sidebar-item-link-level-2 > .menu__link,
-.sb-cat-dev-links .menu__list .menu__link,
+.sb-cat-dev-links .menu__list .menu__link {
+    border-inline-start: 3px solid transparent;
+    border-radius: 0.42rem;
+    line-height: 1.375;
+    margin-block: 0.08rem;
+    padding-block: 0.28rem;
+    padding-inline-start: calc(var(--ifm-menu-link-padding-horizontal) - 3px);
+    text-wrap: pretty;
+}
+
 .sb-cat-dev-links .theme-doc-sidebar-item-link-level-2 > .menu__link,
 .sb-cat-dev-charts .theme-doc-sidebar-item-link-level-3 > .menu__link {
     border-inline-start: 3px solid transparent;
@@ -770,7 +818,14 @@
 .sb-cat-api-runtime .theme-doc-sidebar-item-link-level-3 > .menu__link,
 .sb-cat-api-runtime .theme-doc-sidebar-item-link-level-4 > .menu__link,
 .sb-cat-api-runtime .theme-doc-sidebar-item-link-level-5 > .menu__link,
-.sb-cat-api-runtime .theme-doc-sidebar-item-link-level-6 > .menu__link,
+.sb-cat-api-runtime .theme-doc-sidebar-item-link-level-6 > .menu__link {
+    line-height: 1.375;
+    overflow-wrap: normal;
+    text-wrap: pretty;
+    white-space: normal;
+    word-break: keep-all;
+}
+
 .sb-cat-api-runtime
     .theme-doc-sidebar-item-category-level-2
     > .menu__list-item-collapsible

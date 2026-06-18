@@ -24,9 +24,9 @@ on: [pull_request]
 
 ```yaml
 on:
-  pull_request:
-  schedule:
-    - cron: "12 4 * * *"
+ pull_request:
+ schedule:
+  - cron: "12 4 * * *"
 ```
 
 ## Additional examples

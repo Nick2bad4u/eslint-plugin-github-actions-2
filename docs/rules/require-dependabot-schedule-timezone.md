@@ -19,11 +19,11 @@ Without a timezone, explicit times default to UTC. Requiring `timezone` makes sc
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      time: "05:30"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
+    time: "05:30"
 ```
 
 ## ✅ Correct
@@ -31,12 +31,12 @@ updates:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      time: "05:30"
-      timezone: "America/Detroit"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
+    time: "05:30"
+    timezone: "America/Detroit"
 ```
 
 ## Additional examples

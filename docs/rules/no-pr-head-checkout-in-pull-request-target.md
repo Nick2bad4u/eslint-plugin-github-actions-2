@@ -18,39 +18,38 @@ GitHub warns that `pull_request_target` runs with the base repository's privileg
 
 ```yaml
 on:
-  pull_request_target:
+ pull_request_target:
 
 jobs:
-  annotate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
+ annotate:
+  runs-on: ubuntu-latest
+  steps:
+   - uses: actions/checkout@v5
+     with:
+      repository: ${{ github.event.pull_request.head.repo.full_name }}
+      ref: ${{ github.event.pull_request.head.ref }}
 ```
 
 ## ✅ Correct
 
 ```yaml
 on:
-  pull_request_target:
+ pull_request_target:
 
 jobs:
-  annotate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/github-script@v8
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: "Thanks for the PR!"
-            });
+ annotate:
+  runs-on: ubuntu-latest
+  steps:
+   - uses: actions/github-script@v8
+     with:
+      script: |
+       await github.rest.issues.createComment({
+         owner: context.repo.owner,
+         repo: context.repo.repo,
+         issue_number: context.issue.number,
+         body: "Thanks for the PR!"
+       });
 ```
-
 
 ## Additional examples
 
@@ -62,21 +61,22 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/no-pr-head-checkout-in-pull-request-target": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/no-pr-head-checkout-in-pull-request-target": "error",
+  },
+ },
 ];
 ```
 
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
 - [https://docs.github.com/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request_target](https://docs.github.com/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request_target)

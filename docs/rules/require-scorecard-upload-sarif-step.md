@@ -19,7 +19,7 @@ Generating SARIF without uploading it leaves the code scanning integration incom
 ```yaml
 - uses: ossf/scorecard-action@v2
   with:
-    results_format: sarif
+   results_format: sarif
 ```
 
 ## ✅ Correct
@@ -27,11 +27,11 @@ Generating SARIF without uploading it leaves the code scanning integration incom
 ```yaml
 - uses: ossf/scorecard-action@v2
   with:
-    results_format: sarif
+   results_format: sarif
 
 - uses: github/codeql-action/upload-sarif@v4
   with:
-    sarif_file: results.sarif
+   sarif_file: results.sarif
 ```
 
 ## Additional examples

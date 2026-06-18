@@ -18,15 +18,15 @@ Uploading SARIF to GitHub code scanning requires `security-events: write`. Requi
 
 ```yaml
 permissions:
-  contents: read
+ contents: read
 ```
 
 ## ✅ Correct
 
 ```yaml
 permissions:
-  contents: read
-  security-events: write
+ contents: read
+ security-events: write
 ```
 
 ## Additional examples

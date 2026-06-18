@@ -25,7 +25,7 @@ When CodeQL runs in a language matrix, the SARIF category is the easiest way to 
 ```yaml
 - uses: github/codeql-action/analyze@v4
   with:
-    category: /language:${{ matrix.language }}
+   category: /language:${{ matrix.language }}
 ```
 
 ## Additional examples

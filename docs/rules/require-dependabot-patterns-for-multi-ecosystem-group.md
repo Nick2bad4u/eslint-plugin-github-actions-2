@@ -19,14 +19,14 @@ GitHub's multi-ecosystem update guide calls out `patterns` as a required part of
 ```yaml
 version: 2
 multi-ecosystem-groups:
-  app:
-    schedule:
-      interval: "weekly"
+ app:
+  schedule:
+   interval: "weekly"
 
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    multi-ecosystem-group: "app"
+ - package-ecosystem: "npm"
+   directory: "/"
+   multi-ecosystem-group: "app"
 ```
 
 ## ✅ Correct
@@ -34,15 +34,15 @@ updates:
 ```yaml
 version: 2
 multi-ecosystem-groups:
-  app:
-    schedule:
-      interval: "weekly"
+ app:
+  schedule:
+   interval: "weekly"
 
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    multi-ecosystem-group: "app"
-    patterns: ["*"]
+ - package-ecosystem: "npm"
+   directory: "/"
+   multi-ecosystem-group: "app"
+   patterns: ["*"]
 ```
 
 ## Additional examples

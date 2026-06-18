@@ -25,7 +25,7 @@ If a repository wants Scorecard findings to flow into GitHub code scanning, SARI
 ```yaml
 - uses: ossf/scorecard-action@v2
   with:
-    results_format: sarif
+   results_format: sarif
 ```
 
 ## Additional examples

@@ -18,16 +18,16 @@ CodeQL treats JavaScript and TypeScript as the same extractor family. Using sepa
 
 ```yaml
 strategy:
-  matrix:
-    language: ["javascript", "typescript"]
+ matrix:
+  language: ["javascript", "typescript"]
 ```
 
 ## ✅ Correct
 
 ```yaml
 strategy:
-  matrix:
-    language: ["javascript-typescript"]
+ matrix:
+  language: ["javascript-typescript"]
 ```
 
 ## Additional examples

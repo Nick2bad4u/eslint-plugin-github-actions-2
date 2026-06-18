@@ -18,18 +18,18 @@ Some teams want every job to declare the exact token scope it needs so that perm
 
 ```yaml
 permissions:
-  contents: read
+ contents: read
 ```
 
 ## ✅ Correct
 
 ```yaml
 jobs:
-  build:
-    name: Build
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
+ build:
+  name: Build
+  permissions:
+   contents: read
+  runs-on: ubuntu-latest
 ```
 
 ## Additional examples
@@ -42,15 +42,15 @@ This is an intentionally opinionated opt-in rule for repositories that require e
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/no-top-level-permissions": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/no-top-level-permissions": "error",
+  },
+ },
 ];
 ```
 

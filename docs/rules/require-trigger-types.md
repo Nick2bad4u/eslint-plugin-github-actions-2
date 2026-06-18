@@ -20,30 +20,29 @@ This rule intentionally targets event families where explicit activity scoping i
 
 ```yaml
 on:
-  issue_comment:
+ issue_comment:
 
 jobs:
-  triage:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo comment received
+ triage:
+  runs-on: ubuntu-latest
+  steps:
+   - run: echo comment received
 ```
 
 ## ✅ Correct
 
 ```yaml
 on:
-  issue_comment:
-    types:
-      - created
+ issue_comment:
+  types:
+   - created
 
 jobs:
-  triage:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo comment received
+ triage:
+  runs-on: ubuntu-latest
+  steps:
+   - run: echo comment received
 ```
-
 
 ## Additional examples
 
@@ -55,21 +54,22 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/require-trigger-types": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/require-trigger-types": "error",
+  },
+ },
 ];
 ```
 
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
 - [https://docs.github.com/actions/reference/workflows-and-actions/events-that-trigger-workflows](https://docs.github.com/actions/reference/workflows-and-actions/events-that-trigger-workflows)

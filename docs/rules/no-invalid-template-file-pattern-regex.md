@@ -26,7 +26,6 @@ Invalid regex values break template recommendation matching.
 { "filePatterns": ["package.json$", "^go\\.mod$"] }
 ```
 
-
 ## Additional examples
 
 For larger repositories, this rule is often enabled together with one of the published presets so violations are caught in pull requests before workflow changes are merged.
@@ -37,21 +36,22 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/no-invalid-template-file-pattern-regex": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/no-invalid-template-file-pattern-regex": "error",
+  },
+ },
 ];
 ```
 
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
 - [https://www.schemastore.org/github-workflow-template-properties.json](https://www.schemastore.org/github-workflow-template-properties.json)

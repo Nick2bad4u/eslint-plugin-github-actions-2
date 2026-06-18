@@ -18,22 +18,22 @@ Without an explicit severity threshold, the repository's vulnerability blocking 
 
 ```yaml
 jobs:
-  dependency-review:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/dependency-review-action@v4
+ dependency-review:
+  runs-on: ubuntu-latest
+  steps:
+   - uses: actions/dependency-review-action@v4
 ```
 
 ## ✅ Correct
 
 ```yaml
 jobs:
-  dependency-review:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/dependency-review-action@v4
-        with:
-          fail-on-severity: moderate
+ dependency-review:
+  runs-on: ubuntu-latest
+  steps:
+   - uses: actions/dependency-review-action@v4
+     with:
+      fail-on-severity: moderate
 ```
 
 ## Additional examples

@@ -18,15 +18,15 @@ CodeQL analysis uploads results to GitHub code scanning. Without `security-event
 
 ```yaml
 permissions:
-  contents: read
+ contents: read
 ```
 
 ## ✅ Correct
 
 ```yaml
 permissions:
-  contents: read
-  security-events: write
+ contents: read
+ security-events: write
 ```
 
 ## Additional examples

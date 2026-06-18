@@ -23,23 +23,23 @@ Updates that use `multi-ecosystem-group` are intentionally excluded. GitHub crea
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
 ```
 
 ```yaml
 version: 2
 multi-ecosystem-groups:
-  app:
-    open-pull-requests-limit: 5
+ app:
+  open-pull-requests-limit: 5
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    multi-ecosystem-group: "app"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/"
+   multi-ecosystem-group: "app"
+   schedule:
+    interval: "weekly"
 ```
 
 ## ✅ Correct
@@ -47,11 +47,11 @@ updates:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    open-pull-requests-limit: 5
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/"
+   open-pull-requests-limit: 5
+   schedule:
+    interval: "weekly"
 ```
 
 ## Additional examples

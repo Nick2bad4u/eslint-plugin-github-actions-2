@@ -18,16 +18,16 @@ PR automation should request only the permissions it actually needs, but it stil
 
 ```yaml
 permissions:
-  contents: read
+ contents: read
 ```
 
 ## ✅ Correct
 
 ```yaml
 permissions:
-  contents: read
-  pull-requests: write
-  issues: write
+ contents: read
+ pull-requests: write
+ issues: write
 ```
 
 ## Additional examples

@@ -25,7 +25,7 @@ Secret scanners are most effective when they can inspect full repository history
 ```yaml
 - uses: actions/checkout@v6
   with:
-    fetch-depth: 0
+   fetch-depth: 0
 ```
 
 ## Additional examples

@@ -19,20 +19,20 @@ Dependabot needs a manifest search location for every update block. Requiring ex
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   schedule:
+    interval: "weekly"
 ```
 
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    directories:
-      - "/docs/docusaurus"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/"
+   directories:
+    - "/docs/docusaurus"
+   schedule:
+    interval: "weekly"
 ```
 
 ## ✅ Correct
@@ -40,21 +40,21 @@ updates:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
 ```
 
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directories:
-      - "/"
-      - "/docs/docusaurus"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directories:
+    - "/"
+    - "/docs/docusaurus"
+   schedule:
+    interval: "weekly"
 ```
 
 ## Additional examples

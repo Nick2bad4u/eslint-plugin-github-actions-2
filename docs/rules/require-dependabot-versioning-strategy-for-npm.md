@@ -19,10 +19,10 @@ This rule reports npm update entries that omit `versioning-strategy`.
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
 ```
 
 ## ✅ Correct
@@ -30,11 +30,11 @@ updates:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    versioning-strategy: "increase"
-    schedule:
-      interval: "weekly"
+ - package-ecosystem: "npm"
+   directory: "/"
+   versioning-strategy: "increase"
+   schedule:
+    interval: "weekly"
 ```
 
 ## Additional examples

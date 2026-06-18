@@ -22,39 +22,38 @@ GitHub only populates the `needs` context for direct dependencies, and reusable 
 
 ```yaml
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    outputs:
-      artifact-sha: ${{ steps.pkg.outputs.sha }}
-    steps:
-      - id: pkg
-        run: echo "sha=abc123" >> "$GITHUB_OUTPUT"
+ build:
+  runs-on: ubuntu-latest
+  outputs:
+   artifact-sha: ${{ steps.pkg.outputs.sha }}
+  steps:
+   - id: pkg
+     run: echo "sha=abc123" >> "$GITHUB_OUTPUT"
 
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "${{ needs.build.outputs.artifact_sha }}"
+ deploy:
+  runs-on: ubuntu-latest
+  steps:
+   - run: echo "${{ needs.build.outputs.artifact_sha }}"
 ```
 
 ## ✅ Correct
 
 ```yaml
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    outputs:
-      artifact-sha: ${{ steps.pkg.outputs.sha }}
-    steps:
-      - id: pkg
-        run: echo "sha=abc123" >> "$GITHUB_OUTPUT"
+ build:
+  runs-on: ubuntu-latest
+  outputs:
+   artifact-sha: ${{ steps.pkg.outputs.sha }}
+  steps:
+   - id: pkg
+     run: echo "sha=abc123" >> "$GITHUB_OUTPUT"
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "${{ needs.build.outputs.artifact-sha }}"
+ deploy:
+  needs: build
+  runs-on: ubuntu-latest
+  steps:
+   - run: echo "${{ needs.build.outputs.artifact-sha }}"
 ```
-
 
 ## Additional examples
 
@@ -66,21 +65,22 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/no-unknown-job-output-reference": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/no-unknown-job-output-reference": "error",
+  },
+ },
 ];
 ```
 
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
 - [https://docs.github.com/actions/reference/workflows-and-actions/contexts#needs-context](https://docs.github.com/actions/reference/workflows-and-actions/contexts#needs-context)

@@ -19,7 +19,7 @@ CodeQL does not need a build step for JavaScript/TypeScript analysis. Keeping `a
 ```yaml
 - uses: github/codeql-action/init@v4
   with:
-    languages: javascript-typescript
+   languages: javascript-typescript
 
 - uses: github/codeql-action/autobuild@v4
 ```
@@ -29,7 +29,7 @@ CodeQL does not need a build step for JavaScript/TypeScript analysis. Keeping `a
 ```yaml
 - uses: github/codeql-action/init@v4
   with:
-    languages: javascript-typescript
+   languages: javascript-typescript
 
 - uses: github/codeql-action/analyze@v4
 ```

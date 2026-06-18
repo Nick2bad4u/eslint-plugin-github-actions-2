@@ -18,48 +18,48 @@ This rule reports jobs that contain `run` steps but do not define `timeout-minut
 
 ```yaml
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - run: npm install
+ test:
+  runs-on: ubuntu-latest
+  steps:
+   - run: npm install
 ```
 
 ```yaml
 jobs:
-  ci:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm test
+ ci:
+  runs-on: ubuntu-latest
+  steps:
+   - uses: actions/checkout@v4
+   - run: npm test
 ```
 
 ## ✅ Correct
 
 ```yaml
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - run: npm install
+ test:
+  runs-on: ubuntu-latest
+  timeout-minutes: 10
+  steps:
+   - run: npm install
 ```
 
 ```yaml
 jobs:
-  checkout-only:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+ checkout-only:
+  runs-on: ubuntu-latest
+  steps:
+   - uses: actions/checkout@v4
 ```
 
 ```yaml
 jobs:
-  ci:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm test
+ ci:
+  runs-on: ubuntu-latest
+  timeout-minutes: 30
+  steps:
+   - uses: actions/checkout@v4
+   - run: npm test
 ```
 
 ## Additional examples
@@ -68,21 +68,21 @@ jobs:
 
 ```yaml
 jobs:
-  dispatch:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/upload-artifact@v3
+ dispatch:
+  runs-on: ubuntu-latest
+  steps:
+   - uses: actions/checkout@v4
+   - uses: actions/upload-artifact@v3
 ```
 
 ### ✅ Correct — Reusable workflows are skipped
 
 ```yaml
 jobs:
-  reusable-call:
-    uses: ./.github/workflows/shared.yml
-    with:
-      timeout: 20
+ reusable-call:
+  uses: ./.github/workflows/shared.yml
+  with:
+   timeout: 20
 ```
 
 ## ESLint flat config example
@@ -91,12 +91,12 @@ jobs:
 import githubActionsPlugin from "eslint-plugin-github-actions";
 
 export default [
-    {
-        plugins: { "github-actions": githubActionsPlugin },
-        rules: {
-            "github-actions/require-run-step-timeout": "error",
-        },
-    },
+ {
+  plugins: { "github-actions": githubActionsPlugin },
+  rules: {
+   "github-actions/require-run-step-timeout": "error",
+  },
+ },
 ];
 ```
 

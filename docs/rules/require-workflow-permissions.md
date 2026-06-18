@@ -18,29 +18,29 @@ GitHub recommends using least-privilege `GITHUB_TOKEN` permissions instead of re
 
 ```yaml
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - run: npm test
+ build:
+  runs-on: ubuntu-latest
+  steps:
+   - run: npm test
 ```
 
 ## ✅ Correct
 
 ```yaml
 permissions:
-  contents: read
+ contents: read
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+ build:
+  runs-on: ubuntu-latest
 ```
 
 ```yaml
 jobs:
-  build:
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
+ build:
+  permissions:
+   contents: read
+  runs-on: ubuntu-latest
 ```
 
 ## Additional examples
@@ -53,15 +53,15 @@ For larger repositories, this rule works well as a baseline requirement for expl
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/require-workflow-permissions": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/require-workflow-permissions": "error",
+  },
+ },
 ];
 ```
 

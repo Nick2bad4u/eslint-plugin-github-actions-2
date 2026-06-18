@@ -25,7 +25,7 @@ Verified-results mode reduces noise by failing only on findings that the scanner
 ```yaml
 - uses: trufflesecurity/trufflehog@v3
   with:
-    extra_args: --results=verified
+   extra_args: --results=verified
 ```
 
 ## Additional examples

@@ -18,17 +18,17 @@ Pull request automation should not run broadly on all pull requests when it is i
 
 ```yaml
 jobs:
-  dependabot:
-    runs-on: ubuntu-latest
+ dependabot:
+  runs-on: ubuntu-latest
 ```
 
 ## ✅ Correct
 
 ```yaml
 jobs:
-  dependabot:
-    if: github.event.pull_request.user.login == 'dependabot[bot]'
-    runs-on: ubuntu-latest
+ dependabot:
+  if: github.event.pull_request.user.login == 'dependabot[bot]'
+  runs-on: ubuntu-latest
 ```
 
 ## Additional examples

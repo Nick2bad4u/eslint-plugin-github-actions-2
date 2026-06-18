@@ -18,28 +18,27 @@ Unused inputs increase maintenance burden and create confusing action interfaces
 
 ```yaml
 inputs:
-  token:
-    description: Token
+ token:
+  description: Token
 runs:
-  using: composite
-  steps:
-    - run: echo hello
-      shell: bash
+ using: composite
+ steps:
+  - run: echo hello
+    shell: bash
 ```
 
 ## ✅ Correct
 
 ```yaml
 inputs:
-  token:
-    description: Token
+ token:
+  description: Token
 runs:
-  using: composite
-  steps:
-    - run: echo "${{ inputs.token }}"
-      shell: bash
+ using: composite
+ steps:
+  - run: echo "${{ inputs.token }}"
+    shell: bash
 ```
-
 
 ## Additional examples
 
@@ -51,21 +50,22 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/no-unused-input-in-composite": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/no-unused-input-in-composite": "error",
+  },
+ },
 ];
 ```
 
 ## When not to use it
 
 You can disable this rule when its policy does not match your repository standards, or when equivalent enforcement is already handled by another policy tool.
+
 ## Further reading
 
 - [https://docs.github.com/actions/reference/workflows-and-actions/metadata-syntax#inputs](https://docs.github.com/actions/reference/workflows-and-actions/metadata-syntax#inputs)

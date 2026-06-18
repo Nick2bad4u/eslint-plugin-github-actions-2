@@ -95,6 +95,9 @@
     "excludeReferences": false,
     "expandObjects": true,
     "expandParameters": true,
+    "extends": [
+        "typedoc-config-nick2bad4u/typedoc.json"
+    ],
     "externalPattern": [
         "**/node_modules/**"
     ],
@@ -547,7 +550,7 @@
     ],
     "preserveLinkText": true,
     "preserveWatchOutput": false,
-    "prettierConfigFile": "../../.prettierrc",
+    "prettierConfigFile": "../../prettier.config.mjs",
     "readme": "none",
     "replaceText": {
         "inCodeCommentTags": true,

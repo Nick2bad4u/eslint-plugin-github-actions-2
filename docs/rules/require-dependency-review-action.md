@@ -20,10 +20,10 @@ If a workflow is intended to perform dependency review, it should actually run t
 name: "Dependency Review"
 on: [pull_request]
 jobs:
-  review:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
+ review:
+  runs-on: ubuntu-latest
+  steps:
+   - uses: actions/checkout@v5
 ```
 
 ## ✅ Correct
@@ -32,11 +32,11 @@ jobs:
 name: "Dependency Review"
 on: [pull_request]
 jobs:
-  review:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/dependency-review-action@v4
+ review:
+  runs-on: ubuntu-latest
+  steps:
+   - uses: actions/checkout@v5
+   - uses: actions/dependency-review-action@v4
 ```
 
 ## Additional examples

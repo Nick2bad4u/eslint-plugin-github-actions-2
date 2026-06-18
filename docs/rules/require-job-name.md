@@ -18,17 +18,17 @@ Job names appear in workflow graphs and logs. Requiring them makes complex workf
 
 ```yaml
 jobs:
-  build:
-    runs-on: ubuntu-latest
+ build:
+  runs-on: ubuntu-latest
 ```
 
 ## ✅ Correct
 
 ```yaml
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
+ build:
+  name: Build
+  runs-on: ubuntu-latest
 ```
 
 ## Behavior and migration notes
@@ -45,15 +45,15 @@ For larger repositories, this rule is often enabled together with one of the pub
 import githubActions from "eslint-plugin-github-actions-2";
 
 export default [
-  {
-    files: ["**/*.{yml,yaml}"],
-    plugins: {
-      "github-actions": githubActions,
-    },
-    rules: {
-      "github-actions/require-job-name": "error",
-    },
+ {
+  files: ["**/*.{yml,yaml}"],
+  plugins: {
+   "github-actions": githubActions,
   },
+  rules: {
+   "github-actions/require-job-name": "error",
+  },
+ },
 ];
 ```
 

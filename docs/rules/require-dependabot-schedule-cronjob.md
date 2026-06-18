@@ -22,21 +22,21 @@ This rule reports two cases:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "cron"
-      timezone: "UTC"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "cron"
+    timezone: "UTC"
 ```
 
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      cronjob: "0 9 * * *"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "weekly"
+    cronjob: "0 9 * * *"
 ```
 
 ## ✅ Correct
@@ -44,12 +44,12 @@ updates:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "cron"
-      cronjob: "0 9 * * *"
-      timezone: "UTC"
+ - package-ecosystem: "npm"
+   directory: "/"
+   schedule:
+    interval: "cron"
+    cronjob: "0 9 * * *"
+    timezone: "UTC"
 ```
 
 ## Additional examples
