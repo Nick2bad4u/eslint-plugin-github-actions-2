@@ -16,82 +16,80 @@ import {
 
 /** Rule implementation for requiring explicit reusable-workflow output values. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            const onMapping = getMappingValueAsMapping(root, "on");
+
+            if (onMapping === null) {
+                return;
+            }
+
+            const workflowCallMapping = unwrapYamlValue(
+                getMappingPair(onMapping, "workflow_call")?.value ?? null
+            );
+
+            if (workflowCallMapping?.type !== "YAMLMapping") {
+                return;
+            }
+
+            const outputsMapping = getMappingValueAsMapping(
+                workflowCallMapping,
+                "outputs"
+            );
+
+            if (outputsMapping === null) {
+                return;
+            }
+
+            for (const pair of outputsMapping.pairs) {
+                const outputId = getScalarStringValue(pair.key);
+                const outputMapping = unwrapYamlValue(pair.value);
+
+                if (
+                    outputId === null ||
+                    outputMapping?.type !== "YAMLMapping"
+                ) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
+                const valuePair = getMappingPair(outputMapping, "value");
 
-                if (root === null) {
-                    return;
+                if (valuePair === null) {
+                    reportYamlNode(context, {
+                        data: {
+                            outputId,
+                        },
+                        messageId: "missingValue",
+                        node: pair.key,
+                    });
+
+                    continue;
                 }
 
-                const onMapping = getMappingValueAsMapping(root, "on");
+                const value = getScalarStringValue(valuePair.value);
 
-                if (onMapping === null) {
-                    return;
+                if (value === null || value.trim().length === 0) {
+                    reportYamlNode(context, {
+                        data: {
+                            outputId,
+                        },
+                        messageId: "invalidValue",
+                        node: valuePair.value ?? valuePair,
+                    });
                 }
-
-                const workflowCallMapping = unwrapYamlValue(
-                    getMappingPair(onMapping, "workflow_call")?.value ?? null
-                );
-
-                if (workflowCallMapping?.type !== "YAMLMapping") {
-                    return;
-                }
-
-                const outputsMapping = getMappingValueAsMapping(
-                    workflowCallMapping,
-                    "outputs"
-                );
-
-                if (outputsMapping === null) {
-                    return;
-                }
-
-                for (const pair of outputsMapping.pairs) {
-                    const outputId = getScalarStringValue(pair.key);
-                    const outputMapping = unwrapYamlValue(pair.value);
-
-                    if (
-                        outputId === null ||
-                        outputMapping?.type !== "YAMLMapping"
-                    ) {
-                        continue;
-                    }
-
-                    const valuePair = getMappingPair(outputMapping, "value");
-
-                    if (valuePair === null) {
-                        reportYamlNode(context, {
-                            data: {
-                                outputId,
-                            },
-                            messageId: "missingValue",
-                            node: pair.key,
-                        });
-
-                        continue;
-                    }
-
-                    const value = getScalarStringValue(valuePair.value);
-
-                    if (value === null || value.trim().length === 0) {
-                        reportYamlNode(context, {
-                            data: {
-                                outputId,
-                            },
-                            messageId: "invalidValue",
-                            node: valuePair.value ?? valuePair,
-                        });
-                    }
-                }
-            },
-        };
-    },
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

@@ -25,70 +25,68 @@ const isLocalActionReference = (reference: string): boolean =>
 
 /** Rule implementation for requiring checkout before local actions. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const job of getWorkflowJobs(root)) {
+                const stepsSequence = getMappingValueAsSequence(
+                    job.mapping,
+                    "steps"
+                );
+
+                if (stepsSequence === null) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
+                let hasSeenCheckout = false;
 
-                if (root === null) {
-                    return;
-                }
+                for (const entry of stepsSequence.entries) {
+                    const stepMapping = unwrapYamlValue(entry);
 
-                for (const job of getWorkflowJobs(root)) {
-                    const stepsSequence = getMappingValueAsSequence(
-                        job.mapping,
-                        "steps"
-                    );
-
-                    if (stepsSequence === null) {
+                    if (stepMapping?.type !== "YAMLMapping") {
                         continue;
                     }
 
-                    let hasSeenCheckout = false;
+                    const usesPair = getMappingPair(stepMapping, "uses");
+                    const usesReference = getScalarStringValue(
+                        usesPair?.value ?? null
+                    );
 
-                    for (const entry of stepsSequence.entries) {
-                        const stepMapping = unwrapYamlValue(entry);
+                    if (usesPair === null || usesReference === null) {
+                        continue;
+                    }
 
-                        if (stepMapping?.type !== "YAMLMapping") {
-                            continue;
-                        }
+                    if (isCheckoutActionReference(usesReference)) {
+                        hasSeenCheckout = true;
+                        continue;
+                    }
 
-                        const usesPair = getMappingPair(stepMapping, "uses");
-                        const usesReference = getScalarStringValue(
-                            usesPair?.value ?? null
-                        );
-
-                        if (usesPair === null || usesReference === null) {
-                            continue;
-                        }
-
-                        if (isCheckoutActionReference(usesReference)) {
-                            hasSeenCheckout = true;
-                            continue;
-                        }
-
-                        if (
-                            isLocalActionReference(usesReference) &&
-                            !hasSeenCheckout
-                        ) {
-                            reportYamlNode(context, {
-                                data: {
-                                    jobId: job.id,
-                                    reference: usesReference,
-                                },
-                                messageId: "missingCheckoutBeforeLocalAction",
-                                node: usesPair.value ?? usesPair,
-                            });
-                        }
+                    if (
+                        isLocalActionReference(usesReference) &&
+                        !hasSeenCheckout
+                    ) {
+                        reportYamlNode(context, {
+                            data: {
+                                jobId: job.id,
+                                reference: usesReference,
+                            },
+                            messageId: "missingCheckoutBeforeLocalAction",
+                            node: usesPair.value ?? usesPair,
+                        });
                     }
                 }
-            },
-        };
-    },
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

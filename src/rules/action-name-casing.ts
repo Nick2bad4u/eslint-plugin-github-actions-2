@@ -15,13 +15,14 @@ import {
 } from "ts-extras";
 
 import {
-    convertToGithubActionsCasing,
+    convertToGithubActionsCasing as convertToBaseGithubActionsCasing,
     type GithubActionsCasingKind,
     githubActionsCasingKinds,
-    matchesGithubActionsCasing,
+    matchesGithubActionsCasing as matchesBaseGithubActionsCasing,
 } from "../_internal/casing.js";
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import { reportYamlNode } from "../_internal/report.js";
+import { convertWorkflowNameToTitleCase } from "../_internal/workflow-title-case.js";
 import {
     getMappingPair,
     getScalarStringValue,
@@ -41,6 +42,22 @@ const DEFAULT_ACTION_NAME_CASING: GithubActionsCasingKind = "Title Case";
 const actionNameCasingSet: ReadonlySet<string> = new Set(
     githubActionsCasingKinds
 );
+
+const convertWorkflowNameToCasing = (
+    value: string,
+    casingKind: GithubActionsCasingKind
+): string =>
+    casingKind === "Title Case"
+        ? convertWorkflowNameToTitleCase(value)
+        : convertToBaseGithubActionsCasing(value, casingKind);
+
+const matchesWorkflowNameCasing = (
+    value: string,
+    casingKind: GithubActionsCasingKind
+): boolean =>
+    casingKind === "Title Case"
+        ? convertWorkflowNameToTitleCase(value) === value
+        : matchesBaseGithubActionsCasing(value, casingKind);
 
 /** Determine whether an unknown value is a valid object option. */
 const isActionNameCasingObjectOption = (
@@ -126,11 +143,12 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                const matchesAllowedCasing = allowedCasings.some((casingKind) =>
-                    matchesGithubActionsCasing(nameValue, casingKind)
+                const isMatchesAllowedCasing = allowedCasings.some(
+                    (casingKind) =>
+                        matchesWorkflowNameCasing(nameValue, casingKind)
                 );
 
-                if (!matchesAllowedCasing) {
+                if (!isMatchesAllowedCasing) {
                     const [firstAllowedCasing] = allowedCasings;
 
                     reportYamlNode(context, {
@@ -144,7 +162,7 @@ const rule: Rule.RuleModule = {
                                 ? (fixer) =>
                                       fixer.replaceTextRange(
                                           nameNode.range,
-                                          convertToGithubActionsCasing(
+                                          convertWorkflowNameToCasing(
                                               nameValue,
                                               firstAllowedCasing
                                           )

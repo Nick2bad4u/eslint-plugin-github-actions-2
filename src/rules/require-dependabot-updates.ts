@@ -13,38 +13,33 @@ import {
 
 /** Rule implementation for requiring a non-empty `updates` sequence. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program(node) {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program(node) {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const updatesPair = getMappingPair(root, "updates");
-                const updatesSequence = getMappingValueAsSequence(
-                    root,
-                    "updates"
-                );
+            const updatesPair = getMappingPair(root, "updates");
+            const updatesSequence = getMappingValueAsSequence(root, "updates");
 
-                if (
-                    updatesSequence !== null &&
-                    updatesSequence.entries.length > 0
-                ) {
-                    return;
-                }
+            if (
+                updatesSequence !== null &&
+                updatesSequence.entries.length > 0
+            ) {
+                return;
+            }
 
-                reportYamlNode(context, {
-                    messageId:
-                        updatesPair === null
-                            ? "missingDependabotUpdates"
-                            : "emptyDependabotUpdates",
-                    node: updatesPair?.value ?? updatesPair ?? node,
-                });
-            },
-        };
-    },
+            reportYamlNode(context, {
+                messageId:
+                    updatesPair === null
+                        ? "missingDependabotUpdates"
+                        : "emptyDependabotUpdates",
+                node: updatesPair?.value ?? updatesPair ?? node,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

@@ -14,46 +14,44 @@ import {
 
 /** Rule implementation for requiring a string workflow run-name. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program(node) {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program(node) {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null) {
-                    reportYamlNode(context, {
-                        messageId: "missingRunName",
-                        node: node,
-                    });
+            if (root === null) {
+                reportYamlNode(context, {
+                    messageId: "missingRunName",
+                    node: node,
+                });
 
-                    return;
-                }
+                return;
+            }
 
-                const runNamePair = getMappingPair(root, "run-name");
+            const runNamePair = getMappingPair(root, "run-name");
 
-                if (runNamePair === null) {
-                    reportYamlNode(context, {
-                        messageId: "missingRunName",
-                        node: root,
-                    });
+            if (runNamePair === null) {
+                reportYamlNode(context, {
+                    messageId: "missingRunName",
+                    node: root,
+                });
 
-                    return;
-                }
+                return;
+            }
 
-                const runNameValue = getScalarStringValue(runNamePair.value);
+            const runNameValue = getScalarStringValue(runNamePair.value);
 
-                if (runNameValue === null || runNameValue.trim().length === 0) {
-                    reportYamlNode(context, {
-                        messageId: "invalidRunName",
-                        node: runNamePair.value ?? runNamePair,
-                    });
-                }
-            },
-        };
-    },
+            if (runNameValue === null || runNameValue.trim().length === 0) {
+                reportYamlNode(context, {
+                    messageId: "invalidRunName",
+                    node: runNamePair.value ?? runNamePair,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

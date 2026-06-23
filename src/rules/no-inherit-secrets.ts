@@ -26,44 +26,42 @@ const isInheritSecretsValue = (
 
 /** Rule implementation for disallowing reusable-workflow `secrets: inherit`. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const job of getWorkflowJobs(root)) {
+                if (!isReusableWorkflowJob(job.mapping)) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
+                const secretsPair = getMappingPair(job.mapping, "secrets");
 
-                if (root === null) {
-                    return;
+                if (
+                    secretsPair === null ||
+                    !isInheritSecretsValue(secretsPair)
+                ) {
+                    continue;
                 }
 
-                for (const job of getWorkflowJobs(root)) {
-                    if (!isReusableWorkflowJob(job.mapping)) {
-                        continue;
-                    }
-
-                    const secretsPair = getMappingPair(job.mapping, "secrets");
-
-                    if (
-                        secretsPair === null ||
-                        !isInheritSecretsValue(secretsPair)
-                    ) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            jobId: job.id,
-                        },
-                        messageId: "inheritedSecrets",
-                        node: secretsPair.value,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: {
+                        jobId: job.id,
+                    },
+                    messageId: "inheritedSecrets",
+                    node: secretsPair.value,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

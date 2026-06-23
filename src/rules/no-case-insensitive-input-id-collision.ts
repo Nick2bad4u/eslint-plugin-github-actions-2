@@ -16,58 +16,53 @@ import {
 
 /** Rule implementation for case-insensitive input id collision detection. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isActionMetadataFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isActionMetadataFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+            const inputsMapping =
+                root === null ? null : getMappingValueAsMapping(root, "inputs");
+
+            if (inputsMapping === null) {
+                return;
+            }
+
+            const inputByCanonicalId = new Map<string, string>();
+
+            for (const pair of inputsMapping.pairs) {
+                const inputId = getScalarStringValue(pair.key);
+
+                if (inputId === null) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
-                const inputsMapping =
-                    root === null
-                        ? null
-                        : getMappingValueAsMapping(root, "inputs");
+                const canonicalId = inputId.toLowerCase();
+                const firstSeenInputId = inputByCanonicalId.get(canonicalId);
 
-                if (inputsMapping === null) {
-                    return;
+                if (!isDefined(firstSeenInputId)) {
+                    inputByCanonicalId.set(canonicalId, inputId);
+
+                    continue;
                 }
 
-                const inputByCanonicalId = new Map<string, string>();
-
-                for (const pair of inputsMapping.pairs) {
-                    const inputId = getScalarStringValue(pair.key);
-
-                    if (inputId === null) {
-                        continue;
-                    }
-
-                    const canonicalId = inputId.toLowerCase();
-                    const firstSeenInputId =
-                        inputByCanonicalId.get(canonicalId);
-
-                    if (!isDefined(firstSeenInputId)) {
-                        inputByCanonicalId.set(canonicalId, inputId);
-
-                        continue;
-                    }
-
-                    if (firstSeenInputId === inputId) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            firstInputId: firstSeenInputId,
-                            inputId,
-                        },
-                        messageId: "collidingInputId",
-                        node: pair.key,
-                    });
+                if (firstSeenInputId === inputId) {
+                    continue;
                 }
-            },
-        };
-    },
+
+                reportYamlNode(context, {
+                    data: {
+                        firstInputId: firstSeenInputId,
+                        inputId,
+                    },
+                    messageId: "collidingInputId",
+                    node: pair.key,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

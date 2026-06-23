@@ -40,102 +40,95 @@ const hasJobsOutputReference = (value: string): boolean =>
 
 /** Rule implementation for validating reusable workflow output values. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            const onMapping = getMappingValueAsMapping(root, "on");
+
+            if (onMapping === null) {
+                return;
+            }
+
+            const workflowCallMapping = unwrapYamlValue(
+                getMappingPair(onMapping, "workflow_call")?.value ?? null
+            );
+
+            if (workflowCallMapping?.type !== "YAMLMapping") {
+                return;
+            }
+
+            const outputsMapping = getMappingValueAsMapping(
+                workflowCallMapping,
+                "outputs"
+            );
+
+            if (outputsMapping === null) {
+                return;
+            }
+
+            for (const pair of outputsMapping.pairs) {
+                const outputId = getScalarStringValue(pair.key);
+                const outputMapping = unwrapYamlValue(pair.value);
+
+                if (
+                    outputId === null ||
+                    outputMapping?.type !== "YAMLMapping"
+                ) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
+                const valuePair = getMappingPair(outputMapping, "value");
+                const value = getScalarStringValue(valuePair?.value ?? null);
 
-                if (root === null) {
-                    return;
+                if (
+                    valuePair === null ||
+                    value === null ||
+                    value.trim().length === 0
+                ) {
+                    continue;
                 }
 
-                const onMapping = getMappingValueAsMapping(root, "on");
-
-                if (onMapping === null) {
-                    return;
-                }
-
-                const workflowCallMapping = unwrapYamlValue(
-                    getMappingPair(onMapping, "workflow_call")?.value ?? null
+                const disallowedContexts = getReferencedContextRoots(
+                    value
+                ).filter(
+                    (contextRoot) =>
+                        !setHas(allowedWorkflowCallOutputContexts, contextRoot)
                 );
 
-                if (workflowCallMapping?.type !== "YAMLMapping") {
-                    return;
+                if (disallowedContexts.length > 0) {
+                    reportYamlNode(context, {
+                        data: {
+                            contexts: arrayJoin(disallowedContexts, ", "),
+                            outputId,
+                        },
+                        messageId: "invalidContext",
+                        node: valuePair.value ?? valuePair,
+                    });
+
+                    continue;
                 }
 
-                const outputsMapping = getMappingValueAsMapping(
-                    workflowCallMapping,
-                    "outputs"
-                );
-
-                if (outputsMapping === null) {
-                    return;
+                if (!hasJobsOutputReference(value)) {
+                    reportYamlNode(context, {
+                        data: {
+                            outputId,
+                        },
+                        messageId: "missingJobOutputReference",
+                        node: valuePair.value ?? valuePair,
+                    });
                 }
-
-                for (const pair of outputsMapping.pairs) {
-                    const outputId = getScalarStringValue(pair.key);
-                    const outputMapping = unwrapYamlValue(pair.value);
-
-                    if (
-                        outputId === null ||
-                        outputMapping?.type !== "YAMLMapping"
-                    ) {
-                        continue;
-                    }
-
-                    const valuePair = getMappingPair(outputMapping, "value");
-                    const value = getScalarStringValue(
-                        valuePair?.value ?? null
-                    );
-
-                    if (
-                        valuePair === null ||
-                        value === null ||
-                        value.trim().length === 0
-                    ) {
-                        continue;
-                    }
-
-                    const disallowedContexts = getReferencedContextRoots(
-                        value
-                    ).filter(
-                        (contextRoot) =>
-                            !setHas(
-                                allowedWorkflowCallOutputContexts,
-                                contextRoot
-                            )
-                    );
-
-                    if (disallowedContexts.length > 0) {
-                        reportYamlNode(context, {
-                            data: {
-                                contexts: arrayJoin(disallowedContexts, ", "),
-                                outputId,
-                            },
-                            messageId: "invalidContext",
-                            node: valuePair.value ?? valuePair,
-                        });
-
-                        continue;
-                    }
-
-                    if (!hasJobsOutputReference(value)) {
-                        reportYamlNode(context, {
-                            data: {
-                                outputId,
-                            },
-                            messageId: "missingJobOutputReference",
-                            node: valuePair.value ?? valuePair,
-                        });
-                    }
-                }
-            },
-        };
-    },
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

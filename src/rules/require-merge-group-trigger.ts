@@ -46,37 +46,35 @@ const hasTriggerEvent = (
 
 /** Rule implementation for requiring merge_group triggers. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null || !hasTriggerEvent(root, "pull_request")) {
-                    return;
-                }
+            if (root === null || !hasTriggerEvent(root, "pull_request")) {
+                return;
+            }
 
-                if (hasTriggerEvent(root, "merge_group")) {
-                    return;
-                }
+            if (hasTriggerEvent(root, "merge_group")) {
+                return;
+            }
 
-                const onPair = getMappingPair(root, "on");
-                const onValue = unwrapYamlValue(onPair?.value ?? null);
+            const onPair = getMappingPair(root, "on");
+            const onValue = unwrapYamlValue(onPair?.value ?? null);
 
-                if (onValue === null) {
-                    return;
-                }
+            if (onValue === null) {
+                return;
+            }
 
-                reportYamlNode(context, {
-                    messageId: "missingMergeGroup",
-                    node: onValue,
-                });
-            },
-        };
-    },
+            reportYamlNode(context, {
+                messageId: "missingMergeGroup",
+                node: onValue,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

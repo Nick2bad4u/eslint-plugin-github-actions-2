@@ -1,16 +1,16 @@
+import type { LoadContext, Plugin, PluginModule } from "@docusaurus/types";
+
 import { existsSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
 
-import type { LoadContext, Plugin, PluginModule } from "@docusaurus/types";
-
 const require = createRequire(import.meta.url);
 
-type PackageJson = {
+interface PackageJson {
     readonly exports?: unknown;
     readonly main?: unknown;
     readonly module?: unknown;
-};
+}
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
     typeof value === "object" && value !== null;
@@ -132,7 +132,7 @@ const vscodeLanguageServerTypesEsmEntry = resolvePreferredEntry(
 export const suppressKnownWebpackWarningsPlugin: PluginModule = (
     _context: LoadContext,
     _options: unknown
-): Plugin | null => {
+): null | Plugin => {
     const alias: Record<string, string> = {};
 
     if (vscodeCssLanguageServiceEsmEntry !== undefined) {
@@ -151,24 +151,20 @@ export const suppressKnownWebpackWarningsPlugin: PluginModule = (
     }
 
     return {
-        configureWebpack() {
-            return {
-                ...(vscodeLanguageServerTypesEsmEntry === undefined
-                    ? {}
-                    : {
-                          ignoreWarnings: [
-                              {
-                                  message:
-                                      /Critical dependency: require function is used in a way in which dependencies cannot be statically extracted/u,
-                                  module: /vscode-languageserver-types[\\/]lib[\\/]umd[\\/]main\.js/u,
-                              },
-                          ],
-                      }),
-                resolve: {
-                    alias,
-                },
-            };
-        },
+        configureWebpack: () => ({
+            ...(vscodeLanguageServerTypesEsmEntry !== undefined && {
+                ignoreWarnings: [
+                    {
+                        message:
+                            /Critical dependency: require function is used in a way in which dependencies cannot be statically extracted/u,
+                        module: /vscode-languageserver-types[/\\]lib[/\\]umd[/\\]main\.js/u,
+                    },
+                ],
+            }),
+            resolve: {
+                alias,
+            },
+        }),
         name: "suppress-known-webpack-warnings",
     };
 };

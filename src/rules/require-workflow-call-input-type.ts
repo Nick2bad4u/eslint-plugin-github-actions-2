@@ -30,89 +30,84 @@ const allowedWorkflowCallInputTypeSet: ReadonlySet<string> = new Set(
 
 /** Rule implementation for requiring explicit workflow_call input types. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            const onMapping = getMappingValueAsMapping(root, "on");
+
+            if (onMapping === null) {
+                return;
+            }
+
+            const workflowCallMapping = unwrapYamlValue(
+                getMappingPair(onMapping, "workflow_call")?.value ?? null
+            );
+
+            if (workflowCallMapping?.type !== "YAMLMapping") {
+                return;
+            }
+
+            const inputsMapping = getMappingValueAsMapping(
+                workflowCallMapping,
+                "inputs"
+            );
+
+            if (inputsMapping === null) {
+                return;
+            }
+
+            for (const pair of inputsMapping.pairs) {
+                const inputId = getScalarStringValue(pair.key);
+                const inputMapping = unwrapYamlValue(pair.value);
+
+                if (inputId === null || inputMapping?.type !== "YAMLMapping") {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
+                const typePair = getMappingPair(inputMapping, "type");
 
-                if (root === null) {
-                    return;
+                if (typePair === null) {
+                    reportYamlNode(context, {
+                        data: {
+                            inputId,
+                        },
+                        messageId: "missingType",
+                        node: pair.key,
+                    });
+
+                    continue;
                 }
 
-                const onMapping = getMappingValueAsMapping(root, "on");
+                const typeValue = getScalarStringValue(typePair.value);
 
-                if (onMapping === null) {
-                    return;
+                if (
+                    typeValue === null ||
+                    !setHas(allowedWorkflowCallInputTypeSet, typeValue)
+                ) {
+                    reportYamlNode(context, {
+                        data: {
+                            allowedTypes: arrayJoin(
+                                allowedWorkflowCallInputTypes,
+                                ", "
+                            ),
+                            inputId,
+                        },
+                        messageId: "invalidType",
+                        node: typePair.value ?? typePair,
+                    });
                 }
-
-                const workflowCallMapping = unwrapYamlValue(
-                    getMappingPair(onMapping, "workflow_call")?.value ?? null
-                );
-
-                if (workflowCallMapping?.type !== "YAMLMapping") {
-                    return;
-                }
-
-                const inputsMapping = getMappingValueAsMapping(
-                    workflowCallMapping,
-                    "inputs"
-                );
-
-                if (inputsMapping === null) {
-                    return;
-                }
-
-                for (const pair of inputsMapping.pairs) {
-                    const inputId = getScalarStringValue(pair.key);
-                    const inputMapping = unwrapYamlValue(pair.value);
-
-                    if (
-                        inputId === null ||
-                        inputMapping?.type !== "YAMLMapping"
-                    ) {
-                        continue;
-                    }
-
-                    const typePair = getMappingPair(inputMapping, "type");
-
-                    if (typePair === null) {
-                        reportYamlNode(context, {
-                            data: {
-                                inputId,
-                            },
-                            messageId: "missingType",
-                            node: pair.key,
-                        });
-
-                        continue;
-                    }
-
-                    const typeValue = getScalarStringValue(typePair.value);
-
-                    if (
-                        typeValue === null ||
-                        !setHas(allowedWorkflowCallInputTypeSet, typeValue)
-                    ) {
-                        reportYamlNode(context, {
-                            data: {
-                                allowedTypes: arrayJoin(
-                                    allowedWorkflowCallInputTypes,
-                                    ", "
-                                ),
-                                inputId,
-                            },
-                            messageId: "invalidType",
-                            node: typePair.value ?? typePair,
-                        });
-                    }
-                }
-            },
-        };
-    },
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

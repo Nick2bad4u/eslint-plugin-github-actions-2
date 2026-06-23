@@ -17,69 +17,62 @@ import {
 
 /** Rule implementation for requiring names on composite steps. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isActionMetadataFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isActionMetadataFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+            const runsMapping =
+                root === null ? null : getMappingValueAsMapping(root, "runs");
+
+            if (runsMapping === null) {
+                return;
+            }
+
+            const usingRuntime = getScalarStringValue(
+                getMappingPair(runsMapping, "using")?.value
+            );
+
+            if (usingRuntime !== "composite") {
+                return;
+            }
+
+            const stepsSequence = getMappingValueAsSequence(
+                runsMapping,
+                "steps"
+            );
+
+            if (stepsSequence === null) {
+                return;
+            }
+
+            for (const [index, stepEntry] of stepsSequence.entries.entries()) {
+                const stepMapping = unwrapYamlValue(stepEntry);
+
+                if (stepMapping?.type !== "YAMLMapping") {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
-                const runsMapping =
-                    root === null
-                        ? null
-                        : getMappingValueAsMapping(root, "runs");
-
-                if (runsMapping === null) {
-                    return;
-                }
-
-                const usingRuntime = getScalarStringValue(
-                    getMappingPair(runsMapping, "using")?.value
+                const nameValue = getScalarStringValue(
+                    getMappingPair(stepMapping, "name")?.value
                 );
 
-                if (usingRuntime !== "composite") {
-                    return;
+                if (nameValue !== null && nameValue.trim().length > 0) {
+                    continue;
                 }
 
-                const stepsSequence = getMappingValueAsSequence(
-                    runsMapping,
-                    "steps"
-                );
-
-                if (stepsSequence === null) {
-                    return;
-                }
-
-                for (const [
-                    index,
-                    stepEntry,
-                ] of stepsSequence.entries.entries()) {
-                    const stepMapping = unwrapYamlValue(stepEntry);
-
-                    if (stepMapping?.type !== "YAMLMapping") {
-                        continue;
-                    }
-
-                    const nameValue = getScalarStringValue(
-                        getMappingPair(stepMapping, "name")?.value
-                    );
-
-                    if (nameValue !== null && nameValue.trim().length > 0) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            index: String(index + 1),
-                        },
-                        messageId: "missingCompositeStepName",
-                        node: stepMapping,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: {
+                        index: String(index + 1),
+                    },
+                    messageId: "missingCompositeStepName",
+                    node: stepMapping,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

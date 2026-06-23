@@ -1,28 +1,28 @@
 import Link from "@docusaurus/Link";
 import useBaseUrl from "@docusaurus/useBaseUrl";
-import Layout from "@theme/Layout";
 import Heading from "@theme/Heading";
+import Layout from "@theme/Layout";
 
 import GitHubStats from "../components/GitHubStats";
 import styles from "./index.module.css";
 
-type HeroStat = {
-    readonly description: string;
-    readonly headline: string;
-};
-
-type HeroBadge = {
+interface HeroBadge {
     readonly description: string;
     readonly icon: string;
     readonly label: string;
-};
+}
 
-type HomeCard = {
+interface HeroStat {
+    readonly description: string;
+    readonly headline: string;
+}
+
+interface HomeCard {
     readonly description: string;
     readonly icon: string;
     readonly title: string;
     readonly to: string;
-};
+}
 
 const heroBadges = [
     {
@@ -92,8 +92,8 @@ export default function Home() {
 
     return (
         <Layout
-            title="eslint-plugin-github-actions-2 docs"
             description="Documentation for eslint-plugin-github-actions-2"
+            title="eslint-plugin-github-actions-2 docs"
         >
             <header className={styles["heroBanner"]}>
                 <div className={`container ${styles["heroContent"]}`}>
@@ -117,8 +117,8 @@ export default function Home() {
                             <div className={styles["heroBadgeRow"]}>
                                 {heroBadges.map((badge) => (
                                     <article
-                                        key={badge.label}
                                         className={styles["heroBadge"]}
+                                        key={badge.label}
                                     >
                                         <p className={styles["heroBadgeLabel"]}>
                                             <span
@@ -176,8 +176,8 @@ export default function Home() {
                     <div className={styles["heroStats"]}>
                         {heroStats.map((stat) => (
                             <article
-                                key={stat.headline}
                                 className={styles["heroStatCard"]}
+                                key={stat.headline}
                             >
                                 <p className={styles["heroStatHeading"]}>
                                     {stat.headline}
@@ -196,8 +196,8 @@ export default function Home() {
                     <div className={styles["cardGrid"]}>
                         {homeCards.map((card) => (
                             <article
-                                key={card.title}
                                 className={styles["card"]}
+                                key={card.title}
                             >
                                 <div className={styles["cardHeader"]}>
                                     <p className={styles["cardIcon"]}>

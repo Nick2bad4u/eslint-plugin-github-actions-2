@@ -1,6 +1,6 @@
 // @ts-check
 
-const SCHEME_RE = /^[a-zA-Z][a-zA-Z+.-]*:/u;
+const SCHEME_RE = /^[A-Za-z][+\-.A-Za-z]*:/u;
 
 /**
  * @typedef {{ marker: "`" | "~"; length: number }} FenceState
@@ -83,7 +83,7 @@ function prefixIfBareRelativeMarkdownFile(url) {
         return url;
     }
 
-    // Ignore any explicit scheme (http:, https:, mailto:, vscode:, etc.).
+    // Ignore any explicit scheme (HTTP:, HTTPS:, mailto:, VS Code:, etc.).
     if (SCHEME_RE.test(trimmed)) {
         return url;
     }

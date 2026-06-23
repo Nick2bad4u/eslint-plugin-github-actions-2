@@ -16,35 +16,33 @@ const hardcodedDefaultBranchNames = new Set(["main", "master"]);
 
 /** Rule implementation for hardcoded default branch checks in templates. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowTemplateYamlFile(context.filename)) {
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowTemplateYamlFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            visitYamlStringScalars(root, (node, value) => {
+                if (!setHas(hardcodedDefaultBranchNames, value.trim())) {
                     return;
                 }
 
-                const root = getWorkflowRoot(context);
-
-                if (root === null) {
-                    return;
-                }
-
-                visitYamlStringScalars(root, (node, value) => {
-                    if (!setHas(hardcodedDefaultBranchNames, value.trim())) {
-                        return;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            branchName: value,
-                        },
-                        messageId: "hardcodedDefaultBranch",
-                        node: node,
-                    });
+                reportYamlNode(context, {
+                    data: {
+                        branchName: value,
+                    },
+                    messageId: "hardcodedDefaultBranch",
+                    node: node,
                 });
-            },
-        };
-    },
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

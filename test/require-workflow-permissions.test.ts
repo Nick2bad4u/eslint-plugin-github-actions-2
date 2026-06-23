@@ -86,7 +86,7 @@ describe("require-workflow-permissions", () => {
                     message.ruleId ===
                     "github-actions/require-workflow-permissions"
             )
-        ).toBeTruthy();
+        ).toBe(true);
     });
 
     it("allows all jobs to declare permissions when workflow-level permissions are omitted", async () => {

@@ -23,71 +23,69 @@ const inputReferencePattern = /inputs\.(?<inputId>(?:\w|-)+)/gv;
 
 /** Rule implementation for unknown composite input references. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isActionMetadataFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isActionMetadataFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const runsMapping = getMappingValueAsMapping(root, "runs");
+            const runsMapping = getMappingValueAsMapping(root, "runs");
 
-                if (runsMapping === null) {
-                    return;
-                }
+            if (runsMapping === null) {
+                return;
+            }
 
-                const usingRuntime = getScalarStringValue(
-                    runsMapping.pairs.find(
-                        (pair) => getScalarStringValue(pair.key) === "using"
-                    )?.value
-                );
+            const usingRuntime = getScalarStringValue(
+                runsMapping.pairs.find(
+                    (pair) => getScalarStringValue(pair.key) === "using"
+                )?.value
+            );
 
-                if (usingRuntime !== "composite") {
-                    return;
-                }
+            if (usingRuntime !== "composite") {
+                return;
+            }
 
-                const inputsMapping = getMappingValueAsMapping(root, "inputs");
-                const declaredInputIds = new Set<string>();
+            const inputsMapping = getMappingValueAsMapping(root, "inputs");
+            const declaredInputIds = new Set<string>();
 
-                if (inputsMapping !== null) {
-                    for (const pair of inputsMapping.pairs) {
-                        const inputId = getScalarStringValue(pair.key);
+            if (inputsMapping !== null) {
+                for (const pair of inputsMapping.pairs) {
+                    const inputId = getScalarStringValue(pair.key);
 
-                        if (inputId !== null) {
-                            declaredInputIds.add(inputId);
-                        }
+                    if (inputId !== null) {
+                        declaredInputIds.add(inputId);
                     }
                 }
+            }
 
-                visitYamlStringScalars(runsMapping, (node, value) => {
-                    for (const match of value.matchAll(inputReferencePattern)) {
-                        const inputId = match.groups?.["inputId"];
+            visitYamlStringScalars(runsMapping, (node, value) => {
+                for (const match of value.matchAll(inputReferencePattern)) {
+                    const inputId = match.groups?.["inputId"];
 
-                        if (
-                            !isDefined(inputId) ||
-                            setHas(declaredInputIds, inputId)
-                        ) {
-                            continue;
-                        }
-
-                        reportYamlNode(context, {
-                            data: {
-                                inputId,
-                            },
-                            messageId: "unknownInputReference",
-                            node: node,
-                        });
+                    if (
+                        !isDefined(inputId) ||
+                        setHas(declaredInputIds, inputId)
+                    ) {
+                        continue;
                     }
-                });
-            },
-        };
-    },
+
+                    reportYamlNode(context, {
+                        data: {
+                            inputId,
+                        },
+                        messageId: "unknownInputReference",
+                        node: node,
+                    });
+                }
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

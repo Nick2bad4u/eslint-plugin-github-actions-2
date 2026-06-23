@@ -235,6 +235,11 @@ export const getWorkflowJobs = (
     return jobs;
 };
 
+/** Determine whether a workflow job calls a reusable workflow. */
+export const isReusableWorkflowJob = (
+    jobMapping: Readonly<AST.YAMLMapping>
+): boolean => getMappingPair(jobMapping, "uses") !== null;
+
 /** Collect the workflow event names declared under `on`. */
 export const getWorkflowEventNames = (
     root: AST.YAMLMapping

@@ -13,38 +13,35 @@ import {
 
 /** Rule implementation for root-directory-oriented template file pattern checks. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowTemplatePropertiesFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowTemplatePropertiesFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowTemplatePropertiesRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const { node, value } of getWorkflowTemplateFilePatternEntries(
+                root
+            )) {
+                if (!value.includes("/") && !value.includes("\\")) {
+                    continue;
                 }
 
-                const root = getWorkflowTemplatePropertiesRoot(context);
-
-                if (root === null) {
-                    return;
-                }
-
-                for (const {
-                    node,
-                    value,
-                } of getWorkflowTemplateFilePatternEntries(root)) {
-                    if (!value.includes("/") && !value.includes("\\")) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            pattern: value,
-                        },
-                        messageId: "subdirectoryTemplateFilePattern",
-                        node: node,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: {
+                        pattern: value,
+                    },
+                    messageId: "subdirectoryTemplateFilePattern",
+                    node: node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

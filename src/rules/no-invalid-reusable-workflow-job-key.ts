@@ -3,17 +3,16 @@
  * Disallow unsupported keys on jobs that call reusable workflows.
  */
 import type { Rule } from "eslint";
-import type { AST } from "yaml-eslint-parser";
 
 import { arrayJoin, setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import { reportYamlNode } from "../_internal/report.js";
 import {
-    getMappingPair,
     getScalarStringValue,
     getWorkflowJobs,
     getWorkflowRoot,
+    isReusableWorkflowJob,
 } from "../_internal/workflow-yaml.js";
 
 /** Supported keywords for jobs that call reusable workflows via `uses`. */
@@ -34,58 +33,51 @@ const reusableWorkflowJobKeySet: ReadonlySet<string> = new Set(
     reusableWorkflowJobKeys
 );
 
-/** Determine whether a job calls a reusable workflow. */
-const isReusableWorkflowJob = (
-    jobMapping: Readonly<AST.YAMLMapping>
-): boolean => getMappingPair(jobMapping, "uses") !== null;
-
 /** Rule implementation for validating reusable-workflow caller job keys. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const job of getWorkflowJobs(root)) {
+                if (!isReusableWorkflowJob(job.mapping)) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
+                for (const pair of job.mapping.pairs) {
+                    const key = getScalarStringValue(pair.key);
 
-                if (root === null) {
-                    return;
-                }
-
-                for (const job of getWorkflowJobs(root)) {
-                    if (!isReusableWorkflowJob(job.mapping)) {
+                    if (
+                        key === null ||
+                        setHas(reusableWorkflowJobKeySet, key)
+                    ) {
                         continue;
                     }
 
-                    for (const pair of job.mapping.pairs) {
-                        const key = getScalarStringValue(pair.key);
-
-                        if (
-                            key === null ||
-                            setHas(reusableWorkflowJobKeySet, key)
-                        ) {
-                            continue;
-                        }
-
-                        reportYamlNode(context, {
-                            data: {
-                                allowedKeys: arrayJoin(
-                                    reusableWorkflowJobKeys,
-                                    ", "
-                                ),
-                                jobId: job.id,
-                                key,
-                            },
-                            messageId: "invalidReusableWorkflowJobKey",
-                            node: pair.key,
-                        });
-                    }
+                    reportYamlNode(context, {
+                        data: {
+                            allowedKeys: arrayJoin(
+                                reusableWorkflowJobKeys,
+                                ", "
+                            ),
+                            jobId: job.id,
+                            key,
+                        },
+                        messageId: "invalidReusableWorkflowJobKey",
+                        node: pair.key,
+                    });
                 }
-            },
-        };
-    },
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

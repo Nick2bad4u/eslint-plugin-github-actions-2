@@ -287,6 +287,43 @@ describe("workflow reuse rules", () => {
         expect(result.messages).toHaveLength(0);
     });
 
+    it("reports unsupported reusable caller-job keys without inline-job secondary noise", async () => {
+        expect.hasAssertions();
+
+        const result = await lintWorkflow(
+            [
+                "name: Release",
+                "on:",
+                "  workflow_dispatch:",
+                "jobs:",
+                "  deploy:",
+                "    uses: ./.github/workflows/deploy.yml",
+                "    runs-on: ubuntu-latest",
+                "    timeout-minutes: 0",
+                "    steps:",
+                "      - run: echo deploy",
+            ].join("\n"),
+            {
+                rules: {
+                    "github-actions/no-invalid-key": "error",
+                    "github-actions/no-invalid-reusable-workflow-job-key":
+                        "error",
+                    "github-actions/require-job-step-name": "error",
+                    "github-actions/valid-timeout-minutes": "error",
+                },
+            }
+        );
+
+        expect(result.messages).toHaveLength(3);
+        expect(
+            result.messages.every(
+                (message) =>
+                    message.ruleId ===
+                    "github-actions/no-invalid-reusable-workflow-job-key"
+            )
+        ).toBe(true);
+    });
+
     it("ignores no-invalid-reusable-workflow-job-key when workflow root is not a mapping", async () => {
         expect.hasAssertions();
 

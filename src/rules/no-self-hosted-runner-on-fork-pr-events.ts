@@ -73,56 +73,54 @@ const hasSelfHostedRunner = (
 
 /** Rule implementation for blocking self-hosted runners on fork PR events. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            const triggeringForkPullRequestEvents = [
+                ...getWorkflowEventNames(root),
+            ]
+                .filter((eventName) =>
+                    setHas(forkPullRequestEventNameSet, eventName)
+                )
+                .toSorted((left, right) => left.localeCompare(right));
+
+            if (isEmpty(triggeringForkPullRequestEvents)) {
+                return;
+            }
+
+            for (const job of getWorkflowJobs(root)) {
+                const runsOnPair = getMappingPair(job.mapping, "runs-on");
+
+                if (
+                    runsOnPair === null ||
+                    !hasSelfHostedRunner(runsOnPair.value ?? null)
+                ) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
-
-                if (root === null) {
-                    return;
-                }
-
-                const triggeringForkPullRequestEvents = [
-                    ...getWorkflowEventNames(root),
-                ]
-                    .filter((eventName) =>
-                        setHas(forkPullRequestEventNameSet, eventName)
-                    )
-                    .toSorted((left, right) => left.localeCompare(right));
-
-                if (isEmpty(triggeringForkPullRequestEvents)) {
-                    return;
-                }
-
-                for (const job of getWorkflowJobs(root)) {
-                    const runsOnPair = getMappingPair(job.mapping, "runs-on");
-
-                    if (
-                        runsOnPair === null ||
-                        !hasSelfHostedRunner(runsOnPair.value ?? null)
-                    ) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            events: arrayJoin(
-                                triggeringForkPullRequestEvents,
-                                ", "
-                            ),
-                            jobId: job.id,
-                        },
-                        messageId: "selfHostedRunnerOnForkPullRequestEvent",
-                        node: runsOnPair.value ?? runsOnPair,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: {
+                        events: arrayJoin(
+                            triggeringForkPullRequestEvents,
+                            ", "
+                        ),
+                        jobId: job.id,
+                    },
+                    messageId: "selfHostedRunnerOnForkPullRequestEvent",
+                    node: runsOnPair.value ?? runsOnPair,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

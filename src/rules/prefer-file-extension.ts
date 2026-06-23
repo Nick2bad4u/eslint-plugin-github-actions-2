@@ -3,7 +3,7 @@
  * Enforce a consistent file extension for workflow files.
  */
 import type { Rule } from "eslint";
-import type { UnknownArray } from "type-fest";
+import type { ArrayValues, UnknownArray } from "type-fest";
 
 import path from "node:path";
 import { arrayFirst, isDefined, safeCastTo, setHas } from "ts-extras";
@@ -15,7 +15,7 @@ import { reportYamlNode } from "../_internal/report.js";
 const workflowFileExtensions = ["yaml", "yml"] as const;
 
 /** Allowed workflow filename extension. */
-type WorkflowFileExtension = (typeof workflowFileExtensions)[number];
+type WorkflowFileExtension = ArrayValues<typeof workflowFileExtensions>;
 
 /** Object-style options for `prefer-file-extension`. */
 interface WorkflowFileExtensionOptionObject {

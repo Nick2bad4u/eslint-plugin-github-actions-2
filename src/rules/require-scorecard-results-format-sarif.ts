@@ -16,49 +16,47 @@ import {
 
 /** Rule implementation for requiring Scorecard SARIF output. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const step of getScorecardSteps(root)) {
+                const withMapping = getMappingValueAsMapping(
+                    step.stepMapping,
+                    "with"
+                );
+                const formatPair =
+                    withMapping === null
+                        ? null
+                        : getMappingPair(withMapping, "results_format");
+                const formatValue = getScalarStringValue(
+                    formatPair?.value ?? null
+                )?.trim();
+
+                if (formatValue === "sarif") {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
-
-                if (root === null) {
-                    return;
-                }
-
-                for (const step of getScorecardSteps(root)) {
-                    const withMapping = getMappingValueAsMapping(
-                        step.stepMapping,
-                        "with"
-                    );
-                    const formatPair =
-                        withMapping === null
-                            ? null
-                            : getMappingPair(withMapping, "results_format");
-                    const formatValue = getScalarStringValue(
-                        formatPair?.value ?? null
-                    )?.trim();
-
-                    if (formatValue === "sarif") {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: { jobId: step.job.id },
-                        messageId: "missingSarifResultsFormat",
-                        node:
-                            formatPair?.value ??
-                            formatPair ??
-                            withMapping ??
-                            step.usesPair,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: { jobId: step.job.id },
+                    messageId: "missingSarifResultsFormat",
+                    node:
+                        formatPair?.value ??
+                        formatPair ??
+                        withMapping ??
+                        step.usesPair,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

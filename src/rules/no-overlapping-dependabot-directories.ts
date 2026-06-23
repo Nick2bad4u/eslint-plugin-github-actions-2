@@ -146,14 +146,14 @@ const selectorsDefinitelyOverlap = (
         return true;
     }
 
-    const leftHasGlob = hasGlobSyntax(leftSelector);
-    const rightHasGlob = hasGlobSyntax(rightSelector);
+    const isLeftHasGlob = hasGlobSyntax(leftSelector);
+    const isRightHasGlob = hasGlobSyntax(rightSelector);
 
-    if (leftHasGlob && !rightHasGlob) {
+    if (isLeftHasGlob && !isRightHasGlob) {
         return globSelectorToRegExp(leftSelector).test(rightSelector);
     }
 
-    if (!leftHasGlob && rightHasGlob) {
+    if (!isLeftHasGlob && isRightHasGlob) {
         return globSelectorToRegExp(rightSelector).test(leftSelector);
     }
 
@@ -162,82 +162,79 @@ const selectorsDefinitelyOverlap = (
 
 /** Rule implementation for overlapping Dependabot directory selectors. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            const seenSelectors: SeenSelectorEntry[] = [];
+
+            for (const update of getDependabotUpdateEntries(root)) {
+                const packageEcosystem = update.packageEcosystem?.trim();
+
+                if (
+                    !isDefined(packageEcosystem) ||
+                    packageEcosystem.length === 0
+                ) {
+                    continue;
                 }
 
-                const seenSelectors: SeenSelectorEntry[] = [];
+                const targetBranch = getEffectiveDependabotTargetBranch(
+                    root,
+                    update
+                );
 
-                for (const update of getDependabotUpdateEntries(root)) {
-                    const packageEcosystem = update.packageEcosystem?.trim();
+                for (const selectorEntry of getDependabotDirectorySelectorEntries(
+                    update
+                )) {
+                    const directorySelector = normalizeDirectorySelector(
+                        selectorEntry.value
+                    );
 
-                    if (
-                        !isDefined(packageEcosystem) ||
-                        packageEcosystem.length === 0
-                    ) {
+                    const overlappingSelector = seenSelectors.find(
+                        (seenSelector) =>
+                            seenSelector.packageEcosystem ===
+                                packageEcosystem &&
+                            seenSelector.targetBranch === targetBranch &&
+                            selectorsDefinitelyOverlap(
+                                seenSelector.directorySelector,
+                                directorySelector
+                            )
+                    );
+
+                    if (isDefined(overlappingSelector)) {
+                        reportYamlNode(context, {
+                            data: {
+                                directorySelector,
+                                otherDirectorySelector:
+                                    overlappingSelector.directorySelector,
+                                otherUpdateLabel: getDependabotUpdateLabel(
+                                    overlappingSelector.update
+                                ),
+                                targetBranch,
+                                updateLabel: getDependabotUpdateLabel(update),
+                            },
+                            messageId: "overlappingDependabotDirectories",
+                            node: selectorEntry.node,
+                        });
+
                         continue;
                     }
 
-                    const targetBranch = getEffectiveDependabotTargetBranch(
-                        root,
-                        update
-                    );
-
-                    for (const selectorEntry of getDependabotDirectorySelectorEntries(
-                        update
-                    )) {
-                        const directorySelector = normalizeDirectorySelector(
-                            selectorEntry.value
-                        );
-
-                        const overlappingSelector = seenSelectors.find(
-                            (seenSelector) =>
-                                seenSelector.packageEcosystem ===
-                                    packageEcosystem &&
-                                seenSelector.targetBranch === targetBranch &&
-                                selectorsDefinitelyOverlap(
-                                    seenSelector.directorySelector,
-                                    directorySelector
-                                )
-                        );
-
-                        if (isDefined(overlappingSelector)) {
-                            reportYamlNode(context, {
-                                data: {
-                                    directorySelector,
-                                    otherDirectorySelector:
-                                        overlappingSelector.directorySelector,
-                                    otherUpdateLabel: getDependabotUpdateLabel(
-                                        overlappingSelector.update
-                                    ),
-                                    targetBranch,
-                                    updateLabel:
-                                        getDependabotUpdateLabel(update),
-                                },
-                                messageId: "overlappingDependabotDirectories",
-                                node: selectorEntry.node,
-                            });
-
-                            continue;
-                        }
-
-                        seenSelectors.push({
-                            directoryNode: selectorEntry.node,
-                            directorySelector,
-                            packageEcosystem,
-                            targetBranch,
-                            update,
-                        });
-                    }
+                    seenSelectors.push({
+                        directoryNode: selectorEntry.node,
+                        directorySelector,
+                        packageEcosystem,
+                        targetBranch,
+                        update,
+                    });
                 }
-            },
-        };
-    },
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

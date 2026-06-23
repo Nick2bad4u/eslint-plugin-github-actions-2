@@ -12,6 +12,7 @@ import {
     getMappingValueAsSequence,
     getWorkflowJobs,
     getWorkflowRoot,
+    isReusableWorkflowJob,
     unwrapYamlValue,
 } from "../_internal/workflow-yaml.js";
 
@@ -54,8 +55,7 @@ const rule: Rule.RuleModule = {
                 }
 
                 for (const job of getWorkflowJobs(root)) {
-                    // Skip reusable workflows
-                    if (getMappingPair(job.mapping, "uses") !== null) {
+                    if (isReusableWorkflowJob(job.mapping)) {
                         continue;
                     }
 

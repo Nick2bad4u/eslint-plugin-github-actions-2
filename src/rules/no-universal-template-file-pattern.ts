@@ -23,45 +23,37 @@ const universalTemplateFilePatterns = new Set([
 
 /** Rule implementation for universal template file pattern checks. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowTemplatePropertiesFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowTemplatePropertiesFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowTemplatePropertiesRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const { node, value } of getWorkflowTemplateFilePatternEntries(
+                root
+            )) {
+                const normalizedPattern = value.trim();
+
+                if (!setHas(universalTemplateFilePatterns, normalizedPattern)) {
+                    continue;
                 }
 
-                const root = getWorkflowTemplatePropertiesRoot(context);
-
-                if (root === null) {
-                    return;
-                }
-
-                for (const {
-                    node,
-                    value,
-                } of getWorkflowTemplateFilePatternEntries(root)) {
-                    const normalizedPattern = value.trim();
-
-                    if (
-                        !setHas(
-                            universalTemplateFilePatterns,
-                            normalizedPattern
-                        )
-                    ) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            pattern: value,
-                        },
-                        messageId: "universalTemplateFilePattern",
-                        node: node,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: {
+                        pattern: value,
+                    },
+                    messageId: "universalTemplateFilePattern",
+                    node: node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

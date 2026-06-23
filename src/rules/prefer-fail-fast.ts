@@ -17,66 +17,55 @@ import {
 
 /** Rule implementation for discouraging `strategy.fail-fast: false`. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const job of getWorkflowJobs(root)) {
+                const strategyPair = getMappingPair(job.mapping, "strategy");
+                const strategyValue = unwrapYamlValue(
+                    strategyPair?.value ?? null
+                );
+
+                if (strategyValue?.type !== "YAMLMapping") {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
+                const failFastPair = getMappingPair(strategyValue, "fail-fast");
 
-                if (root === null) {
-                    return;
+                if (
+                    failFastPair === null ||
+                    isGithubExpressionScalar(failFastPair.value)
+                ) {
+                    continue;
                 }
 
-                for (const job of getWorkflowJobs(root)) {
-                    const strategyPair = getMappingPair(
-                        job.mapping,
-                        "strategy"
-                    );
-                    const strategyValue = unwrapYamlValue(
-                        strategyPair?.value ?? null
-                    );
+                const failFastValue = unwrapYamlValue(failFastPair.value);
+                const failFastText = getScalarStringValue(failFastPair.value);
 
-                    if (strategyValue?.type !== "YAMLMapping") {
-                        continue;
-                    }
-
-                    const failFastPair = getMappingPair(
-                        strategyValue,
-                        "fail-fast"
-                    );
-
-                    if (
-                        failFastPair === null ||
-                        isGithubExpressionScalar(failFastPair.value)
-                    ) {
-                        continue;
-                    }
-
-                    const failFastValue = unwrapYamlValue(failFastPair.value);
-                    const failFastText = getScalarStringValue(
-                        failFastPair.value
-                    );
-
-                    if (
-                        failFastValue?.type === "YAMLScalar" &&
-                        (failFastValue.value === false ||
-                            failFastText === "false")
-                    ) {
-                        reportYamlNode(context, {
-                            data: {
-                                jobId: job.id,
-                            },
-                            messageId: "failFastDisabled",
-                            node: failFastPair.value ?? failFastPair,
-                        });
-                    }
+                if (
+                    failFastValue?.type === "YAMLScalar" &&
+                    (failFastValue.value === false || failFastText === "false")
+                ) {
+                    reportYamlNode(context, {
+                        data: {
+                            jobId: job.id,
+                        },
+                        messageId: "failFastDisabled",
+                        node: failFastPair.value ?? failFastPair,
+                    });
                 }
-            },
-        };
-    },
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

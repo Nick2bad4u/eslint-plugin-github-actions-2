@@ -20,75 +20,64 @@ import {
 
 /** Rule implementation for requiring `package-ecosystem` in each update entry. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            const updatesSequence = getMappingValueAsSequence(root, "updates");
+
+            if (updatesSequence === null) {
+                return;
+            }
+
+            for (const [index, entry] of updatesSequence.entries.entries()) {
+                const updateMapping = unwrapYamlValue(entry);
+
+                if (entry === null || !isDefined(entry)) {
+                    continue;
                 }
 
-                const updatesSequence = getMappingValueAsSequence(
-                    root,
-                    "updates"
-                );
-
-                if (updatesSequence === null) {
-                    return;
-                }
-
-                for (const [
-                    index,
-                    entry,
-                ] of updatesSequence.entries.entries()) {
-                    const updateMapping = unwrapYamlValue(entry);
-
-                    if (entry === null || !isDefined(entry)) {
-                        continue;
-                    }
-
-                    if (updateMapping?.type !== "YAMLMapping") {
-                        reportYamlNode(context, {
-                            messageId: "invalidDependabotUpdateEntry",
-                            node: entry,
-                        });
-
-                        continue;
-                    }
-
-                    const ecosystemPair = getMappingPair(
-                        updateMapping,
-                        "package-ecosystem"
-                    );
-                    const ecosystemValue = getScalarStringValue(
-                        ecosystemPair?.value
-                    )?.trim();
-
-                    if (
-                        isDefined(ecosystemValue) &&
-                        ecosystemValue.length > 0
-                    ) {
-                        continue;
-                    }
-
+                if (updateMapping?.type !== "YAMLMapping") {
                     reportYamlNode(context, {
-                        data: {
-                            updateLabel: getDependabotUpdateLabel({
-                                index: index + 1,
-                                mapping: updateMapping,
-                                multiEcosystemGroup: null,
-                                node: entry,
-                                packageEcosystem: null,
-                            }),
-                        },
-                        messageId: "missingPackageEcosystem",
-                        node: ecosystemPair?.value ?? ecosystemPair ?? entry,
+                        messageId: "invalidDependabotUpdateEntry",
+                        node: entry,
                     });
+
+                    continue;
                 }
-            },
-        };
-    },
+
+                const ecosystemPair = getMappingPair(
+                    updateMapping,
+                    "package-ecosystem"
+                );
+                const ecosystemValue = getScalarStringValue(
+                    ecosystemPair?.value
+                )?.trim();
+
+                if (isDefined(ecosystemValue) && ecosystemValue.length > 0) {
+                    continue;
+                }
+
+                reportYamlNode(context, {
+                    data: {
+                        updateLabel: getDependabotUpdateLabel({
+                            index: index + 1,
+                            mapping: updateMapping,
+                            multiEcosystemGroup: null,
+                            node: entry,
+                            packageEcosystem: null,
+                        }),
+                    },
+                    messageId: "missingPackageEcosystem",
+                    node: ecosystemPair?.value ?? ecosystemPair ?? entry,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

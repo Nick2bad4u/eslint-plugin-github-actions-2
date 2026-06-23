@@ -49,61 +49,56 @@ const hasConfiguredBranchFilter = (
  * triggers.
  */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null || isEmpty(getCodeqlInitSteps(root))) {
+                return;
+            }
+
+            const onMapping = getMappingValueAsMapping(root, "on");
+
+            if (onMapping === null) {
+                return;
+            }
+
+            for (const triggerName of ["push", "pull_request"]) {
+                const triggerPair = getMappingPair(onMapping, triggerName);
+                const triggerMapping =
+                    triggerPair === null
+                        ? null
+                        : unwrapYamlValue(triggerPair.value);
+
+                if (triggerMapping?.type !== "YAMLMapping") {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
+                const branchesPair = getMappingPair(triggerMapping, "branches");
+                const branchesIgnorePair = getMappingPair(
+                    triggerMapping,
+                    "branches-ignore"
+                );
 
-                if (root === null || isEmpty(getCodeqlInitSteps(root))) {
-                    return;
+                if (
+                    hasConfiguredBranchFilter(branchesPair) ||
+                    hasConfiguredBranchFilter(branchesIgnorePair)
+                ) {
+                    continue;
                 }
 
-                const onMapping = getMappingValueAsMapping(root, "on");
-
-                if (onMapping === null) {
-                    return;
-                }
-
-                for (const triggerName of ["push", "pull_request"]) {
-                    const triggerPair = getMappingPair(onMapping, triggerName);
-                    const triggerMapping =
-                        triggerPair === null
-                            ? null
-                            : unwrapYamlValue(triggerPair.value);
-
-                    if (triggerMapping?.type !== "YAMLMapping") {
-                        continue;
-                    }
-
-                    const branchesPair = getMappingPair(
-                        triggerMapping,
-                        "branches"
-                    );
-                    const branchesIgnorePair = getMappingPair(
-                        triggerMapping,
-                        "branches-ignore"
-                    );
-
-                    if (
-                        hasConfiguredBranchFilter(branchesPair) ||
-                        hasConfiguredBranchFilter(branchesIgnorePair)
-                    ) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: { triggerName },
-                        messageId: "missingBranchFilter",
-                        node: triggerMapping,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: { triggerName },
+                    messageId: "missingBranchFilter",
+                    node: triggerMapping,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

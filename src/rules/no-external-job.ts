@@ -10,48 +10,44 @@ import {
     getMappingPair,
     getWorkflowJobs,
     getWorkflowRoot,
+    isReusableWorkflowJob,
 } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for disallowing reusable-workflow jobs. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const job of getWorkflowJobs(root)) {
+                if (!isReusableWorkflowJob(job.mapping)) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
-
-                if (root === null) {
-                    return;
-                }
-
-                for (const job of getWorkflowJobs(root)) {
-                    const usesPair = getMappingPair(job.mapping, "uses");
-
-                    if (usesPair === null) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            jobId: job.id,
-                        },
-                        messageId: "externalJob",
-                        node: usesPair.value ?? usesPair,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: {
+                        jobId: job.id,
+                    },
+                    messageId: "externalJob",
+                    node:
+                        getMappingPair(job.mapping, "uses")?.value ??
+                        job.idNode,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {
-            configs: [
-                "github-actions.configs.all",
-                "github-actions.configs.strict",
-            ],
+            configs: ["github-actions.configs.localWorkflows"],
             description:
                 "disallow reusable-workflow jobs declared with `jobs.<id>.uses` when you want every job defined inline in the workflow file.",
             dialects: ["GitHub Actions workflow"],

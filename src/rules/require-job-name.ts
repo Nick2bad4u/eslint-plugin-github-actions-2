@@ -111,31 +111,29 @@ const checkJobPair = (
 
 /** Rule implementation for requiring explicit job names. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const jobsMapping = getMappingValueAsMapping(root, "jobs");
+            const jobsMapping = getMappingValueAsMapping(root, "jobs");
 
-                if (jobsMapping === null) {
-                    return;
-                }
+            if (jobsMapping === null) {
+                return;
+            }
 
-                for (const pair of jobsMapping.pairs) {
-                    checkJobPair(context, pair);
-                }
-            },
-        };
-    },
+            for (const pair of jobsMapping.pairs) {
+                checkJobPair(context, pair);
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

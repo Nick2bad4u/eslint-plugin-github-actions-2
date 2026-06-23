@@ -11,40 +11,37 @@ import { getEnclosingLineRemovalRange } from "../_internal/yaml-fixes.js";
 
 /** Rule implementation for the unused `enable-beta-ecosystems` key. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const enableBetaEcosystemsPair = getMappingPair(
-                    root,
-                    "enable-beta-ecosystems"
-                );
+            const enableBetaEcosystemsPair = getMappingPair(
+                root,
+                "enable-beta-ecosystems"
+            );
 
-                if (enableBetaEcosystemsPair === null) {
-                    return;
-                }
+            if (enableBetaEcosystemsPair === null) {
+                return;
+            }
 
-                reportYamlNode(context, {
-                    fix: (fixer) =>
-                        fixer.removeRange(
-                            getEnclosingLineRemovalRange(
-                                context.sourceCode.text,
-                                enableBetaEcosystemsPair.range
-                            )
-                        ),
-                    messageId: "unusedEnableBetaEcosystems",
-                    node:
-                        enableBetaEcosystemsPair.value ??
-                        enableBetaEcosystemsPair,
-                });
-            },
-        };
-    },
+            reportYamlNode(context, {
+                fix: (fixer) =>
+                    fixer.removeRange(
+                        getEnclosingLineRemovalRange(
+                            context.sourceCode.text,
+                            enableBetaEcosystemsPair.range
+                        )
+                    ),
+                messageId: "unusedEnableBetaEcosystems",
+                node:
+                    enableBetaEcosystemsPair.value ?? enableBetaEcosystemsPair,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

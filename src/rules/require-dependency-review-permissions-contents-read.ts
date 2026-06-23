@@ -17,48 +17,46 @@ import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for dependency-review contents permission requirements. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null || !hasDependencyReviewAction(root)) {
+                return;
+            }
+
+            const seenJobIds = new Set<string>();
+
+            for (const step of getDependencyReviewActionSteps(root)) {
+                if (setHas(seenJobIds, step.job.id)) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
+                seenJobIds.add(step.job.id);
 
-                if (root === null || !hasDependencyReviewAction(root)) {
-                    return;
+                if (
+                    hasExactWorkflowPermission(
+                        root,
+                        step.job,
+                        "contents",
+                        "read"
+                    )
+                ) {
+                    continue;
                 }
 
-                const seenJobIds = new Set<string>();
-
-                for (const step of getDependencyReviewActionSteps(root)) {
-                    if (setHas(seenJobIds, step.job.id)) {
-                        continue;
-                    }
-
-                    seenJobIds.add(step.job.id);
-
-                    if (
-                        hasExactWorkflowPermission(
-                            root,
-                            step.job,
-                            "contents",
-                            "read"
-                        )
-                    ) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: { jobId: step.job.id },
-                        messageId: "missingContentsReadPermission",
-                        node: step.job.idNode,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: { jobId: step.job.id },
+                    messageId: "missingContentsReadPermission",
+                    node: step.job.idNode,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

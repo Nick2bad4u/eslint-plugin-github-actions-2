@@ -24,59 +24,57 @@ const hasDependabotBotGuard = (value: null | string | undefined): boolean =>
 
 /** Rule implementation for Dependabot bot guard requirements. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null || !hasDependabotAutomation(root)) {
-                    return;
-                }
+            if (root === null || !hasDependabotAutomation(root)) {
+                return;
+            }
 
-                const runStepsByJobId = new Map(
-                    getDependabotAutomationRunSteps(root).map((step) => [
-                        step.job.id,
-                        step,
-                    ])
+            const runStepsByJobId = new Map(
+                getDependabotAutomationRunSteps(root).map((step) => [
+                    step.job.id,
+                    step,
+                ])
+            );
+
+            for (const step of getDependabotFetchMetadataSteps(root)) {
+                const jobIfValue = getScalarStringValue(
+                    getMappingPair(step.job.mapping, "if")?.value ?? null
                 );
 
-                for (const step of getDependabotFetchMetadataSteps(root)) {
-                    const jobIfValue = getScalarStringValue(
-                        getMappingPair(step.job.mapping, "if")?.value ?? null
-                    );
-
-                    if (hasDependabotBotGuard(jobIfValue)) {
-                        continue;
-                    }
-
-                    const pairedRunStep = runStepsByJobId.get(step.job.id);
-                    const runStepIfValue = getScalarStringValue(
-                        pairedRunStep
-                            ? (getMappingPair(pairedRunStep.stepMapping, "if")
-                                  ?.value ?? null)
-                            : null
-                    );
-
-                    if (
-                        isDefined(pairedRunStep) &&
-                        hasDependabotBotGuard(runStepIfValue)
-                    ) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: { jobId: step.job.id },
-                        messageId: "missingDependabotBotGuard",
-                        node: step.job.idNode,
-                    });
+                if (hasDependabotBotGuard(jobIfValue)) {
+                    continue;
                 }
-            },
-        };
-    },
+
+                const pairedRunStep = runStepsByJobId.get(step.job.id);
+                const runStepIfValue = getScalarStringValue(
+                    pairedRunStep
+                        ? (getMappingPair(pairedRunStep.stepMapping, "if")
+                              ?.value ?? null)
+                        : null
+                );
+
+                if (
+                    isDefined(pairedRunStep) &&
+                    hasDependabotBotGuard(runStepIfValue)
+                ) {
+                    continue;
+                }
+
+                reportYamlNode(context, {
+                    data: { jobId: step.job.id },
+                    messageId: "missingDependabotBotGuard",
+                    node: step.job.idNode,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

@@ -1,19 +1,18 @@
 import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 
 import { readdirSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 
 /** Sidebar doc item shape for generated lists. */
-type SidebarDocItem = {
+interface SidebarDocItem {
     readonly className?: string;
     readonly id: string;
     readonly label: string;
     readonly type: "doc";
-};
+}
 
 /** Directory containing this sidebar module. */
-const sidebarDirectoryPath = dirname(fileURLToPath(import.meta.url));
+const sidebarDirectoryPath = __dirname;
 /** Root rules docs directory consumed by the rules docs plugin. */
 const rulesDocsDirectoryPath = join(sidebarDirectoryPath, "..", "rules");
 /** Presets docs directory under rules docs. */
@@ -53,14 +52,15 @@ const presetDocIds = readdirSync(presetsDocsDirectoryPath, {
 /** Preset order for primary docs UX. */
 const presetOrder = [
     "action-metadata",
+    "all",
     "code-scanning",
     "dependabot",
-    "workflow-template-properties",
-    "workflow-templates",
+    "local-workflows",
     "recommended",
     "security",
     "strict",
-    "all",
+    "workflow-template-properties",
+    "workflow-templates",
 ] as const;
 
 /** Fast membership lookup for preset IDs included in preferred display order. */
@@ -69,14 +69,15 @@ const presetOrderSet = new Set<string>(presetOrder);
 /** Preferred label overrides for rule category docs. */
 const presetLabelById = new Map<string, string>([
     ["action-metadata", "🧩 Action metadata"],
+    ["all", "🟣 All"],
     ["code-scanning", "🔎 Code scanning"],
     ["dependabot", "🤖 Dependabot"],
-    ["workflow-template-properties", "🗂️ Workflow template properties"],
-    ["workflow-templates", "🧱 Workflow templates"],
+    ["local-workflows", "🏠 Local workflows"],
     ["recommended", "🟡 Recommended"],
     ["security", "🛡️ Security"],
     ["strict", "🔴 Strict"],
-    ["all", "🟣 All"],
+    ["workflow-template-properties", "🗂️ Workflow template properties"],
+    ["workflow-templates", "🧱 Workflow templates"],
 ]);
 
 const isDependabotRule = (docId: string): boolean =>
@@ -179,43 +180,36 @@ const sidebars = {
             className: "sb-cat-guides",
             collapsed: true,
             collapsible: true,
+            items: guideItems,
             label: "🧭 Guides",
             link: {
                 id: "guides/index",
                 type: "doc",
             },
-            items: guideItems,
             type: "category",
         },
         {
             className: "sb-cat-presets",
             collapsed: false,
             collapsible: true,
+            items: presetItems,
+            label: "🧭 Presets",
             link: {
                 id: "presets/index",
                 type: "doc",
             },
-            items: presetItems,
-            label: "🧭 Presets",
             type: "category",
         },
         {
             className: "sb-cat-rules",
             collapsed: false,
             collapsible: true,
-            label: "📚 Rule reference",
-            link: {
-                description:
-                    "Reference documentation for every eslint-plugin-github-actions-2 rule.",
-                slug: "/",
-                title: "Rule reference",
-                type: "generated-index",
-            },
             items: [
                 {
                     className: "sb-cat-rules-workflows",
                     collapsed: true,
                     collapsible: true,
+                    items: toRuleItems(workflowRuleDocIds),
                     label: "⚙️ Workflow rules",
                     link: {
                         description:
@@ -224,13 +218,13 @@ const sidebars = {
                         title: "Workflow rules",
                         type: "generated-index",
                     },
-                    items: toRuleItems(workflowRuleDocIds),
                     type: "category",
                 },
                 {
                     className: "sb-cat-rules-dependabot",
                     collapsed: true,
                     collapsible: true,
+                    items: toRuleItems(dependabotRuleDocIds),
                     label: "🤖 Dependabot rules",
                     link: {
                         description:
@@ -239,13 +233,13 @@ const sidebars = {
                         title: "Dependabot rules",
                         type: "generated-index",
                     },
-                    items: toRuleItems(dependabotRuleDocIds),
                     type: "category",
                 },
                 {
                     className: "sb-cat-rules-action-metadata",
                     collapsed: true,
                     collapsible: true,
+                    items: toRuleItems(actionMetadataRuleDocIds),
                     label: "🧩 Action metadata rules",
                     link: {
                         description:
@@ -254,13 +248,13 @@ const sidebars = {
                         title: "Action metadata rules",
                         type: "generated-index",
                     },
-                    items: toRuleItems(actionMetadataRuleDocIds),
                     type: "category",
                 },
                 {
                     className: "sb-cat-rules-workflow-templates",
                     collapsed: true,
                     collapsible: true,
+                    items: toRuleItems(workflowTemplateRuleDocIds),
                     label: "🧪 Workflow template rules",
                     link: {
                         description:
@@ -269,10 +263,17 @@ const sidebars = {
                         title: "Workflow template rules",
                         type: "generated-index",
                     },
-                    items: toRuleItems(workflowTemplateRuleDocIds),
                     type: "category",
                 },
             ],
+            label: "📚 Rule reference",
+            link: {
+                description:
+                    "Reference documentation for every eslint-plugin-github-actions-2 rule.",
+                slug: "/",
+                title: "Rule reference",
+                type: "generated-index",
+            },
             type: "category",
         },
     ],

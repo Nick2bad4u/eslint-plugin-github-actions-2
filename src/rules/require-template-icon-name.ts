@@ -13,35 +13,33 @@ import {
 
 /** Rule implementation for requiring `iconName` in template properties metadata. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program(node) {
-                if (!isWorkflowTemplatePropertiesFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program(node) {
+            if (!isWorkflowTemplatePropertiesFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowTemplatePropertiesRoot(context);
+            const root = getWorkflowTemplatePropertiesRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const iconName = getWorkflowTemplateStringProperty(
-                    root,
-                    "iconName"
-                );
+            const iconName = getWorkflowTemplateStringProperty(
+                root,
+                "iconName"
+            );
 
-                if (iconName !== null && iconName.trim().length > 0) {
-                    return;
-                }
+            if (iconName !== null && iconName.trim().length > 0) {
+                return;
+            }
 
-                reportYamlNode(context, {
-                    messageId: "missingIconName",
-                    node: node,
-                });
-            },
-        };
-    },
+            reportYamlNode(context, {
+                messageId: "missingIconName",
+                node: node,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

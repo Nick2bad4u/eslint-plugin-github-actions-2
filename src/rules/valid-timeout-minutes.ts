@@ -17,6 +17,7 @@ import {
     getScalarNumberValue,
     getWorkflowRoot,
     isGithubExpressionScalar,
+    isReusableWorkflowJob,
     unwrapYamlValue,
 } from "../_internal/workflow-yaml.js";
 
@@ -243,6 +244,10 @@ const rule: Rule.RuleModule = {
                     const jobValue = unwrapYamlValue(jobPair.value);
 
                     if (jobValue?.type !== "YAMLMapping") {
+                        continue;
+                    }
+
+                    if (isReusableWorkflowJob(jobValue)) {
                         continue;
                     }
 

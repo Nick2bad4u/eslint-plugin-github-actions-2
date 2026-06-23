@@ -20,73 +20,64 @@ import {
 
 /** Rule implementation for `schedule.cronjob` correctness. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            for (const update of getDependabotUpdateEntries(root)) {
+                const scheduleMapping = getEffectiveDependabotUpdateMapping(
+                    root,
+                    update,
+                    "schedule"
+                );
+
+                if (scheduleMapping === null) {
+                    continue;
                 }
 
-                for (const update of getDependabotUpdateEntries(root)) {
-                    const scheduleMapping = getEffectiveDependabotUpdateMapping(
-                        root,
-                        update,
-                        "schedule"
-                    );
+                const intervalValue = getScalarStringValue(
+                    getMappingPair(scheduleMapping, "interval")?.value
+                )?.trim();
+                const cronjobPair = getMappingPair(scheduleMapping, "cronjob");
+                const cronjobValueNode = cronjobPair?.value ?? null;
+                const cronjobValue =
+                    getScalarStringValue(cronjobValueNode)?.trim();
 
-                    if (scheduleMapping === null) {
-                        continue;
-                    }
-
-                    const intervalValue = getScalarStringValue(
-                        getMappingPair(scheduleMapping, "interval")?.value
-                    )?.trim();
-                    const cronjobPair = getMappingPair(
-                        scheduleMapping,
-                        "cronjob"
-                    );
-                    const cronjobValueNode = cronjobPair?.value ?? null;
-                    const cronjobValue =
-                        getScalarStringValue(cronjobValueNode)?.trim();
-
-                    if (intervalValue === "cron") {
-                        if (
-                            isDefined(cronjobValue) &&
-                            cronjobValue.length > 0
-                        ) {
-                            continue;
-                        }
-
-                        reportYamlNode(context, {
-                            data: {
-                                updateLabel: getDependabotUpdateLabel(update),
-                            },
-                            messageId: "missingCronjob",
-                            node:
-                                cronjobValueNode ?? cronjobPair ?? update.node,
-                        });
-
-                        continue;
-                    }
-
-                    if (!isDefined(cronjobValue) || cronjobValue.length === 0) {
+                if (intervalValue === "cron") {
+                    if (isDefined(cronjobValue) && cronjobValue.length > 0) {
                         continue;
                     }
 
                     reportYamlNode(context, {
                         data: {
-                            intervalValue: intervalValue ?? "(missing)",
                             updateLabel: getDependabotUpdateLabel(update),
                         },
-                        messageId: "unexpectedCronjob",
+                        messageId: "missingCronjob",
                         node: cronjobValueNode ?? cronjobPair ?? update.node,
                     });
+
+                    continue;
                 }
-            },
-        };
-    },
+
+                if (!isDefined(cronjobValue) || cronjobValue.length === 0) {
+                    continue;
+                }
+
+                reportYamlNode(context, {
+                    data: {
+                        intervalValue: intervalValue ?? "(missing)",
+                        updateLabel: getDependabotUpdateLabel(update),
+                    },
+                    messageId: "unexpectedCronjob",
+                    node: cronjobValueNode ?? cronjobPair ?? update.node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

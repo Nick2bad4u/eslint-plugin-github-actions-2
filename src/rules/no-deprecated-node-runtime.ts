@@ -19,47 +19,45 @@ const deprecatedNodeRuntimes = new Set(["node12", "node16"]);
 
 /** Rule implementation for deprecated Node runtime checks in action metadata. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isActionMetadataFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isActionMetadataFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const runsMapping = getMappingValueAsMapping(root, "runs");
+            const runsMapping = getMappingValueAsMapping(root, "runs");
 
-                if (runsMapping === null) {
-                    return;
-                }
+            if (runsMapping === null) {
+                return;
+            }
 
-                const usingPair = runsMapping.pairs.find(
-                    (pair) => getScalarStringValue(pair.key) === "using"
-                );
-                const usingRuntime = getScalarStringValue(usingPair?.value);
+            const usingPair = runsMapping.pairs.find(
+                (pair) => getScalarStringValue(pair.key) === "using"
+            );
+            const usingRuntime = getScalarStringValue(usingPair?.value);
 
-                if (
-                    usingRuntime === null ||
-                    !setHas(deprecatedNodeRuntimes, usingRuntime)
-                ) {
-                    return;
-                }
+            if (
+                usingRuntime === null ||
+                !setHas(deprecatedNodeRuntimes, usingRuntime)
+            ) {
+                return;
+            }
 
-                reportYamlNode(context, {
-                    data: {
-                        runtime: usingRuntime,
-                    },
-                    messageId: "deprecatedNodeRuntime",
-                    node: usingPair?.value ?? usingPair,
-                });
-            },
-        };
-    },
+            reportYamlNode(context, {
+                data: {
+                    runtime: usingRuntime,
+                },
+                messageId: "deprecatedNodeRuntime",
+                node: usingPair?.value ?? usingPair,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

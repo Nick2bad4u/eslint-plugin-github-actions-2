@@ -12,24 +12,22 @@ import { reportYamlNode } from "../_internal/report.js";
 
 /** Rule implementation for template YAML extension preference checks. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program(node) {
-                if (!isWorkflowTemplateYamlFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program(node) {
+            if (!isWorkflowTemplateYamlFile(context.filename)) {
+                return;
+            }
 
-                if (!usesYamlExtension(context.filename)) {
-                    return;
-                }
+            if (!usesYamlExtension(context.filename)) {
+                return;
+            }
 
-                reportYamlNode(context, {
-                    messageId: "preferTemplateYml",
-                    node: node,
-                });
-            },
-        };
-    },
+            reportYamlNode(context, {
+                messageId: "preferTemplateYml",
+                node: node,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

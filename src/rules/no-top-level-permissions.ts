@@ -10,30 +10,28 @@ import { getMappingPair, getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for disallowing top-level workflow permissions. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const permissionsPair = getMappingPair(root, "permissions");
+            const permissionsPair = getMappingPair(root, "permissions");
 
-                if (permissionsPair !== null) {
-                    reportYamlNode(context, {
-                        messageId: "topLevelPermissions",
-                        node: permissionsPair.key,
-                    });
-                }
-            },
-        };
-    },
+            if (permissionsPair !== null) {
+                reportYamlNode(context, {
+                    messageId: "topLevelPermissions",
+                    node: permissionsPair.key,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

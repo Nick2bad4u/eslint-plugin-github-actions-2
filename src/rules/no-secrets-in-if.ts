@@ -83,53 +83,47 @@ const checkJobStepsForSecretsInIf = (
 
 /** Rule implementation for disallowing direct secret usage in `if` conditionals. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                for (const job of getWorkflowJobs(root)) {
-                    const jobIfPair = getMappingPair(job.mapping, "if");
-                    const jobIfExpression = getScalarStringValue(
-                        jobIfPair?.value ?? null
+            for (const job of getWorkflowJobs(root)) {
+                const jobIfPair = getMappingPair(job.mapping, "if");
+                const jobIfExpression = getScalarStringValue(
+                    jobIfPair?.value ?? null
+                );
+
+                if (
+                    jobIfPair !== null &&
+                    jobIfExpression !== null &&
+                    hasDirectSecretsReference(jobIfExpression)
+                ) {
+                    reportDirectSecretsConditional(
+                        context,
+                        jobIfPair,
+                        `job '${job.id}'`
                     );
-
-                    if (
-                        jobIfPair !== null &&
-                        jobIfExpression !== null &&
-                        hasDirectSecretsReference(jobIfExpression)
-                    ) {
-                        reportDirectSecretsConditional(
-                            context,
-                            jobIfPair,
-                            `job '${job.id}'`
-                        );
-                    }
-
-                    const stepsSequence = getMappingValueAsSequence(
-                        job.mapping,
-                        "steps"
-                    );
-
-                    if (stepsSequence !== null) {
-                        checkJobStepsForSecretsInIf(
-                            context,
-                            stepsSequence,
-                            job.id
-                        );
-                    }
                 }
-            },
-        };
-    },
+
+                const stepsSequence = getMappingValueAsSequence(
+                    job.mapping,
+                    "steps"
+                );
+
+                if (stepsSequence !== null) {
+                    checkJobStepsForSecretsInIf(context, stepsSequence, job.id);
+                }
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

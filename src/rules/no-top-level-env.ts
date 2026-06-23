@@ -10,30 +10,28 @@ import { getMappingPair, getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for disallowing top-level workflow env. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const envPair = getMappingPair(root, "env");
+            const envPair = getMappingPair(root, "env");
 
-                if (envPair !== null) {
-                    reportYamlNode(context, {
-                        messageId: "topLevelEnv",
-                        node: envPair.key,
-                    });
-                }
-            },
-        };
-    },
+            if (envPair !== null) {
+                reportYamlNode(context, {
+                    messageId: "topLevelEnv",
+                    node: envPair.key,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

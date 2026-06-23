@@ -16,90 +16,88 @@ import { getEnclosingLineRemovalRange } from "../_internal/yaml-fixes.js";
 
 /** Rule implementation for GitHub Actions directory-root enforcement. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            for (const update of getDependabotUpdateEntries(root)) {
+                if (update.packageEcosystem?.trim() !== "github-actions") {
+                    continue;
                 }
 
-                for (const update of getDependabotUpdateEntries(root)) {
-                    if (update.packageEcosystem?.trim() !== "github-actions") {
-                        continue;
-                    }
+                const directoryPair = getMappingPair(
+                    update.mapping,
+                    "directory"
+                );
+                const directoriesPair = getMappingPair(
+                    update.mapping,
+                    "directories"
+                );
+                const directoryValue = getDependabotMappingStringValue(
+                    update.mapping,
+                    "directory"
+                );
 
-                    const directoryPair = getMappingPair(
-                        update.mapping,
-                        "directory"
-                    );
-                    const directoriesPair = getMappingPair(
-                        update.mapping,
-                        "directories"
-                    );
-                    const directoryValue = getDependabotMappingStringValue(
-                        update.mapping,
-                        "directory"
-                    );
+                if (directoryValue === "/" && directoriesPair === null) {
+                    continue;
+                }
 
-                    if (directoryValue === "/" && directoriesPair === null) {
-                        continue;
-                    }
+                reportYamlNode(context, {
+                    data: {
+                        updateLabel: getDependabotUpdateLabel(update),
+                    },
+                    fix: (fixer) => {
+                        const fixes: Rule.Fix[] = [];
 
-                    reportYamlNode(context, {
-                        data: {
-                            updateLabel: getDependabotUpdateLabel(update),
-                        },
-                        fix: (fixer) => {
-                            const fixes: Rule.Fix[] = [];
-
-                            if (directoryPair !== null) {
-                                fixes.push(
-                                    directoryPair.value === null
-                                        ? fixer.replaceTextRange(
-                                              directoryPair.range,
-                                              'directory: "/"'
-                                          )
-                                        : fixer.replaceTextRange(
-                                              directoryPair.value.range,
-                                              '"/"'
-                                          )
-                                );
-
-                                if (directoriesPair !== null) {
-                                    fixes.push(
-                                        fixer.removeRange(
-                                            getEnclosingLineRemovalRange(
-                                                context.sourceCode.text,
-                                                directoriesPair.range
-                                            )
-                                        )
-                                    );
-                                }
-                                return fixes;
-                            }
+                        if (directoryPair !== null) {
+                            fixes.push(
+                                directoryPair.value === null
+                                    ? fixer.replaceTextRange(
+                                          directoryPair.range,
+                                          'directory: "/"'
+                                      )
+                                    : fixer.replaceTextRange(
+                                          directoryPair.value.range,
+                                          '"/"'
+                                      )
+                            );
 
                             if (directoriesPair !== null) {
                                 fixes.push(
-                                    fixer.replaceTextRange(
-                                        directoriesPair.range,
-                                        'directory: "/"'
+                                    fixer.removeRange(
+                                        getEnclosingLineRemovalRange(
+                                            context.sourceCode.text,
+                                            directoriesPair.range
+                                        )
                                     )
                                 );
-
-                                return fixes;
                             }
+                            return fixes;
+                        }
+
+                        if (directoriesPair !== null) {
+                            fixes.push(
+                                fixer.replaceTextRange(
+                                    directoriesPair.range,
+                                    'directory: "/"'
+                                )
+                            );
 
                             return fixes;
-                        },
-                        messageId: "githubActionsDirectoryMustBeRoot",
-                        node: directoriesPair ?? directoryPair ?? update.node,
-                    });
-                }
-            },
-        };
-    },
+                        }
+
+                        return fixes;
+                    },
+                    messageId: "githubActionsDirectoryMustBeRoot",
+                    node: directoriesPair ?? directoryPair ?? update.node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

@@ -31,51 +31,48 @@ const validDependabotIntervals = new Set([
 
 /** Rule implementation for requiring effective `schedule.interval`. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            for (const update of getDependabotUpdateEntries(root)) {
+                const scheduleMapping = getEffectiveDependabotUpdateMapping(
+                    root,
+                    update,
+                    "schedule"
+                );
+                const intervalPair =
+                    scheduleMapping === null
+                        ? null
+                        : getMappingPair(scheduleMapping, "interval");
+                const intervalValue = getScalarStringValue(
+                    intervalPair?.value
+                )?.trim();
+
+                if (
+                    isDefined(intervalValue) &&
+                    setHas(validDependabotIntervals, intervalValue)
+                ) {
+                    continue;
                 }
 
-                for (const update of getDependabotUpdateEntries(root)) {
-                    const scheduleMapping = getEffectiveDependabotUpdateMapping(
-                        root,
-                        update,
-                        "schedule"
-                    );
-                    const intervalPair =
-                        scheduleMapping === null
-                            ? null
-                            : getMappingPair(scheduleMapping, "interval");
-                    const intervalValue = getScalarStringValue(
-                        intervalPair?.value
-                    )?.trim();
-
-                    if (
-                        isDefined(intervalValue) &&
-                        setHas(validDependabotIntervals, intervalValue)
-                    ) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            updateLabel: getDependabotUpdateLabel(update),
-                        },
-                        messageId:
-                            intervalPair === null
-                                ? "missingScheduleInterval"
-                                : "invalidScheduleInterval",
-                        node:
-                            intervalPair?.value ?? intervalPair ?? update.node,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: {
+                        updateLabel: getDependabotUpdateLabel(update),
+                    },
+                    messageId:
+                        intervalPair === null
+                            ? "missingScheduleInterval"
+                            : "invalidScheduleInterval",
+                    node: intervalPair?.value ?? intervalPair ?? update.node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

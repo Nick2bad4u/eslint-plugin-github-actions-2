@@ -16,30 +16,28 @@ import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for requiring SARIF upload in Scorecard workflows. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program(node) {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program(node) {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null || isEmpty(getScorecardSteps(root))) {
-                    return;
-                }
+            if (root === null || isEmpty(getScorecardSteps(root))) {
+                return;
+            }
 
-                if (getSarifUploadSteps(root).length > 0) {
-                    return;
-                }
+            if (getSarifUploadSteps(root).length > 0) {
+                return;
+            }
 
-                reportYamlNode(context, {
-                    messageId: "missingSarifUpload",
-                    node: node,
-                });
-            },
-        };
-    },
+            reportYamlNode(context, {
+                messageId: "missingSarifUpload",
+                node: node,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

@@ -3,7 +3,7 @@
  * Enforce a consistent style for step-level `uses:` references.
  */
 import type { Rule } from "eslint";
-import type { UnknownArray } from "type-fest";
+import type { ArrayValues, UnknownArray } from "type-fest";
 
 import {
     arrayFirst,
@@ -41,7 +41,7 @@ type PreferStepUsesStyleObjectOption = Partial<
 };
 
 /** String literal union of supported `uses:` styles. */
-type StepUsesStyle = (typeof usesStyles)[number];
+type StepUsesStyle = ArrayValues<typeof usesStyles>;
 
 /** Default `uses:` style enforced by the rule. */
 const DEFAULT_STEP_USES_STYLE: StepUsesStyle = "commit";
@@ -126,10 +126,12 @@ const parseStepUsesReference = (
 
     if (isReleaseStyle) {
         for (const character of ref.slice(1)) {
-            if (character !== "." && (character < "0" || character > "9")) {
-                isReleaseStyle = false;
-                break;
+            if (character === "." || (character >= "0" && character <= "9")) {
+                continue;
             }
+
+            isReleaseStyle = false;
+            break;
         }
     }
 

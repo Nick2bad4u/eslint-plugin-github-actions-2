@@ -26,7 +26,6 @@ Fix legend:
 | <span class="sb-inline-rule-number">R044</span> [`no-deprecated-node-runtime`](../no-deprecated-node-runtime.md)                                                       |  —  |
 | <span class="sb-inline-rule-number">R051</span> [`no-duplicate-composite-step-id`](../no-duplicate-composite-step-id.md)                                               |  —  |
 | <span class="sb-inline-rule-number">R060</span> [`no-empty-template-file-pattern`](../no-empty-template-file-pattern.md)                                               | 🔧  |
-| <span class="sb-inline-rule-number">R012</span> [`no-external-job`](../no-external-job.md)                                                                             |  —  |
 | <span class="sb-inline-rule-number">R068</span> [`no-hardcoded-default-branch-in-template`](../no-hardcoded-default-branch-in-template.md)                             |  —  |
 | <span class="sb-inline-rule-number">R063</span> [`no-icon-file-extension-in-template-icon-name`](../no-icon-file-extension-in-template-icon-name.md)                   | 🔧  |
 | <span class="sb-inline-rule-number">R026</span> [`no-inherit-secrets`](../no-inherit-secrets.md)                                                                       |  —  |

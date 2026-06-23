@@ -28,67 +28,65 @@ const ecosystemsSupportingPrefixDevelopment = new Set([
 
 /** Rule implementation for commit-message.prefix-development requirements. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            for (const update of getDependabotUpdateEntries(root)) {
+                const packageEcosystem = update.packageEcosystem?.trim();
+
+                if (
+                    !isDefined(packageEcosystem) ||
+                    !setHas(
+                        ecosystemsSupportingPrefixDevelopment,
+                        packageEcosystem
+                    )
+                ) {
+                    continue;
                 }
 
-                for (const update of getDependabotUpdateEntries(root)) {
-                    const packageEcosystem = update.packageEcosystem?.trim();
+                const commitMessageMapping =
+                    getEffectiveDependabotUpdateMapping(
+                        root,
+                        update,
+                        "commit-message"
+                    );
+                const prefixDevelopmentPair =
+                    commitMessageMapping === null
+                        ? null
+                        : getMappingPair(
+                              commitMessageMapping,
+                              "prefix-development"
+                          );
+                const prefixDevelopmentValue =
+                    commitMessageMapping === null
+                        ? null
+                        : getDependabotMappingStringValue(
+                              commitMessageMapping,
+                              "prefix-development"
+                          );
 
-                    if (
-                        !isDefined(packageEcosystem) ||
-                        !setHas(
-                            ecosystemsSupportingPrefixDevelopment,
-                            packageEcosystem
-                        )
-                    ) {
-                        continue;
-                    }
-
-                    const commitMessageMapping =
-                        getEffectiveDependabotUpdateMapping(
-                            root,
-                            update,
-                            "commit-message"
-                        );
-                    const prefixDevelopmentPair =
-                        commitMessageMapping === null
-                            ? null
-                            : getMappingPair(
-                                  commitMessageMapping,
-                                  "prefix-development"
-                              );
-                    const prefixDevelopmentValue =
-                        commitMessageMapping === null
-                            ? null
-                            : getDependabotMappingStringValue(
-                                  commitMessageMapping,
-                                  "prefix-development"
-                              );
-
-                    if (prefixDevelopmentValue !== null) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            updateLabel: getDependabotUpdateLabel(update),
-                        },
-                        messageId: "missingPrefixDevelopment",
-                        node:
-                            prefixDevelopmentPair?.value ??
-                            prefixDevelopmentPair ??
-                            update.node,
-                    });
+                if (prefixDevelopmentValue !== null) {
+                    continue;
                 }
-            },
-        };
-    },
+
+                reportYamlNode(context, {
+                    data: {
+                        updateLabel: getDependabotUpdateLabel(update),
+                    },
+                    messageId: "missingPrefixDevelopment",
+                    node:
+                        prefixDevelopmentPair?.value ??
+                        prefixDevelopmentPair ??
+                        update.node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

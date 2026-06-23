@@ -14,33 +14,31 @@ import {
 
 /** Rule implementation for requiring workflow names in template YAML files. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program(node) {
-                if (!isWorkflowTemplateYamlFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program(node) {
+            if (!isWorkflowTemplateYamlFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const namePair = getMappingPair(root, "name");
-                const workflowName = getScalarStringValue(namePair?.value);
+            const namePair = getMappingPair(root, "name");
+            const workflowName = getScalarStringValue(namePair?.value);
 
-                if (workflowName !== null && workflowName.trim().length > 0) {
-                    return;
-                }
+            if (workflowName !== null && workflowName.trim().length > 0) {
+                return;
+            }
 
-                reportYamlNode(context, {
-                    messageId: "missingTemplateWorkflowName",
-                    node: namePair ?? node,
-                });
-            },
-        };
-    },
+            reportYamlNode(context, {
+                messageId: "missingTemplateWorkflowName",
+                node: namePair ?? node,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

@@ -46,7 +46,7 @@ const isRequireWorkflowConcurrencyOption = (
     if (
         isDefined(onlyForEvents) &&
         (!Array.isArray(onlyForEvents) ||
-            !onlyForEvents.every((eventName) => typeof eventName === "string"))
+            onlyForEvents.some((eventName) => typeof eventName !== "string"))
     ) {
         return false;
     }

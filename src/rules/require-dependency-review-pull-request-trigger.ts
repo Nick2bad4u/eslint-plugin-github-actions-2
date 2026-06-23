@@ -16,30 +16,28 @@ import {
 
 /** Rule implementation for dependency review pull_request trigger requirements. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null || !hasDependencyReviewAction(root)) {
-                    return;
-                }
+            if (root === null || !hasDependencyReviewAction(root)) {
+                return;
+            }
 
-                if (setHas(getWorkflowEventNames(root), "pull_request")) {
-                    return;
-                }
+            if (setHas(getWorkflowEventNames(root), "pull_request")) {
+                return;
+            }
 
-                reportYamlNode(context, {
-                    messageId: "missingPullRequestTrigger",
-                    node: root,
-                });
-            },
-        };
-    },
+            reportYamlNode(context, {
+                messageId: "missingPullRequestTrigger",
+                node: root,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

@@ -3,6 +3,8 @@
  * Shared casing helpers for naming-oriented GitHub Actions rules.
  */
 
+import type { ArrayValues } from "type-fest";
+
 import {
     arrayFirst,
     arrayJoin,
@@ -25,7 +27,9 @@ export const githubActionsCasingKinds = [
 ] as const;
 
 /** String literal union of supported naming conventions. */
-export type GithubActionsCasingKind = (typeof githubActionsCasingKinds)[number];
+export type GithubActionsCasingKind = ArrayValues<
+    typeof githubActionsCasingKinds
+>;
 
 /** Casing variants that exclude title-cased words with spaces. */
 export const githubActionsNonTitleCasingKinds = [
@@ -38,8 +42,9 @@ export const githubActionsNonTitleCasingKinds = [
 ] as const;
 
 /** String literal union of supported non-title casing conventions. */
-export type GithubActionsNonTitleCasingKind =
-    (typeof githubActionsNonTitleCasingKinds)[number];
+export type GithubActionsNonTitleCasingKind = ArrayValues<
+    typeof githubActionsNonTitleCasingKinds
+>;
 
 /** Determine whether a character is an ASCII letter or digit. */
 const isAlphaNumericCharacter = (character: string): boolean => {
@@ -90,7 +95,7 @@ const splitIntoWords = (value: string): readonly string[] => {
         const previousCharacter = index > 0 ? value[index - 1] : undefined;
         const nextCharacter =
             index + 1 < value.length ? value[index + 1] : undefined;
-        const startsNewWord =
+        const isStartsNewWord =
             currentWord.length > 0 &&
             isDefined(previousCharacter) &&
             ((isLowercaseCharacter(previousCharacter) &&
@@ -100,7 +105,7 @@ const splitIntoWords = (value: string): readonly string[] => {
                     isDefined(nextCharacter) &&
                     isLowercaseCharacter(nextCharacter)));
 
-        if (startsNewWord) {
+        if (isStartsNewWord) {
             words.push(currentWord.toLowerCase());
             currentWord = character;
 
@@ -121,7 +126,7 @@ const splitIntoWords = (value: string): readonly string[] => {
 const capitalizeWord = (word: string): string =>
     word.length === 0
         ? word
-        : `${word[0]?.toUpperCase() ?? ""}${word.slice(1)}`;
+        : `${word.at(0)?.toUpperCase() ?? ""}${word.slice(1)}`;
 
 /** Case-police dictionary match shape keyed by collapsed word tokens. */
 interface CasePoliceDictionaryMatch {
@@ -199,7 +204,7 @@ const resolveCasePoliceTitleSegments = (
             remainingWordCount
         );
 
-        let matched = false;
+        let isMatched = false;
 
         for (let span = maxSpan; span >= 1; span -= 1) {
             const collapsedCandidate = arrayJoin(
@@ -227,12 +232,12 @@ const resolveCasePoliceTitleSegments = (
 
             segments.push(selectedMatch.canonical);
             index += span;
-            matched = true;
+            isMatched = true;
 
             break;
         }
 
-        if (matched) {
+        if (isMatched) {
             continue;
         }
 

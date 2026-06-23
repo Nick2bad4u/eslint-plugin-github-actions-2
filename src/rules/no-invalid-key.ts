@@ -15,6 +15,7 @@ import {
     getScalarStringValue,
     getWorkflowJobs,
     getWorkflowRoot,
+    isReusableWorkflowJob,
     unwrapYamlValue,
 } from "../_internal/workflow-yaml.js";
 
@@ -117,113 +118,115 @@ const reportInvalidKeys = (
 
 /** Rule implementation for validating workflow mapping keys. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
+            reportInvalidKeys(
+                context,
+                root,
+                VALID_TOP_LEVEL_KEYS,
+                "invalidTopLevelKey"
+            );
+
+            for (const job of getWorkflowJobs(root)) {
                 reportInvalidKeys(
                     context,
-                    root,
-                    VALID_TOP_LEVEL_KEYS,
-                    "invalidTopLevelKey"
+                    job.mapping,
+                    VALID_JOB_KEYS,
+                    "invalidJobKey"
                 );
 
-                for (const job of getWorkflowJobs(root)) {
+                if (isReusableWorkflowJob(job.mapping)) {
+                    continue;
+                }
+
+                const strategyMapping = getMappingValueAsMapping(
+                    job.mapping,
+                    "strategy"
+                );
+
+                if (strategyMapping !== null) {
                     reportInvalidKeys(
                         context,
-                        job.mapping,
-                        VALID_JOB_KEYS,
-                        "invalidJobKey"
+                        strategyMapping,
+                        VALID_STRATEGY_KEYS,
+                        "invalidStrategyKey"
                     );
+                }
 
-                    const strategyMapping = getMappingValueAsMapping(
-                        job.mapping,
-                        "strategy"
+                const containerMapping = getMappingValueAsMapping(
+                    job.mapping,
+                    "container"
+                );
+
+                if (containerMapping !== null) {
+                    reportInvalidKeys(
+                        context,
+                        containerMapping,
+                        VALID_CONTAINER_OR_SERVICE_KEYS,
+                        "invalidContainerKey"
                     );
+                }
 
-                    if (strategyMapping !== null) {
-                        reportInvalidKeys(
-                            context,
-                            strategyMapping,
-                            VALID_STRATEGY_KEYS,
-                            "invalidStrategyKey"
+                const servicesMapping = getMappingValueAsMapping(
+                    job.mapping,
+                    "services"
+                );
+
+                if (servicesMapping !== null) {
+                    for (const servicePair of servicesMapping.pairs) {
+                        const serviceMapping = unwrapYamlValue(
+                            servicePair.value
                         );
-                    }
 
-                    const containerMapping = getMappingValueAsMapping(
-                        job.mapping,
-                        "container"
-                    );
-
-                    if (containerMapping !== null) {
-                        reportInvalidKeys(
-                            context,
-                            containerMapping,
-                            VALID_CONTAINER_OR_SERVICE_KEYS,
-                            "invalidContainerKey"
-                        );
-                    }
-
-                    const servicesMapping = getMappingValueAsMapping(
-                        job.mapping,
-                        "services"
-                    );
-
-                    if (servicesMapping !== null) {
-                        for (const servicePair of servicesMapping.pairs) {
-                            const serviceMapping = unwrapYamlValue(
-                                servicePair.value
-                            );
-
-                            if (serviceMapping?.type !== "YAMLMapping") {
-                                continue;
-                            }
-
-                            reportInvalidKeys(
-                                context,
-                                serviceMapping,
-                                VALID_CONTAINER_OR_SERVICE_KEYS,
-                                "invalidServiceKey"
-                            );
-                        }
-                    }
-
-                    const stepsSequence = getMappingValueAsSequence(
-                        job.mapping,
-                        "steps"
-                    );
-
-                    if (stepsSequence === null) {
-                        continue;
-                    }
-
-                    for (const step of stepsSequence.entries) {
-                        const stepMapping = unwrapYamlValue(step);
-
-                        if (stepMapping?.type !== "YAMLMapping") {
+                        if (serviceMapping?.type !== "YAMLMapping") {
                             continue;
                         }
 
                         reportInvalidKeys(
                             context,
-                            stepMapping,
-                            VALID_STEP_KEYS,
-                            "invalidStepKey"
+                            serviceMapping,
+                            VALID_CONTAINER_OR_SERVICE_KEYS,
+                            "invalidServiceKey"
                         );
                     }
                 }
-            },
-        };
-    },
+
+                const stepsSequence = getMappingValueAsSequence(
+                    job.mapping,
+                    "steps"
+                );
+
+                if (stepsSequence === null) {
+                    continue;
+                }
+
+                for (const step of stepsSequence.entries) {
+                    const stepMapping = unwrapYamlValue(step);
+
+                    if (stepMapping?.type !== "YAMLMapping") {
+                        continue;
+                    }
+
+                    reportInvalidKeys(
+                        context,
+                        stepMapping,
+                        VALID_STEP_KEYS,
+                        "invalidStepKey"
+                    );
+                }
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

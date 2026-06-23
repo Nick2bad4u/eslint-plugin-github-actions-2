@@ -15,45 +15,42 @@ import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for npm versioning strategy requirements. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            for (const update of getDependabotUpdateEntries(root)) {
+                if (update.packageEcosystem?.trim() !== "npm") {
+                    continue;
                 }
 
-                for (const update of getDependabotUpdateEntries(root)) {
-                    if (update.packageEcosystem?.trim() !== "npm") {
-                        continue;
-                    }
+                const strategyPair = getMappingPair(
+                    update.mapping,
+                    "versioning-strategy"
+                );
+                const strategyValue = getDependabotMappingStringValue(
+                    update.mapping,
+                    "versioning-strategy"
+                );
 
-                    const strategyPair = getMappingPair(
-                        update.mapping,
-                        "versioning-strategy"
-                    );
-                    const strategyValue = getDependabotMappingStringValue(
-                        update.mapping,
-                        "versioning-strategy"
-                    );
-
-                    if (strategyValue !== null) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            updateLabel: getDependabotUpdateLabel(update),
-                        },
-                        messageId: "missingVersioningStrategy",
-                        node:
-                            strategyPair?.value ?? strategyPair ?? update.node,
-                    });
+                if (strategyValue !== null) {
+                    continue;
                 }
-            },
-        };
-    },
+
+                reportYamlNode(context, {
+                    data: {
+                        updateLabel: getDependabotUpdateLabel(update),
+                    },
+                    messageId: "missingVersioningStrategy",
+                    node: strategyPair?.value ?? strategyPair ?? update.node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

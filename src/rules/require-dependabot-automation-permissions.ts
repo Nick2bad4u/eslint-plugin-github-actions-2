@@ -12,71 +12,69 @@ import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for Dependabot automation permission requirements. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const step of getDependabotAutomationRunSteps(root)) {
+                if (
+                    !hasRequiredWorkflowPermission(
+                        root,
+                        step.job,
+                        "pull-requests",
+                        "write"
+                    )
+                ) {
+                    reportYamlNode(context, {
+                        data: { jobId: step.job.id },
+                        messageId: "missingPullRequestsWrite",
+                        node: step.job.idNode,
+                    });
                 }
 
-                const root = getWorkflowRoot(context);
-
-                if (root === null) {
-                    return;
+                if (
+                    step.runScript.includes("gh pr edit") &&
+                    step.runScript.includes("--add-label") &&
+                    !hasRequiredWorkflowPermission(
+                        root,
+                        step.job,
+                        "issues",
+                        "write"
+                    )
+                ) {
+                    reportYamlNode(context, {
+                        data: { jobId: step.job.id },
+                        messageId: "missingIssuesWrite",
+                        node: step.job.idNode,
+                    });
                 }
 
-                for (const step of getDependabotAutomationRunSteps(root)) {
-                    if (
-                        !hasRequiredWorkflowPermission(
-                            root,
-                            step.job,
-                            "pull-requests",
-                            "write"
-                        )
-                    ) {
-                        reportYamlNode(context, {
-                            data: { jobId: step.job.id },
-                            messageId: "missingPullRequestsWrite",
-                            node: step.job.idNode,
-                        });
-                    }
-
-                    if (
-                        step.runScript.includes("gh pr edit") &&
-                        step.runScript.includes("--add-label") &&
-                        !hasRequiredWorkflowPermission(
-                            root,
-                            step.job,
-                            "issues",
-                            "write"
-                        )
-                    ) {
-                        reportYamlNode(context, {
-                            data: { jobId: step.job.id },
-                            messageId: "missingIssuesWrite",
-                            node: step.job.idNode,
-                        });
-                    }
-
-                    if (
-                        step.runScript.includes("gh pr merge") &&
-                        !hasRequiredWorkflowPermission(
-                            root,
-                            step.job,
-                            "contents",
-                            "write"
-                        )
-                    ) {
-                        reportYamlNode(context, {
-                            data: { jobId: step.job.id },
-                            messageId: "missingContentsWrite",
-                            node: step.job.idNode,
-                        });
-                    }
+                if (
+                    step.runScript.includes("gh pr merge") &&
+                    !hasRequiredWorkflowPermission(
+                        root,
+                        step.job,
+                        "contents",
+                        "write"
+                    )
+                ) {
+                    reportYamlNode(context, {
+                        data: { jobId: step.job.id },
+                        messageId: "missingContentsWrite",
+                        node: step.job.idNode,
+                    });
                 }
-            },
-        };
-    },
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

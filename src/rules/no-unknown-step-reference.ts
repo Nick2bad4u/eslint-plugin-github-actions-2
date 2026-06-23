@@ -15,6 +15,7 @@ import {
     getScalarStringValue,
     getWorkflowJobs,
     getWorkflowRoot,
+    isReusableWorkflowJob,
     unwrapYamlValue,
 } from "../_internal/workflow-yaml.js";
 
@@ -114,76 +115,77 @@ const getStepIndexById = (
 
 /** Rule implementation for validating step context references. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const job of getWorkflowJobs(root)) {
+                if (isReusableWorkflowJob(job.mapping)) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
+                const stepIndexById = getStepIndexById(job.mapping);
 
-                if (root === null) {
-                    return;
-                }
+                visitJobStringScalars(
+                    job.mapping,
+                    (node, value, currentStepIndex) => {
+                        for (const match of value.matchAll(
+                            stepReferencePattern
+                        )) {
+                            const reference = match[0];
+                            const stepId = match.groups?.["stepId"];
 
-                for (const job of getWorkflowJobs(root)) {
-                    const stepIndexById = getStepIndexById(job.mapping);
+                            if (!isDefined(stepId)) {
+                                continue;
+                            }
 
-                    visitJobStringScalars(
-                        job.mapping,
-                        (node, value, currentStepIndex) => {
-                            for (const match of value.matchAll(
-                                stepReferencePattern
-                            )) {
-                                const reference = match[0];
-                                const stepId = match.groups?.["stepId"];
+                            const referencedStepIndex =
+                                stepIndexById.get(stepId);
 
-                                if (!isDefined(stepId)) {
-                                    continue;
-                                }
-
-                                const referencedStepIndex =
-                                    stepIndexById.get(stepId);
-
-                                if (!isDefined(referencedStepIndex)) {
-                                    reportYamlNode(context, {
-                                        data: {
-                                            jobId: job.id,
-                                            reference,
-                                            stepId,
-                                        },
-                                        messageId: "unknownStepReference",
-                                        node: node,
-                                    });
-
-                                    continue;
-                                }
-
-                                if (
-                                    currentStepIndex === null ||
-                                    referencedStepIndex < currentStepIndex
-                                ) {
-                                    continue;
-                                }
-
+                            if (!isDefined(referencedStepIndex)) {
                                 reportYamlNode(context, {
                                     data: {
                                         jobId: job.id,
                                         reference,
                                         stepId,
                                     },
-                                    messageId:
-                                        "stepReferenceBeforeAvailability",
+                                    messageId: "unknownStepReference",
                                     node: node,
                                 });
+
+                                continue;
                             }
+
+                            if (
+                                currentStepIndex === null ||
+                                referencedStepIndex < currentStepIndex
+                            ) {
+                                continue;
+                            }
+
+                            reportYamlNode(context, {
+                                data: {
+                                    jobId: job.id,
+                                    reference,
+                                    stepId,
+                                },
+                                messageId: "stepReferenceBeforeAvailability",
+                                node: node,
+                            });
                         }
-                    );
-                }
-            },
-        };
-    },
+                    }
+                );
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

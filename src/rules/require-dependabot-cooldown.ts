@@ -14,36 +14,31 @@ import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for requiring cooldown settings. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            for (const update of getDependabotUpdateEntries(root)) {
+                const cooldownPair = getMappingPair(update.mapping, "cooldown");
+
+                if (cooldownPair !== null) {
+                    continue;
                 }
 
-                for (const update of getDependabotUpdateEntries(root)) {
-                    const cooldownPair = getMappingPair(
-                        update.mapping,
-                        "cooldown"
-                    );
-
-                    if (cooldownPair !== null) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            updateLabel: getDependabotUpdateLabel(update),
-                        },
-                        messageId: "missingCooldown",
-                        node: update.node,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: {
+                        updateLabel: getDependabotUpdateLabel(update),
+                    },
+                    messageId: "missingCooldown",
+                    node: update.node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

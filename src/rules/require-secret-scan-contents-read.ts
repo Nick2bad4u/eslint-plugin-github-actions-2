@@ -15,40 +15,38 @@ import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
  * requirements.
  */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const step of getSecretScanningActionSteps(root)) {
+                if (
+                    hasExactWorkflowPermission(
+                        root,
+                        step.job,
+                        "contents",
+                        "read"
+                    )
+                ) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
-
-                if (root === null) {
-                    return;
-                }
-
-                for (const step of getSecretScanningActionSteps(root)) {
-                    if (
-                        hasExactWorkflowPermission(
-                            root,
-                            step.job,
-                            "contents",
-                            "read"
-                        )
-                    ) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: { jobId: step.job.id },
-                        messageId: "missingContentsRead",
-                        node: step.job.idNode,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: { jobId: step.job.id },
+                    messageId: "missingContentsRead",
+                    node: step.job.idNode,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

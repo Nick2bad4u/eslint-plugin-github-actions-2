@@ -29,10 +29,10 @@ describe("dependency review workflow helpers", () => {
             isDependencyReviewActionReference(
                 "actions/dependency-review-action@v4"
             )
-        ).toBeTruthy();
-        expect(
-            isDependencyReviewActionReference("actions/checkout@v5")
-        ).toBeFalsy();
+        ).toBe(true);
+        expect(isDependencyReviewActionReference("actions/checkout@v5")).toBe(
+            false
+        );
     });
 
     it("collects workflow steps using the dependency review action", () => {
@@ -58,6 +58,6 @@ describe("dependency review workflow helpers", () => {
         expect(steps[0]?.usesReference).toBe(
             "actions/dependency-review-action@v4"
         );
-        expect(hasDependencyReviewAction(root)).toBeTruthy();
+        expect(hasDependencyReviewAction(root)).toBe(true);
     });
 });

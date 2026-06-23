@@ -156,53 +156,48 @@ const inspectConcurrencyValue = (
 
 /** Rule implementation for validating concurrency context usage. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const workflowConcurrencyPair = getMappingPair(
-                    root,
+            const workflowConcurrencyPair = getMappingPair(root, "concurrency");
+
+            if (workflowConcurrencyPair !== null) {
+                inspectConcurrencyValue(context, {
+                    allowedContexts: allowedWorkflowConcurrencyContexts,
+                    concurrencyNode: workflowConcurrencyPair.value,
+                    jobId: undefined,
+                    messageId: "invalidWorkflowConcurrencyContext",
+                });
+            }
+
+            for (const job of getWorkflowJobs(root)) {
+                const jobConcurrencyPair = getMappingPair(
+                    job.mapping,
                     "concurrency"
                 );
 
-                if (workflowConcurrencyPair !== null) {
-                    inspectConcurrencyValue(context, {
-                        allowedContexts: allowedWorkflowConcurrencyContexts,
-                        concurrencyNode: workflowConcurrencyPair.value,
-                        jobId: undefined,
-                        messageId: "invalidWorkflowConcurrencyContext",
-                    });
+                if (jobConcurrencyPair === null) {
+                    continue;
                 }
 
-                for (const job of getWorkflowJobs(root)) {
-                    const jobConcurrencyPair = getMappingPair(
-                        job.mapping,
-                        "concurrency"
-                    );
-
-                    if (jobConcurrencyPair === null) {
-                        continue;
-                    }
-
-                    inspectConcurrencyValue(context, {
-                        allowedContexts: allowedJobConcurrencyContexts,
-                        concurrencyNode: jobConcurrencyPair.value,
-                        jobId: job.id,
-                        messageId: "invalidJobConcurrencyContext",
-                    });
-                }
-            },
-        };
-    },
+                inspectConcurrencyValue(context, {
+                    allowedContexts: allowedJobConcurrencyContexts,
+                    concurrencyNode: jobConcurrencyPair.value,
+                    jobId: job.id,
+                    messageId: "invalidJobConcurrencyContext",
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

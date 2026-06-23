@@ -110,36 +110,30 @@ const checkJobStepsForUnsafeRun = (
 
 /** Rule implementation for disallowing unsafe direct interpolation in `run`. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const job of getWorkflowJobs(root)) {
+                const stepsSequence = getMappingValueAsSequence(
+                    job.mapping,
+                    "steps"
+                );
+
+                if (stepsSequence !== null) {
+                    checkJobStepsForUnsafeRun(context, stepsSequence, job.id);
                 }
-
-                const root = getWorkflowRoot(context);
-
-                if (root === null) {
-                    return;
-                }
-
-                for (const job of getWorkflowJobs(root)) {
-                    const stepsSequence = getMappingValueAsSequence(
-                        job.mapping,
-                        "steps"
-                    );
-
-                    if (stepsSequence !== null) {
-                        checkJobStepsForUnsafeRun(
-                            context,
-                            stepsSequence,
-                            job.id
-                        );
-                    }
-                }
-            },
-        };
-    },
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

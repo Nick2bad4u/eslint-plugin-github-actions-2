@@ -20,64 +20,61 @@ import {
 
 /** Rule implementation for requiring explicit schedule timezones. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            for (const update of getDependabotUpdateEntries(root)) {
+                const scheduleMapping = getEffectiveDependabotUpdateMapping(
+                    root,
+                    update,
+                    "schedule"
+                );
+
+                if (scheduleMapping === null) {
+                    continue;
                 }
 
-                for (const update of getDependabotUpdateEntries(root)) {
-                    const scheduleMapping = getEffectiveDependabotUpdateMapping(
-                        root,
-                        update,
-                        "schedule"
-                    );
+                const intervalValue = getScalarStringValue(
+                    getMappingPair(scheduleMapping, "interval")?.value
+                )?.trim();
+                const timeValue = getScalarStringValue(
+                    getMappingPair(scheduleMapping, "time")?.value
+                )?.trim();
 
-                    if (scheduleMapping === null) {
-                        continue;
-                    }
-
-                    const intervalValue = getScalarStringValue(
-                        getMappingPair(scheduleMapping, "interval")?.value
-                    )?.trim();
-                    const timeValue = getScalarStringValue(
-                        getMappingPair(scheduleMapping, "time")?.value
-                    )?.trim();
-
-                    if (
-                        intervalValue !== "cron" &&
-                        (!isDefined(timeValue) || timeValue.length === 0)
-                    ) {
-                        continue;
-                    }
-
-                    const timezonePair = getMappingPair(
-                        scheduleMapping,
-                        "timezone"
-                    );
-                    const timezoneValue = getScalarStringValue(
-                        timezonePair?.value
-                    )?.trim();
-
-                    if (isDefined(timezoneValue) && timezoneValue.length > 0) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            updateLabel: getDependabotUpdateLabel(update),
-                        },
-                        messageId: "missingScheduleTimezone",
-                        node:
-                            timezonePair?.value ?? timezonePair ?? update.node,
-                    });
+                if (
+                    intervalValue !== "cron" &&
+                    (!isDefined(timeValue) || timeValue.length === 0)
+                ) {
+                    continue;
                 }
-            },
-        };
-    },
+
+                const timezonePair = getMappingPair(
+                    scheduleMapping,
+                    "timezone"
+                );
+                const timezoneValue = getScalarStringValue(
+                    timezonePair?.value
+                )?.trim();
+
+                if (isDefined(timezoneValue) && timezoneValue.length > 0) {
+                    continue;
+                }
+
+                reportYamlNode(context, {
+                    data: {
+                        updateLabel: getDependabotUpdateLabel(update),
+                    },
+                    messageId: "missingScheduleTimezone",
+                    node: timezonePair?.value ?? timezonePair ?? update.node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

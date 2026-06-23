@@ -7,14 +7,15 @@ Fix legend:
 Preset key legend:
 
 - [🧩](./docs/rules/presets/action-metadata.md) — [`githubActions.configs.actionMetadata`](./docs/rules/presets/action-metadata.md)
+- [🟣](./docs/rules/presets/all.md) — [`githubActions.configs.all`](./docs/rules/presets/all.md)
 - [🔎](./docs/rules/presets/code-scanning.md) — [`githubActions.configs.codeScanning`](./docs/rules/presets/code-scanning.md)
 - [🤖](./docs/rules/presets/dependabot.md) — [`githubActions.configs.dependabot`](./docs/rules/presets/dependabot.md)
-- [🗂️](./docs/rules/presets/workflow-template-properties.md) — [`githubActions.configs.workflowTemplateProperties`](./docs/rules/presets/workflow-template-properties.md)
-- [🧱](./docs/rules/presets/workflow-templates.md) — [`githubActions.configs.workflowTemplates`](./docs/rules/presets/workflow-templates.md)
+- [🏠](./docs/rules/presets/local-workflows.md) — [`githubActions.configs.localWorkflows`](./docs/rules/presets/local-workflows.md)
 - [🟡](./docs/rules/presets/recommended.md) — [`githubActions.configs.recommended`](./docs/rules/presets/recommended.md)
 - [🛡️](./docs/rules/presets/security.md) — [`githubActions.configs.security`](./docs/rules/presets/security.md)
 - [🔴](./docs/rules/presets/strict.md) — [`githubActions.configs.strict`](./docs/rules/presets/strict.md)
-- [🟣](./docs/rules/presets/all.md) — [`githubActions.configs.all`](./docs/rules/presets/all.md)
+- [🗂️](./docs/rules/presets/workflow-template-properties.md) — [`githubActions.configs.workflowTemplateProperties`](./docs/rules/presets/workflow-template-properties.md)
+- [🧱](./docs/rules/presets/workflow-templates.md) — [`githubActions.configs.workflowTemplates`](./docs/rules/presets/workflow-templates.md)
 
 | Rule                                                                                                                                                                             | Fix | Preset key                                                                                                                                              |
 | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-: | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -28,7 +29,7 @@ Preset key legend:
 | <span class="sb-inline-rule-number">R044</span> [`no-deprecated-node-runtime`](./docs/rules/no-deprecated-node-runtime.md)                                                       |  —  | [🧩](./docs/rules/presets/action-metadata.md) [🟣](./docs/rules/presets/all.md)                                                                         |
 | <span class="sb-inline-rule-number">R051</span> [`no-duplicate-composite-step-id`](./docs/rules/no-duplicate-composite-step-id.md)                                               |  —  | [🧩](./docs/rules/presets/action-metadata.md) [🟣](./docs/rules/presets/all.md)                                                                         |
 | <span class="sb-inline-rule-number">R060</span> [`no-empty-template-file-pattern`](./docs/rules/no-empty-template-file-pattern.md)                                               | 🔧  | [🗂️](./docs/rules/presets/workflow-template-properties.md) [🧱](./docs/rules/presets/workflow-templates.md) [🟣](./docs/rules/presets/all.md)           |
-| <span class="sb-inline-rule-number">R012</span> [`no-external-job`](./docs/rules/no-external-job.md)                                                                             |  —  | [🟣](./docs/rules/presets/all.md) [🔴](./docs/rules/presets/strict.md)                                                                                  |
+| <span class="sb-inline-rule-number">R012</span> [`no-external-job`](./docs/rules/no-external-job.md)                                                                             |  —  | [🏠](./docs/rules/presets/local-workflows.md)                                                                                                           |
 | <span class="sb-inline-rule-number">R068</span> [`no-hardcoded-default-branch-in-template`](./docs/rules/no-hardcoded-default-branch-in-template.md)                             |  —  | [🧱](./docs/rules/presets/workflow-templates.md) [🟣](./docs/rules/presets/all.md)                                                                      |
 | <span class="sb-inline-rule-number">R063</span> [`no-icon-file-extension-in-template-icon-name`](./docs/rules/no-icon-file-extension-in-template-icon-name.md)                   | 🔧  | [🗂️](./docs/rules/presets/workflow-template-properties.md) [🧱](./docs/rules/presets/workflow-templates.md) [🟣](./docs/rules/presets/all.md)           |
 | <span class="sb-inline-rule-number">R026</span> [`no-inherit-secrets`](./docs/rules/no-inherit-secrets.md)                                                                       |  —  | [🟣](./docs/rules/presets/all.md) [🛡️](./docs/rules/presets/security.md) [🔴](./docs/rules/presets/strict.md)                                           |

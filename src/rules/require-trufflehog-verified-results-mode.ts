@@ -20,52 +20,50 @@ const verifiedResultsPattern = /--results(?:=|\s+)verified\b/v;
 
 /** Rule implementation for TruffleHog verified-results mode requirements. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const step of getTrufflehogActionSteps(root)) {
+                const withMapping = getMappingValueAsMapping(
+                    step.stepMapping,
+                    "with"
+                );
+                const extraArgsPair =
+                    withMapping === null
+                        ? null
+                        : getMappingPair(withMapping, "extra_args");
+                const extraArgsValue = getScalarStringValue(
+                    extraArgsPair?.value ?? null
+                )?.trim();
+
+                if (
+                    isDefined(extraArgsValue) &&
+                    verifiedResultsPattern.test(extraArgsValue)
+                ) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
-
-                if (root === null) {
-                    return;
-                }
-
-                for (const step of getTrufflehogActionSteps(root)) {
-                    const withMapping = getMappingValueAsMapping(
-                        step.stepMapping,
-                        "with"
-                    );
-                    const extraArgsPair =
-                        withMapping === null
-                            ? null
-                            : getMappingPair(withMapping, "extra_args");
-                    const extraArgsValue = getScalarStringValue(
-                        extraArgsPair?.value ?? null
-                    )?.trim();
-
-                    if (
-                        isDefined(extraArgsValue) &&
-                        verifiedResultsPattern.test(extraArgsValue)
-                    ) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: { jobId: step.job.id },
-                        messageId: "missingVerifiedResultsMode",
-                        node:
-                            extraArgsPair?.value ??
-                            extraArgsPair ??
-                            withMapping ??
-                            step.usesPair,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: { jobId: step.job.id },
+                    messageId: "missingVerifiedResultsMode",
+                    node:
+                        extraArgsPair?.value ??
+                        extraArgsPair ??
+                        withMapping ??
+                        step.usesPair,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

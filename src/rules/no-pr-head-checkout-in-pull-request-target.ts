@@ -33,92 +33,90 @@ const hasPullRequestHeadReference = (value: string): boolean =>
  * pull_request_target.
  */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            const eventNames = getWorkflowEventNames(root);
+
+            if (!setHas(eventNames, "pull_request_target")) {
+                return;
+            }
+
+            for (const job of getWorkflowJobs(root)) {
+                const stepsSequence = getMappingValueAsSequence(
+                    job.mapping,
+                    "steps"
+                );
+
+                if (stepsSequence === null) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
+                for (const entry of stepsSequence.entries) {
+                    const stepMapping = unwrapYamlValue(entry);
 
-                if (root === null) {
-                    return;
-                }
-
-                const eventNames = getWorkflowEventNames(root);
-
-                if (!setHas(eventNames, "pull_request_target")) {
-                    return;
-                }
-
-                for (const job of getWorkflowJobs(root)) {
-                    const stepsSequence = getMappingValueAsSequence(
-                        job.mapping,
-                        "steps"
-                    );
-
-                    if (stepsSequence === null) {
+                    if (stepMapping?.type !== "YAMLMapping") {
                         continue;
                     }
 
-                    for (const entry of stepsSequence.entries) {
-                        const stepMapping = unwrapYamlValue(entry);
+                    const usesPair = getMappingPair(stepMapping, "uses");
+                    const usesReference = getScalarStringValue(
+                        usesPair?.value ?? null
+                    );
 
-                        if (stepMapping?.type !== "YAMLMapping") {
-                            continue;
-                        }
+                    if (
+                        usesPair === null ||
+                        usesReference === null ||
+                        !isCheckoutActionReference(usesReference)
+                    ) {
+                        continue;
+                    }
 
-                        const usesPair = getMappingPair(stepMapping, "uses");
-                        const usesReference = getScalarStringValue(
-                            usesPair?.value ?? null
+                    const withMapping = getMappingValueAsMapping(
+                        stepMapping,
+                        "with"
+                    );
+
+                    if (withMapping === null) {
+                        continue;
+                    }
+
+                    for (const key of ["ref", "repository"] as const) {
+                        const optionPair = getMappingPair(withMapping, key);
+                        const optionValue = getScalarStringValue(
+                            optionPair?.value ?? null
                         );
 
                         if (
-                            usesPair === null ||
-                            usesReference === null ||
-                            !isCheckoutActionReference(usesReference)
+                            optionPair === null ||
+                            optionValue === null ||
+                            !hasPullRequestHeadReference(optionValue)
                         ) {
                             continue;
                         }
 
-                        const withMapping = getMappingValueAsMapping(
-                            stepMapping,
-                            "with"
-                        );
-
-                        if (withMapping === null) {
-                            continue;
-                        }
-
-                        for (const key of ["ref", "repository"] as const) {
-                            const optionPair = getMappingPair(withMapping, key);
-                            const optionValue = getScalarStringValue(
-                                optionPair?.value ?? null
-                            );
-
-                            if (
-                                optionPair === null ||
-                                optionValue === null ||
-                                !hasPullRequestHeadReference(optionValue)
-                            ) {
-                                continue;
-                            }
-
-                            reportYamlNode(context, {
-                                data: {
-                                    jobId: job.id,
-                                    key,
-                                },
-                                messageId: "pullRequestHeadCheckout",
-                                node: optionPair.value ?? optionPair,
-                            });
-                        }
+                        reportYamlNode(context, {
+                            data: {
+                                jobId: job.id,
+                                key,
+                            },
+                            messageId: "pullRequestHeadCheckout",
+                            node: optionPair.value ?? optionPair,
+                        });
                     }
                 }
-            },
-        };
-    },
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

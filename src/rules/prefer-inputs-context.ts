@@ -72,52 +72,48 @@ const visitStringScalars = (
 
 /** Rule implementation for preferring the `inputs` context. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            const eventNames = getWorkflowEventNames(root);
+
+            if (!setHas(eventNames, "workflow_dispatch")) {
+                return;
+            }
+
+            visitStringScalars(root, (node, value) => {
+                if (!hasGithubEventInputsReference(value)) {
                     return;
                 }
 
-                const root = getWorkflowRoot(context);
+                reportYamlNode(context, {
+                    fix: (fixer) => {
+                        const originalText = context.sourceCode.text.slice(
+                            arrayFirst(node.range),
+                            node.range[1]
+                        );
+                        const fixedText =
+                            replaceGithubEventInputsReferences(originalText);
 
-                if (root === null) {
-                    return;
-                }
-
-                const eventNames = getWorkflowEventNames(root);
-
-                if (!setHas(eventNames, "workflow_dispatch")) {
-                    return;
-                }
-
-                visitStringScalars(root, (node, value) => {
-                    if (!hasGithubEventInputsReference(value)) {
-                        return;
-                    }
-
-                    reportYamlNode(context, {
-                        fix: (fixer) => {
-                            const originalText = context.sourceCode.text.slice(
-                                arrayFirst(node.range),
-                                node.range[1]
-                            );
-                            const fixedText =
-                                replaceGithubEventInputsReferences(
-                                    originalText
-                                );
-
-                            return originalText === fixedText
-                                ? null
-                                : fixer.replaceTextRange(node.range, fixedText);
-                        },
-                        messageId: "preferInputsContext",
-                        node: node,
-                    });
+                        return originalText === fixedText
+                            ? null
+                            : fixer.replaceTextRange(node.range, fixedText);
+                    },
+                    messageId: "preferInputsContext",
+                    node: node,
                 });
-            },
-        };
-    },
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

@@ -394,7 +394,7 @@ describe("uses and timeout rules", () => {
                 (message) =>
                     message.ruleId === "github-actions/require-run-step-shell"
             )
-        ).toBeTruthy();
+        ).toBe(true);
     });
 
     it("accepts branch-style references when branch style is explicitly enabled", async () => {

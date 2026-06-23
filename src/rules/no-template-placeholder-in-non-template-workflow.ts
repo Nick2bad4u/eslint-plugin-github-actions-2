@@ -17,36 +17,34 @@ const defaultBranchPlaceholder = "$default-branch";
 
 /** Rule implementation for invalid placeholder usage outside templates. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (isWorkflowTemplateYamlFile(context.filename)) {
+    create: (context) => ({
+        Program() {
+            if (isWorkflowTemplateYamlFile(context.filename)) {
+                return;
+            }
+
+            if (isWorkflowTemplatePropertiesFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            visitYamlStringScalars(root, (node, value) => {
+                if (!value.includes(defaultBranchPlaceholder)) {
                     return;
                 }
 
-                if (isWorkflowTemplatePropertiesFile(context.filename)) {
-                    return;
-                }
-
-                const root = getWorkflowRoot(context);
-
-                if (root === null) {
-                    return;
-                }
-
-                visitYamlStringScalars(root, (node, value) => {
-                    if (!value.includes(defaultBranchPlaceholder)) {
-                        return;
-                    }
-
-                    reportYamlNode(context, {
-                        messageId: "templatePlaceholderOutsideTemplate",
-                        node: node,
-                    });
+                reportYamlNode(context, {
+                    messageId: "templatePlaceholderOutsideTemplate",
+                    node: node,
                 });
-            },
-        };
-    },
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

@@ -15,6 +15,7 @@ import {
     getWorkflowJobs,
     getWorkflowRoot,
     isGithubExpressionScalar,
+    isReusableWorkflowJob,
 } from "../_internal/workflow-yaml.js";
 
 interface RequireJobTimeoutMinutesOption {
@@ -61,7 +62,7 @@ const rule: Rule.RuleModule = {
                 }
 
                 for (const job of getWorkflowJobs(root)) {
-                    if (getMappingPair(job.mapping, "uses") !== null) {
+                    if (isReusableWorkflowJob(job.mapping)) {
                         continue;
                     }
 

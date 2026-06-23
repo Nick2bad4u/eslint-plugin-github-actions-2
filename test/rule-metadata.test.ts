@@ -49,7 +49,7 @@ describe("rule metadata", () => {
             expect(
                 rule.meta?.deprecated,
                 `${ruleName} should explicitly publish deprecated=false`
-            ).toBeFalsy();
+            ).toBe(false);
             expect(
                 rule.meta?.languages,
                 `${ruleName} should omit meta.languages until the plugin exposes a real ESLint language id`
@@ -57,7 +57,7 @@ describe("rule metadata", () => {
             expect(
                 rule.meta?.docs?.frozen,
                 `${ruleName} should explicitly publish docs.frozen=false`
-            ).toBeFalsy();
+            ).toBe(false);
             expect(
                 rule.meta?.docs?.dialects,
                 `${ruleName} should publish at least one dialect label`
@@ -81,11 +81,11 @@ describe("rule metadata", () => {
             expect(
                 !hasConfigurableOptions || hasDefaultOptions,
                 `${ruleName} should define defaultOptions because it exposes options`
-            ).toBeTruthy();
+            ).toBe(true);
             expect(
                 !hasDefaultOptions || Array.isArray(meta?.defaultOptions),
                 `${ruleName} defaultOptions should be an array when provided`
-            ).toBeTruthy();
+            ).toBe(true);
         }
     });
 
@@ -100,7 +100,7 @@ describe("rule metadata", () => {
             expect(
                 !shouldBeFixable || rule.meta?.fixable === "code",
                 `${ruleName} should declare fixable=code`
-            ).toBeTruthy();
+            ).toBe(true);
         }
     });
 
@@ -115,7 +115,7 @@ describe("rule metadata", () => {
             expect(
                 !shouldHaveSuggestions || rule.meta?.hasSuggestions,
                 `${ruleName} should declare hasSuggestions=true`
-            ).toBeTruthy();
+            ).toBe(true);
         }
     });
 });

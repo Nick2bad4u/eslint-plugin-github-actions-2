@@ -19,30 +19,28 @@ import {
  * workflows.
  */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program(node) {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program(node) {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null || !hasDependabotAutomation(root)) {
-                    return;
-                }
+            if (root === null || !hasDependabotAutomation(root)) {
+                return;
+            }
 
-                if (setHas(getWorkflowEventNames(root), "pull_request")) {
-                    return;
-                }
+            if (setHas(getWorkflowEventNames(root), "pull_request")) {
+                return;
+            }
 
-                reportYamlNode(context, {
-                    messageId: "missingPullRequestTrigger",
-                    node: node,
-                });
-            },
-        };
-    },
+            reportYamlNode(context, {
+                messageId: "missingPullRequestTrigger",
+                node: node,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

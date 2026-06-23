@@ -15,46 +15,39 @@ import { getEnclosingLineRemovalRange } from "../_internal/yaml-fixes.js";
 
 /** Rule implementation for invalid `runs.post-if` usage. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isActionMetadataFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isActionMetadataFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
-                const runsMapping =
-                    root === null
-                        ? null
-                        : getMappingValueAsMapping(root, "runs");
+            const root = getWorkflowRoot(context);
+            const runsMapping =
+                root === null ? null : getMappingValueAsMapping(root, "runs");
 
-                if (runsMapping === null) {
-                    return;
-                }
+            if (runsMapping === null) {
+                return;
+            }
 
-                const postIfPair = getMappingPair(runsMapping, "post-if");
+            const postIfPair = getMappingPair(runsMapping, "post-if");
 
-                if (
-                    postIfPair === null ||
-                    getMappingPair(runsMapping, "post")
-                ) {
-                    return;
-                }
+            if (postIfPair === null || getMappingPair(runsMapping, "post")) {
+                return;
+            }
 
-                reportYamlNode(context, {
-                    fix: (fixer) =>
-                        fixer.removeRange(
-                            getEnclosingLineRemovalRange(
-                                context.sourceCode.text,
-                                postIfPair.range
-                            )
-                        ),
-                    messageId: "postIfWithoutPost",
-                    node: postIfPair.value ?? postIfPair,
-                });
-            },
-        };
-    },
+            reportYamlNode(context, {
+                fix: (fixer) =>
+                    fixer.removeRange(
+                        getEnclosingLineRemovalRange(
+                            context.sourceCode.text,
+                            postIfPair.range
+                        )
+                    ),
+                messageId: "postIfWithoutPost",
+                node: postIfPair.value ?? postIfPair,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

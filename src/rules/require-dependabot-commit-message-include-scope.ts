@@ -16,49 +16,47 @@ import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for commit-message.include requirements. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            for (const update of getDependabotUpdateEntries(root)) {
+                const commitMessageMapping =
+                    getEffectiveDependabotUpdateMapping(
+                        root,
+                        update,
+                        "commit-message"
+                    );
+                const includePair =
+                    commitMessageMapping === null
+                        ? null
+                        : getMappingPair(commitMessageMapping, "include");
+                const includeValue =
+                    commitMessageMapping === null
+                        ? null
+                        : getDependabotMappingStringValue(
+                              commitMessageMapping,
+                              "include"
+                          );
+
+                if (includeValue === "scope") {
+                    continue;
                 }
 
-                for (const update of getDependabotUpdateEntries(root)) {
-                    const commitMessageMapping =
-                        getEffectiveDependabotUpdateMapping(
-                            root,
-                            update,
-                            "commit-message"
-                        );
-                    const includePair =
-                        commitMessageMapping === null
-                            ? null
-                            : getMappingPair(commitMessageMapping, "include");
-                    const includeValue =
-                        commitMessageMapping === null
-                            ? null
-                            : getDependabotMappingStringValue(
-                                  commitMessageMapping,
-                                  "include"
-                              );
-
-                    if (includeValue === "scope") {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            updateLabel: getDependabotUpdateLabel(update),
-                        },
-                        messageId: "missingCommitMessageIncludeScope",
-                        node: includePair?.value ?? includePair ?? update.node,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: {
+                        updateLabel: getDependabotUpdateLabel(update),
+                    },
+                    messageId: "missingCommitMessageIncludeScope",
+                    node: includePair?.value ?? includePair ?? update.node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

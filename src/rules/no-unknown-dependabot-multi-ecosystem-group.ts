@@ -15,41 +15,39 @@ import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for unknown multi-ecosystem-group references. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            for (const update of getDependabotUpdateEntries(root)) {
+                if (update.multiEcosystemGroup === null) {
+                    continue;
                 }
 
-                for (const update of getDependabotUpdateEntries(root)) {
-                    if (update.multiEcosystemGroup === null) {
-                        continue;
-                    }
-
-                    if (getDependabotReferencedGroup(root, update) !== null) {
-                        continue;
-                    }
-
-                    const groupPair = getMappingPair(
-                        update.mapping,
-                        "multi-ecosystem-group"
-                    );
-
-                    reportYamlNode(context, {
-                        data: {
-                            groupName: update.multiEcosystemGroup,
-                            updateLabel: getDependabotUpdateLabel(update),
-                        },
-                        messageId: "unknownMultiEcosystemGroup",
-                        node: groupPair?.value ?? groupPair ?? update.node,
-                    });
+                if (getDependabotReferencedGroup(root, update) !== null) {
+                    continue;
                 }
-            },
-        };
-    },
+
+                const groupPair = getMappingPair(
+                    update.mapping,
+                    "multi-ecosystem-group"
+                );
+
+                reportYamlNode(context, {
+                    data: {
+                        groupName: update.multiEcosystemGroup,
+                        updateLabel: getDependabotUpdateLabel(update),
+                    },
+                    messageId: "unknownMultiEcosystemGroup",
+                    node: groupPair?.value ?? groupPair ?? update.node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

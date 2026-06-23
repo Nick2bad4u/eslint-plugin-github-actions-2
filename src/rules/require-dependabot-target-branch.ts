@@ -15,42 +15,40 @@ import { reportYamlNode } from "../_internal/report.js";
 
 /** Rule implementation for requiring effective target branches. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            for (const update of getDependabotUpdateEntries(root)) {
+                const targetBranchValue = getEffectiveDependabotUpdateValue(
+                    root,
+                    update,
+                    "target-branch"
+                );
+                const targetBranch = getEffectiveDependabotStringValue(
+                    root,
+                    update,
+                    "target-branch"
+                );
+
+                if (targetBranch !== null) {
+                    continue;
                 }
 
-                for (const update of getDependabotUpdateEntries(root)) {
-                    const targetBranchValue = getEffectiveDependabotUpdateValue(
-                        root,
-                        update,
-                        "target-branch"
-                    );
-                    const targetBranch = getEffectiveDependabotStringValue(
-                        root,
-                        update,
-                        "target-branch"
-                    );
-
-                    if (targetBranch !== null) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            updateLabel: getDependabotUpdateLabel(update),
-                        },
-                        messageId: "missingTargetBranch",
-                        node: targetBranchValue ?? update.node,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: {
+                        updateLabel: getDependabotUpdateLabel(update),
+                    },
+                    messageId: "missingTargetBranch",
+                    node: targetBranchValue ?? update.node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

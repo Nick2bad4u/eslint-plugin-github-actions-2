@@ -5,7 +5,6 @@ import { lintWorkflow } from "./_shared/lint-workflow.js";
 const githubExpression = (expression: string): string =>
     `\${{ ${expression} }}`;
 
-// eslint-disable-next-line max-lines-per-function -- Integration tests intentionally cover many workflow interface rule paths in one suite.
 describe("workflow interface rules", () => {
     it("reports workflow_dispatch expressions that use github.event.inputs", async () => {
         expect.hasAssertions();
@@ -538,7 +537,7 @@ describe("workflow interface rules", () => {
                     message.ruleId ===
                     "github-actions/require-workflow-call-input-type"
             )
-        ).toBeTruthy();
+        ).toBe(true);
     });
 
     it("reports missing descriptions for reusable workflow outputs", async () => {

@@ -20,58 +20,54 @@ import {
 
 /** Rule implementation for requiring `schedule.time` on non-cron schedules. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            for (const update of getDependabotUpdateEntries(root)) {
+                const scheduleMapping = getEffectiveDependabotUpdateMapping(
+                    root,
+                    update,
+                    "schedule"
+                );
+
+                if (scheduleMapping === null) {
+                    continue;
                 }
 
-                for (const update of getDependabotUpdateEntries(root)) {
-                    const scheduleMapping = getEffectiveDependabotUpdateMapping(
-                        root,
-                        update,
-                        "schedule"
-                    );
+                const intervalValue = getScalarStringValue(
+                    getMappingPair(scheduleMapping, "interval")?.value
+                )?.trim();
 
-                    if (scheduleMapping === null) {
-                        continue;
-                    }
-
-                    const intervalValue = getScalarStringValue(
-                        getMappingPair(scheduleMapping, "interval")?.value
-                    )?.trim();
-
-                    if (!isPresent(intervalValue)) {
-                        continue;
-                    }
-
-                    if (intervalValue === "cron") {
-                        continue;
-                    }
-
-                    const timePair = getMappingPair(scheduleMapping, "time");
-                    const timeValue = getScalarStringValue(
-                        timePair?.value
-                    )?.trim();
-
-                    if (isDefined(timeValue) && timeValue.length > 0) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            updateLabel: getDependabotUpdateLabel(update),
-                        },
-                        messageId: "missingScheduleTime",
-                        node: timePair?.value ?? timePair ?? update.node,
-                    });
+                if (!isPresent(intervalValue)) {
+                    continue;
                 }
-            },
-        };
-    },
+
+                if (intervalValue === "cron") {
+                    continue;
+                }
+
+                const timePair = getMappingPair(scheduleMapping, "time");
+                const timeValue = getScalarStringValue(timePair?.value)?.trim();
+
+                if (isDefined(timeValue) && timeValue.length > 0) {
+                    continue;
+                }
+
+                reportYamlNode(context, {
+                    data: {
+                        updateLabel: getDependabotUpdateLabel(update),
+                    },
+                    messageId: "missingScheduleTime",
+                    node: timePair?.value ?? timePair ?? update.node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

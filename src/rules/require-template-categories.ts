@@ -14,45 +14,43 @@ import { getMappingValueAsSequence } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for requiring template categories. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program(node) {
-                if (!isWorkflowTemplatePropertiesFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program(node) {
+            if (!isWorkflowTemplatePropertiesFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowTemplatePropertiesRoot(context);
+            const root = getWorkflowTemplatePropertiesRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const categoriesSequence = getMappingValueAsSequence(
-                    root,
-                    "categories"
-                );
+            const categoriesSequence = getMappingValueAsSequence(
+                root,
+                "categories"
+            );
 
-                if (
-                    categoriesSequence !== null &&
-                    categoriesSequence.entries.length > 0
-                ) {
-                    return;
-                }
+            if (
+                categoriesSequence !== null &&
+                categoriesSequence.entries.length > 0
+            ) {
+                return;
+            }
 
-                const templateName =
-                    getWorkflowTemplateStringProperty(root, "name") ??
-                    "<unnamed-template>";
+            const templateName =
+                getWorkflowTemplateStringProperty(root, "name") ??
+                "<unnamed-template>";
 
-                reportYamlNode(context, {
-                    data: {
-                        templateName,
-                    },
-                    messageId: "missingCategories",
-                    node: node,
-                });
-            },
-        };
-    },
+            reportYamlNode(context, {
+                data: {
+                    templateName,
+                },
+                messageId: "missingCategories",
+                node: node,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

@@ -15,6 +15,7 @@ import {
     getScalarStringValue,
     getWorkflowJobs,
     getWorkflowRoot,
+    isReusableWorkflowJob,
     unwrapYamlValue,
 } from "../_internal/workflow-yaml.js";
 import {
@@ -174,32 +175,34 @@ const checkJobSteps = (
 
 /** Rule implementation for requiring explicit job step names. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const job of getWorkflowJobs(root)) {
+                if (isReusableWorkflowJob(job.mapping)) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
+                const stepsSequence = getMappingValueAsSequence(
+                    job.mapping,
+                    "steps"
+                );
 
-                if (root === null) {
-                    return;
+                if (stepsSequence !== null) {
+                    checkJobSteps(context, stepsSequence, job.id);
                 }
-
-                for (const job of getWorkflowJobs(root)) {
-                    const stepsSequence = getMappingValueAsSequence(
-                        job.mapping,
-                        "steps"
-                    );
-
-                    if (stepsSequence !== null) {
-                        checkJobSteps(context, stepsSequence, job.id);
-                    }
-                }
-            },
-        };
-    },
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

@@ -5,7 +5,6 @@ import { lintWorkflow } from "./_shared/lint-workflow.js";
 const githubExpression = (expression: string): string =>
     `\${{ ${expression} }}`;
 
-// eslint-disable-next-line max-lines-per-function -- Integration test catalog intentionally exercises many action-metadata rule permutations in one suite.
 describe("action metadata rules", () => {
     it("does not run workflow-only rules on valid action metadata files under the all preset", async () => {
         expect.hasAssertions();

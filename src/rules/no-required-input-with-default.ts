@@ -17,92 +17,82 @@ import { getEnclosingLineRemovalRange } from "../_internal/yaml-fixes.js";
 
 /** Rule implementation for contradictory action input definitions. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isActionMetadataFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isActionMetadataFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+            const inputsMapping =
+                root === null ? null : getMappingValueAsMapping(root, "inputs");
+
+            if (inputsMapping === null) {
+                return;
+            }
+
+            for (const pair of inputsMapping.pairs) {
+                const inputId = getScalarStringValue(pair.key);
+                const inputMapping = unwrapYamlValue(pair.value);
+
+                if (inputId === null || inputMapping?.type !== "YAMLMapping") {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
-                const inputsMapping =
-                    root === null
-                        ? null
-                        : getMappingValueAsMapping(root, "inputs");
+                const requiredPair = getMappingPair(inputMapping, "required");
+                const defaultPair = getMappingPair(inputMapping, "default");
 
-                if (inputsMapping === null) {
-                    return;
+                if (requiredPair === null || defaultPair === null) {
+                    continue;
                 }
 
-                for (const pair of inputsMapping.pairs) {
-                    const inputId = getScalarStringValue(pair.key);
-                    const inputMapping = unwrapYamlValue(pair.value);
+                const requiredValue = unwrapYamlValue(requiredPair.value);
 
-                    if (
-                        inputId === null ||
-                        inputMapping?.type !== "YAMLMapping"
-                    ) {
-                        continue;
-                    }
+                if (
+                    requiredValue?.type !== "YAMLScalar" ||
+                    requiredValue.value !== true
+                ) {
+                    continue;
+                }
 
-                    const requiredPair = getMappingPair(
-                        inputMapping,
-                        "required"
-                    );
-                    const defaultPair = getMappingPair(inputMapping, "default");
-
-                    if (requiredPair === null || defaultPair === null) {
-                        continue;
-                    }
-
-                    const requiredValue = unwrapYamlValue(requiredPair.value);
-
-                    if (
-                        requiredValue?.type !== "YAMLScalar" ||
-                        requiredValue.value !== true
-                    ) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            inputId,
+                reportYamlNode(context, {
+                    data: {
+                        inputId,
+                    },
+                    messageId: "requiredInputWithDefault",
+                    node: defaultPair.value ?? defaultPair,
+                    suggest: [
+                        {
+                            data: {
+                                inputId,
+                            },
+                            fix: (fixer) =>
+                                fixer.removeRange(
+                                    getEnclosingLineRemovalRange(
+                                        context.sourceCode.text,
+                                        requiredPair.range
+                                    )
+                                ),
+                            messageId: "removeRequiredSuggestion",
                         },
-                        messageId: "requiredInputWithDefault",
-                        node: defaultPair.value ?? defaultPair,
-                        suggest: [
-                            {
-                                data: {
-                                    inputId,
-                                },
-                                fix: (fixer) =>
-                                    fixer.removeRange(
-                                        getEnclosingLineRemovalRange(
-                                            context.sourceCode.text,
-                                            requiredPair.range
-                                        )
-                                    ),
-                                messageId: "removeRequiredSuggestion",
+                        {
+                            data: {
+                                inputId,
                             },
-                            {
-                                data: {
-                                    inputId,
-                                },
-                                fix: (fixer) =>
-                                    fixer.removeRange(
-                                        getEnclosingLineRemovalRange(
-                                            context.sourceCode.text,
-                                            defaultPair.range
-                                        )
-                                    ),
-                                messageId: "removeDefaultSuggestion",
-                            },
-                        ],
-                    });
-                }
-            },
-        };
-    },
+                            fix: (fixer) =>
+                                fixer.removeRange(
+                                    getEnclosingLineRemovalRange(
+                                        context.sourceCode.text,
+                                        defaultPair.range
+                                    )
+                                ),
+                            messageId: "removeDefaultSuggestion",
+                        },
+                    ],
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

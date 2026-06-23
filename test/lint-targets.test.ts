@@ -50,26 +50,26 @@ describe("lint target helpers", () => {
         expect.hasAssertions();
         expect(
             isActionMetadataFile(".github/actions/setup-node/action.yml")
-        ).toBeTruthy();
+        ).toBe(true);
         expect(
             isActionMetadataFile(
                 String.raw`C:\Repo\.GITHUB\ACTIONS\CACHE\ACTION.YAML`
             )
-        ).toBeTruthy();
-        expect(isActionMetadataFile(".github/workflows/ci.yml")).toBeFalsy();
-        expect(isActionMetadataFile("action.yaml.backup")).toBeFalsy();
+        ).toBe(true);
+        expect(isActionMetadataFile(".github/workflows/ci.yml")).toBe(false);
+        expect(isActionMetadataFile("action.yaml.backup")).toBe(false);
     });
 
     it("detects repository Dependabot configuration files", () => {
         expect.hasAssertions();
-        expect(isDependabotFile(".github/dependabot.yml")).toBeTruthy();
+        expect(isDependabotFile(".github/dependabot.yml")).toBe(true);
         expect(
             isDependabotFile(String.raw`C:\Repo\.github\dependabot.yaml`)
-        ).toBeTruthy();
-        expect(isDependabotFile("dependabot.yml")).toBeFalsy();
-        expect(
-            isDependabotFile(".github/workflows/dependabot.yml")
-        ).toBeFalsy();
+        ).toBe(true);
+        expect(isDependabotFile("dependabot.yml")).toBe(false);
+        expect(isDependabotFile(".github/workflows/dependabot.yml")).toBe(
+            false
+        );
     });
 
     it("detects dependency review workflow files", () => {
@@ -78,27 +78,27 @@ describe("lint target helpers", () => {
             isDependencyReviewWorkflowFile(
                 ".github/workflows/dependency-review.yml"
             )
-        ).toBeTruthy();
+        ).toBe(true);
         expect(
             isDependencyReviewWorkflowFile(
                 ".github/workflows/dependency-review-security.yaml"
             )
-        ).toBeTruthy();
-        expect(
-            isDependencyReviewWorkflowFile(".github/workflows/ci.yml")
-        ).toBeFalsy();
+        ).toBe(true);
+        expect(isDependencyReviewWorkflowFile(".github/workflows/ci.yml")).toBe(
+            false
+        );
     });
 
     it("detects standard workflow files while excluding dependabot and template paths", () => {
         expect.hasAssertions();
-        expect(isWorkflowFile(".github/workflows/ci.yml")).toBeTruthy();
+        expect(isWorkflowFile(".github/workflows/ci.yml")).toBe(true);
         expect(
             isWorkflowFile(String.raw`C:\Repo\.github\workflows\release.YAML`)
-        ).toBeTruthy();
-        expect(isWorkflowFile(".github/dependabot.yml")).toBeFalsy();
-        expect(
-            isWorkflowFile(".github/workflow-templates/deploy.yml")
-        ).toBeFalsy();
+        ).toBe(true);
+        expect(isWorkflowFile(".github/dependabot.yml")).toBe(false);
+        expect(isWorkflowFile(".github/workflow-templates/deploy.yml")).toBe(
+            false
+        );
     });
 
     it("detects workflow template properties files", () => {
@@ -107,76 +107,76 @@ describe("lint target helpers", () => {
             isWorkflowTemplatePropertiesFile(
                 ".github/workflow-templates/ci.properties.json"
             )
-        ).toBeTruthy();
+        ).toBe(true);
         expect(
             isWorkflowTemplatePropertiesFile(
                 String.raw`C:\Repo\.github\workflow-templates\release.PROPERTIES.JSON`
             )
-        ).toBeTruthy();
-        expect(
-            isWorkflowTemplatePropertiesFile("ci.properties.json")
-        ).toBeFalsy();
+        ).toBe(true);
+        expect(isWorkflowTemplatePropertiesFile("ci.properties.json")).toBe(
+            false
+        );
         expect(
             isWorkflowTemplatePropertiesFile(
                 ".github/workflow-templates/ci.yaml"
             )
-        ).toBeFalsy();
+        ).toBe(false);
         expect(
             isWorkflowTemplatePropertiesFile(
                 String.raw`C:\Repos\workflow-templates\.github\workflows\ci.properties.json`
             )
-        ).toBeFalsy();
+        ).toBe(false);
     });
 
     it("detects workflow template YAML files", () => {
         expect.hasAssertions();
         expect(
             isWorkflowTemplateYamlFile(".github/workflow-templates/ci.yml")
-        ).toBeTruthy();
+        ).toBe(true);
         expect(
             isWorkflowTemplateYamlFile(
                 String.raw`C:\Repo\.github\workflow-templates\release.YAML`
             )
-        ).toBeTruthy();
+        ).toBe(true);
         expect(
             isWorkflowTemplateYamlFile(
                 ".github/workflow-templates/ci.properties.json"
             )
-        ).toBeFalsy();
-        expect(
-            isWorkflowTemplateYamlFile(".github/workflows/ci.yml")
-        ).toBeFalsy();
+        ).toBe(false);
+        expect(isWorkflowTemplateYamlFile(".github/workflows/ci.yml")).toBe(
+            false
+        );
         expect(
             isWorkflowTemplateYamlFile(
                 String.raw`C:\Repos\workflow-templates\.github\workflows\dependency-review.yml`
             )
-        ).toBeFalsy();
+        ).toBe(false);
         expect(
             isWorkflowTemplateYamlFile(
                 ".github/workflow-templates/nested/ci.yml"
             )
-        ).toBeFalsy();
+        ).toBe(false);
     });
 
     it("detects any workflow template surface via the combined helper", () => {
         expect.hasAssertions();
         expect(
             isWorkflowTemplateFile(".github/workflow-templates/ci.yml")
-        ).toBeTruthy();
+        ).toBe(true);
         expect(
             isWorkflowTemplateFile(
                 ".github/workflow-templates/ci.properties.json"
             )
-        ).toBeTruthy();
-        expect(isWorkflowTemplateFile(".github/workflows/ci.yml")).toBeFalsy();
+        ).toBe(true);
+        expect(isWorkflowTemplateFile(".github/workflows/ci.yml")).toBe(false);
     });
 
     it("detects .yaml extensions", () => {
         expect.hasAssertions();
-        expect(usesYamlExtension("action.yaml")).toBeTruthy();
-        expect(usesYamlExtension("ACTION.YAML")).toBeTruthy();
-        expect(usesYamlExtension("action.yml")).toBeFalsy();
-        expect(usesYamlExtension("action.yaml.backup")).toBeFalsy();
+        expect(usesYamlExtension("action.yaml")).toBe(true);
+        expect(usesYamlExtension("ACTION.YAML")).toBe(true);
+        expect(usesYamlExtension("action.yml")).toBe(false);
+        expect(usesYamlExtension("action.yaml.backup")).toBe(false);
     });
 
     it("derives template stems from known template suffixes", () => {

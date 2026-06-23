@@ -30,50 +30,46 @@ const hasNonEmptyDirectory = (
 
 /** Rule implementation for requiring `directory` or `directories`. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            for (const update of getDependabotUpdateEntries(root)) {
+                const directoryPair = getMappingPair(
+                    update.mapping,
+                    "directory"
+                );
+                const directoriesPair = getMappingPair(
+                    update.mapping,
+                    "directories"
+                );
+                const hasDirectory = hasNonEmptyDirectory(directoryPair?.value);
+                const directoryEntries = getNonEmptyStringSequenceEntries(
+                    directoriesPair?.value
+                );
+                const hasDirectories = directoryEntries.length > 0;
+
+                if (hasDirectory !== hasDirectories) {
+                    continue;
                 }
 
-                for (const update of getDependabotUpdateEntries(root)) {
-                    const directoryPair = getMappingPair(
-                        update.mapping,
-                        "directory"
-                    );
-                    const directoriesPair = getMappingPair(
-                        update.mapping,
-                        "directories"
-                    );
-                    const hasDirectory = hasNonEmptyDirectory(
-                        directoryPair?.value
-                    );
-                    const directoryEntries = getNonEmptyStringSequenceEntries(
-                        directoriesPair?.value
-                    );
-                    const hasDirectories = directoryEntries.length > 0;
-
-                    if (hasDirectory !== hasDirectories) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            updateLabel: getDependabotUpdateLabel(update),
-                        },
-                        messageId:
-                            hasDirectory && hasDirectories
-                                ? "conflictingDirectorySettings"
-                                : "missingDirectorySetting",
-                        node: directoriesPair ?? directoryPair ?? update.node,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: {
+                        updateLabel: getDependabotUpdateLabel(update),
+                    },
+                    messageId:
+                        hasDirectory && hasDirectories
+                            ? "conflictingDirectorySettings"
+                            : "missingDirectorySetting",
+                    node: directoriesPair ?? directoryPair ?? update.node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

@@ -18,49 +18,47 @@ import {
 
 /** Rule implementation for fetch-metadata github-token requirements. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const step of getDependabotFetchMetadataSteps(root)) {
+                const withMapping = getMappingValueAsMapping(
+                    step.stepMapping,
+                    "with"
+                );
+                const tokenPair =
+                    withMapping === null
+                        ? null
+                        : getMappingPair(withMapping, "github-token");
+                const tokenValue = getScalarStringValue(
+                    tokenPair?.value ?? null
+                )?.trim();
+
+                if (isDefined(tokenValue) && tokenValue.length > 0) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
-
-                if (root === null) {
-                    return;
-                }
-
-                for (const step of getDependabotFetchMetadataSteps(root)) {
-                    const withMapping = getMappingValueAsMapping(
-                        step.stepMapping,
-                        "with"
-                    );
-                    const tokenPair =
-                        withMapping === null
-                            ? null
-                            : getMappingPair(withMapping, "github-token");
-                    const tokenValue = getScalarStringValue(
-                        tokenPair?.value ?? null
-                    )?.trim();
-
-                    if (isDefined(tokenValue) && tokenValue.length > 0) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: { jobId: step.job.id },
-                        messageId: "missingGithubToken",
-                        node:
-                            tokenPair?.value ??
-                            tokenPair ??
-                            withMapping ??
-                            step.usesPair,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: { jobId: step.job.id },
+                    messageId: "missingGithubToken",
+                    node:
+                        tokenPair?.value ??
+                        tokenPair ??
+                        withMapping ??
+                        step.usesPair,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

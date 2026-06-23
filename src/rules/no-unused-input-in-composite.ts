@@ -21,73 +21,71 @@ const INPUT_REFERENCE_PATTERN = /inputs\.(?<inputId>(?:\w|-)+)/gv;
 
 /** Rule implementation for unused composite input checks. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isActionMetadataFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isActionMetadataFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const runsMapping = getMappingValueAsMapping(root, "runs");
-                const inputsMapping = getMappingValueAsMapping(root, "inputs");
+            const runsMapping = getMappingValueAsMapping(root, "runs");
+            const inputsMapping = getMappingValueAsMapping(root, "inputs");
 
-                if (runsMapping === null || inputsMapping === null) {
-                    return;
-                }
+            if (runsMapping === null || inputsMapping === null) {
+                return;
+            }
 
-                const usingRuntime = getScalarStringValue(
-                    getMappingPair(runsMapping, "using")?.value
-                );
+            const usingRuntime = getScalarStringValue(
+                getMappingPair(runsMapping, "using")?.value
+            );
 
-                if (usingRuntime !== "composite") {
-                    return;
-                }
+            if (usingRuntime !== "composite") {
+                return;
+            }
 
-                const allScalarValues = collectYamlStringScalars(runsMapping);
-                const referencedInputIds = new Set<string>();
+            const allScalarValues = collectYamlStringScalars(runsMapping);
+            const referencedInputIds = new Set<string>();
 
-                for (const scalarValue of allScalarValues) {
-                    for (const match of scalarValue.matchAll(
-                        INPUT_REFERENCE_PATTERN
-                    )) {
-                        const matchedInputId = match.groups?.["inputId"];
+            for (const scalarValue of allScalarValues) {
+                for (const match of scalarValue.matchAll(
+                    INPUT_REFERENCE_PATTERN
+                )) {
+                    const matchedInputId = match.groups?.["inputId"];
 
-                        if (!isDefined(matchedInputId)) {
-                            continue;
-                        }
-
-                        referencedInputIds.add(matchedInputId);
-                    }
-                }
-
-                for (const inputPair of inputsMapping.pairs) {
-                    const inputId = getScalarStringValue(inputPair.key);
-
-                    if (inputId === null) {
+                    if (!isDefined(matchedInputId)) {
                         continue;
                     }
 
-                    if (setHas(referencedInputIds, inputId)) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            inputId,
-                        },
-                        messageId: "unusedCompositeInput",
-                        node: inputPair.key,
-                    });
+                    referencedInputIds.add(matchedInputId);
                 }
-            },
-        };
-    },
+            }
+
+            for (const inputPair of inputsMapping.pairs) {
+                const inputId = getScalarStringValue(inputPair.key);
+
+                if (inputId === null) {
+                    continue;
+                }
+
+                if (setHas(referencedInputIds, inputId)) {
+                    continue;
+                }
+
+                reportYamlNode(context, {
+                    data: {
+                        inputId,
+                    },
+                    messageId: "unusedCompositeInput",
+                    node: inputPair.key,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

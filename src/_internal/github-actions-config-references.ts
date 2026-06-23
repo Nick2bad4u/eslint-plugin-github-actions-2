@@ -2,6 +2,8 @@
  * @packageDocumentation
  * Canonical preset names and docs references used by eslint-plugin-github-actions-2.
  */
+import type { ArrayValues } from "type-fest";
+
 import {
     ACTION_METADATA_FILE_GLOBS,
     DEPENDABOT_FILE_GLOBS,
@@ -16,6 +18,7 @@ export const githubActionsConfigNames = [
     "all",
     "codeScanning",
     "dependabot",
+    "localWorkflows",
     "recommended",
     "security",
     "strict",
@@ -24,7 +27,9 @@ export const githubActionsConfigNames = [
 ] as const;
 
 /** Supported flat-config preset names exported by the plugin. */
-export type GithubActionsConfigName = (typeof githubActionsConfigNames)[number];
+export type GithubActionsConfigName = ArrayValues<
+    typeof githubActionsConfigNames
+>;
 
 /** String references used in rule docs metadata and generated docs tables. */
 export const githubActionsConfigReferenceToName: Readonly<
@@ -34,6 +39,7 @@ export const githubActionsConfigReferenceToName: Readonly<
     "github-actions.configs.all": "all",
     "github-actions.configs.codeScanning": "codeScanning",
     "github-actions.configs.dependabot": "dependabot",
+    "github-actions.configs.localWorkflows": "localWorkflows",
     "github-actions.configs.recommended": "recommended",
     "github-actions.configs.security": "security",
     "github-actions.configs.strict": "strict",
@@ -90,6 +96,13 @@ export const githubActionsConfigMetadataByName: Readonly<
         files: DEPENDABOT_FILE_GLOBS,
         icon: "🤖",
         presetName: "github-actions:dependabot",
+    },
+    localWorkflows: {
+        description:
+            "Opt-in policy checks for repositories that require workflow jobs to be defined inline instead of delegated to reusable workflows.",
+        files: WORKFLOW_FILE_GLOBS,
+        icon: "🏠",
+        presetName: "github-actions:local-workflows",
     },
     recommended: {
         description:

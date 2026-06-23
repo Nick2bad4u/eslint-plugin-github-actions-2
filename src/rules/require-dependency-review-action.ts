@@ -11,30 +11,28 @@ import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for requiring dependency review action usage. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program(node) {
-                if (!isDependencyReviewWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program(node) {
+            if (!isDependencyReviewWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                if (getDependencyReviewActionSteps(root).length > 0) {
-                    return;
-                }
+            if (getDependencyReviewActionSteps(root).length > 0) {
+                return;
+            }
 
-                reportYamlNode(context, {
-                    messageId: "missingDependencyReviewAction",
-                    node: node,
-                });
-            },
-        };
-    },
+            reportYamlNode(context, {
+                messageId: "missingDependencyReviewAction",
+                node: node,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

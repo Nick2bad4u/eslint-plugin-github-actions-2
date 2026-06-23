@@ -14,6 +14,7 @@ describe("exported presets", () => {
             "all",
             "codeScanning",
             "dependabot",
+            "localWorkflows",
             "recommended",
             "security",
             "strict",
@@ -38,6 +39,9 @@ describe("exported presets", () => {
             ".github/dependabot.{yml,yaml}",
         ]);
         expect(githubActionsPlugin.configs.codeScanning.files).toStrictEqual([
+            ".github/workflows/*.{yml,yaml}",
+        ]);
+        expect(githubActionsPlugin.configs.localWorkflows.files).toStrictEqual([
             ".github/workflows/*.{yml,yaml}",
         ]);
         expect(
@@ -84,25 +88,25 @@ describe("exported presets", () => {
                 githubActionsPlugin.configs.all.rules,
                 "github-actions/no-top-level-permissions"
             )
-        ).toBeFalsy();
+        ).toBe(false);
         expect(
             Object.hasOwn(
                 githubActionsPlugin.configs.recommended.rules,
                 "github-actions/no-top-level-permissions"
             )
-        ).toBeFalsy();
+        ).toBe(false);
         expect(
             Object.hasOwn(
                 githubActionsPlugin.configs.security.rules,
                 "github-actions/no-top-level-permissions"
             )
-        ).toBeFalsy();
+        ).toBe(false);
         expect(
             Object.hasOwn(
                 githubActionsPlugin.configs.strict.rules,
                 "github-actions/no-top-level-permissions"
             )
-        ).toBeFalsy();
+        ).toBe(false);
         expect(
             Object.keys(
                 githubActionsPlugin.configs.codeScanning.rules
@@ -162,7 +166,6 @@ describe("exported presets", () => {
             "github-actions/action-name-casing",
             "github-actions/job-id-casing",
             "github-actions/max-jobs-per-action",
-            "github-actions/no-external-job",
             "github-actions/no-inherit-secrets",
             "github-actions/no-invalid-concurrency-context",
             "github-actions/no-invalid-key",
@@ -201,6 +204,12 @@ describe("exported presets", () => {
             "github-actions/valid-timeout-minutes",
             "github-actions/valid-trigger-events",
         ]);
+
+        expect(
+            Object.keys(
+                githubActionsPlugin.configs.localWorkflows.rules
+            ).toSorted((left, right) => left.localeCompare(right))
+        ).toStrictEqual(["github-actions/no-external-job"]);
 
         expect(
             Object.keys(

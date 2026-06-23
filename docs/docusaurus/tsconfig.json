@@ -25,6 +25,7 @@
         "docusaurus.config.ts",
         "sidebars.ts",
         "sidebars.rules.ts",
-        "src/**/*"
+        "src/**/*",
+        "typedoc-plugins/**/*"
     ]
 }

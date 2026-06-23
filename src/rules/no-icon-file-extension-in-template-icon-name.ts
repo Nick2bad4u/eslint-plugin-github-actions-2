@@ -14,50 +14,46 @@ import {
 
 /** Rule implementation for `iconName` extension checks. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program(node) {
-                if (!isWorkflowTemplatePropertiesFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program(node) {
+            if (!isWorkflowTemplatePropertiesFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowTemplatePropertiesRoot(context);
+            const root = getWorkflowTemplatePropertiesRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const iconNamePair = getMappingPair(root, "iconName");
-                const iconNameNode = iconNamePair?.value ?? null;
-                const iconName = getScalarStringValue(iconNameNode);
+            const iconNamePair = getMappingPair(root, "iconName");
+            const iconNameNode = iconNamePair?.value ?? null;
+            const iconName = getScalarStringValue(iconNameNode);
 
-                if (iconName === null) {
-                    return;
-                }
+            if (iconName === null) {
+                return;
+            }
 
-                if (!iconName.toLowerCase().endsWith(".svg")) {
-                    return;
-                }
+            if (!iconName.toLowerCase().endsWith(".svg")) {
+                return;
+            }
 
-                reportYamlNode(context, {
-                    data: {
-                        iconName,
-                    },
-                    fix: (fixer) =>
-                        iconNameNode === null
-                            ? null
-                            : fixer.replaceTextRange(
-                                  iconNameNode.range,
-                                  JSON.stringify(
-                                      iconName.slice(0, -".svg".length)
-                                  )
-                              ),
-                    messageId: "iconNameIncludesExtension",
-                    node: iconNameNode ?? node,
-                });
-            },
-        };
-    },
+            reportYamlNode(context, {
+                data: {
+                    iconName,
+                },
+                fix: (fixer) =>
+                    iconNameNode === null
+                        ? null
+                        : fixer.replaceTextRange(
+                              iconNameNode.range,
+                              JSON.stringify(iconName.slice(0, -".svg".length))
+                          ),
+                messageId: "iconNameIncludesExtension",
+                node: iconNameNode ?? node,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

@@ -5,7 +5,6 @@ import { lintWorkflow } from "./_shared/lint-workflow.js";
 const githubExpression = (expression: string): string =>
     `\${{ ${expression} }}`;
 
-// eslint-disable-next-line max-lines-per-function -- Integration tests intentionally cover many workflow metadata rule permutations in one suite.
 describe("workflow metadata rules", () => {
     it("requires a workflow name", async () => {
         expect.hasAssertions();
@@ -289,6 +288,25 @@ describe("workflow metadata rules", () => {
         expect(result.messages).toHaveLength(0);
     });
 
+    it("accepts title-case workflow names with small words, ampersands, and acronyms", async () => {
+        expect.hasAssertions();
+
+        const result = await lintWorkflow(
+            [
+                "name: Build and Test AI & API",
+                "on:",
+                "  push:",
+            ].join("\n"),
+            {
+                rules: {
+                    "github-actions/action-name-casing": "error",
+                },
+            }
+        );
+
+        expect(result.messages).toHaveLength(0);
+    });
+
     it("falls back to the default casing when object options enable no casings", async () => {
         expect.hasAssertions();
 
@@ -355,6 +373,29 @@ describe("workflow metadata rules", () => {
         );
 
         expect(result.output).toContain("name: GitHub Actions HTTP API");
+    });
+
+    it("autofixes workflow names to title case with small words, ampersands, and acronyms", async () => {
+        expect.hasAssertions();
+
+        const result = await lintWorkflow(
+            [
+                "name: build and test ai & api",
+                "on:",
+                "  push:",
+            ].join("\n"),
+            {
+                fix: true,
+                rules: {
+                    "github-actions/action-name-casing": [
+                        "error",
+                        "Title Case",
+                    ],
+                },
+            }
+        );
+
+        expect(result.output).toContain("name: Build and Test AI & API");
     });
 
     it("reports invalid workflow trigger events", async () => {
@@ -466,7 +507,7 @@ describe("workflow metadata rules", () => {
                 (message) =>
                     message.ruleId === "github-actions/valid-trigger-events"
             )
-        ).toBeTruthy();
+        ).toBe(true);
     });
 
     it("reports non-string mapping trigger keys", async () => {
@@ -928,7 +969,7 @@ describe("workflow metadata rules", () => {
                     message.ruleId ===
                     "github-actions/require-workflow-dispatch-input-type"
             )
-        ).toBeTruthy();
+        ).toBe(true);
     });
 
     it("requires explicit types for selected multi-activity events", async () => {

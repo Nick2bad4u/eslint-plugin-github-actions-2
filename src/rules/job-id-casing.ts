@@ -110,12 +110,12 @@ const rule: Rule.RuleModule = {
                         continue;
                     }
 
-                    const matchesAllowedCasing = allowedCasings.some(
+                    const isMatchesAllowedCasing = allowedCasings.some(
                         (casingKind) =>
                             matchesGithubActionsCasing(job.id, casingKind)
                     );
 
-                    if (!matchesAllowedCasing) {
+                    if (!isMatchesAllowedCasing) {
                         reportYamlNode(context, {
                             data: {
                                 caseTypes: arrayJoin(allowedCasings, ", "),

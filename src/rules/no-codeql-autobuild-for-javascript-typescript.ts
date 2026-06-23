@@ -18,50 +18,45 @@ import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for disallowing CodeQL autobuild on JS/TS-only workflows. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const autobuildStep of getCodeqlAutobuildSteps(root)) {
+                const initSteps = getCodeqlInitSteps(root).filter(
+                    (step) => step.job.id === autobuildStep.job.id
+                );
+
+                if (isEmpty(initSteps)) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
+                const languageValues = initSteps.flatMap((step) =>
+                    getCodeqlLanguageValues(step)
+                );
 
-                if (root === null) {
-                    return;
+                if (
+                    !codeqlLanguagesAreOnlyJavaScriptTypeScript(languageValues)
+                ) {
+                    continue;
                 }
 
-                for (const autobuildStep of getCodeqlAutobuildSteps(root)) {
-                    const initSteps = getCodeqlInitSteps(root).filter(
-                        (step) => step.job.id === autobuildStep.job.id
-                    );
-
-                    if (isEmpty(initSteps)) {
-                        continue;
-                    }
-
-                    const languageValues = initSteps.flatMap((step) =>
-                        getCodeqlLanguageValues(step)
-                    );
-
-                    if (
-                        !codeqlLanguagesAreOnlyJavaScriptTypeScript(
-                            languageValues
-                        )
-                    ) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        messageId: "unnecessaryCodeqlAutobuild",
-                        node:
-                            autobuildStep.usesPair.value ??
-                            autobuildStep.usesPair,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    messageId: "unnecessaryCodeqlAutobuild",
+                    node:
+                        autobuildStep.usesPair.value ?? autobuildStep.usesPair,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

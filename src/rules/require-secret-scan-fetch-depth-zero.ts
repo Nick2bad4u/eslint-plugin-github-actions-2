@@ -75,41 +75,39 @@ const hasCompliantCheckoutInSequence = (
 
 /** Rule implementation for fetch-depth zero requirements on secret scanners. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const scanStep of getSecretScanningActionSteps(root)) {
+                const stepsSequence = getMappingValueAsSequence(
+                    scanStep.job.mapping,
+                    "steps"
+                );
+
+                if (
+                    stepsSequence !== null &&
+                    hasCompliantCheckoutInSequence(stepsSequence)
+                ) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
-
-                if (root === null) {
-                    return;
-                }
-
-                for (const scanStep of getSecretScanningActionSteps(root)) {
-                    const stepsSequence = getMappingValueAsSequence(
-                        scanStep.job.mapping,
-                        "steps"
-                    );
-
-                    if (
-                        stepsSequence !== null &&
-                        hasCompliantCheckoutInSequence(stepsSequence)
-                    ) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: { jobId: scanStep.job.id },
-                        messageId: "missingFetchDepthZero",
-                        node: scanStep.job.idNode,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: { jobId: scanStep.job.id },
+                    messageId: "missingFetchDepthZero",
+                    node: scanStep.job.idNode,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

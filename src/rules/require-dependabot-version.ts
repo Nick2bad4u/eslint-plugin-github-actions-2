@@ -15,56 +15,48 @@ import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for requiring `version: 2` in Dependabot config. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program(node) {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program(node) {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const versionPair = getMappingPair(root, "version");
-                const versionValue = getDependabotMappingStringValue(
-                    root,
-                    "version"
-                );
+            const versionPair = getMappingPair(root, "version");
+            const versionValue = getDependabotMappingStringValue(
+                root,
+                "version"
+            );
 
-                if (versionValue === "2") {
-                    return;
-                }
+            if (versionValue === "2") {
+                return;
+            }
 
-                reportYamlNode(context, {
-                    fix: (fixer) => {
-                        if (versionPair === null) {
-                            return fixer.insertTextBeforeRange(
-                                [
-                                    arrayFirst(root.range),
-                                    arrayFirst(root.range),
-                                ],
-                                "version: 2\n"
-                            );
-                        }
+            reportYamlNode(context, {
+                fix: (fixer) => {
+                    if (versionPair === null) {
+                        return fixer.insertTextBeforeRange(
+                            [arrayFirst(root.range), arrayFirst(root.range)],
+                            "version: 2\n"
+                        );
+                    }
 
-                        return versionPair.value === null
-                            ? fixer.replaceTextRange(
-                                  versionPair.range,
-                                  "version: 2"
-                              )
-                            : fixer.replaceTextRange(
-                                  versionPair.value.range,
-                                  "2"
-                              );
-                    },
-                    messageId:
-                        versionPair === null
-                            ? "missingDependabotVersion"
-                            : "invalidDependabotVersion",
-                    node: versionPair?.value ?? versionPair ?? node,
-                });
-            },
-        };
-    },
+                    return versionPair.value === null
+                        ? fixer.replaceTextRange(
+                              versionPair.range,
+                              "version: 2"
+                          )
+                        : fixer.replaceTextRange(versionPair.value.range, "2");
+                },
+                messageId:
+                    versionPair === null
+                        ? "missingDependabotVersion"
+                        : "invalidDependabotVersion",
+                node: versionPair?.value ?? versionPair ?? node,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

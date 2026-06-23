@@ -19,73 +19,69 @@ import {
 
 /** Rule implementation for duplicate composite step ID checks. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isActionMetadataFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isActionMetadataFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+            const runsMapping =
+                root === null ? null : getMappingValueAsMapping(root, "runs");
+
+            if (runsMapping === null) {
+                return;
+            }
+
+            const usingRuntime = getScalarStringValue(
+                getMappingPair(runsMapping, "using")?.value
+            );
+
+            if (usingRuntime !== "composite") {
+                return;
+            }
+
+            const stepsSequence = getMappingValueAsSequence(
+                runsMapping,
+                "steps"
+            );
+
+            if (stepsSequence === null) {
+                return;
+            }
+
+            const firstSeenByStepId = new Set<string>();
+
+            for (const stepEntry of stepsSequence.entries) {
+                const stepMapping = unwrapYamlValue(stepEntry);
+
+                if (stepMapping?.type !== "YAMLMapping") {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
-                const runsMapping =
-                    root === null
-                        ? null
-                        : getMappingValueAsMapping(root, "runs");
+                const stepIdPair = getMappingPair(stepMapping, "id");
+                const stepId = getScalarStringValue(stepIdPair?.value);
 
-                if (runsMapping === null) {
-                    return;
+                if (stepId === null) {
+                    continue;
                 }
 
-                const usingRuntime = getScalarStringValue(
-                    getMappingPair(runsMapping, "using")?.value
-                );
+                if (!setHas(firstSeenByStepId, stepId)) {
+                    firstSeenByStepId.add(stepId);
 
-                if (usingRuntime !== "composite") {
-                    return;
+                    continue;
                 }
 
-                const stepsSequence = getMappingValueAsSequence(
-                    runsMapping,
-                    "steps"
-                );
-
-                if (stepsSequence === null) {
-                    return;
-                }
-
-                const firstSeenByStepId = new Set<string>();
-
-                for (const stepEntry of stepsSequence.entries) {
-                    const stepMapping = unwrapYamlValue(stepEntry);
-
-                    if (stepMapping?.type !== "YAMLMapping") {
-                        continue;
-                    }
-
-                    const stepIdPair = getMappingPair(stepMapping, "id");
-                    const stepId = getScalarStringValue(stepIdPair?.value);
-
-                    if (stepId === null) {
-                        continue;
-                    }
-
-                    if (!setHas(firstSeenByStepId, stepId)) {
-                        firstSeenByStepId.add(stepId);
-
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            stepId,
-                        },
-                        messageId: "duplicateCompositeStepId",
-                        node: stepIdPair?.value ?? stepIdPair,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: {
+                        stepId,
+                    },
+                    messageId: "duplicateCompositeStepId",
+                    node: stepIdPair?.value ?? stepIdPair,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

@@ -16,30 +16,28 @@ import {
 
 /** Rule implementation for requiring scheduled secret scanning runs. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program(node) {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program(node) {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null || !hasSecretScanningAction(root)) {
-                    return;
-                }
+            if (root === null || !hasSecretScanningAction(root)) {
+                return;
+            }
 
-                if (setHas(getWorkflowEventNames(root), "schedule")) {
-                    return;
-                }
+            if (setHas(getWorkflowEventNames(root), "schedule")) {
+                return;
+            }
 
-                reportYamlNode(context, {
-                    messageId: "missingScheduleTrigger",
-                    node: node,
-                });
-            },
-        };
-    },
+            reportYamlNode(context, {
+                messageId: "missingScheduleTrigger",
+                node: node,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

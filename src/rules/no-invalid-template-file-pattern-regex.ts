@@ -11,45 +11,42 @@ import {
     getWorkflowTemplatePropertiesRoot,
 } from "../_internal/workflow-template-properties.js";
 
-/** Construct a unicode regex from a pattern string. */
+/** Construct a Unicode regex from a pattern string. */
 const createUnicodeRegex = (pattern: string): RegExp =>
     // eslint-disable-next-line security/detect-non-literal-regexp -- Intentional syntax validation of user-provided regex patterns.
     new RegExp(pattern, "u");
 
 /** Rule implementation for validating `filePatterns` regex syntax. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowTemplatePropertiesFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowTemplatePropertiesFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowTemplatePropertiesRoot(context);
+            const root = getWorkflowTemplatePropertiesRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                for (const {
-                    node,
-                    value,
-                } of getWorkflowTemplateFilePatternEntries(root)) {
-                    try {
-                        createUnicodeRegex(value);
-                    } catch {
-                        reportYamlNode(context, {
-                            data: {
-                                pattern: value,
-                            },
-                            messageId: "invalidTemplateFilePatternRegex",
-                            node: node,
-                        });
-                    }
+            for (const { node, value } of getWorkflowTemplateFilePatternEntries(
+                root
+            )) {
+                try {
+                    createUnicodeRegex(value);
+                } catch {
+                    reportYamlNode(context, {
+                        data: {
+                            pattern: value,
+                        },
+                        messageId: "invalidTemplateFilePatternRegex",
+                        node: node,
+                    });
                 }
-            },
-        };
-    },
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

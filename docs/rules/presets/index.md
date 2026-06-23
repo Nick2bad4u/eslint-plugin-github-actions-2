@@ -40,14 +40,15 @@ Fix legend:
 Preset key legend:
 
 - [🧩](./action-metadata.md) — [`githubActions.configs.actionMetadata`](./action-metadata.md)
+- [🟣](./all.md) — [`githubActions.configs.all`](./all.md)
 - [🔎](./code-scanning.md) — [`githubActions.configs.codeScanning`](./code-scanning.md)
 - [🤖](./dependabot.md) — [`githubActions.configs.dependabot`](./dependabot.md)
-- [🗂️](./workflow-template-properties.md) — [`githubActions.configs.workflowTemplateProperties`](./workflow-template-properties.md)
-- [🧱](./workflow-templates.md) — [`githubActions.configs.workflowTemplates`](./workflow-templates.md)
+- [🏠](./local-workflows.md) — [`githubActions.configs.localWorkflows`](./local-workflows.md)
 - [🟡](./recommended.md) — [`githubActions.configs.recommended`](./recommended.md)
 - [🛡️](./security.md) — [`githubActions.configs.security`](./security.md)
 - [🔴](./strict.md) — [`githubActions.configs.strict`](./strict.md)
-- [🟣](./all.md) — [`githubActions.configs.all`](./all.md)
+- [🗂️](./workflow-template-properties.md) — [`githubActions.configs.workflowTemplateProperties`](./workflow-template-properties.md)
+- [🧱](./workflow-templates.md) — [`githubActions.configs.workflowTemplates`](./workflow-templates.md)
 
 | Rule                                                                                                                                                                   | Fix | Preset key                                                                           |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-: | ------------------------------------------------------------------------------------ |
@@ -61,7 +62,7 @@ Preset key legend:
 | <span class="sb-inline-rule-number">R044</span> [`no-deprecated-node-runtime`](../no-deprecated-node-runtime.md)                                                       |  —  | [🧩](./action-metadata.md) [🟣](./all.md)                                            |
 | <span class="sb-inline-rule-number">R051</span> [`no-duplicate-composite-step-id`](../no-duplicate-composite-step-id.md)                                               |  —  | [🧩](./action-metadata.md) [🟣](./all.md)                                            |
 | <span class="sb-inline-rule-number">R060</span> [`no-empty-template-file-pattern`](../no-empty-template-file-pattern.md)                                               | 🔧  | [🗂️](./workflow-template-properties.md) [🧱](./workflow-templates.md) [🟣](./all.md) |
-| <span class="sb-inline-rule-number">R012</span> [`no-external-job`](../no-external-job.md)                                                                             |  —  | [🟣](./all.md) [🔴](./strict.md)                                                     |
+| <span class="sb-inline-rule-number">R012</span> [`no-external-job`](../no-external-job.md)                                                                             |  —  | [🏠](./local-workflows.md)                                                           |
 | <span class="sb-inline-rule-number">R068</span> [`no-hardcoded-default-branch-in-template`](../no-hardcoded-default-branch-in-template.md)                             |  —  | [🧱](./workflow-templates.md) [🟣](./all.md)                                         |
 | <span class="sb-inline-rule-number">R063</span> [`no-icon-file-extension-in-template-icon-name`](../no-icon-file-extension-in-template-icon-name.md)                   | 🔧  | [🗂️](./workflow-template-properties.md) [🧱](./workflow-templates.md) [🟣](./all.md) |
 | <span class="sb-inline-rule-number">R026</span> [`no-inherit-secrets`](../no-inherit-secrets.md)                                                                       |  —  | [🟣](./all.md) [🛡️](./security.md) [🔴](./strict.md)                                 |

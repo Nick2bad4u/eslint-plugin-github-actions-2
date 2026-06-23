@@ -101,51 +101,49 @@ const checkJobStepsForUnpinnedUses = (
  * references.
  */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const job of getWorkflowJobs(root)) {
+                const reusableWorkflowPair = getMappingPair(
+                    job.mapping,
+                    "uses"
+                );
+                const reusableWorkflowReference = getScalarStringValue(
+                    reusableWorkflowPair?.value ?? null
+                );
+
+                if (
+                    reusableWorkflowPair !== null &&
+                    reusableWorkflowReference !== null
+                ) {
+                    reportReference(
+                        context,
+                        reusableWorkflowPair.value ?? reusableWorkflowPair,
+                        reusableWorkflowReference
+                    );
                 }
 
-                const root = getWorkflowRoot(context);
+                const stepsSequence = getMappingValueAsSequence(
+                    job.mapping,
+                    "steps"
+                );
 
-                if (root === null) {
-                    return;
+                if (stepsSequence !== null) {
+                    checkJobStepsForUnpinnedUses(context, stepsSequence);
                 }
-
-                for (const job of getWorkflowJobs(root)) {
-                    const reusableWorkflowPair = getMappingPair(
-                        job.mapping,
-                        "uses"
-                    );
-                    const reusableWorkflowReference = getScalarStringValue(
-                        reusableWorkflowPair?.value ?? null
-                    );
-
-                    if (
-                        reusableWorkflowPair !== null &&
-                        reusableWorkflowReference !== null
-                    ) {
-                        reportReference(
-                            context,
-                            reusableWorkflowPair.value ?? reusableWorkflowPair,
-                            reusableWorkflowReference
-                        );
-                    }
-
-                    const stepsSequence = getMappingValueAsSequence(
-                        job.mapping,
-                        "steps"
-                    );
-
-                    if (stepsSequence !== null) {
-                        checkJobStepsForUnpinnedUses(context, stepsSequence);
-                    }
-                }
-            },
-        };
-    },
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

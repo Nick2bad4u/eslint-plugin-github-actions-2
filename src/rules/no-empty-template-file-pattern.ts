@@ -14,42 +14,39 @@ import { getFlowSequenceEntryRemovalRange } from "../_internal/yaml-fixes.js";
 
 /** Rule implementation for empty template file pattern checks. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowTemplatePropertiesFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowTemplatePropertiesFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowTemplatePropertiesRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const { node, value } of getWorkflowTemplateFilePatternEntries(
+                root
+            )) {
+                if (value.trim().length > 0) {
+                    continue;
                 }
 
-                const root = getWorkflowTemplatePropertiesRoot(context);
-
-                if (root === null) {
-                    return;
-                }
-
-                for (const {
-                    node,
-                    value,
-                } of getWorkflowTemplateFilePatternEntries(root)) {
-                    if (value.trim().length > 0) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        fix: (fixer) =>
-                            fixer.removeRange(
-                                getFlowSequenceEntryRemovalRange(
-                                    context.sourceCode.text,
-                                    node.range
-                                )
-                            ),
-                        messageId: "emptyTemplateFilePattern",
-                        node: node,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    fix: (fixer) =>
+                        fixer.removeRange(
+                            getFlowSequenceEntryRemovalRange(
+                                context.sourceCode.text,
+                                node.range
+                            )
+                        ),
+                    messageId: "emptyTemplateFilePattern",
+                    node: node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

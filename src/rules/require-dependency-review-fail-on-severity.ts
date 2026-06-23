@@ -18,54 +18,52 @@ import {
 
 /** Rule implementation for dependency-review fail-on-severity requirements. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const step of getDependencyReviewActionSteps(root)) {
+                const withMapping = getMappingValueAsMapping(
+                    step.stepMapping,
+                    "with"
+                );
+                const failOnSeverityPair =
+                    withMapping === null
+                        ? null
+                        : getMappingPair(withMapping, "fail-on-severity");
+                const failOnSeverityValue = getScalarStringValue(
+                    failOnSeverityPair?.value ?? null
+                )?.trim();
+
+                if (
+                    isDefined(failOnSeverityValue) &&
+                    failOnSeverityValue.length > 0
+                ) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
-
-                if (root === null) {
-                    return;
-                }
-
-                for (const step of getDependencyReviewActionSteps(root)) {
-                    const withMapping = getMappingValueAsMapping(
-                        step.stepMapping,
-                        "with"
-                    );
-                    const failOnSeverityPair =
-                        withMapping === null
-                            ? null
-                            : getMappingPair(withMapping, "fail-on-severity");
-                    const failOnSeverityValue = getScalarStringValue(
-                        failOnSeverityPair?.value ?? null
-                    )?.trim();
-
-                    if (
-                        isDefined(failOnSeverityValue) &&
-                        failOnSeverityValue.length > 0
-                    ) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            jobId: step.job.id,
-                        },
-                        messageId: "missingFailOnSeverity",
-                        node:
-                            failOnSeverityPair?.value ??
-                            failOnSeverityPair ??
-                            withMapping ??
-                            step.usesPair,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: {
+                        jobId: step.job.id,
+                    },
+                    messageId: "missingFailOnSeverity",
+                    node:
+                        failOnSeverityPair?.value ??
+                        failOnSeverityPair ??
+                        withMapping ??
+                        step.usesPair,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

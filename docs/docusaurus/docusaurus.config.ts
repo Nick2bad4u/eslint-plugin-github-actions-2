@@ -1,9 +1,9 @@
-import { themes as prismThemes } from "prism-react-renderer";
-
-import type { Config } from "@docusaurus/types";
 import type { Options as DocsPluginOptions } from "@docusaurus/plugin-content-docs";
 import type * as Preset from "@docusaurus/preset-classic";
+import type { Config } from "@docusaurus/types";
+
 import { fileURLToPath } from "node:url";
+import { themes as prismThemes } from "prism-react-renderer";
 
 import { suppressKnownWebpackWarningsPlugin } from "./src/plugins/suppressKnownWebpackWarningsPlugin";
 
@@ -19,7 +19,7 @@ const siteUrl = `${siteOrigin}${baseUrl}`;
 const siteDescription =
     "ESLint rules for GitHub Actions workflows, reusable workflows, and workflow templates.";
 const socialCardImagePath = "img/logo.png";
-const socialCardImageUrl = new URL(socialCardImagePath, siteUrl).toString();
+const socialCardImageUrl = new URL(socialCardImagePath, siteUrl).href;
 const modernEnhancementsClientModule = fileURLToPath(
     new URL("src/js/modernEnhancements.ts", import.meta.url)
 );
@@ -37,20 +37,18 @@ const removeHeadAttrFlagKey = [
 ].join("");
 
 const futureConfig = {
-    ...(enableExperimentalFaster
-        ? {
-              faster: {
-                  mdxCrossCompilerCache: true,
-                  rspackBundler: true,
-                  rspackPersistentCache: true,
-                  ssgWorkerThreads: true,
-              },
-          }
-        : {}),
+    ...(enableExperimentalFaster && {
+        faster: {
+            mdxCrossCompilerCache: true,
+            rspackBundler: true,
+            rspackPersistentCache: true,
+            ssgWorkerThreads: true,
+        },
+    }),
     v4: {
-        [removeHeadAttrFlagKey]: true,
         fasterByDefault: true,
         mdx1CompatDisabledByDefault: true,
+        [removeHeadAttrFlagKey]: true,
         removeLegacyPostBuildHeadAttribute: true,
         siteStorageNamespacing: true,
         // Keep disabled for now; enabling this has produced CSS minification
@@ -302,10 +300,10 @@ const config = {
             ],
             logo: {
                 alt: "eslint-plugin-github-actions logo",
+                height: 120,
                 href: `https://github.com/${organizationName}/${projectName}`,
                 src: "img/logo.svg",
                 width: 120,
-                height: 120,
             },
             style: "dark",
         },
@@ -320,9 +318,6 @@ const config = {
             hideOnScroll: true,
             items: [
                 {
-                    label: "📚 Docs",
-                    to: "/docs/rules/overview",
-                    type: "dropdown",
                     items: [
                         {
                             label: "🏁 Overview",
@@ -337,11 +332,11 @@ const config = {
                             to: "/docs/rules/guides",
                         },
                     ],
+                    label: "📚 Docs",
+                    to: "/docs/rules/overview",
+                    type: "dropdown",
                 },
                 {
-                    label: "📜 Rules",
-                    to: "/docs/rules",
-                    type: "dropdown",
                     items: [
                         {
                             label: "📏 Rule reference",
@@ -364,11 +359,11 @@ const config = {
                             to: "/docs/rules/category/workflow-template-rules",
                         },
                     ],
+                    label: "📜 Rules",
+                    to: "/docs/rules",
+                    type: "dropdown",
                 },
                 {
-                    label: "🧭 Presets",
-                    to: "/docs/rules/presets",
-                    type: "dropdown",
                     items: [
                         {
                             label: "🧭 Preset reference",
@@ -385,6 +380,10 @@ const config = {
                         {
                             label: "🔎 Code scanning",
                             to: "/docs/rules/presets/code-scanning",
+                        },
+                        {
+                            label: "🏠 Local workflows",
+                            to: "/docs/rules/presets/local-workflows",
                         },
                         {
                             label: "🔴 Strict",
@@ -411,11 +410,11 @@ const config = {
                             to: "/docs/rules/presets/workflow-templates",
                         },
                     ],
+                    label: "🧭 Presets",
+                    to: "/docs/rules/presets",
+                    type: "dropdown",
                 },
                 {
-                    label: "👨‍💻 Developer",
-                    position: "right",
-                    type: "dropdown",
                     items: [
                         {
                             label: "Developer guide",
@@ -438,11 +437,14 @@ const config = {
                             to: "/docs/developer/api",
                         },
                     ],
+                    label: "👨‍💻 Developer",
+                    position: "right",
+                    type: "dropdown",
                 },
                 {
                     label: "📰 Blog",
-                    to: "/blog",
                     position: "right",
+                    to: "/blog",
                 },
                 {
                     href: `https://github.com/${organizationName}/${projectName}`,

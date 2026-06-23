@@ -16,37 +16,33 @@ import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for disallowing split JS/TS CodeQL language matrices. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const step of getCodeqlInitSteps(root)) {
+                const languageValues = new Set(getCodeqlLanguageValues(step));
+
+                if (
+                    setHas(languageValues, "javascript") &&
+                    setHas(languageValues, "typescript")
+                ) {
+                    reportYamlNode(context, {
+                        messageId: "splitJavaScriptTypeScriptMatrix",
+                        node: step.usesPair.value ?? step.usesPair,
+                    });
                 }
-
-                const root = getWorkflowRoot(context);
-
-                if (root === null) {
-                    return;
-                }
-
-                for (const step of getCodeqlInitSteps(root)) {
-                    const languageValues = new Set(
-                        getCodeqlLanguageValues(step)
-                    );
-
-                    if (
-                        setHas(languageValues, "javascript") &&
-                        setHas(languageValues, "typescript")
-                    ) {
-                        reportYamlNode(context, {
-                            messageId: "splitJavaScriptTypeScriptMatrix",
-                            node: step.usesPair.value ?? step.usesPair,
-                        });
-                    }
-                }
-            },
-        };
-    },
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

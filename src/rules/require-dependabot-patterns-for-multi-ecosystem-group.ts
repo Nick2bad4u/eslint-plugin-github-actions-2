@@ -15,44 +15,38 @@ import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for grouped-update pattern requirements. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            for (const update of getDependabotUpdateEntries(root)) {
+                if (update.multiEcosystemGroup === null) {
+                    continue;
                 }
 
-                for (const update of getDependabotUpdateEntries(root)) {
-                    if (update.multiEcosystemGroup === null) {
-                        continue;
-                    }
+                const patternsPair = getMappingPair(update.mapping, "patterns");
+                const patternEntries = getNonEmptyStringSequenceEntries(
+                    patternsPair?.value
+                );
 
-                    const patternsPair = getMappingPair(
-                        update.mapping,
-                        "patterns"
-                    );
-                    const patternEntries = getNonEmptyStringSequenceEntries(
-                        patternsPair?.value
-                    );
-
-                    if (patternEntries.length > 0) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            updateLabel: getDependabotUpdateLabel(update),
-                        },
-                        messageId: "missingPatternsForGroupedUpdate",
-                        node:
-                            patternsPair?.value ?? patternsPair ?? update.node,
-                    });
+                if (patternEntries.length > 0) {
+                    continue;
                 }
-            },
-        };
-    },
+
+                reportYamlNode(context, {
+                    data: {
+                        updateLabel: getDependabotUpdateLabel(update),
+                    },
+                    messageId: "missingPatternsForGroupedUpdate",
+                    node: patternsPair?.value ?? patternsPair ?? update.node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

@@ -52,21 +52,21 @@ describe("workflow YAML helpers", () => {
 
         const scalarNode = parseRootMapping("name: CI").pairs[0]?.value;
 
-        expect(scalarNode).toBeTruthy();
+        expect(scalarNode?.type).toBe("YAMLScalar");
 
         const wrappedNode = {
             type: "YAMLWithMeta",
             value: scalarNode as AST.YAMLContent,
         } as unknown as AST.YAMLWithMeta;
 
-        expect(isYamlWithMeta(wrappedNode)).toBeTruthy();
+        expect(isYamlWithMeta(wrappedNode)).toBe(true);
         expect(unwrapYamlValue(wrappedNode)?.type).toBe("YAMLScalar");
         expect(unwrapYamlValue(null)).toBeNull();
         expect(unwrapYamlValue(undefined)).toBeNull();
 
-        expect(isYamlScalar(wrappedNode)).toBeTruthy();
-        expect(isYamlMapping(wrappedNode)).toBeFalsy();
-        expect(isYamlSequence(wrappedNode)).toBeFalsy();
+        expect(isYamlScalar(wrappedNode)).toBe(true);
+        expect(isYamlMapping(wrappedNode)).toBe(false);
+        expect(isYamlSequence(wrappedNode)).toBe(false);
     });
 
     it("reads scalar values as strings or numbers where appropriate", () => {
@@ -111,10 +111,10 @@ describe("workflow YAML helpers", () => {
 
         expect(
             isGithubExpressionScalar(getMappingPair(root, "expr")?.value)
-        ).toBeTruthy();
+        ).toBe(true);
         expect(
             isGithubExpressionScalar(getMappingPair(root, "plain")?.value)
-        ).toBeFalsy();
+        ).toBe(false);
     });
 
     it("finds mapping pairs and narrows mapping or sequence values", () => {

@@ -14,45 +14,43 @@ import { getMappingValueAsSequence } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for requiring non-empty template file patterns. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program(node) {
-                if (!isWorkflowTemplatePropertiesFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program(node) {
+            if (!isWorkflowTemplatePropertiesFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowTemplatePropertiesRoot(context);
+            const root = getWorkflowTemplatePropertiesRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const filePatternsSequence = getMappingValueAsSequence(
-                    root,
-                    "filePatterns"
-                );
+            const filePatternsSequence = getMappingValueAsSequence(
+                root,
+                "filePatterns"
+            );
 
-                if (
-                    filePatternsSequence !== null &&
-                    filePatternsSequence.entries.length > 0
-                ) {
-                    return;
-                }
+            if (
+                filePatternsSequence !== null &&
+                filePatternsSequence.entries.length > 0
+            ) {
+                return;
+            }
 
-                const templateName =
-                    getWorkflowTemplateStringProperty(root, "name") ??
-                    "<unnamed-template>";
+            const templateName =
+                getWorkflowTemplateStringProperty(root, "name") ??
+                "<unnamed-template>";
 
-                reportYamlNode(context, {
-                    data: {
-                        templateName,
-                    },
-                    messageId: "missingFilePatterns",
-                    node: node,
-                });
-            },
-        };
-    },
+            reportYamlNode(context, {
+                data: {
+                    templateName,
+                },
+                messageId: "missingFilePatterns",
+                node: node,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

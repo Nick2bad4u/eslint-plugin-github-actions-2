@@ -76,7 +76,7 @@ describe("dependabot YAML helpers", () => {
 
         const [update] = getDependabotUpdateEntries(root);
 
-        expect(update).toBeTruthy();
+        expect(update?.index).toBe(1);
         expect(update?.packageEcosystem).toBe("npm");
         expect(update?.multiEcosystemGroup).toBe("app");
         expect(getDependabotUpdateLabel(update!)).toBe("updates[1] (npm)");

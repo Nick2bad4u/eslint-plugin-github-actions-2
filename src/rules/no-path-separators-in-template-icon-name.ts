@@ -16,64 +16,62 @@ import {
 
 /** Rule implementation for icon path-separator checks. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program(node) {
-                if (!isWorkflowTemplatePropertiesFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program(node) {
+            if (!isWorkflowTemplatePropertiesFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowTemplatePropertiesRoot(context);
+            const root = getWorkflowTemplatePropertiesRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const iconNamePair = getMappingPair(root, "iconName");
-                const iconNameNode = iconNamePair?.value ?? null;
-                const iconName = getScalarStringValue(iconNameNode);
+            const iconNamePair = getMappingPair(root, "iconName");
+            const iconNameNode = iconNamePair?.value ?? null;
+            const iconName = getScalarStringValue(iconNameNode);
 
-                if (
-                    iconName === null ||
-                    (!iconName.includes("/") && !iconName.includes("\\"))
-                ) {
-                    return;
-                }
+            if (
+                iconName === null ||
+                (!iconName.includes("/") && !iconName.includes("\\"))
+            ) {
+                return;
+            }
 
-                const suggestedIconName = arrayAt(
-                    stringSplit(iconName.replaceAll("\\", "/"), "/"),
-                    -1
-                );
+            const suggestedIconName = arrayAt(
+                stringSplit(iconName.replaceAll("\\", "/"), "/"),
+                -1
+            );
 
-                reportYamlNode(context, {
-                    data: {
-                        iconName,
-                    },
-                    messageId: "iconNameContainsPathSeparator",
-                    node: iconNameNode ?? node,
-                    suggest:
-                        !isDefined(suggestedIconName) ||
-                        suggestedIconName.length === 0 ||
-                        iconNameNode === null
-                            ? undefined
-                            : [
-                                  {
-                                      data: {
-                                          iconName,
-                                          suggestedIconName,
-                                      },
-                                      fix: (fixer) =>
-                                          fixer.replaceTextRange(
-                                              iconNameNode.range,
-                                              JSON.stringify(suggestedIconName)
-                                          ),
-                                      messageId: "replaceIconNameWithBasename",
+            reportYamlNode(context, {
+                data: {
+                    iconName,
+                },
+                messageId: "iconNameContainsPathSeparator",
+                node: iconNameNode ?? node,
+                suggest:
+                    !isDefined(suggestedIconName) ||
+                    suggestedIconName.length === 0 ||
+                    iconNameNode === null
+                        ? undefined
+                        : [
+                              {
+                                  data: {
+                                      iconName,
+                                      suggestedIconName,
                                   },
-                              ],
-                });
-            },
-        };
-    },
+                                  fix: (fixer) =>
+                                      fixer.replaceTextRange(
+                                          iconNameNode.range,
+                                          JSON.stringify(suggestedIconName)
+                                      ),
+                                  messageId: "replaceIconNameWithBasename",
+                              },
+                          ],
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

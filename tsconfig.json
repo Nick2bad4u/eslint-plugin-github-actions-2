@@ -111,11 +111,15 @@
         "test/fixtures/**"
     ],
     "include": [
+        "knip.config.ts",
+        "plugin.d.mts",
+        "remark-plugin-shims.d.ts",
         "src/**/*.d.ts",
         "src/**/*.ts",
         "test/**/*.d.ts",
         "test/**/*.ts",
-        "vite.config.ts"
+        "vite.config.ts",
+        "vitest.stryker.config.ts"
     ],
     "typeAcquisition": {
         "enable": true,

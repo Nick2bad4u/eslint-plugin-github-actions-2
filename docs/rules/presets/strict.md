@@ -19,7 +19,6 @@ Fix legend:
 | <span class="sb-inline-rule-number">R009</span> [`action-name-casing`](../action-name-casing.md)                                                             | 🔧  |
 | <span class="sb-inline-rule-number">R010</span> [`job-id-casing`](../job-id-casing.md)                                                                       |  —  |
 | <span class="sb-inline-rule-number">R011</span> [`max-jobs-per-action`](../max-jobs-per-action.md)                                                           |  —  |
-| <span class="sb-inline-rule-number">R012</span> [`no-external-job`](../no-external-job.md)                                                                   |  —  |
 | <span class="sb-inline-rule-number">R026</span> [`no-inherit-secrets`](../no-inherit-secrets.md)                                                             |  —  |
 | <span class="sb-inline-rule-number">R042</span> [`no-invalid-concurrency-context`](../no-invalid-concurrency-context.md)                                     |  —  |
 | <span class="sb-inline-rule-number">R019</span> [`no-invalid-key`](../no-invalid-key.md)                                                                     |  —  |

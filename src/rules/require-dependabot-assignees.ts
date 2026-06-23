@@ -15,40 +15,37 @@ import { reportYamlNode } from "../_internal/report.js";
 
 /** Rule implementation for requiring effective assignees. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            for (const update of getDependabotUpdateEntries(root)) {
+                const assigneesValue = getEffectiveDependabotUpdateValue(
+                    root,
+                    update,
+                    "assignees"
+                );
+
+                if (
+                    getNonEmptyStringSequenceEntries(assigneesValue).length > 0
+                ) {
+                    continue;
                 }
 
-                for (const update of getDependabotUpdateEntries(root)) {
-                    const assigneesValue = getEffectiveDependabotUpdateValue(
-                        root,
-                        update,
-                        "assignees"
-                    );
-
-                    if (
-                        getNonEmptyStringSequenceEntries(assigneesValue)
-                            .length > 0
-                    ) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            updateLabel: getDependabotUpdateLabel(update),
-                        },
-                        messageId: "missingAssignees",
-                        node: assigneesValue ?? update.node,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: {
+                        updateLabel: getDependabotUpdateLabel(update),
+                    },
+                    messageId: "missingAssignees",
+                    node: assigneesValue ?? update.node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

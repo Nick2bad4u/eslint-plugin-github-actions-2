@@ -61,94 +61,91 @@ const checkInterfaceDescriptions = (
 
 /** Rule implementation for requiring workflow interface descriptions. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const onMapping = getMappingValueAsMapping(root, "on");
+            const onMapping = getMappingValueAsMapping(root, "on");
 
-                if (onMapping === null) {
-                    return;
-                }
+            if (onMapping === null) {
+                return;
+            }
 
-                const workflowDispatchMapping = unwrapYamlValue(
-                    getMappingPair(onMapping, "workflow_dispatch")?.value ??
-                        null
-                );
+            const workflowDispatchMapping = unwrapYamlValue(
+                getMappingPair(onMapping, "workflow_dispatch")?.value ?? null
+            );
 
-                if (workflowDispatchMapping?.type === "YAMLMapping") {
-                    const dispatchInputsMapping = getMappingValueAsMapping(
-                        workflowDispatchMapping,
-                        "inputs"
-                    );
-
-                    if (dispatchInputsMapping !== null) {
-                        checkInterfaceDescriptions(
-                            context,
-                            dispatchInputsMapping,
-                            "workflow_dispatch input"
-                        );
-                    }
-                }
-
-                const workflowCallMapping = unwrapYamlValue(
-                    getMappingPair(onMapping, "workflow_call")?.value ?? null
-                );
-
-                if (workflowCallMapping?.type !== "YAMLMapping") {
-                    return;
-                }
-
-                const workflowCallInputsMapping = getMappingValueAsMapping(
-                    workflowCallMapping,
+            if (workflowDispatchMapping?.type === "YAMLMapping") {
+                const dispatchInputsMapping = getMappingValueAsMapping(
+                    workflowDispatchMapping,
                     "inputs"
                 );
 
-                if (workflowCallInputsMapping !== null) {
+                if (dispatchInputsMapping !== null) {
                     checkInterfaceDescriptions(
                         context,
-                        workflowCallInputsMapping,
-                        "workflow_call input"
+                        dispatchInputsMapping,
+                        "workflow_dispatch input"
                     );
                 }
+            }
 
-                const workflowCallSecretsMapping = getMappingValueAsMapping(
-                    workflowCallMapping,
-                    "secrets"
+            const workflowCallMapping = unwrapYamlValue(
+                getMappingPair(onMapping, "workflow_call")?.value ?? null
+            );
+
+            if (workflowCallMapping?.type !== "YAMLMapping") {
+                return;
+            }
+
+            const workflowCallInputsMapping = getMappingValueAsMapping(
+                workflowCallMapping,
+                "inputs"
+            );
+
+            if (workflowCallInputsMapping !== null) {
+                checkInterfaceDescriptions(
+                    context,
+                    workflowCallInputsMapping,
+                    "workflow_call input"
                 );
+            }
 
-                if (workflowCallSecretsMapping !== null) {
-                    checkInterfaceDescriptions(
-                        context,
-                        workflowCallSecretsMapping,
-                        "workflow_call secret"
-                    );
-                }
+            const workflowCallSecretsMapping = getMappingValueAsMapping(
+                workflowCallMapping,
+                "secrets"
+            );
 
-                const workflowCallOutputsMapping = getMappingValueAsMapping(
-                    workflowCallMapping,
-                    "outputs"
+            if (workflowCallSecretsMapping !== null) {
+                checkInterfaceDescriptions(
+                    context,
+                    workflowCallSecretsMapping,
+                    "workflow_call secret"
                 );
+            }
 
-                if (workflowCallOutputsMapping !== null) {
-                    checkInterfaceDescriptions(
-                        context,
-                        workflowCallOutputsMapping,
-                        "workflow_call output"
-                    );
-                }
-            },
-        };
-    },
+            const workflowCallOutputsMapping = getMappingValueAsMapping(
+                workflowCallMapping,
+                "outputs"
+            );
+
+            if (workflowCallOutputsMapping !== null) {
+                checkInterfaceDescriptions(
+                    context,
+                    workflowCallOutputsMapping,
+                    "workflow_call output"
+                );
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

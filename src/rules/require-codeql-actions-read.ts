@@ -19,56 +19,54 @@ import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for CodeQL actions:read requirements. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            const steps = [
+                ...getCodeqlInitSteps(root),
+                ...getCodeqlAutobuildSteps(root),
+                ...getCodeqlAnalyzeSteps(root),
+                ...getSarifUploadSteps(root),
+            ];
+            const seenJobIds = new Set<string>();
+
+            for (const step of steps) {
+                if (setHas(seenJobIds, step.job.id)) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
+                seenJobIds.add(step.job.id);
 
-                if (root === null) {
-                    return;
+                if (
+                    hasRequiredWorkflowPermission(
+                        root,
+                        step.job,
+                        "actions",
+                        "read"
+                    )
+                ) {
+                    continue;
                 }
 
-                const steps = [
-                    ...getCodeqlInitSteps(root),
-                    ...getCodeqlAutobuildSteps(root),
-                    ...getCodeqlAnalyzeSteps(root),
-                    ...getSarifUploadSteps(root),
-                ];
-                const seenJobIds = new Set<string>();
-
-                for (const step of steps) {
-                    if (setHas(seenJobIds, step.job.id)) {
-                        continue;
-                    }
-
-                    seenJobIds.add(step.job.id);
-
-                    if (
-                        hasRequiredWorkflowPermission(
-                            root,
-                            step.job,
-                            "actions",
-                            "read"
-                        )
-                    ) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            jobId: step.job.id,
-                        },
-                        messageId: "missingActionsRead",
-                        node: step.job.idNode,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: {
+                        jobId: step.job.id,
+                    },
+                    messageId: "missingActionsRead",
+                    node: step.job.idNode,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

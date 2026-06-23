@@ -20,53 +20,47 @@ const inputEnvironmentPattern = /\bINPUT_[\dA-Z_]+\b/gv;
 
 /** Rule implementation for composite input access style checks. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isActionMetadataFile(context.filename)) {
+    create: (context) => ({
+        Program() {
+            if (!isActionMetadataFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+            const runsMapping =
+                root === null ? null : getMappingValueAsMapping(root, "runs");
+
+            if (runsMapping === null) {
+                return;
+            }
+
+            const usingRuntime = getScalarStringValue(
+                runsMapping.pairs.find(
+                    (pair) => getScalarStringValue(pair.key) === "using"
+                )?.value
+            );
+
+            if (usingRuntime !== "composite") {
+                return;
+            }
+
+            visitYamlStringScalars(runsMapping, (node, value) => {
+                const firstMatch = value.match(inputEnvironmentPattern)?.[0];
+
+                if (!isDefined(firstMatch)) {
                     return;
                 }
 
-                const root = getWorkflowRoot(context);
-                const runsMapping =
-                    root === null
-                        ? null
-                        : getMappingValueAsMapping(root, "runs");
-
-                if (runsMapping === null) {
-                    return;
-                }
-
-                const usingRuntime = getScalarStringValue(
-                    runsMapping.pairs.find(
-                        (pair) => getScalarStringValue(pair.key) === "using"
-                    )?.value
-                );
-
-                if (usingRuntime !== "composite") {
-                    return;
-                }
-
-                visitYamlStringScalars(runsMapping, (node, value) => {
-                    const firstMatch = value.match(
-                        inputEnvironmentPattern
-                    )?.[0];
-
-                    if (!isDefined(firstMatch)) {
-                        return;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            inputEnvironmentReference: firstMatch,
-                        },
-                        messageId: "compositeInputEnvAccess",
-                        node: node,
-                    });
+                reportYamlNode(context, {
+                    data: {
+                        inputEnvironmentReference: firstMatch,
+                    },
+                    messageId: "compositeInputEnvAccess",
+                    node: node,
                 });
-            },
-        };
-    },
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

@@ -133,189 +133,173 @@ const getDirectNeedsJobIds = (
 
 /** Rule implementation for validating job output references. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const jobs = getWorkflowJobs(root);
-                const declaredOutputsByJobId = new Map(
-                    jobs.map((job) => [
-                        job.id,
-                        getDeclaredJobOutputNames(job.mapping),
-                    ])
-                );
+            const jobs = getWorkflowJobs(root);
+            const declaredOutputsByJobId = new Map(
+                jobs.map((job) => [
+                    job.id,
+                    getDeclaredJobOutputNames(job.mapping),
+                ])
+            );
 
-                const onMapping = getMappingValueAsMapping(root, "on");
-                const workflowCallMapping =
-                    onMapping === null
-                        ? null
-                        : getMappingValueAsMapping(onMapping, "workflow_call");
-                const workflowCallOutputsMapping =
-                    workflowCallMapping === null
-                        ? null
-                        : getMappingValueAsMapping(
-                              workflowCallMapping,
-                              "outputs"
-                          );
+            const onMapping = getMappingValueAsMapping(root, "on");
+            const workflowCallMapping =
+                onMapping === null
+                    ? null
+                    : getMappingValueAsMapping(onMapping, "workflow_call");
+            const workflowCallOutputsMapping =
+                workflowCallMapping === null
+                    ? null
+                    : getMappingValueAsMapping(workflowCallMapping, "outputs");
 
-                if (workflowCallOutputsMapping !== null) {
-                    for (const pair of workflowCallOutputsMapping.pairs) {
-                        const reusableOutputName = getScalarStringValue(
-                            pair.key
-                        );
-                        const reusableOutputMapping = unwrapYamlValue(
-                            pair.value
-                        );
+            if (workflowCallOutputsMapping !== null) {
+                for (const pair of workflowCallOutputsMapping.pairs) {
+                    const reusableOutputName = getScalarStringValue(pair.key);
+                    const reusableOutputMapping = unwrapYamlValue(pair.value);
 
-                        if (
-                            reusableOutputName === null ||
-                            reusableOutputMapping?.type !== "YAMLMapping"
-                        ) {
-                            continue;
-                        }
+                    if (
+                        reusableOutputName === null ||
+                        reusableOutputMapping?.type !== "YAMLMapping"
+                    ) {
+                        continue;
+                    }
 
-                        const valuePair = getMappingPair(
-                            reusableOutputMapping,
-                            "value"
-                        );
+                    const valuePair = getMappingPair(
+                        reusableOutputMapping,
+                        "value"
+                    );
 
-                        visitStringScalars(
-                            valuePair?.value ?? null,
-                            (node, value) => {
-                                for (const match of value.matchAll(
-                                    jobsOutputReferencePattern
-                                )) {
-                                    const reference = match[0];
-                                    const jobId = match.groups?.["jobId"];
-                                    const outputName =
-                                        match.groups?.["outputName"];
+                    visitStringScalars(
+                        valuePair?.value ?? null,
+                        (node, value) => {
+                            for (const match of value.matchAll(
+                                jobsOutputReferencePattern
+                            )) {
+                                const reference = match[0];
+                                const jobId = match.groups?.["jobId"];
+                                const outputName = match.groups?.["outputName"];
 
-                                    if (
-                                        !isDefined(jobId) ||
-                                        !isDefined(outputName)
-                                    ) {
-                                        continue;
-                                    }
+                                if (
+                                    !isDefined(jobId) ||
+                                    !isDefined(outputName)
+                                ) {
+                                    continue;
+                                }
 
-                                    const declaredOutputNames =
-                                        declaredOutputsByJobId.get(jobId);
+                                const declaredOutputNames =
+                                    declaredOutputsByJobId.get(jobId);
 
-                                    if (!isDefined(declaredOutputNames)) {
-                                        reportYamlNode(context, {
-                                            data: {
-                                                jobId,
-                                                reference,
-                                                reusableOutputName,
-                                            },
-                                            messageId:
-                                                "unknownReusableWorkflowJob",
-                                            node: node,
-                                        });
-
-                                        continue;
-                                    }
-
-                                    if (
-                                        setHas(declaredOutputNames, outputName)
-                                    ) {
-                                        continue;
-                                    }
-
+                                if (!isDefined(declaredOutputNames)) {
                                     reportYamlNode(context, {
                                         data: {
                                             jobId,
-                                            outputName,
                                             reference,
                                             reusableOutputName,
                                         },
-                                        messageId:
-                                            "unknownReusableWorkflowJobOutput",
+                                        messageId: "unknownReusableWorkflowJob",
                                         node: node,
                                     });
+
+                                    continue;
                                 }
+
+                                if (setHas(declaredOutputNames, outputName)) {
+                                    continue;
+                                }
+
+                                reportYamlNode(context, {
+                                    data: {
+                                        jobId,
+                                        outputName,
+                                        reference,
+                                        reusableOutputName,
+                                    },
+                                    messageId:
+                                        "unknownReusableWorkflowJobOutput",
+                                    node: node,
+                                });
                             }
-                        );
-                    }
+                        }
+                    );
                 }
+            }
 
-                for (const job of jobs) {
-                    const directNeedsJobIds = getDirectNeedsJobIds(job.mapping);
+            for (const job of jobs) {
+                const directNeedsJobIds = getDirectNeedsJobIds(job.mapping);
 
-                    visitStringScalars(job.mapping, (node, value) => {
-                        for (const match of value.matchAll(
-                            needsOutputReferencePattern
-                        )) {
-                            const reference = match[0];
-                            const neededJobId = match.groups?.["neededJobId"];
-                            const outputName = match.groups?.["outputName"];
+                visitStringScalars(job.mapping, (node, value) => {
+                    for (const match of value.matchAll(
+                        needsOutputReferencePattern
+                    )) {
+                        const reference = match[0];
+                        const neededJobId = match.groups?.["neededJobId"];
+                        const outputName = match.groups?.["outputName"];
 
-                            if (
-                                !isDefined(neededJobId) ||
-                                !isDefined(outputName)
-                            ) {
-                                continue;
-                            }
+                        if (!isDefined(neededJobId) || !isDefined(outputName)) {
+                            continue;
+                        }
 
-                            const declaredOutputNames =
-                                declaredOutputsByJobId.get(neededJobId);
+                        const declaredOutputNames =
+                            declaredOutputsByJobId.get(neededJobId);
 
-                            if (!isDefined(declaredOutputNames)) {
-                                reportYamlNode(context, {
-                                    data: {
-                                        currentJobId: job.id,
-                                        neededJobId,
-                                        reference,
-                                    },
-                                    messageId: "unknownNeedsJob",
-                                    node: node,
-                                });
-
-                                continue;
-                            }
-
-                            if (!setHas(directNeedsJobIds, neededJobId)) {
-                                reportYamlNode(context, {
-                                    data: {
-                                        currentJobId: job.id,
-                                        neededJobId,
-                                        reference,
-                                    },
-                                    messageId: "missingNeedsDependency",
-                                    node: node,
-                                });
-
-                                continue;
-                            }
-
-                            if (setHas(declaredOutputNames, outputName)) {
-                                continue;
-                            }
-
+                        if (!isDefined(declaredOutputNames)) {
                             reportYamlNode(context, {
                                 data: {
                                     currentJobId: job.id,
                                     neededJobId,
-                                    outputName,
                                     reference,
                                 },
-                                messageId: "unknownNeedsOutput",
+                                messageId: "unknownNeedsJob",
                                 node: node,
                             });
+
+                            continue;
                         }
-                    });
-                }
-            },
-        };
-    },
+
+                        if (!setHas(directNeedsJobIds, neededJobId)) {
+                            reportYamlNode(context, {
+                                data: {
+                                    currentJobId: job.id,
+                                    neededJobId,
+                                    reference,
+                                },
+                                messageId: "missingNeedsDependency",
+                                node: node,
+                            });
+
+                            continue;
+                        }
+
+                        if (setHas(declaredOutputNames, outputName)) {
+                            continue;
+                        }
+
+                        reportYamlNode(context, {
+                            data: {
+                                currentJobId: job.id,
+                                neededJobId,
+                                outputName,
+                                reference,
+                            },
+                            messageId: "unknownNeedsOutput",
+                            node: node,
+                        });
+                    }
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

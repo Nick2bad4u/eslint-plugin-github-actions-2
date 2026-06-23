@@ -14,46 +14,44 @@ import {
 
 /** Rule implementation for requiring a string workflow name. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program(node) {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program(node) {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null) {
-                    reportYamlNode(context, {
-                        messageId: "missingName",
-                        node: node,
-                    });
+            if (root === null) {
+                reportYamlNode(context, {
+                    messageId: "missingName",
+                    node: node,
+                });
 
-                    return;
-                }
+                return;
+            }
 
-                const namePair = getMappingPair(root, "name");
+            const namePair = getMappingPair(root, "name");
 
-                if (namePair === null) {
-                    reportYamlNode(context, {
-                        messageId: "missingName",
-                        node: root,
-                    });
+            if (namePair === null) {
+                reportYamlNode(context, {
+                    messageId: "missingName",
+                    node: root,
+                });
 
-                    return;
-                }
+                return;
+            }
 
-                const nameValue = getScalarStringValue(namePair.value);
+            const nameValue = getScalarStringValue(namePair.value);
 
-                if (nameValue === null || nameValue.trim().length === 0) {
-                    reportYamlNode(context, {
-                        messageId: "invalidName",
-                        node: namePair.value ?? namePair,
-                    });
-                }
-            },
-        };
-    },
+            if (nameValue === null || nameValue.trim().length === 0) {
+                reportYamlNode(context, {
+                    messageId: "invalidName",
+                    node: namePair.value ?? namePair,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

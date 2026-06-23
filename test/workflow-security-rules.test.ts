@@ -92,7 +92,7 @@ describe("workflow security rules", () => {
                     message.ruleId ===
                     "github-actions/no-untrusted-input-in-run"
             )
-        ).toBeTruthy();
+        ).toBe(true);
     });
 
     it("ignores untrusted expressions when they are outside run scripts", async () => {

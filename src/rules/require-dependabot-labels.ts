@@ -15,39 +15,35 @@ import { reportYamlNode } from "../_internal/report.js";
 
 /** Rule implementation for requiring effective labels. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            for (const update of getDependabotUpdateEntries(root)) {
+                const labelsValue = getEffectiveDependabotUpdateValue(
+                    root,
+                    update,
+                    "labels"
+                );
+
+                if (getNonEmptyStringSequenceEntries(labelsValue).length > 0) {
+                    continue;
                 }
 
-                for (const update of getDependabotUpdateEntries(root)) {
-                    const labelsValue = getEffectiveDependabotUpdateValue(
-                        root,
-                        update,
-                        "labels"
-                    );
-
-                    if (
-                        getNonEmptyStringSequenceEntries(labelsValue).length > 0
-                    ) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            updateLabel: getDependabotUpdateLabel(update),
-                        },
-                        messageId: "missingLabels",
-                        node: labelsValue ?? update.node,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: {
+                        updateLabel: getDependabotUpdateLabel(update),
+                    },
+                    messageId: "missingLabels",
+                    node: labelsValue ?? update.node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

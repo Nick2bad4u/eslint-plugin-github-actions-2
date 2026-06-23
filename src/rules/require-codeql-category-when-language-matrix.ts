@@ -48,68 +48,63 @@ const matrixUsesLanguage = (matrixMapping: AST.YAMLMapping): boolean => {
  * used.
  */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const step of getCodeqlAnalyzeSteps(root)) {
+                const strategyMapping = getMappingValueAsMapping(
+                    step.job.mapping,
+                    "strategy"
+                );
+                const matrixMapping =
+                    strategyMapping === null
+                        ? null
+                        : getMappingValueAsMapping(strategyMapping, "matrix");
+
+                if (
+                    matrixMapping === null ||
+                    !matrixUsesLanguage(matrixMapping)
+                ) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
+                const withMapping = getMappingValueAsMapping(
+                    step.stepMapping,
+                    "with"
+                );
+                const categoryPair =
+                    withMapping === null
+                        ? null
+                        : getMappingPair(withMapping, "category");
+                const categoryValue = getScalarStringValue(
+                    categoryPair?.value ?? null
+                )?.trim();
 
-                if (root === null) {
-                    return;
+                if (categoryValue?.includes("matrix.language") === true) {
+                    continue;
                 }
 
-                for (const step of getCodeqlAnalyzeSteps(root)) {
-                    const strategyMapping = getMappingValueAsMapping(
-                        step.job.mapping,
-                        "strategy"
-                    );
-                    const matrixMapping =
-                        strategyMapping === null
-                            ? null
-                            : getMappingValueAsMapping(
-                                  strategyMapping,
-                                  "matrix"
-                              );
-
-                    if (
-                        matrixMapping === null ||
-                        !matrixUsesLanguage(matrixMapping)
-                    ) {
-                        continue;
-                    }
-
-                    const withMapping = getMappingValueAsMapping(
-                        step.stepMapping,
-                        "with"
-                    );
-                    const categoryPair =
-                        withMapping === null
-                            ? null
-                            : getMappingPair(withMapping, "category");
-                    const categoryValue = getScalarStringValue(
-                        categoryPair?.value ?? null
-                    )?.trim();
-
-                    if (categoryValue?.includes("matrix.language") === true) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: { jobId: step.job.id },
-                        messageId: "missingCategoryForLanguageMatrix",
-                        node:
-                            categoryPair?.value ??
-                            categoryPair ??
-                            withMapping ??
-                            step.usesPair,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: { jobId: step.job.id },
+                    messageId: "missingCategoryForLanguageMatrix",
+                    node:
+                        categoryPair?.value ??
+                        categoryPair ??
+                        withMapping ??
+                        step.usesPair,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

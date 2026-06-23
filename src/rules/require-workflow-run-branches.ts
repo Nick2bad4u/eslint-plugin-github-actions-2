@@ -47,69 +47,61 @@ const hasConfiguredBranchFilter = (
 
 /** Rule implementation for requiring `workflow_run` branch filters. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
+            const root = getWorkflowRoot(context);
 
-                if (root === null) {
-                    return;
-                }
+            if (root === null) {
+                return;
+            }
 
-                const onMapping = getMappingValueAsMapping(root, "on");
+            const onMapping = getMappingValueAsMapping(root, "on");
 
-                if (onMapping === null) {
-                    return;
-                }
+            if (onMapping === null) {
+                return;
+            }
 
-                const workflowRunPair = getMappingPair(
-                    onMapping,
-                    "workflow_run"
-                );
-                const workflowRunMapping = unwrapYamlValue(
-                    workflowRunPair?.value ?? null
-                );
+            const workflowRunPair = getMappingPair(onMapping, "workflow_run");
+            const workflowRunMapping = unwrapYamlValue(
+                workflowRunPair?.value ?? null
+            );
 
-                if (workflowRunPair === null) {
-                    return;
-                }
+            if (workflowRunPair === null) {
+                return;
+            }
 
-                if (workflowRunMapping?.type !== "YAMLMapping") {
-                    reportYamlNode(context, {
-                        messageId: "missingBranchFilter",
-                        node: workflowRunPair.value ?? workflowRunPair,
-                    });
-
-                    return;
-                }
-
-                const branchesPair = getMappingPair(
-                    workflowRunMapping,
-                    "branches"
-                );
-                const branchesIgnorePair = getMappingPair(
-                    workflowRunMapping,
-                    "branches-ignore"
-                );
-
-                if (
-                    hasConfiguredBranchFilter(branchesPair) ||
-                    hasConfiguredBranchFilter(branchesIgnorePair)
-                ) {
-                    return;
-                }
-
+            if (workflowRunMapping?.type !== "YAMLMapping") {
                 reportYamlNode(context, {
                     messageId: "missingBranchFilter",
-                    node: workflowRunMapping,
+                    node: workflowRunPair.value ?? workflowRunPair,
                 });
-            },
-        };
-    },
+
+                return;
+            }
+
+            const branchesPair = getMappingPair(workflowRunMapping, "branches");
+            const branchesIgnorePair = getMappingPair(
+                workflowRunMapping,
+                "branches-ignore"
+            );
+
+            if (
+                hasConfiguredBranchFilter(branchesPair) ||
+                hasConfiguredBranchFilter(branchesIgnorePair)
+            ) {
+                return;
+            }
+
+            reportYamlNode(context, {
+                messageId: "missingBranchFilter",
+                node: workflowRunMapping,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

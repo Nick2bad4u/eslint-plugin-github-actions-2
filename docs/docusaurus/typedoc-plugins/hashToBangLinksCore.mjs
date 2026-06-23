@@ -38,7 +38,7 @@ function isUrlLike(moduleSource) {
     // not a URL.
     if (
         /^[A-Za-z]$/u.test(scheme) &&
-        /[\\/]/u.test(moduleSource.slice(firstColon + 1))
+        /[/\\]/u.test(moduleSource.slice(firstColon + 1))
     ) {
         return false;
     }

@@ -12,40 +12,38 @@ import { getWorkflowRoot } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for SARIF upload permission requirements. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isWorkflowFile(context.filename)) {
-                    return;
+    create: (context) => ({
+        Program() {
+            if (!isWorkflowFile(context.filename)) {
+                return;
+            }
+
+            const root = getWorkflowRoot(context);
+
+            if (root === null) {
+                return;
+            }
+
+            for (const step of getSarifUploadSteps(root)) {
+                if (
+                    hasRequiredWorkflowPermission(
+                        root,
+                        step.job,
+                        "security-events",
+                        "write"
+                    )
+                ) {
+                    continue;
                 }
 
-                const root = getWorkflowRoot(context);
-
-                if (root === null) {
-                    return;
-                }
-
-                for (const step of getSarifUploadSteps(root)) {
-                    if (
-                        hasRequiredWorkflowPermission(
-                            root,
-                            step.job,
-                            "security-events",
-                            "write"
-                        )
-                    ) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: { jobId: step.job.id },
-                        messageId: "missingSecurityEventsWrite",
-                        node: step.job.idNode,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: { jobId: step.job.id },
+                    messageId: "missingSecurityEventsWrite",
+                    node: step.job.idNode,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

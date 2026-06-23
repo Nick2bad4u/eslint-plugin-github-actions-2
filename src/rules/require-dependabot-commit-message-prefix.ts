@@ -16,49 +16,47 @@ import { getMappingPair } from "../_internal/workflow-yaml.js";
 
 /** Rule implementation for requiring effective commit-message prefixes. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                const root = getDependabotRoot(context);
+    create: (context) => ({
+        Program() {
+            const root = getDependabotRoot(context);
 
-                if (root === null) {
-                    return;
+            if (root === null) {
+                return;
+            }
+
+            for (const update of getDependabotUpdateEntries(root)) {
+                const commitMessageMapping =
+                    getEffectiveDependabotUpdateMapping(
+                        root,
+                        update,
+                        "commit-message"
+                    );
+                const prefixPair =
+                    commitMessageMapping === null
+                        ? null
+                        : getMappingPair(commitMessageMapping, "prefix");
+                const prefixValue =
+                    commitMessageMapping === null
+                        ? null
+                        : getDependabotMappingStringValue(
+                              commitMessageMapping,
+                              "prefix"
+                          );
+
+                if (prefixValue !== null) {
+                    continue;
                 }
 
-                for (const update of getDependabotUpdateEntries(root)) {
-                    const commitMessageMapping =
-                        getEffectiveDependabotUpdateMapping(
-                            root,
-                            update,
-                            "commit-message"
-                        );
-                    const prefixPair =
-                        commitMessageMapping === null
-                            ? null
-                            : getMappingPair(commitMessageMapping, "prefix");
-                    const prefixValue =
-                        commitMessageMapping === null
-                            ? null
-                            : getDependabotMappingStringValue(
-                                  commitMessageMapping,
-                                  "prefix"
-                              );
-
-                    if (prefixValue !== null) {
-                        continue;
-                    }
-
-                    reportYamlNode(context, {
-                        data: {
-                            updateLabel: getDependabotUpdateLabel(update),
-                        },
-                        messageId: "missingCommitMessagePrefix",
-                        node: prefixPair?.value ?? prefixPair ?? update.node,
-                    });
-                }
-            },
-        };
-    },
+                reportYamlNode(context, {
+                    data: {
+                        updateLabel: getDependabotUpdateLabel(update),
+                    },
+                    messageId: "missingCommitMessagePrefix",
+                    node: prefixPair?.value ?? prefixPair ?? update.node,
+                });
+            }
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {

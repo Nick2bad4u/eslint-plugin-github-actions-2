@@ -15,43 +15,39 @@ import { getEnclosingLineRemovalRange } from "../_internal/yaml-fixes.js";
 
 /** Rule implementation for invalid `runs.pre-if` usage. */
 const rule: Rule.RuleModule = {
-    create(context) {
-        return {
-            Program() {
-                if (!isActionMetadataFile(context.filename)) {
-                    return;
-                }
+    create: (context) => ({
+        Program() {
+            if (!isActionMetadataFile(context.filename)) {
+                return;
+            }
 
-                const root = getWorkflowRoot(context);
-                const runsMapping =
-                    root === null
-                        ? null
-                        : getMappingValueAsMapping(root, "runs");
+            const root = getWorkflowRoot(context);
+            const runsMapping =
+                root === null ? null : getMappingValueAsMapping(root, "runs");
 
-                if (runsMapping === null) {
-                    return;
-                }
+            if (runsMapping === null) {
+                return;
+            }
 
-                const preIfPair = getMappingPair(runsMapping, "pre-if");
+            const preIfPair = getMappingPair(runsMapping, "pre-if");
 
-                if (preIfPair === null || getMappingPair(runsMapping, "pre")) {
-                    return;
-                }
+            if (preIfPair === null || getMappingPair(runsMapping, "pre")) {
+                return;
+            }
 
-                reportYamlNode(context, {
-                    fix: (fixer) =>
-                        fixer.removeRange(
-                            getEnclosingLineRemovalRange(
-                                context.sourceCode.text,
-                                preIfPair.range
-                            )
-                        ),
-                    messageId: "preIfWithoutPre",
-                    node: preIfPair.value ?? preIfPair,
-                });
-            },
-        };
-    },
+            reportYamlNode(context, {
+                fix: (fixer) =>
+                    fixer.removeRange(
+                        getEnclosingLineRemovalRange(
+                            context.sourceCode.text,
+                            preIfPair.range
+                        )
+                    ),
+                messageId: "preIfWithoutPre",
+                node: preIfPair.value ?? preIfPair,
+            });
+        },
+    }),
     meta: {
         deprecated: false,
         docs: {
