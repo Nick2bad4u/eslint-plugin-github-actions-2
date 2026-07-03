@@ -211,7 +211,7 @@ const resolveTitleSegments = (
 ): readonly string[] => {
     const segments: string[] = [];
 
-    for (let index = 0; index < words.length; ) {
+    for (let index = 0; index < words.length;) {
         const remainingWordCount = words.length - index;
         const maxSpan = Math.min(
             caseDictionaryIndex.maxTokenSpan,

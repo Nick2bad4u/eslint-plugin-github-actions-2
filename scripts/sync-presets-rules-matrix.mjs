@@ -315,8 +315,7 @@ const createMatrixRow = (
  * @param {Record<string, unknown>} rules
  * @param {{
  *     createRuleReference?:
- *         | ((ruleName: string, ruleModule: unknown) => string)
- *         | undefined;
+ *         ((ruleName: string, ruleModule: unknown) => string) | undefined;
  *     createPresetHref?:
  *         | ((
  *               presetName: (typeof presetOrder)[number],
@@ -374,8 +373,7 @@ const createPresetPageDividerRow = () => "| --- | :-: |";
  * @param {(typeof presetOrder)[number]} presetName
  * @param {{
  *     createRuleReference?:
- *         | ((ruleName: string, ruleModule: unknown) => string)
- *         | undefined;
+ *         ((ruleName: string, ruleModule: unknown) => string) | undefined;
  * }} [options]
  *
  * @returns {string}
@@ -412,8 +410,7 @@ export const generatePresetPageRulesTableFromRules = (
  *   plugin export).
  * @param {{
  *     createRuleReference?:
- *         | ((ruleName: string, ruleModule: unknown) => string)
- *         | undefined;
+ *         ((ruleName: string, ruleModule: unknown) => string) | undefined;
  *     createPresetHref?:
  *         | ((
  *               presetName: (typeof presetOrder)[number],

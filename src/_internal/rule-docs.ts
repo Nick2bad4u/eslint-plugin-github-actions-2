@@ -9,8 +9,7 @@ import type { GithubActionsConfigReference } from "./github-actions-config-refer
 /** Custom docs metadata stored alongside each ESLint rule definition. */
 export type GithubActionsRuleDocs = Rule.RuleMetaData["docs"] & {
     readonly configs?:
-        | GithubActionsConfigReference
-        | readonly GithubActionsConfigReference[];
+        GithubActionsConfigReference | readonly GithubActionsConfigReference[];
     readonly recommended: boolean;
     readonly requiresTypeChecking: boolean;
     readonly ruleId: `R${number}`;
