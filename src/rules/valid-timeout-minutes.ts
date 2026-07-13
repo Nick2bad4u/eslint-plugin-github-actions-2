@@ -89,7 +89,10 @@ const hasValidTimeoutScopeFields = (
 /** Determine whether an unknown value is a valid rule option. */
 const isValidTimeoutMinutesOption = (
     value: unknown
-): value is number | TimeoutRange | TimeoutScopeOptions => {
+): value is
+    | number
+    | TimeoutRange
+    | TimeoutScopeOptions => {
     if (typeof value === "number") {
         return true;
     }
@@ -115,7 +118,11 @@ const DEFAULT_MAX_TIMEOUT_MINUTES = 6 * 60;
 
 /** Normalize timeout range input into concrete min/max bounds. */
 const normalizeTimeoutRange = (
-    value: Readonly<number | TimeoutRange | undefined>,
+    value: Readonly<
+        | number
+        | TimeoutRange
+        | undefined
+    >,
     fallback: Readonly<{ max: number; min: number }>
 ): { max: number; min: number } => {
     if (typeof value === "number") {
@@ -196,7 +203,10 @@ const rule: Rule.RuleModule = {
         const validateTimeoutPair = (
             timeoutPair: Readonly<AST.YAMLPair>,
             range: Readonly<{ max: number; min: number }>
-        ): "invalidRange" | "notInteger" | null => {
+        ):
+            | "invalidRange"
+            | "notInteger"
+            | null => {
             if (isGithubExpressionScalar(timeoutPair.value)) {
                 return null;
             }

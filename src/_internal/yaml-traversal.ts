@@ -9,7 +9,11 @@ import { getScalarStringValue, unwrapYamlValue } from "./workflow-yaml.js";
 
 /** Visit every string scalar contained in a YAML subtree. */
 export const visitYamlStringScalars = (
-    node: AST.YAMLContent | AST.YAMLWithMeta | null | undefined,
+    node:
+        | AST.YAMLContent
+        | AST.YAMLWithMeta
+        | null
+        | undefined,
     visitor: (node: Readonly<AST.YAMLScalar>, value: string) => void
 ): void => {
     const unwrappedNode = unwrapYamlValue(node ?? null);
@@ -47,7 +51,11 @@ export const visitYamlStringScalars = (
 
 /** Collect every string scalar value from a YAML subtree. */
 export const collectYamlStringScalars = (
-    node: AST.YAMLContent | AST.YAMLWithMeta | null | undefined
+    node:
+        | AST.YAMLContent
+        | AST.YAMLWithMeta
+        | null
+        | undefined
 ): readonly string[] => {
     const values: string[] = [];
 

@@ -37,7 +37,11 @@ const visitJobStringScalars = (
     currentStepIndex: null | number = null
 ): void => {
     const unwrappedNode = unwrapYamlValue(
-        safeCastTo<AST.YAMLContent | AST.YAMLWithMeta | null>(node)
+        safeCastTo<
+            | AST.YAMLContent
+            | AST.YAMLWithMeta
+            | null
+        >(node)
     );
 
     if (unwrappedNode === null) {

@@ -40,7 +40,10 @@ const eventsRequiringTypes = new Set<string>([
 
 /** Determine whether an event `types` node is meaningfully configured. */
 const hasConfiguredTypes = (
-    node: null | Readonly<AST.YAMLPair> | undefined
+    node:
+        | null
+        | Readonly<AST.YAMLPair>
+        | undefined
 ): boolean => {
     const valueNode = unwrapYamlValue(node?.value ?? null);
 

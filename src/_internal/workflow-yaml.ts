@@ -56,12 +56,20 @@ const isYamlProgram = (node: unknown): node is AST.YAMLProgram =>
 
 /** Narrow a YAML node to `YAMLWithMeta`. */
 export const isYamlWithMeta = (
-    node: AST.YAMLContent | AST.YAMLNode | AST.YAMLWithMeta | null | undefined
+    node:
+        | AST.YAMLContent
+        | AST.YAMLNode
+        | AST.YAMLWithMeta
+        | null
+        | undefined
 ): node is AST.YAMLWithMeta => node?.type === "YAMLWithMeta";
 
 /** Unwrap `YAMLWithMeta` wrappers until the underlying YAML value is reached. */
 export const unwrapYamlValue = (
-    node: null | undefined | WorkflowYamlValueNode
+    node:
+        | null
+        | undefined
+        | WorkflowYamlValueNode
 ): AST.YAMLContent | null => {
     if (!isPresent(node)) {
         return null;
@@ -76,17 +84,26 @@ export const unwrapYamlValue = (
 
 /** Narrow a YAML node to a mapping. */
 export const isYamlMapping = (
-    node: null | undefined | WorkflowYamlValueNode
+    node:
+        | null
+        | undefined
+        | WorkflowYamlValueNode
 ): node is AST.YAMLMapping => unwrapYamlValue(node)?.type === "YAMLMapping";
 
 /** Narrow a YAML node to a sequence. */
 export const isYamlSequence = (
-    node: null | undefined | WorkflowYamlValueNode
+    node:
+        | null
+        | undefined
+        | WorkflowYamlValueNode
 ): node is AST.YAMLSequence => unwrapYamlValue(node)?.type === "YAMLSequence";
 
 /** Narrow a YAML node to a scalar. */
 export const isYamlScalar = (
-    node: null | undefined | WorkflowYamlValueNode
+    node:
+        | null
+        | undefined
+        | WorkflowYamlValueNode
 ): node is AST.YAMLScalar => unwrapYamlValue(node)?.type === "YAMLScalar";
 
 /** Resolve the first document's root mapping when linting a workflow file. */
@@ -118,7 +135,10 @@ export const getWorkflowRoot = (
 
 /** Read a scalar node as a string when possible. */
 export const getScalarStringValue = (
-    node: null | undefined | WorkflowYamlValueNode
+    node:
+        | null
+        | undefined
+        | WorkflowYamlValueNode
 ): null | string => {
     const unwrappedNode = unwrapYamlValue(node);
 
@@ -140,7 +160,10 @@ export const getScalarStringValue = (
 
 /** Read a scalar node as a number when possible. */
 export const getScalarNumberValue = (
-    node: null | undefined | WorkflowYamlValueNode
+    node:
+        | null
+        | undefined
+        | WorkflowYamlValueNode
 ): null | number => {
     const unwrappedNode = unwrapYamlValue(node);
 
@@ -153,7 +176,10 @@ export const getScalarNumberValue = (
 
 /** Determine whether a scalar is a GitHub expression string like `${{ ... }}`. */
 export const isGithubExpressionScalar = (
-    node: null | undefined | WorkflowYamlValueNode
+    node:
+        | null
+        | undefined
+        | WorkflowYamlValueNode
 ): boolean => {
     const scalarValue = getScalarStringValue(node);
 

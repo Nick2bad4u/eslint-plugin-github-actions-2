@@ -18,7 +18,10 @@ import {
 } from "../_internal/workflow-yaml.js";
 
 /** Runtime status for a discovered shell declaration. */
-type ShellDeclarationState = "invalid" | "missing" | "valid";
+type ShellDeclarationState =
+    | "invalid"
+    | "missing"
+    | "valid";
 
 /** Inspect a shell pair and determine whether it is usable. */
 const getShellDeclarationState = (

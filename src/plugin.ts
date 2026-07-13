@@ -48,7 +48,9 @@ export type GithubActionsRuleName = keyof typeof githubActionsRules;
 /** Fully assembled plugin contract used by the runtime default export. */
 type GithubActionsPluginContract = Except<
     ESLint.Plugin,
-    "configs" | "meta" | "rules"
+    | "configs"
+    | "meta"
+    | "rules"
 > & {
     configs: GithubActionsConfigs;
     meta: {

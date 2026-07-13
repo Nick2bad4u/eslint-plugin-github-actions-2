@@ -18,7 +18,10 @@ import {
 export type WorkflowPermissionLevel = "read" | "write";
 
 /** YAML node shape used for workflow or job permissions values. */
-type PermissionsNode = AST.YAMLContent | AST.YAMLWithMeta | null;
+type PermissionsNode =
+    | AST.YAMLContent
+    | AST.YAMLWithMeta
+    | null;
 
 /** Read the permissions node for a workflow or job mapping. */
 const getPermissionsNode = (mapping: AST.YAMLMapping): PermissionsNode =>

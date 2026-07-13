@@ -21,7 +21,10 @@ import {
 
 /** Determine whether a scalar-like directory value is present and non-empty. */
 const hasNonEmptyDirectory = (
-    value: null | Readonly<AST.YAMLContent | AST.YAMLWithMeta> | undefined
+    value:
+        | null
+        | Readonly<AST.YAMLContent | AST.YAMLWithMeta>
+        | undefined
 ): boolean => {
     const directoryValue = getScalarStringValue(value)?.trim();
 

@@ -63,7 +63,9 @@ const isWorkflowFileExtensionOption = (
 /** Normalize file extension options into a consistent runtime shape. */
 const normalizePreferFileExtensionOptions = (
     option: Readonly<
-        undefined | WorkflowFileExtension | WorkflowFileExtensionOptionObject
+        | undefined
+        | WorkflowFileExtension
+        | WorkflowFileExtensionOptionObject
     >
 ): {
     caseSensitive: boolean;

@@ -9,16 +9,27 @@ import { isPresent, keyIn } from "ts-extras";
 
 type ReportData = Record<
     string,
-    bigint | boolean | null | number | string | undefined
+    | bigint
+    | boolean
+    | null
+    | number
+    | string
+    | undefined
 >;
 
 type YamlReportDescriptor = Readonly<{
     readonly data?: ReportData;
-    readonly fix?: null | Rule.ReportFixer | undefined;
+    readonly fix?:
+        | null
+        | Rule.ReportFixer
+        | undefined;
     readonly message?: string;
     readonly messageId?: string;
     readonly node: unknown;
-    readonly suggest?: null | Rule.SuggestionReportDescriptor[] | undefined;
+    readonly suggest?:
+        | null
+        | Rule.SuggestionReportDescriptor[]
+        | undefined;
 }>;
 
 /** Determine whether an unknown value is a non-null object record. */

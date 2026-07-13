@@ -93,6 +93,18 @@ const config = [
         },
     },
 
+    // TypeDoc creates these API targets during the dedicated documentation gate.
+    {
+        files: [
+            "docs/docusaurus/site-docs/developer/index.md",
+            "docs/docusaurus/site-docs/index.md",
+        ],
+        name: "Generated API Link Validation Boundary",
+        rules: {
+            "remark/remark": "off",
+        },
+    },
+
     {
         files: [".ncurc.json", "docs/docusaurus/static/manifest.json"],
         name: "Local JSON schema lint policy",

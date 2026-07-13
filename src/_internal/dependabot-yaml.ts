@@ -44,7 +44,11 @@ export interface DependabotUpdateEntry {
  * string.
  */
 export const getDependabotTrimmedStringValue = (
-    node: AST.YAMLContent | AST.YAMLWithMeta | null | undefined
+    node:
+        | AST.YAMLContent
+        | AST.YAMLWithMeta
+        | null
+        | undefined
 ): null | string => {
     const stringValue = getScalarStringValue(node ?? null)?.trim();
 
@@ -151,7 +155,10 @@ export const getEffectiveDependabotUpdateValue = (
     root: AST.YAMLMapping,
     update: DependabotUpdateEntry,
     key: string
-): AST.YAMLContent | AST.YAMLWithMeta | null => {
+):
+    | AST.YAMLContent
+    | AST.YAMLWithMeta
+    | null => {
     const directValue = getMappingPair(update.mapping, key)?.value ?? null;
 
     if (directValue !== null) {
@@ -194,7 +201,11 @@ export const getEffectiveDependabotUpdateMapping = (
 
 /** Collect all non-empty string entries from a YAML sequence. */
 export const getNonEmptyStringSequenceEntries = (
-    node: AST.YAMLContent | AST.YAMLWithMeta | null | undefined
+    node:
+        | AST.YAMLContent
+        | AST.YAMLWithMeta
+        | null
+        | undefined
 ): readonly DependabotStringSequenceEntry[] => {
     const sequence = unwrapYamlValue(node ?? null);
 

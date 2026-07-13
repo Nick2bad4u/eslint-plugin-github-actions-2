@@ -79,7 +79,9 @@ const isActionNameCasingOption = (
  */
 const normalizeActionNameCasingOptions = (
     option: Readonly<
-        ActionNameCasingObjectOption | GithubActionsCasingKind | undefined
+        | ActionNameCasingObjectOption
+        | GithubActionsCasingKind
+        | undefined
     >
 ): {
     allowedCasings: readonly GithubActionsCasingKind[];

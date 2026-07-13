@@ -56,7 +56,9 @@ const isJobIdCasingOption = (
 /** Normalize job-id-casing options into allowed casings and ignore patterns. */
 const normalizeJobIdCasingOptions = (
     option: Readonly<
-        GithubActionsNonTitleCasingKind | JobIdCasingObjectOption | undefined
+        | GithubActionsNonTitleCasingKind
+        | JobIdCasingObjectOption
+        | undefined
     >
 ): {
     allowedCasings: readonly GithubActionsNonTitleCasingKind[];

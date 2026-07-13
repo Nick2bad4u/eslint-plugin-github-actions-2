@@ -19,8 +19,12 @@ import {
     getWorkflowRoot,
 } from "../_internal/workflow-yaml.js";
 
-const hasDependabotBotGuard = (value: null | string | undefined): boolean =>
-    typeof value === "string" && value.includes("dependabot[bot]");
+const hasDependabotBotGuard = (
+    value:
+        | null
+        | string
+        | undefined
+): boolean => typeof value === "string" && value.includes("dependabot[bot]");
 
 /** Rule implementation for Dependabot bot guard requirements. */
 const rule: Rule.RuleModule = {

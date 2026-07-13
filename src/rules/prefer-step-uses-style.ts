@@ -64,7 +64,9 @@ const isPreferStepUsesStyleOption = (
 /** Normalize prefer-step-uses-style options into a consistent runtime shape. */
 const normalizeStepUsesStyleOptions = (
     option: Readonly<
-        PreferStepUsesStyleObjectOption | StepUsesStyle | undefined
+        | PreferStepUsesStyleObjectOption
+        | StepUsesStyle
+        | undefined
     >
 ): {
     allowDocker: boolean;

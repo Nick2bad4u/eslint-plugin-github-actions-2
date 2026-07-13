@@ -20,7 +20,10 @@ import {
  * configured.
  */
 const hasConfiguredBranchFilter = (
-    node: null | Readonly<AST.YAMLPair> | undefined
+    node:
+        | null
+        | Readonly<AST.YAMLPair>
+        | undefined
 ): boolean => {
     const valueNode = unwrapYamlValue(node?.value ?? null);
 
