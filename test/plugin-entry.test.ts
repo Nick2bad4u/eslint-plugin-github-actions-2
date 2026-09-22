@@ -34,6 +34,7 @@ describe("plugin entry", () => {
             )
         ).toStrictEqual([
             "action-name-casing",
+            "input-id-case",
             "job-id-casing",
             "max-jobs-per-action",
             "no-case-insensitive-input-id-collision",

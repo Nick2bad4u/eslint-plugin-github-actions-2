@@ -184,6 +184,7 @@ const rule: Rule.RuleModule = {
             configs: [
                 "github-actions.configs.all",
                 "github-actions.configs.strict",
+                "github-actions.configs.stylistic",
             ],
             description:
                 "enforce a consistent casing convention for workflow `name` values.",

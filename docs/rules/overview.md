@@ -11,7 +11,7 @@ specific check? See the **Current rules** section below.
 - **Security**: explicit least-privilege permissions and immutable SHA pinning
 - **Reliability**: bounded job timeouts
 - **Operations**: workflow concurrency controls and valid concurrency expression contexts
-- **Naming and readability**: workflow names, job IDs, job names, and step names
+- **Naming and readability**: workflow names, job IDs, input IDs, job names, and step names
 - **Execution clarity**: explicit run-step shells, typed workflow interfaces, canonical manual-dispatch input access, and valid step-context references
 - **Workflow interface quality**: documented manual-dispatch and reusable workflow interfaces plus valid reusable output values and job-output mappings
 - **Reusable workflow hygiene**: explicit checkout ordering, narrowly scoped secret passing, and valid reusable-workflow caller job keys
@@ -21,6 +21,7 @@ specific check? See the **Current rules** section below.
 
 ## Current rules
 
+- [`input-id-case`](./input-id-case.md)
 - [`require-workflow-permissions`](./require-workflow-permissions.md)
 - [`require-job-timeout-minutes`](./require-job-timeout-minutes.md)
 - [`pin-action-shas`](./pin-action-shas.md)

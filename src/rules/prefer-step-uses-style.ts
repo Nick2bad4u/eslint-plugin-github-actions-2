@@ -13,13 +13,15 @@ import {
     setHas,
 } from "ts-extras";
 
-import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { getActionStepSequences } from "../_internal/action-step-sequences.js";
+import {
+    isActionMetadataFile,
+    isWorkflowFile,
+} from "../_internal/lint-targets.js";
 import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
-    getMappingValueAsSequence,
     getScalarStringValue,
-    getWorkflowJobs,
     getWorkflowRoot,
     unwrapYamlValue,
 } from "../_internal/workflow-yaml.js";
@@ -178,7 +180,10 @@ const rule: Rule.RuleModule = {
 
         return {
             Program() {
-                if (!isWorkflowFile(context.filename)) {
+                if (
+                    !isWorkflowFile(context.filename) &&
+                    !isActionMetadataFile(context.filename)
+                ) {
                     return;
                 }
 
@@ -188,16 +193,10 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                for (const job of getWorkflowJobs(root)) {
-                    const stepsSequence = getMappingValueAsSequence(
-                        job.mapping,
-                        "steps"
-                    );
-
-                    if (stepsSequence === null) {
-                        continue;
-                    }
-
+                for (const stepsSequence of getActionStepSequences(
+                    root,
+                    context.filename
+                )) {
                     for (const entry of stepsSequence.entries) {
                         const stepMapping = unwrapYamlValue(entry);
 
@@ -266,7 +265,7 @@ const rule: Rule.RuleModule = {
             configs: ["github-actions.configs.all"],
             description:
                 "enforce a consistent style for step-level `uses` references.",
-            dialects: ["GitHub Actions workflow"],
+            dialects: ["GitHub Actions workflow", "GitHub Action metadata"],
             frozen: false,
             recommended: false,
             requiresTypeChecking: false,

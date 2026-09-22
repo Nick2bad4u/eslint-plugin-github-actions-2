@@ -5,11 +5,14 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
-import { isWorkflowFile } from "../_internal/lint-targets.js";
+import { getActionStepSequences } from "../_internal/action-step-sequences.js";
+import {
+    isActionMetadataFile,
+    isWorkflowFile,
+} from "../_internal/lint-targets.js";
 import { reportYamlNode } from "../_internal/report.js";
 import {
     getMappingPair,
-    getMappingValueAsSequence,
     getScalarStringValue,
     getWorkflowJobs,
     getWorkflowRoot,
@@ -71,10 +74,10 @@ const reportReference = (
 };
 
 /**
- * Check all steps in a job for unpinned `uses` references and report
- * violations.
+ * Check workflow or composite action steps for unpinned `uses` references and
+ * report violations.
  */
-const checkJobStepsForUnpinnedUses = (
+const checkStepsForUnpinnedUses = (
     context: Readonly<Rule.RuleContext>,
     stepsSequence: Readonly<AST.YAMLSequence>
 ): void => {
@@ -103,7 +106,10 @@ const checkJobStepsForUnpinnedUses = (
 const rule: Rule.RuleModule = {
     create: (context) => ({
         Program() {
-            if (!isWorkflowFile(context.filename)) {
+            if (
+                !isWorkflowFile(context.filename) &&
+                !isActionMetadataFile(context.filename)
+            ) {
                 return;
             }
 
@@ -113,7 +119,9 @@ const rule: Rule.RuleModule = {
                 return;
             }
 
-            for (const job of getWorkflowJobs(root)) {
+            for (const job of isWorkflowFile(context.filename)
+                ? getWorkflowJobs(root)
+                : []) {
                 const reusableWorkflowPair = getMappingPair(
                     job.mapping,
                     "uses"
@@ -132,15 +140,13 @@ const rule: Rule.RuleModule = {
                         reusableWorkflowReference
                     );
                 }
+            }
 
-                const stepsSequence = getMappingValueAsSequence(
-                    job.mapping,
-                    "steps"
-                );
-
-                if (stepsSequence !== null) {
-                    checkJobStepsForUnpinnedUses(context, stepsSequence);
-                }
+            for (const stepsSequence of getActionStepSequences(
+                root,
+                context.filename
+            )) {
+                checkStepsForUnpinnedUses(context, stepsSequence);
             }
         },
     }),
@@ -148,13 +154,14 @@ const rule: Rule.RuleModule = {
         deprecated: false,
         docs: {
             configs: [
+                "github-actions.configs.actionMetadata",
                 "github-actions.configs.all",
                 "github-actions.configs.security",
                 "github-actions.configs.strict",
             ],
             description:
                 "require third-party `uses` references to pin full-length commit SHAs instead of mutable tags or branches.",
-            dialects: ["GitHub Actions workflow"],
+            dialects: ["GitHub Actions workflow", "GitHub Action metadata"],
             frozen: false,
             recommended: false,
             requiresTypeChecking: false,

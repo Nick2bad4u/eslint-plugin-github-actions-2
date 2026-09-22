@@ -21,7 +21,7 @@ export default [githubActions.configs.recommended];
 
 The exported presets already:
 
-- scope themselves to `.github/workflows/*.{yml,yaml}`
+- scope themselves to their intended workflow, action metadata, or configuration files
 - register `yaml-eslint-parser`
 - register the `github-actions` plugin namespace
 
@@ -29,8 +29,9 @@ The exported presets already:
 
 - Start with `recommended` for most repositories.
 - Add `security` when you want immutable pinning checks.
+- Add `stylistic` for consistent workflow names, job IDs, and input IDs across workflows and action metadata.
 - Use `strict` when you want concurrency and stronger operational guardrails.
-- Use `all` to enable every published rule.
+- Use `all` for the complete bundled rule set, with explicitly opt-in policy rules enabled separately.
 
 For target-specific linting, use:
 

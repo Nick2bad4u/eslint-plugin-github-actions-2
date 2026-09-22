@@ -48,6 +48,10 @@ describe("lint target helpers", () => {
 
     it("detects action metadata files case-insensitively across path separators", () => {
         expect.hasAssertions();
+        expect(isActionMetadataFile("action.yml")).toBe(true);
+        expect(isActionMetadataFile("action.yaml")).toBe(true);
+        expect(isActionMetadataFile("ACTION.YAML")).toBe(true);
+        expect(isActionMetadataFile("./action.yml")).toBe(true);
         expect(
             isActionMetadataFile(".github/actions/setup-node/action.yml")
         ).toBe(true);
@@ -58,6 +62,7 @@ describe("lint target helpers", () => {
         ).toBe(true);
         expect(isActionMetadataFile(".github/workflows/ci.yml")).toBe(false);
         expect(isActionMetadataFile("action.yaml.backup")).toBe(false);
+        expect(isActionMetadataFile("my-action.yml")).toBe(false);
     });
 
     it("detects repository Dependabot configuration files", () => {

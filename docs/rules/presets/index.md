@@ -4,7 +4,7 @@ sidebar_position: 0
 
 # Presets
 
-The plugin exports nine flat-config presets:
+The plugin exports these flat-config presets:
 
 - [`githubActions.configs.actionMetadata`](./action-metadata.md)
 - [`githubActions.configs.codeScanning`](./code-scanning.md)
@@ -14,6 +14,8 @@ The plugin exports nine flat-config presets:
 - [`githubActions.configs.recommended`](./recommended.md)
 - [`githubActions.configs.security`](./security.md)
 - [`githubActions.configs.strict`](./strict.md)
+- [`githubActions.configs.stylistic`](./stylistic.md)
+- [`githubActions.configs.localWorkflows`](./local-workflows.md)
 - [`githubActions.configs.all`](./all.md)
 
 These presets cover workflow YAML, action metadata (`action.yml` / `action.yaml`), repository Dependabot configuration (`.github/dependabot.yml`), and workflow template package files (`workflow-templates/*.yml`, `*.yaml`, and `*.properties.json`).
@@ -22,6 +24,7 @@ These presets cover workflow YAML, action metadata (`action.yml` / `action.yaml`
 
 - Start with **recommended** for broad baseline quality and safety.
 - Layer **security** for stronger supply-chain and permissions-focused checks.
+- Layer **stylistic** for workflow name, job ID, and input ID casing conventions, including action metadata inputs.
 - Use **codeScanning** for CodeQL, dependency review, SARIF upload, and related code-scanning workflows.
 - Use **strict** when you want high signal on operational consistency.
 - Use **all** for complete bundled rule coverage (best for internal policy repos), and layer opt-in policy rules manually when your standards require them.
@@ -47,13 +50,15 @@ Preset key legend:
 - [🟡](./recommended.md) — [`githubActions.configs.recommended`](./recommended.md)
 - [🛡️](./security.md) — [`githubActions.configs.security`](./security.md)
 - [🔴](./strict.md) — [`githubActions.configs.strict`](./strict.md)
+- [🎨](./stylistic.md) — [`githubActions.configs.stylistic`](./stylistic.md)
 - [🗂️](./workflow-template-properties.md) — [`githubActions.configs.workflowTemplateProperties`](./workflow-template-properties.md)
 - [🧱](./workflow-templates.md) — [`githubActions.configs.workflowTemplates`](./workflow-templates.md)
 
 | Rule                                                                                                                                                                   | Fix | Preset key                                                                           |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-: | ------------------------------------------------------------------------------------ |
-| <span class="sb-inline-rule-number">R009</span> [`action-name-casing`](../action-name-casing.md)                                                                       | 🔧  | [🟣](./all.md) [🔴](./strict.md)                                                     |
-| <span class="sb-inline-rule-number">R010</span> [`job-id-casing`](../job-id-casing.md)                                                                                 |  —  | [🟣](./all.md) [🔴](./strict.md)                                                     |
+| <span class="sb-inline-rule-number">R009</span> [`action-name-casing`](../action-name-casing.md)                                                                       | 🔧  | [🟣](./all.md) [🔴](./strict.md) [🎨](./stylistic.md)                                |
+| <span class="sb-inline-rule-number">R116</span> [`input-id-case`](../input-id-case.md)                                                                                 |  —  | [🟣](./all.md) [🎨](./stylistic.md)                                                  |
+| <span class="sb-inline-rule-number">R010</span> [`job-id-casing`](../job-id-casing.md)                                                                                 |  —  | [🟣](./all.md) [🔴](./strict.md) [🎨](./stylistic.md)                                |
 | <span class="sb-inline-rule-number">R011</span> [`max-jobs-per-action`](../max-jobs-per-action.md)                                                                     |  —  | [🟣](./all.md) [🔴](./strict.md)                                                     |
 | <span class="sb-inline-rule-number">R048</span> [`no-case-insensitive-input-id-collision`](../no-case-insensitive-input-id-collision.md)                               |  —  | [🧩](./action-metadata.md) [🟣](./all.md)                                            |
 | <span class="sb-inline-rule-number">R097</span> [`no-codeql-autobuild-for-javascript-typescript`](../no-codeql-autobuild-for-javascript-typescript.md)                 |  —  | [🟣](./all.md) [🔎](./code-scanning.md)                                              |
@@ -92,7 +97,7 @@ Preset key legend:
 | <span class="sb-inline-rule-number">R085</span> [`no-unused-dependabot-enable-beta-ecosystems`](../no-unused-dependabot-enable-beta-ecosystems.md)                     | 🔧  | [🟣](./all.md) [🤖](./dependabot.md)                                                 |
 | <span class="sb-inline-rule-number">R053</span> [`no-unused-input-in-composite`](../no-unused-input-in-composite.md)                                                   |  —  | [🧩](./action-metadata.md) [🟣](./all.md)                                            |
 | <span class="sb-inline-rule-number">R023</span> [`no-write-all-permissions`](../no-write-all-permissions.md)                                                           |  —  | [🟣](./all.md) [🟡](./recommended.md) [🛡️](./security.md) [🔴](./strict.md)          |
-| <span class="sb-inline-rule-number">R003</span> [`pin-action-shas`](../pin-action-shas.md)                                                                             |  —  | [🟣](./all.md) [🛡️](./security.md) [🔴](./strict.md)                                 |
+| <span class="sb-inline-rule-number">R003</span> [`pin-action-shas`](../pin-action-shas.md)                                                                             |  —  | [🧩](./action-metadata.md) [🟣](./all.md) [🛡️](./security.md) [🔴](./strict.md)      |
 | <span class="sb-inline-rule-number">R043</span> [`prefer-action-yml`](../prefer-action-yml.md)                                                                         |  —  | [🧩](./action-metadata.md) [🟣](./all.md)                                            |
 | <span class="sb-inline-rule-number">R015</span> [`prefer-fail-fast`](../prefer-fail-fast.md)                                                                           |  —  | [🟣](./all.md) [🔴](./strict.md)                                                     |
 | <span class="sb-inline-rule-number">R020</span> [`prefer-file-extension`](../prefer-file-extension.md)                                                                 |  —  | [🟣](./all.md) [🟡](./recommended.md) [🔴](./strict.md)                              |

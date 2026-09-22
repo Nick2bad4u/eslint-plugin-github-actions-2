@@ -4,7 +4,9 @@ sidebar_position: 7
 
 # `githubActions.configs.security`
 
-Security-focused workflow hardening checks.
+Security-focused checks for workflow permissions and immutable action references in workflows and composite actions.
+
+This preset targets workflow YAML and `action.yml` / `action.yaml` metadata. In composite actions, `pin-action-shas` checks external `runs.steps[*].uses` references.
 
 ## Included rules
 

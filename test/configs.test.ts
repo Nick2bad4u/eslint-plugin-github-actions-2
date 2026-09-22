@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import githubActionsPlugin from "../src/plugin.js";
+import { lintWorkflow } from "./_shared/lint-workflow.js";
 
 describe("exported presets", () => {
     it("exports the expected preset names", () => {
@@ -18,6 +19,7 @@ describe("exported presets", () => {
             "recommended",
             "security",
             "strict",
+            "stylistic",
             "workflowTemplateProperties",
             "workflowTemplates",
         ]);
@@ -43,6 +45,14 @@ describe("exported presets", () => {
         ]);
         expect(githubActionsPlugin.configs.localWorkflows.files).toStrictEqual([
             ".github/workflows/*.{yml,yaml}",
+        ]);
+        expect(githubActionsPlugin.configs.security.files).toStrictEqual([
+            ".github/workflows/*.{yml,yaml}",
+            "**/action.{yml,yaml}",
+        ]);
+        expect(githubActionsPlugin.configs.stylistic.files).toStrictEqual([
+            ".github/workflows/*.{yml,yaml}",
+            "**/action.{yml,yaml}",
         ]);
         expect(
             githubActionsPlugin.configs.workflowTemplateProperties.files
@@ -225,6 +235,7 @@ describe("exported presets", () => {
             "github-actions/no-required-input-with-default",
             "github-actions/no-unknown-input-reference-in-composite",
             "github-actions/no-unused-input-in-composite",
+            "github-actions/pin-action-shas",
             "github-actions/prefer-action-yml",
             "github-actions/require-composite-step-name",
         ]);
@@ -298,4 +309,81 @@ describe("exported presets", () => {
             "github-actions/require-workflow-template-properties-pair",
         ]);
     });
+
+    it("keeps input casing in the stylistic and all presets", () => {
+        expect.hasAssertions();
+
+        expect(githubActionsPlugin.configs.stylistic.rules).toStrictEqual({
+            "github-actions/action-name-casing": "error",
+            "github-actions/input-id-case": "error",
+            "github-actions/job-id-casing": "error",
+        });
+        expect(
+            githubActionsPlugin.configs.all.rules[
+                "github-actions/input-id-case"
+            ]
+        ).toBe("error");
+
+        for (const configName of [
+            "actionMetadata",
+            "recommended",
+            "security",
+            "strict",
+        ] as const) {
+            expect(
+                Object.hasOwn(
+                    githubActionsPlugin.configs[configName].rules,
+                    "github-actions/input-id-case"
+                )
+            ).toBe(false);
+        }
+    });
+
+    it.each(["action.yml", ".github/actions/setup/action.yaml"])(
+        "applies stylistic defaults to %s",
+        async (filePath) => {
+            expect.hasAssertions();
+
+            const result = await lintWorkflow(
+                "inputs:\n  accessToken:\n    description: Token\nruns:\n  using: node24\n  main: index.js",
+                { configName: "stylistic", filePath }
+            );
+
+            expect(
+                result.messages.map((message) => message.ruleId)
+            ).toStrictEqual(["github-actions/input-id-case"]);
+        }
+    );
+
+    it.each(["workflow_call", "workflow_dispatch"])(
+        "applies stylistic defaults to %s inputs",
+        async (eventName) => {
+            expect.hasAssertions();
+
+            const result = await lintWorkflow(
+                `on:\n  ${eventName}:\n    inputs:\n      accessToken:\n        type: string`,
+                { configName: "stylistic" }
+            );
+
+            expect(
+                result.messages.map((message) => message.ruleId)
+            ).toStrictEqual(["github-actions/input-id-case"]);
+        }
+    );
+
+    it.each(["actionMetadata", "security"] as const)(
+        "enforces composite SHA pins through the %s preset",
+        async (configName) => {
+            expect.hasAssertions();
+
+            const result = await lintWorkflow(
+                "name: Setup\ndescription: Set up the checkout\nruns:\n  using: composite\n  steps:\n    - name: Checkout\n      uses: actions/checkout@v4",
+                { configName, filePath: ".github/actions/setup/action.yml" }
+            );
+
+            expect(
+                result.messages.map((message) => message.ruleId)
+            ).toStrictEqual(["github-actions/pin-action-shas"]);
+        }
+    );
 });

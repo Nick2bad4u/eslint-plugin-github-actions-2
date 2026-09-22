@@ -22,6 +22,7 @@ export const githubActionsConfigNames = [
     "recommended",
     "security",
     "strict",
+    "stylistic",
     "workflowTemplateProperties",
     "workflowTemplates",
 ] as const;
@@ -43,6 +44,7 @@ export const githubActionsConfigReferenceToName: Readonly<
     "github-actions.configs.recommended": "recommended",
     "github-actions.configs.security": "security",
     "github-actions.configs.strict": "strict",
+    "github-actions.configs.stylistic": "stylistic",
     "github-actions.configs.workflowTemplateProperties":
         "workflowTemplateProperties",
     "github-actions.configs.workflowTemplates": "workflowTemplates",
@@ -113,8 +115,8 @@ export const githubActionsConfigMetadataByName: Readonly<
     },
     security: {
         description:
-            "Security-focused workflow hardening checks for action usage and token scope.",
-        files: WORKFLOW_FILE_GLOBS,
+            "Security-focused checks for workflow permissions and immutable action references in workflows and composite actions.",
+        files: [...WORKFLOW_FILE_GLOBS, ...ACTION_METADATA_FILE_GLOBS],
         icon: "🛡️",
         presetName: "github-actions:security",
     },
@@ -124,6 +126,13 @@ export const githubActionsConfigMetadataByName: Readonly<
         files: WORKFLOW_FILE_GLOBS,
         icon: "🔴",
         presetName: "github-actions:strict",
+    },
+    stylistic: {
+        description:
+            "Opt-in naming conventions for workflow names, job identifiers, and workflow and action input identifiers.",
+        files: [...WORKFLOW_FILE_GLOBS, ...ACTION_METADATA_FILE_GLOBS],
+        icon: "🎨",
+        presetName: "github-actions:stylistic",
     },
     workflowTemplateProperties: {
         description:

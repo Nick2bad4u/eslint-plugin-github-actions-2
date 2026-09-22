@@ -5,6 +5,7 @@
 import type { Rule } from "eslint";
 
 import * as actionNameCasingModule from "../rules/action-name-casing.js";
+import * as inputIdCaseModule from "../rules/input-id-case.js";
 import * as jobIdCasingModule from "../rules/job-id-casing.js";
 import * as maxJobsPerActionModule from "../rules/max-jobs-per-action.js";
 import * as noCaseInsensitiveInputIdCollisionModule from "../rules/no-case-insensitive-input-id-collision.js";
@@ -121,6 +122,7 @@ import * as validTimeoutMinutesModule from "../rules/valid-timeout-minutes.js";
 import * as validTriggerEventsModule from "../rules/valid-trigger-events.js";
 
 const actionNameCasing: Rule.RuleModule = actionNameCasingModule.default;
+const inputIdCase: Rule.RuleModule = inputIdCaseModule.default;
 const jobIdCasing: Rule.RuleModule = jobIdCasingModule.default;
 const maxJobsPerAction: Rule.RuleModule = maxJobsPerActionModule.default;
 const noCaseInsensitiveInputIdCollision: Rule.RuleModule =
@@ -331,6 +333,7 @@ const validTriggerEvents: Rule.RuleModule = validTriggerEventsModule.default;
 /** Strongly typed plugin rule registry keyed by unqualified rule name. */
 const githubActionsRulesDefinition: {
     readonly "action-name-casing": typeof actionNameCasing;
+    readonly "input-id-case": typeof inputIdCase;
     readonly "job-id-casing": typeof jobIdCasing;
     readonly "max-jobs-per-action": typeof maxJobsPerAction;
     readonly "no-case-insensitive-input-id-collision": typeof noCaseInsensitiveInputIdCollision;
@@ -447,6 +450,7 @@ const githubActionsRulesDefinition: {
     readonly "valid-trigger-events": typeof validTriggerEvents;
 } = {
     "action-name-casing": actionNameCasing,
+    "input-id-case": inputIdCase,
     "job-id-casing": jobIdCasing,
     "max-jobs-per-action": maxJobsPerAction,
     "no-case-insensitive-input-id-collision": noCaseInsensitiveInputIdCollision,
