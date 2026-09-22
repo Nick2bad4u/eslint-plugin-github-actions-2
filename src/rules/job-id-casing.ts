@@ -14,6 +14,7 @@ import {
     setHas,
 } from "ts-extras";
 
+import { createCasingOptionProperties } from "../_internal/casing-schema.js";
 import {
     type GithubActionsNonTitleCasingKind,
     githubActionsNonTitleCasingKinds,
@@ -138,6 +139,7 @@ const rule: Rule.RuleModule = {
             configs: [
                 "github-actions.configs.all",
                 "github-actions.configs.strict",
+                "github-actions.configs.stylistic",
             ],
             description:
                 "enforce a consistent casing convention for workflow job identifiers.",
@@ -166,42 +168,11 @@ const rule: Rule.RuleModule = {
                         additionalProperties: false,
                         description:
                             "Allowed casing conventions and ignore patterns for workflow job ids.",
-                        properties: {
-                            camelCase: {
-                                description: "Allow camelCase job ids.",
-                                type: "boolean",
-                            },
-                            ignores: {
-                                description:
-                                    "Literal job ids that should be ignored by this rule.",
-                                items: {
-                                    type: "string",
-                                },
-                                type: "array",
-                                uniqueItems: true,
-                            },
-                            "kebab-case": {
-                                description: "Allow kebab-case job ids.",
-                                type: "boolean",
-                            },
-                            PascalCase: {
-                                description: "Allow PascalCase job ids.",
-                                type: "boolean",
-                            },
-                            SCREAMING_SNAKE_CASE: {
-                                description:
-                                    "Allow SCREAMING_SNAKE_CASE job ids.",
-                                type: "boolean",
-                            },
-                            snake_case: {
-                                description: "Allow snake_case job ids.",
-                                type: "boolean",
-                            },
-                            "Train-Case": {
-                                description: "Allow Train-Case job ids.",
-                                type: "boolean",
-                            },
-                        },
+                        properties: createCasingOptionProperties(
+                            githubActionsNonTitleCasingKinds,
+                            "job ids",
+                            "Literal job ids that should be ignored by this rule."
+                        ),
                         type: "object",
                     },
                 ],

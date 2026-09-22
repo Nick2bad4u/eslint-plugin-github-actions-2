@@ -17,6 +17,7 @@ Fix legend:
 | Rule                                                                                                                                                                   | Fix |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-: |
 | <span class="sb-inline-rule-number">R009</span> [`action-name-casing`](../action-name-casing.md)                                                                       | 🔧  |
+| <span class="sb-inline-rule-number">R116</span> [`input-id-case`](../input-id-case.md)                                                                                 |  —  |
 | <span class="sb-inline-rule-number">R010</span> [`job-id-casing`](../job-id-casing.md)                                                                                 |  —  |
 | <span class="sb-inline-rule-number">R011</span> [`max-jobs-per-action`](../max-jobs-per-action.md)                                                                     |  —  |
 | <span class="sb-inline-rule-number">R048</span> [`no-case-insensitive-input-id-collision`](../no-case-insensitive-input-id-collision.md)                               |  —  |

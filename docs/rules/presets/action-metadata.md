@@ -25,5 +25,6 @@ Fix legend:
 | <span class="sb-inline-rule-number">R047</span> [`no-required-input-with-default`](../no-required-input-with-default.md)                   | 💡  |
 | <span class="sb-inline-rule-number">R050</span> [`no-unknown-input-reference-in-composite`](../no-unknown-input-reference-in-composite.md) |  —  |
 | <span class="sb-inline-rule-number">R053</span> [`no-unused-input-in-composite`](../no-unused-input-in-composite.md)                       |  —  |
+| <span class="sb-inline-rule-number">R003</span> [`pin-action-shas`](../pin-action-shas.md)                                                 |  —  |
 | <span class="sb-inline-rule-number">R043</span> [`prefer-action-yml`](../prefer-action-yml.md)                                             |  —  |
 | <span class="sb-inline-rule-number">R052</span> [`require-composite-step-name`](../require-composite-step-name.md)                         |  —  |

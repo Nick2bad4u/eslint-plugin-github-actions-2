@@ -59,6 +59,7 @@ const presetOrder = [
     "recommended",
     "security",
     "strict",
+    "stylistic",
     "workflow-template-properties",
     "workflow-templates",
 ] as const;
@@ -76,6 +77,7 @@ const presetLabelById = new Map<string, string>([
     ["recommended", "🟡 Recommended"],
     ["security", "🛡️ Security"],
     ["strict", "🔴 Strict"],
+    ["stylistic", "🎨 Stylistic"],
     ["workflow-template-properties", "🗂️ Workflow template properties"],
     ["workflow-templates", "🧱 Workflow templates"],
 ]);

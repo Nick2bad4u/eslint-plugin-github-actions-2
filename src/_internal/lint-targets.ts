@@ -83,7 +83,9 @@ export const isActionMetadataFile = (filePath: string): boolean => {
 
     return (
         normalizedFilePath.endsWith("/action.yml") ||
-        normalizedFilePath.endsWith("/action.yaml")
+        normalizedFilePath.endsWith("/action.yaml") ||
+        normalizedFilePath === "action.yml" ||
+        normalizedFilePath === "action.yaml"
     );
 };
 

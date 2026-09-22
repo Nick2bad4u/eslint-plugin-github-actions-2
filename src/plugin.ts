@@ -144,6 +144,7 @@ const createPresetRuleNamesByConfig = (): Record<
         recommended: [],
         security: [],
         strict: [],
+        stylistic: [],
         workflowTemplateProperties: [],
         workflowTemplates: [],
     };
@@ -239,6 +240,7 @@ const createGithubActionsConfigsDefinition = (): GithubActionsConfigs => ({
     recommended: createGithubActionsPresetConfig("recommended"),
     security: createGithubActionsPresetConfig("security"),
     strict: createGithubActionsPresetConfig("strict"),
+    stylistic: createGithubActionsPresetConfig("stylistic"),
     workflowTemplateProperties: createGithubActionsPresetConfig(
         "workflowTemplateProperties"
     ),

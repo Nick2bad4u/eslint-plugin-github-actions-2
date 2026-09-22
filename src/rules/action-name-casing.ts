@@ -14,6 +14,7 @@ import {
     setHas,
 } from "ts-extras";
 
+import { createCasingOptionProperties } from "../_internal/casing-schema.js";
 import {
     convertToGithubActionsCasing as convertToBaseGithubActionsCasing,
     type GithubActionsCasingKind,
@@ -184,6 +185,7 @@ const rule: Rule.RuleModule = {
             configs: [
                 "github-actions.configs.all",
                 "github-actions.configs.strict",
+                "github-actions.configs.stylistic",
             ],
             description:
                 "enforce a consistent casing convention for workflow `name` values.",
@@ -213,46 +215,11 @@ const rule: Rule.RuleModule = {
                         additionalProperties: false,
                         description:
                             "Allowed casing conventions and ignore patterns for the workflow `name` value.",
-                        properties: {
-                            camelCase: {
-                                description: "Allow camelCase workflow names.",
-                                type: "boolean",
-                            },
-                            ignores: {
-                                description:
-                                    "Literal workflow names that should be ignored by this rule.",
-                                items: {
-                                    type: "string",
-                                },
-                                type: "array",
-                                uniqueItems: true,
-                            },
-                            "kebab-case": {
-                                description: "Allow kebab-case workflow names.",
-                                type: "boolean",
-                            },
-                            PascalCase: {
-                                description: "Allow PascalCase workflow names.",
-                                type: "boolean",
-                            },
-                            SCREAMING_SNAKE_CASE: {
-                                description:
-                                    "Allow SCREAMING_SNAKE_CASE workflow names.",
-                                type: "boolean",
-                            },
-                            snake_case: {
-                                description: "Allow snake_case workflow names.",
-                                type: "boolean",
-                            },
-                            "Title Case": {
-                                description: "Allow Title Case workflow names.",
-                                type: "boolean",
-                            },
-                            "Train-Case": {
-                                description: "Allow Train-Case workflow names.",
-                                type: "boolean",
-                            },
-                        },
+                        properties: createCasingOptionProperties(
+                            githubActionsCasingKinds,
+                            "workflow names",
+                            "Literal workflow names that should be ignored by this rule."
+                        ),
                         type: "object",
                     },
                 ],
