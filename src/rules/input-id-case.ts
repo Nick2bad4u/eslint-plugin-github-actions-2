@@ -15,6 +15,7 @@ import {
     setHas,
 } from "ts-extras";
 
+import { createCasingOptionProperties } from "../_internal/casing-schema.js";
 import {
     type GithubActionsNonTitleCasingKind,
     githubActionsNonTitleCasingKinds,
@@ -213,40 +214,11 @@ const rule: Rule.RuleModule = {
                         additionalProperties: false,
                         description:
                             "Allowed casing conventions and literal input ids to ignore.",
-                        properties: {
-                            camelCase: {
-                                description: "Allow camelCase input ids.",
-                                type: "boolean",
-                            },
-                            ignores: {
-                                description:
-                                    "Literal, case-sensitive input ids to ignore.",
-                                items: { type: "string" },
-                                type: "array",
-                                uniqueItems: true,
-                            },
-                            "kebab-case": {
-                                description: "Allow kebab-case input ids.",
-                                type: "boolean",
-                            },
-                            PascalCase: {
-                                description: "Allow PascalCase input ids.",
-                                type: "boolean",
-                            },
-                            SCREAMING_SNAKE_CASE: {
-                                description:
-                                    "Allow SCREAMING_SNAKE_CASE input ids.",
-                                type: "boolean",
-                            },
-                            snake_case: {
-                                description: "Allow snake_case input ids.",
-                                type: "boolean",
-                            },
-                            "Train-Case": {
-                                description: "Allow Train-Case input ids.",
-                                type: "boolean",
-                            },
-                        },
+                        properties: createCasingOptionProperties(
+                            githubActionsNonTitleCasingKinds,
+                            "input ids",
+                            "Literal, case-sensitive input ids to ignore."
+                        ),
                         type: "object",
                     },
                 ],
