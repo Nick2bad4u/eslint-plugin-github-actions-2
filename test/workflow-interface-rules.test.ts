@@ -41,7 +41,7 @@ describe("workflow interface rules", () => {
         );
     });
 
-    it("autofixes github.event.inputs references to inputs", async () => {
+    it("reports legacy inputs without rewriting string references", async () => {
         expect.hasAssertions();
 
         const result = await lintWorkflow(
@@ -71,11 +71,11 @@ describe("workflow interface rules", () => {
             }
         );
 
-        expect(result.output).toContain(githubExpression("inputs.environment"));
-        expect(result.output).not.toContain("github.event.inputs.environment");
+        expect(result.messages).toHaveLength(2);
+        expect(result.output).toBeUndefined();
     });
 
-    it("autofixes all github.event.inputs occurrences within the same scalar", async () => {
+    it("preserves boolean input comparisons when autofix is enabled", async () => {
         expect.hasAssertions();
 
         const result = await lintWorkflow(
@@ -84,14 +84,14 @@ describe("workflow interface rules", () => {
                 "on:",
                 "  workflow_dispatch:",
                 "    inputs:",
-                "      environment:",
-                "        description: Deployment target",
+                "      preview:",
+                "        description: Preview only",
                 "        required: true",
-                "        type: string",
+                "        type: boolean",
                 "jobs:",
                 "  deploy:",
                 "    runs-on: ubuntu-latest",
-                `    if: ${githubExpression("github.event.inputs.environment == 'prod' && github.event.inputs.environment != ''")}`,
+                `    if: ${githubExpression("github.event.inputs.preview == 'true' && github.event.inputs.preview != 'false'")}`,
                 "    steps:",
                 '      - run: echo "Deploying"',
             ].join("\n"),
@@ -103,9 +103,8 @@ describe("workflow interface rules", () => {
             }
         );
 
-        expect(result.output).not.toContain("github.event.inputs.environment");
-        expect(result.output).toContain("inputs.environment == 'prod'");
-        expect(result.output).toContain("inputs.environment != ''");
+        expect(result.messages).toHaveLength(1);
+        expect(result.output).toBeUndefined();
     });
 
     it("accepts workflow_dispatch expressions that already use inputs", async () => {

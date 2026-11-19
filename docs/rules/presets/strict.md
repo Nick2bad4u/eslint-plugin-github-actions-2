@@ -36,7 +36,7 @@ Fix legend:
 | <span class="sb-inline-rule-number">R003</span> [`pin-action-shas`](../pin-action-shas.md)                                                                   |  —  |
 | <span class="sb-inline-rule-number">R015</span> [`prefer-fail-fast`](../prefer-fail-fast.md)                                                                 |  —  |
 | <span class="sb-inline-rule-number">R020</span> [`prefer-file-extension`](../prefer-file-extension.md)                                                       |  —  |
-| <span class="sb-inline-rule-number">R033</span> [`prefer-inputs-context`](../prefer-inputs-context.md)                                                       | 🔧  |
+| <span class="sb-inline-rule-number">R033</span> [`prefer-inputs-context`](../prefer-inputs-context.md)                                                       |  —  |
 | <span class="sb-inline-rule-number">R005</span> [`require-action-name`](../require-action-name.md)                                                           |  —  |
 | <span class="sb-inline-rule-number">R006</span> [`require-action-run-name`](../require-action-run-name.md)                                                   |  —  |
 | <span class="sb-inline-rule-number">R025</span> [`require-checkout-before-local-action`](../require-checkout-before-local-action.md)                         |  —  |

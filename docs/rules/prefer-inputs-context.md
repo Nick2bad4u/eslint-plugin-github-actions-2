@@ -28,7 +28,7 @@ on:
 jobs:
  release:
   runs-on: ubuntu-latest
-  if: ${{ github.event.inputs.dry_run }}
+  if: ${{ github.event.inputs.dry_run == 'true' }}
   steps:
    - run: echo release
 ```
@@ -54,7 +54,7 @@ jobs:
 
 ## Behavior and migration notes
 
-The autofixer rewrites `github.event.inputs.` references to `inputs.` within the same scalar value. It only runs in workflows that actually declare `workflow_dispatch`, so unrelated files are left unchanged.
+This rule reports references but does not autofix them. Changing contexts can change the value type and alter workflow conditions. When migrating a Boolean comparison such as `github.event.inputs.dry_run == 'true'`, use `inputs.dry_run == true` (without quotes), or test `inputs.dry_run` directly when the input is known to be provided. Review workflows with multiple triggers separately to preserve how they handle missing inputs.
 
 ## Additional examples
 

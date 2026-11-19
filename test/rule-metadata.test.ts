@@ -10,7 +10,6 @@ const fixableRuleNames = new Set([
     "no-post-if-without-post",
     "no-pre-if-without-pre",
     "no-unused-dependabot-enable-beta-ecosystems",
-    "prefer-inputs-context",
     "require-dependabot-github-actions-directory-root",
     "require-dependabot-version",
 ]);
