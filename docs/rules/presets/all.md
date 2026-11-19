@@ -59,7 +59,7 @@ Fix legend:
 | <span class="sb-inline-rule-number">R043</span> [`prefer-action-yml`](../prefer-action-yml.md)                                                                         |  —  |
 | <span class="sb-inline-rule-number">R015</span> [`prefer-fail-fast`](../prefer-fail-fast.md)                                                                           |  —  |
 | <span class="sb-inline-rule-number">R020</span> [`prefer-file-extension`](../prefer-file-extension.md)                                                                 |  —  |
-| <span class="sb-inline-rule-number">R033</span> [`prefer-inputs-context`](../prefer-inputs-context.md)                                                                 | 🔧  |
+| <span class="sb-inline-rule-number">R033</span> [`prefer-inputs-context`](../prefer-inputs-context.md)                                                                 |  —  |
 | <span class="sb-inline-rule-number">R016</span> [`prefer-step-uses-style`](../prefer-step-uses-style.md)                                                               |  —  |
 | <span class="sb-inline-rule-number">R066</span> [`prefer-template-yml-extension`](../prefer-template-yml-extension.md)                                                 |  —  |
 | <span class="sb-inline-rule-number">R005</span> [`require-action-name`](../require-action-name.md)                                                                     |  —  |

@@ -5,7 +5,7 @@
 import type { Rule } from "eslint";
 import type { AST } from "yaml-eslint-parser";
 
-import { arrayFirst, safeCastTo, setHas } from "ts-extras";
+import { safeCastTo, setHas } from "ts-extras";
 
 import { isWorkflowFile } from "../_internal/lint-targets.js";
 import { reportYamlNode } from "../_internal/report.js";
@@ -19,16 +19,9 @@ import {
 /** Legacy workflow_dispatch inputs context prefix. */
 const githubEventInputsPrefix = "github.event.inputs.";
 
-/** Preferred workflow_dispatch inputs context prefix. */
-const inputsContextPrefix = "inputs.";
-
 /** Check whether a scalar string references the legacy inputs context. */
 const hasGithubEventInputsReference = (value: string): boolean =>
     value.includes(githubEventInputsPrefix);
-
-/** Replace legacy workflow_dispatch inputs references with the preferred form. */
-const replaceGithubEventInputsReferences = (value: string): string =>
-    value.replaceAll(githubEventInputsPrefix, inputsContextPrefix);
 
 /** Visit every string scalar reachable from a YAML value node. */
 const visitStringScalars = (
@@ -100,18 +93,6 @@ const rule: Rule.RuleModule = {
                 }
 
                 reportYamlNode(context, {
-                    fix: (fixer) => {
-                        const originalText = context.sourceCode.text.slice(
-                            arrayFirst(node.range),
-                            node.range[1]
-                        );
-                        const fixedText =
-                            replaceGithubEventInputsReferences(originalText);
-
-                        return originalText === fixedText
-                            ? null
-                            : fixer.replaceTextRange(node.range, fixedText);
-                    },
                     messageId: "preferInputsContext",
                     node: node,
                 });
@@ -136,7 +117,6 @@ const rule: Rule.RuleModule = {
             ruleNumber: 33,
             url: "https://nick2bad4u.github.io/eslint-plugin-github-actions-2/docs/rules/prefer-inputs-context",
         },
-        fixable: "code",
         messages: {
             preferInputsContext:
                 "Prefer `inputs.*` over `github.event.inputs.*` in `workflow_dispatch` workflows because the `inputs` context preserves booleans and is the documented shorthand.",

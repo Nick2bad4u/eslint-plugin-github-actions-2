@@ -25,7 +25,7 @@ Fix legend:
 | <span class="sb-inline-rule-number">R037</span> [`no-unknown-job-output-reference`](../no-unknown-job-output-reference.md)                                   |  —  |
 | <span class="sb-inline-rule-number">R023</span> [`no-write-all-permissions`](../no-write-all-permissions.md)                                                 |  —  |
 | <span class="sb-inline-rule-number">R020</span> [`prefer-file-extension`](../prefer-file-extension.md)                                                       |  —  |
-| <span class="sb-inline-rule-number">R033</span> [`prefer-inputs-context`](../prefer-inputs-context.md)                                                       | 🔧  |
+| <span class="sb-inline-rule-number">R033</span> [`prefer-inputs-context`](../prefer-inputs-context.md)                                                       |  —  |
 | <span class="sb-inline-rule-number">R005</span> [`require-action-name`](../require-action-name.md)                                                           |  —  |
 | <span class="sb-inline-rule-number">R025</span> [`require-checkout-before-local-action`](../require-checkout-before-local-action.md)                         |  —  |
 | <span class="sb-inline-rule-number">R002</span> [`require-job-timeout-minutes`](../require-job-timeout-minutes.md)                                           |  —  |
