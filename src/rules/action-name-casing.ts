@@ -35,6 +35,7 @@ import {
 type ActionNameCasingObjectOption = Partial<
     Record<GithubActionsCasingKind, boolean>
 > & {
+    readonly allowPattern?: string;
     readonly ignores?: readonly string[];
 };
 
@@ -86,11 +87,13 @@ const normalizeActionNameCasingOptions = (
     >
 ): {
     allowedCasings: readonly GithubActionsCasingKind[];
+    allowedNamePattern: RegExp | undefined;
     ignoredNames: readonly string[];
 } => {
     if (typeof option === "string" || !isDefined(option)) {
         return {
             allowedCasings: [option ?? DEFAULT_ACTION_NAME_CASING],
+            allowedNamePattern: undefined,
             ignoredNames: [],
         };
     }
@@ -104,6 +107,9 @@ const normalizeActionNameCasingOptions = (
             allowedCasings.length > 0
                 ? allowedCasings
                 : [DEFAULT_ACTION_NAME_CASING],
+        allowedNamePattern: isDefined(option.allowPattern)
+            ? new RegExp(option.allowPattern, "u")
+            : undefined,
         ignoredNames: [...(option.ignores ?? [])],
     };
 };
@@ -117,7 +123,7 @@ const rule: Rule.RuleModule = {
         const option = isActionNameCasingOption(rawOption)
             ? rawOption
             : undefined;
-        const { allowedCasings, ignoredNames } =
+        const { allowedCasings, allowedNamePattern, ignoredNames } =
             normalizeActionNameCasingOptions(option ?? undefined);
 
         return {
@@ -141,7 +147,8 @@ const rule: Rule.RuleModule = {
                     namePair === null ||
                     nameNode?.type !== "YAMLScalar" ||
                     nameValue.trim().length === 0 ||
-                    arrayIncludes(ignoredNames, nameValue)
+                    arrayIncludes(ignoredNames, nameValue) ||
+                    allowedNamePattern?.test(nameValue) === true
                 ) {
                     return;
                 }
@@ -215,11 +222,20 @@ const rule: Rule.RuleModule = {
                         additionalProperties: false,
                         description:
                             "Allowed casing conventions and ignore patterns for the workflow `name` value.",
-                        properties: createCasingOptionProperties(
-                            githubActionsCasingKinds,
-                            "workflow names",
-                            "Literal workflow names that should be ignored by this rule."
-                        ),
+                        properties: {
+                            ...createCasingOptionProperties(
+                                githubActionsCasingKinds,
+                                "workflow names",
+                                "Literal workflow names that should be ignored by this rule."
+                            ),
+                            allowPattern: {
+                                description:
+                                    "Regular expression source for workflow names that should be ignored by this rule.",
+                                format: "regex",
+                                minLength: 1,
+                                type: "string",
+                            },
+                        },
                         type: "object",
                     },
                 ],

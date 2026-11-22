@@ -36,9 +36,18 @@ _The second example is valid when the rule is configured for `kebab-case`._
 
 When the rule is configured with exactly one allowed casing, the autofixer rewrites the workflow `name` into that casing. If multiple casings are allowed at once, the rule stays report-only because there is no single unambiguous target format.
 
+### Options
+
+The rule defaults to `"Title Case"`. You can pass a casing name directly or use an options object with casing names as boolean flags.
+
+- `ignores` is an array of exact workflow names to exempt.
+- `allowPattern` is a JavaScript regular expression source string, matched case-sensitively in Unicode mode. Use `^` and `$` when you want to match the whole name.
+
+If a name matches either exception, the rule leaves it alone. All other names must match an enabled casing, with Title Case as the fallback when the options object enables none.
+
 ## Additional examples
 
-For larger repositories, this rule is often enabled together with one of the published presets so violations are caught in pull requests before workflow changes are merged.
+Use a single pattern to allow titles such as `CodeQL`, `CodeQL Advanced`, `.NET`, and `C/C++ CI` while enforcing Title Case elsewhere. The example below matches product tokens at the beginning of a name and accepts any title that starts with one of those tokens followed by a space.
 
 ## ESLint flat config example
 
@@ -52,7 +61,13 @@ export default [
    "github-actions": githubActions,
   },
   rules: {
-   "github-actions/action-name-casing": "error",
+   "github-actions/action-name-casing": [
+    "error",
+    {
+     "Title Case": true,
+     allowPattern: "^(?:CodeQL|\\.NET|C/C\\+\\+)(?: |$)",
+    },
+   ],
   },
  },
 ];

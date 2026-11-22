@@ -81,3 +81,24 @@ describe("title case schema boundary", () => {
         }
     );
 });
+
+describe("workflow name pattern option", () => {
+    it.each([
+        "",
+        "[",
+        123,
+    ])("rejects an invalid pattern %j", async (pattern) => {
+        expect.hasAssertions();
+
+        await expect(
+            lintWorkflow("name: Release Pipeline", {
+                rules: {
+                    "github-actions/action-name-casing": [
+                        "error",
+                        { allowPattern: pattern },
+                    ],
+                },
+            })
+        ).rejects.toThrow("allowPattern");
+    });
+});
