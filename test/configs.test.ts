@@ -310,19 +310,26 @@ describe("exported presets", () => {
         ]);
     });
 
-    it("keeps input casing in the stylistic and all presets", () => {
+    it("keeps input and display-name casing in the stylistic and all presets", () => {
         expect.hasAssertions();
+
+        const optInRuleIds = [
+            "github-actions/input-id-case",
+            "github-actions/job-name-casing",
+            "github-actions/step-name-casing",
+        ] as const;
 
         expect(githubActionsPlugin.configs.stylistic.rules).toStrictEqual({
             "github-actions/action-name-casing": "error",
             "github-actions/input-id-case": "error",
             "github-actions/job-id-casing": "error",
+            "github-actions/job-name-casing": "error",
+            "github-actions/step-name-casing": "error",
         });
-        expect(
-            githubActionsPlugin.configs.all.rules[
-                "github-actions/input-id-case"
-            ]
-        ).toBe("error");
+
+        for (const ruleId of optInRuleIds) {
+            expect(githubActionsPlugin.configs.all.rules[ruleId]).toBe("error");
+        }
 
         for (const configName of [
             "actionMetadata",
@@ -330,12 +337,14 @@ describe("exported presets", () => {
             "security",
             "strict",
         ] as const) {
-            expect(
-                Object.hasOwn(
-                    githubActionsPlugin.configs[configName].rules,
-                    "github-actions/input-id-case"
-                )
-            ).toBe(false);
+            for (const ruleId of optInRuleIds) {
+                expect(
+                    Object.hasOwn(
+                        githubActionsPlugin.configs[configName].rules,
+                        ruleId
+                    )
+                ).toBe(false);
+            }
         }
     });
 

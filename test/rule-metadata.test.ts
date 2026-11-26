@@ -12,10 +12,12 @@ const fixableRuleNames = new Set([
     "no-unused-dependabot-enable-beta-ecosystems",
     "require-dependabot-github-actions-directory-root",
     "require-dependabot-version",
+    "step-name-casing",
 ]);
 
 /** Rules that currently emit high-quality suggestions. */
 const suggestionRuleNames = new Set([
+    "job-name-casing",
     "no-path-separators-in-template-icon-name",
     "no-required-input-with-default",
     "require-job-name",

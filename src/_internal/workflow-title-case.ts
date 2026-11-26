@@ -3,6 +3,7 @@
  * Workflow display-name title casing helpers.
  */
 import {
+    arrayAt,
     arrayFirst,
     arrayJoin,
     isDefined,
@@ -356,4 +357,206 @@ export const convertWorkflowNameToTitleCase = (value: string): string => {
     flushCurrentWordRun();
 
     return isEmpty(segments) ? value : arrayJoin(segments, " ");
+};
+
+/** Opaque, word, or separator slice of a display name. */
+type DisplayNameSegment = Readonly<{
+    kind:
+        | "opaque"
+        | "separator"
+        | "word";
+    value: string;
+}>;
+
+/**
+ * Find the end offset of the `${{ … }}` expression whose body starts at
+ * `bodyStart`, or `-1` when it is unterminated. Like the GitHub Actions runner,
+ * `}}` closes the expression only outside a single-quoted string literal. An
+ * escaped quote (`''`) toggles string state twice, so it stays in the string.
+ */
+const getExpressionEnd = (value: string, bodyStart: number): number => {
+    let isInString = false;
+
+    for (let index = bodyStart; index < value.length; index += 1) {
+        if (!isInString && value.startsWith("}}", index)) {
+            return index + 2;
+        }
+
+        if (value.charAt(index) === "'") {
+            isInString = !isInString;
+        }
+    }
+
+    return -1;
+};
+
+/** Find the end offset of an opaque `${{ … }}` expression or code span. */
+const getOpaqueSegmentEnd = (value: string, index: number): number => {
+    if (value.startsWith("${{", index)) {
+        return getExpressionEnd(value, index + 3);
+    }
+
+    if (value[index] === "`") {
+        const closingIndex = value.indexOf("`", index + 1);
+
+        return closingIndex === -1 ? -1 : closingIndex + 1;
+    }
+
+    return -1;
+};
+
+/**
+ * Determine whether the character at `index` continues a word: an alphanumeric,
+ * or a `.` or `'` followed by an alphanumeric.
+ */
+const continuesDisplayNameWord = (value: string, index: number): boolean => {
+    const character = value[index];
+
+    if (!isDefined(character)) {
+        return false;
+    }
+
+    if (isAlphaNumericCharacter(character)) {
+        return true;
+    }
+
+    const nextCharacter = value[index + 1];
+
+    return (
+        (character === "." || character === "'") &&
+        isDefined(nextCharacter) &&
+        isAlphaNumericCharacter(nextCharacter)
+    );
+};
+
+/** Find the end offset of a word, allowing `.` and `'` between alphanumerics. */
+const getWordEnd = (value: string, index: number): number => {
+    let endIndex = index;
+
+    while (continuesDisplayNameWord(value, endIndex)) {
+        endIndex += 1;
+    }
+
+    return endIndex;
+};
+
+/** Determine whether a string is exactly one display-name word. */
+const isSingleDisplayNameWord = (value: string): boolean => {
+    const firstCharacter = value[0];
+
+    return (
+        isDefined(firstCharacter) &&
+        isAlphaNumericCharacter(firstCharacter) &&
+        getWordEnd(value, 0) === value.length
+    );
+};
+
+/** Single-word dictionary entries whose canonical form only changes letter case. */
+const displayNameCaseDictionary: ReadonlyMap<string, string> = new Map(
+    objectEntries(workflowTitleCaseDictionary).filter(
+        ([dictionaryKey, canonical]) =>
+            isSingleDisplayNameWord(dictionaryKey) &&
+            canonical.toLowerCase() === dictionaryKey
+    )
+);
+
+/** Split a display name into opaque, word, and separator segments. */
+const splitDisplayNameSegments = (
+    value: string
+): readonly DisplayNameSegment[] => {
+    const segments: DisplayNameSegment[] = [];
+    let separator = "";
+    let index = 0;
+
+    const flushSeparator = (): void => {
+        if (separator.length === 0) {
+            return;
+        }
+
+        segments.push({ kind: "separator", value: separator });
+        separator = "";
+    };
+
+    while (index < value.length) {
+        const character = value.charAt(index);
+        const opaqueEnd = getOpaqueSegmentEnd(value, index);
+
+        if (opaqueEnd !== -1) {
+            flushSeparator();
+            segments.push({
+                kind: "opaque",
+                value: value.slice(index, opaqueEnd),
+            });
+            index = opaqueEnd;
+        } else if (isAlphaNumericCharacter(character)) {
+            const wordEnd = getWordEnd(value, index);
+
+            flushSeparator();
+            segments.push({ kind: "word", value: value.slice(index, wordEnd) });
+            index = wordEnd;
+        } else {
+            separator += character;
+            index += 1;
+        }
+    }
+
+    flushSeparator();
+
+    return segments;
+};
+
+/** Determine whether a word carries deliberate casing that title case must keep. */
+const hasDeliberateCasing = (word: string): boolean =>
+    /\d/v.test(word) || /[A-Z]/v.test(word.slice(1));
+
+/** Resolve the title-case form of one display-name word. */
+const resolveDisplayNameWord = (word: string, isEdgeWord: boolean): string => {
+    const lowercaseWord = word.toLowerCase();
+    const canonical = displayNameCaseDictionary.get(lowercaseWord);
+
+    if (isDefined(canonical)) {
+        return canonical;
+    }
+
+    if (hasDeliberateCasing(word)) {
+        return word;
+    }
+
+    return !isEdgeWord && setHas(titleCaseSmallWords, lowercaseWord)
+        ? lowercaseWord
+        : capitalizeWord(lowercaseWord);
+};
+
+/** Determine whether a display name contains an expression or code span. */
+export const hasOpaqueDisplayNameSegment = (value: string): boolean =>
+    splitDisplayNameSegments(value).some(
+        (segment) => segment.kind === "opaque"
+    );
+
+/**
+ * Convert a job or step display name to title case by changing only letter
+ * case. Whitespace, punctuation, `${{ … }}` expressions, and backtick code
+ * spans are preserved, and expressions and code spans count as words when
+ * deciding whether a small word is first or last.
+ */
+export const convertDisplayNameToTitleCase = (value: string): string => {
+    const segments = splitDisplayNameSegments(value);
+    const wordLikeIndexes = segments
+        .map((segment, index) => (segment.kind === "separator" ? -1 : index))
+        .filter((index) => index !== -1);
+    const firstWordLikeIndex = arrayFirst(wordLikeIndexes);
+    const lastWordLikeIndex = arrayAt(wordLikeIndexes, -1);
+
+    return arrayJoin(
+        segments.map((segment, index) =>
+            segment.kind === "word"
+                ? resolveDisplayNameWord(
+                      segment.value,
+                      index === firstWordLikeIndex ||
+                          index === lastWordLikeIndex
+                  )
+                : segment.value
+        ),
+        ""
+    );
 };
