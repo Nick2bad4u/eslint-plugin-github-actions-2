@@ -129,7 +129,7 @@ export const githubActionsConfigMetadataByName: Readonly<
     },
     stylistic: {
         description:
-            "Opt-in naming conventions for workflow names, job identifiers, and workflow and action input identifiers.",
+            "Opt-in naming conventions for workflow, job, and step names, job identifiers, and workflow and action input identifiers.",
         files: [...WORKFLOW_FILE_GLOBS, ...ACTION_METADATA_FILE_GLOBS],
         icon: "🎨",
         presetName: "github-actions:stylistic",

@@ -36,6 +36,7 @@ describe("plugin entry", () => {
             "action-name-casing",
             "input-id-case",
             "job-id-casing",
+            "job-name-casing",
             "max-jobs-per-action",
             "no-case-insensitive-input-id-collision",
             "no-codeql-autobuild-for-javascript-typescript",
@@ -147,6 +148,7 @@ describe("plugin entry", () => {
             "require-workflow-run-branches",
             "require-workflow-template-pair",
             "require-workflow-template-properties-pair",
+            "step-name-casing",
             "valid-timeout-minutes",
             "valid-trigger-events",
         ]);

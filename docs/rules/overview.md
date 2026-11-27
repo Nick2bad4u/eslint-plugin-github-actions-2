@@ -28,6 +28,8 @@ specific check? See the **Current rules** section below.
 - [`require-workflow-concurrency`](./require-workflow-concurrency.md)
 - [`action-name-casing`](./action-name-casing.md)
 - [`job-id-casing`](./job-id-casing.md)
+- [`job-name-casing`](./job-name-casing.md)
+- [`step-name-casing`](./step-name-casing.md)
 - [`max-jobs-per-action`](./max-jobs-per-action.md)
 - [`no-case-insensitive-input-id-collision`](./no-case-insensitive-input-id-collision.md)
 - [`no-codeql-autobuild-for-javascript-typescript`](./no-codeql-autobuild-for-javascript-typescript.md)

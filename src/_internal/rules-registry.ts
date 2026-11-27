@@ -7,6 +7,7 @@ import type { Rule } from "eslint";
 import * as actionNameCasingModule from "../rules/action-name-casing.js";
 import * as inputIdCaseModule from "../rules/input-id-case.js";
 import * as jobIdCasingModule from "../rules/job-id-casing.js";
+import * as jobNameCasingModule from "../rules/job-name-casing.js";
 import * as maxJobsPerActionModule from "../rules/max-jobs-per-action.js";
 import * as noCaseInsensitiveInputIdCollisionModule from "../rules/no-case-insensitive-input-id-collision.js";
 import * as noCodeqlAutobuildForJavaScriptTypeScriptModule from "../rules/no-codeql-autobuild-for-javascript-typescript.js";
@@ -118,12 +119,14 @@ import * as requireWorkflowPermissionsModule from "../rules/require-workflow-per
 import * as requireWorkflowRunBranchesModule from "../rules/require-workflow-run-branches.js";
 import * as requireWorkflowTemplatePairModule from "../rules/require-workflow-template-pair.js";
 import * as requireWorkflowTemplatePropertiesPairModule from "../rules/require-workflow-template-properties-pair.js";
+import * as stepNameCasingModule from "../rules/step-name-casing.js";
 import * as validTimeoutMinutesModule from "../rules/valid-timeout-minutes.js";
 import * as validTriggerEventsModule from "../rules/valid-trigger-events.js";
 
 const actionNameCasing: Rule.RuleModule = actionNameCasingModule.default;
 const inputIdCase: Rule.RuleModule = inputIdCaseModule.default;
 const jobIdCasing: Rule.RuleModule = jobIdCasingModule.default;
+const jobNameCasing: Rule.RuleModule = jobNameCasingModule.default;
 const maxJobsPerAction: Rule.RuleModule = maxJobsPerActionModule.default;
 const noCaseInsensitiveInputIdCollision: Rule.RuleModule =
     noCaseInsensitiveInputIdCollisionModule.default;
@@ -327,6 +330,7 @@ const requireWorkflowTemplatePair: Rule.RuleModule =
     requireWorkflowTemplatePairModule.default;
 const requireWorkflowTemplatePropertiesPair: Rule.RuleModule =
     requireWorkflowTemplatePropertiesPairModule.default;
+const stepNameCasing: Rule.RuleModule = stepNameCasingModule.default;
 const validTimeoutMinutes: Rule.RuleModule = validTimeoutMinutesModule.default;
 const validTriggerEvents: Rule.RuleModule = validTriggerEventsModule.default;
 
@@ -335,6 +339,7 @@ const githubActionsRulesDefinition: {
     readonly "action-name-casing": typeof actionNameCasing;
     readonly "input-id-case": typeof inputIdCase;
     readonly "job-id-casing": typeof jobIdCasing;
+    readonly "job-name-casing": typeof jobNameCasing;
     readonly "max-jobs-per-action": typeof maxJobsPerAction;
     readonly "no-case-insensitive-input-id-collision": typeof noCaseInsensitiveInputIdCollision;
     readonly "no-codeql-autobuild-for-javascript-typescript": typeof noCodeqlAutobuildForJavaScriptTypeScript;
@@ -446,12 +451,14 @@ const githubActionsRulesDefinition: {
     readonly "require-workflow-run-branches": typeof requireWorkflowRunBranches;
     readonly "require-workflow-template-pair": typeof requireWorkflowTemplatePair;
     readonly "require-workflow-template-properties-pair": typeof requireWorkflowTemplatePropertiesPair;
+    readonly "step-name-casing": typeof stepNameCasing;
     readonly "valid-timeout-minutes": typeof validTimeoutMinutes;
     readonly "valid-trigger-events": typeof validTriggerEvents;
 } = {
     "action-name-casing": actionNameCasing,
     "input-id-case": inputIdCase,
     "job-id-casing": jobIdCasing,
+    "job-name-casing": jobNameCasing,
     "max-jobs-per-action": maxJobsPerAction,
     "no-case-insensitive-input-id-collision": noCaseInsensitiveInputIdCollision,
     "no-codeql-autobuild-for-javascript-typescript":
@@ -591,6 +598,7 @@ const githubActionsRulesDefinition: {
     "require-workflow-template-pair": requireWorkflowTemplatePair,
     "require-workflow-template-properties-pair":
         requireWorkflowTemplatePropertiesPair,
+    "step-name-casing": stepNameCasing,
     "valid-timeout-minutes": validTimeoutMinutes,
     "valid-trigger-events": validTriggerEvents,
 } satisfies Record<string, Rule.RuleModule>;
